@@ -1,0 +1,687 @@
+-- FTC-GUID: 17ca2b,927ca1
+--Based off: https://steamcommunity.com/sharedfiles/filedetails/?id=726800282
+--Link for this mod: https://steamcommunity.com/sharedfiles/filedetails/?id=959360907
+lastRolls={}
+scaleBtn=3
+rolledFaces = {}
+-- Globals to track rolls and phases
+currentPhase = "none" -- Tracks the current phase: "none", "hit", "wound", "special"
+previousRoll = {}      -- Stores dice rolled in the last phase
+currentRoll = {}       -- Stores dice rolled in the current phase
+specialRollDice = {}   -- Tracks dice moved for special rolls (e.g., Lethal/Sustained Hits)
+
+-- Track stats
+totalHits = 0          -- Total successful hits
+missedHits = 0         -- Total missed hits
+totalWounds = 0        -- Total successful wounds
+
+printLastBtn={
+    label="Last roll", click_function="printLast", function_owner=self,
+    position={-2.5,0.1,-0.57}, rotation={0,0,0}, height=50, width=400,
+    font_size=60, color={0,0,0}, font_color={1,1,1}, scale={scaleBtn,scaleBtn,scaleBtn}
+}
+printLast5Btn={
+    label="Last 5 rolls", click_function="printLast5Innovative", function_owner=self,
+    position={2.5,0.1,-0.57}, rotation={0,0,0}, height=50, width=400,
+    font_size=60, color={0,0,0}, font_color={1,1,1}, scale={scaleBtn,scaleBtn,scaleBtn}
+}
+printDiceChancesBtn={
+    label="Roll Stats", click_function="printChances", function_owner=self,
+    position={2.5,0.1,0.5}, rotation={0,0,0}, height=50, width=400,
+    font_size=60, color={0,0,0}, font_color={1,1,1}, scale={scaleBtn,scaleBtn,scaleBtn}
+}
+
+-- NEW CODE START
+-- (1) Define a new button for "Show Stats"
+showStatsBtn={
+    label="Stats", click_function="showStats", function_owner=self,
+    position={-2.5,0.1,0.5}, rotation={0,0,0}, height=50, width=400,
+    font_size=60, color={0,0,0}, font_color={1,1,1}, scale={scaleBtn,scaleBtn,scaleBtn}
+}
+function trackRoll(dice)
+    currentRoll = {}
+    for _, die in ipairs(dice) do
+        table.insert(currentRoll, die.getValue())
+    end
+end
+
+function inferRollPhase(dice)
+    if #previousRoll == 0 then
+        -- If no previous roll, assume this is the Hit Roll
+        currentPhase = "hit"
+        trackRoll(dice)
+        calculateHits(dice)
+    elseif currentPhase == "hit" then
+        -- If we were in the Hit Roll phase, the next roll is likely Wound Rolls
+        currentPhase = "wound"
+        calculateWounds(dice)
+    elseif currentPhase == "special" then
+        -- Handle special rolls like lethal or sustained hits
+        calculateSpecialRoll(dice)
+    end
+
+    -- Save the current roll as the previous for the next phase
+    previousRoll = currentRoll
+end
+
+function calculateHits(dice)
+    totalHits = 0
+    missedHits = 0
+    for _, die in ipairs(dice) do
+        if die.getValue() >= 4 then -- Assume 4+ is a hit
+            totalHits = totalHits + 1
+        else
+            missedHits = missedHits + 1
+        end
+    end
+    printToAll("Hit Roll: " .. totalHits .. " hits, " .. missedHits .. " misses.", "Green")
+end
+
+function calculateWounds(dice)
+    totalWounds = 0
+    for _, die in ipairs(dice) do
+        if die.getValue() >= 3 then -- Assume 3+ is a wound
+            totalWounds = totalWounds + 1
+        end
+    end
+    printToAll("Wound Roll: " .. totalWounds .. " wounds.", "Red")
+end
+
+function calculateSpecialRoll(dice)
+    local lethalHits = 0
+    for _, die in ipairs(dice) do
+        if die.getValue() == 6 then
+            lethalHits = lethalHits + 1
+        end
+    end
+    printToAll("Special Roll: " .. lethalHits .. " lethal hits.", "Blue")
+end
+
+-- (2) Implement showStats() function to calculate min, max, average, etc.
+-- Replace your existing showStats() with this:
+function showStats()
+    local totalRolls = #rolledFaces
+    if totalRolls == 0 then
+        printToAll("No dice have been rolled yet!", "Yellow")
+        return
+    end
+
+    local sumOfAll = 0
+    local totalBadRolls = 0
+    local currentBadStreak = 0
+    local maxBadStreak = 0
+
+    -- Loop through every face rolled in chronological order
+    for i, face in ipairs(rolledFaces) do
+        sumOfAll = sumOfAll + face
+
+        -- Check if it’s a “bad” roll (i.e. face <= 3)
+        if face <= 3 then
+            totalBadRolls = totalBadRolls + 1
+            currentBadStreak = currentBadStreak + 1
+            if currentBadStreak > maxBadStreak then
+                maxBadStreak = currentBadStreak
+            end
+        else
+            currentBadStreak = 0
+        end
+    end
+
+    local average = sumOfAll / totalRolls
+    local percentBad = (totalBadRolls / totalRolls) * 100
+
+    local msg = string.format(
+        "Dice Stats:\n" ..
+        "- Total rolled: %d\n" ..
+        "- Average roll: %.2f\n" ..
+        "- Bad rolls (3 or lower): %d (%.1f%%)\n" ..
+        "- Longest consecutive bad-roll streak: %d",
+        totalRolls, average, totalBadRolls, percentBad, maxBadStreak
+    )
+    printToAll(msg, "White")
+end
+
+function printChances()
+    local i=0
+    for k,v in ipairs(resultsTotal) do
+        i = i + resultsTotal[k]
+    end
+    if i==0 then
+        printToAll("NO LAST ROLLS", "Yellow")
+    else
+        printToAll("CHANCES: "..i)
+        for k,v in ipairs(resultsTotal) do
+            if(resultsTotal[k]>0) then
+                printToAll(k..": "..tonumber(string.format("%.1f", (100*resultsTotal[k]/i))).."% - "..resultsTotal[k])
+            end
+        end
+    end
+end
+
+function printLast()
+	printResults(1)
+end
+
+function printLast5()
+	printResults(5)
+end
+
+-- Return pastel color if player is Red or Blue
+function getPastelIfRedOrBlue(pColor)
+    if pColor == "Red" then
+        return {1, 0.6, 0.6}  -- pastel red
+    elseif pColor == "Blue" then
+        return {0.6, 0.7, 1}  -- pastel blue closer to blue
+    else
+        return stringColorToRGB(pColor) or {1,1,1}
+    end
+end
+
+--Initialize Global Variables and pRNG Seed
+ver = 'BCB-2022-12-30'
+lastHolder = {}
+customFace = {4, 6, 8, 10, 12, 20}
+diceGuidFaces = {}
+sortedKeys = {}
+resultsTable = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+resultsTotal = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+seedCounter = 0
+
+thisBoxIsBlue = (self.guid == Global.getVar("blueCustomDiceRoller_GUID")) and true or false
+seed = os.time() + (thisBoxIsBlue and 1 or 0)
+math.randomseed(seed)
+
+orderedOnNextRoll = false
+groupSizeOnNextRoll = 1
+
+objectToPlaceDiceOnGUID = thisBoxIsBlue and Global.getVar("blueCustomDiceMat_GUID") or Global.getVar("redCustomDiceMat_GUID")
+objectToPlaceDiceOn = getObjectFromGUID(objectToPlaceDiceOnGUID)
+if objectToPlaceDiceOn == nil then
+    objectToPlaceDiceOn = self
+end
+
+function clearDataForGC(data)
+    if data == nil then
+        return
+    end
+    for n, element in ipairs(data) do
+        element = nil
+    end
+end
+
+function onObjectPickedUp(playerColor, obj)
+	lastHolder[obj] = playerColor
+end
+
+function onObjectDestroyed(obj)
+	lastHolder[obj] = nil
+end
+
+function onLoad(save_state)
+    if self.getDescription() == '' then
+		setDefaultState()
+	end
+	self.createButton(printLastBtn)
+	self.createButton(printLast5Btn)
+    self.createButton(printDiceChancesBtn)
+    -- NEW CODE: Add the Show Stats button to the object
+    self.createButton(showStatsBtn)
+end
+
+function onSave()
+	return self.getDescription()
+end
+
+function onDropped(player_color)
+	if self.getDescription() == '' then
+		setDefaultState()
+	end
+end
+
+function setDefaultState()
+	self.setDescription(JSON.encode_pretty({Results = 'no', SmoothDice = 'no', RotateDice = 'no', Rows = 'yes', SortNoRows = 'asc', Step = 1.05, Version = ver}))
+end
+
+function sortByVal(t, type)
+	local keys = {}
+	for key in pairs(t) do
+		table.insert(keys, key)
+	end
+	if type == 'asc' then
+		table.sort(keys, function(a, b) return t[a] < t[b] end)
+	elseif type == 'desc' then
+		table.sort(keys, function(a, b) return t[a] > t[b] end)
+	end
+	return keys
+end
+
+function hasGuid(t, g)
+	for k, v in ipairs(t) do
+		if v.guid == g then return true end
+	end
+	return false
+end
+
+function onObjectEnterContainer(container, obj)
+    if container == self then
+        if obj.tag == "Dice" then
+            collision_info = {collision_object = obj}
+            onCollisionEnter(collision_info)
+            Wait.time(|| takeDiceOut(), 0.1)
+        else
+            local pos = self.getPosition()
+            local f = self.getTransformRight()
+            self.takeObject({
+                position          = {pos.x+20,pos.y+50,pos.z+20},
+                smooth            = false,
+            })
+        end
+    end
+end
+
+function onCollisionEnter(collision_info)
+	playerColor = lastHolder[collision_info.collision_object]
+	if collision_info.collision_object.getGUID() == nil then return end
+    clearDataForGC(diceGuidFaces)
+    clearDataForGC(sortedKeys)
+	diceGuidFaces = {}
+	sortedKeys = {}
+
+	for k, v in ipairs(getAllObjects()) do
+		if v.tag == 'Dice' then
+			objType = tostring(v)
+			faces = tonumber(string.match(objType, 'Die_(%d+).*'))
+			if faces == nil then
+				faces = tonumber(customFace[v.getCustomObject().type + 1])
+			end
+            diceGuidFaces[v.getGUID()] = faces
+            table.insert(sortedKeys, v.getGUID())
+		end
+	end
+end
+
+function takeDiceOut(tab)
+	local data = JSON.decode(self.getDescription())
+	if data == nil then
+		setDefaultState()
+		data = JSON.decode(self.getDescription())
+		printToAll('Warning - invalid description. Restored default configuration.', {0.8, 0.5, 0})
+	end
+
+	if data.Step < 1 then
+		setDefaultState()
+		data = JSON.decode(self.getDescription())
+		printToAll('Warning - "step" can\'t be lower than 1. Restored default configuration.', {0.8, 0.5, 0})
+	end
+
+    clearDataForGC(diceGuids)
+	diceGuids = {}
+	for k, v in pairs(self.getObjects()) do
+		faces = diceGuidFaces[v.guid]
+		if v.name =="BCB-D3" then
+			faces=3
+		end
+		r = math.random(faces)
+		diceGuids[v.guid] = r
+	end
+
+	local ordered = orderedOnNextRoll
+	orderedOnNextRoll = false
+	local groupSize = groupSizeOnNextRoll
+	groupSizeOnNextRoll = 1
+
+	local objs = self.getObjects()
+	local position = objectToPlaceDiceOn.getPosition()
+	rotation = objectToPlaceDiceOn.getRotation()
+	local displayInRows = true
+	if data.Rows == 'no' then displayInRows = false end
+	if ordered then displayInRows = false end
+	local sortType = data.SortNoRows
+	if ordered then sortType = "none" end
+	sortedKeys = sortByVal(diceGuids, sortType)
+    clearDataForGC(Rows)
+	Rows = {}
+	n = 1
+
+	for _, key in pairs(sortedKeys) do
+		if diceGuids[key] == math.floor(diceGuids[key]) then
+			resultsTable[diceGuids[key]] = resultsTable[diceGuids[key]] + 1
+            resultsTotal[diceGuids[key]] = resultsTotal[diceGuids[key]] + 1
+		end
+
+    	if hasGuid(objs, key) then
+    		if Rows[diceGuids[key]] == nil then
+    			Rows[diceGuids[key]] = 0
+    		end
+    		Rows[diceGuids[key]] = Rows[diceGuids[key]] + 1
+    		params = {}
+    		params.guid = key
+    		local d12Xoffset=0
+    		if diceGuids[key]>6 then
+    			 d12Xoffset=-24
+    		end
+
+            local newXPos
+            local newZPos
+            if displayInRows then
+				newXPos = 0 - d12Xoffset - 20.4 + (Rows[diceGuids[key]]* data.Step)
+				newZPos = -3.17 + ((((diceGuids[key] - 1) % 6) + 1) * data.Step)
+            else
+				local pos = n - 1
+				local limit = 25
+				if groupSize > 1 then
+					pos = pos + math.floor(pos / groupSize)
+					local step = groupSize + 1
+					local maxGroups = math.floor(limit / step)
+					local remainder = limit % (step * maxGroups)
+					limit = limit - remainder
+				end
+				row = math.floor(pos / limit) + 1
+				col = pos % limit
+				newXPos = 0 - 15.0 + (col * data.Step)
+				newZPos = -3.17 + (row * data.Step)
+            end
+
+			params.position = {
+				position.x + (newXPos * math.cos((180 + rotation.y) * 0.0174532))
+                                   - (newZPos * math.sin((180 + rotation.y) * 0.0174532)),
+				position.y + 2,
+				position.z + (newXPos * math.sin((rotation.y) * 0.0174532))
+                                   + (newZPos* math.cos((0 + rotation.y) * 0.0174532))
+			}
+            params.rotation = rotation
+    		params.callback = 'setValueCallback'
+    		params.params = {diceGuids[key]}
+    		params.smooth = false
+    		if data.SmoothDice == 'yes' then params.smooth = true end
+
+    		self.takeObject(params)
+    		n = n + 1
+    	end
+    end
+
+	printresultsTable()
+    Wait.time(function()
+        -- "objectToPlaceDiceOn" is your dice-mat object
+        objectToPlaceDiceOn.call("storeCurrentDiceAsPreviousRoll")
+    end, 1)
+end
+
+function sum(t)
+	local sum = 0
+	for k, v in pairs(t) do
+		sum = sum + v
+	end
+	return sum
+end
+
+function setPlayerColor(params)
+    playerColor = params.color
+end
+
+function setLastHolder(params)
+    lastHolder[params.obj] = params.color
+end
+
+function printresultsTable()
+    local data = JSON.decode(self.getDescription())
+    local description = {
+        'Ones.', 'Twos.', 'Threes.', 'Fours.', 'Fives.', 'Sixes.',
+        'Sevens.', 'Eights.', 'Nines.', 'Tens.', 'Elevens.', 'Twelves.',
+        'Thirteens.', 'Fourteens.', 'Fifteens.', 'Sixteens.', 'Seventeens.',
+        'Eighteens.', 'Nineteens.', 'Twenties.'
+    }
+
+    local msg = ''
+    local color = {1,1,1}
+
+    -- Build a chat message about the results
+for dieFace, numRolled in ipairs(resultsTable) do
+    if numRolled > 0 then
+        msg = msg .. numRolled .. ' ' .. description[dieFace] .. ' '
+    end
+end
+
+-- NEW / ADDED logic to populate rolledFaces
+for dieFace, numRolled in ipairs(resultsTable) do
+    for i=1, numRolled do
+        table.insert(rolledFaces, dieFace)
+    end
+end
+
+    local time = '[' .. os.date("%H") .. ':' .. os.date("%M") .. ':' .. os.date("%S") .. ' UTC] '
+    if playerColor == nil then
+        msg = time .. '~UNKNOWN PLAYER~ rolls:\n' .. msg .. '*******************************************************'
+    else
+        msg = time .. Player[playerColor].steam_name .. ' rolls:\n' .. msg .. '*******************************************************'
+        color = stringColorToRGB(playerColor)
+    end
+
+    local rolltorecord = {msg = msg, color = color}
+    if sum(resultsTable) > 0 then
+        if #lastRolls >= 5 then
+            table.remove(lastRolls, 1)
+        end
+        table.insert(lastRolls, #lastRolls + 1, rolltorecord)
+    end
+
+    if sum(resultsTable) > 0 and data.Results == 'yes' then
+        printToAll(msg, color)
+        broadcastToAll(msg, color)
+    end
+
+    -- Reset our per-roll resultsTable for the next batch
+    for k,v in ipairs(resultsTable) do
+        resultsTable[k] = 0
+    end
+end
+
+
+
+
+function printLast5Innovative(pointless, player_color)
+    if #lastRolls == 0 then
+        printToAll("NO LAST ROLLS", {1,1,0})
+        return
+    end
+
+    local faceNames = {"One", "Two", "Three", "Four", "Five", "Six"}
+    local faceIndex = {Ones=1, Twos=2, Threes=3, Fours=4, Fives=5, Sixes=6}
+
+    printToAll("–––––––––––––––––––––––––––––––––––––––––", {1,1,1})
+
+    for i = #lastRolls, 1, -1 do
+        local rollData = lastRolls[i]
+        local rollColor = rollData.color or {1,1,1}
+
+        local tally = {0,0,0,0,0,0}
+        for numStr, faceStr in rollData.msg:gmatch("(%d+) (%a+)") do
+            local idx = faceIndex[faceStr]
+            if idx then
+                tally[idx] = tally[idx] + tonumber(numStr)
+            end
+        end
+
+        local totalDice = 0
+        for face = 1, 6 do
+            totalDice = totalDice + tally[face]
+        end
+
+        -- Decide the prefix
+        local prefix
+        if i == #lastRolls then
+            prefix = "Latest =>"
+        elseif i == 1 then
+            prefix = "Oldest =>"
+        else
+            prefix = string.format("Roll #%d =>", i)
+        end
+
+        -- Build a single-line string
+        local rollLine = prefix
+        for face = 1, 6 do
+            rollLine = rollLine .. string.format(" %s:%d", faceNames[face], tally[face])
+        end
+        rollLine = rollLine .. string.format(" [Total:%d]", totalDice)
+
+        printToAll(rollLine, rollColor)
+    end
+end
+
+
+
+function printResults(n)
+    if #lastRolls == 0 then
+        printToAll("NO LAST ROLLS\n", "Yellow")
+        return
+    end
+
+    printToAll("LAST 5 ROLLS SUMMARY\n", "White")
+
+    function supportsUnicode()
+        local testString = "⚀"
+        return testString ~= ""
+    end
+
+    local diceFaces = supportsUnicode() and {
+        [1] = "⚀",
+        [2] = "⚁",
+        [3] = "⚂",
+        [4] = "⚃",
+        [5] = "⚄",
+        [6] = "⚅"
+    } or {
+        [1] = " 1",
+        [2] = " 2",
+        [3] = " 3",
+        [4] = " 4",
+        [5] = " 5",
+        [6] = " 6"
+    }
+
+    -- Determine if the dice roller is red or blue based on GUID
+    local redDiceRollerGUID = "17ca2b"
+    local blueDiceRollerGUID = "927ca1"
+    local diceColor = {1, 1, 1}  -- Default to white
+
+    if self.getGUID() == redDiceRollerGUID then
+        diceColor = {0.91, 0.29, 0.23} -- Red color for red dice roller
+    elseif self.getGUID() == blueDiceRollerGUID then
+        diceColor = {0.2, 0.62, 0.91}   -- Blue color for blue dice roller
+    end
+
+    for i = 1, n do
+        if lastRolls[i] then
+            local roll = lastRolls[i]
+            local countTable = {0, 0, 0, 0, 0, 0}  -- Initialize all dice counts to 0
+
+            -- Extract dice counts accurately
+            for dice, count in roll.msg:gmatch("(%d+) (%a+)") do
+                local diceMap = {
+                    ["Ones"] = 1, ["Twos"] = 2, ["Threes"] = 3,
+                    ["Fours"] = 4, ["Fives"] = 5, ["Sixes"] = 6
+                }
+                local diceIndex = diceMap[count]
+                if diceIndex then
+                    countTable[diceIndex] = countTable[diceIndex] + tonumber(dice)
+                end
+            end
+
+            -- Construct the dice row visually
+            local diceRow = ""
+            local countRow = ""
+
+            for face = 1, 6 do
+                diceRow = diceRow .. " " .. diceFaces[face] .. " "
+                countRow = countRow .. string.format(" %2d ", countTable[face])
+            end
+
+            -- Label rolls correctly
+            local rollLabel = (i == 1) and "Oldest Roll" or (i == n and "Most Recent Roll") or ("Roll " .. (n - i + 1))
+
+            -- Print roll summary with colors
+            printToAll(rollLabel .. ":", {1, 1, 1})  -- White color for label
+            printToAll(diceRow, diceColor)            -- Conditional color for dice symbols
+            printToAll(countRow, {1, 1, 1})            -- White color for counts
+            printToAll("-------------------------------------------------", {1, 1, 1})
+        end
+    end
+end
+
+-- Now printLast5Innovative uses the stored color without overriding it.
+function printLast5Innovative(pointless, player_color)
+    if #lastRolls == 0 then
+        printToAll("NO LAST ROLLS", {1,1,0})
+        return
+    end
+
+    local faceNames = {"One", "Two", "Three", "Four", "Five", "Six"}
+    local faceIndex = {Ones=1, Twos=2, Threes=3, Fours=4, Fives=5, Sixes=6}
+
+    printToAll("–––––––––––––––––––––––––––––––––––––––––", {1,1,1})
+
+    for i = #lastRolls, 1, -1 do
+        local rollData = lastRolls[i]
+        local rollColor = rollData.color or {1,1,1}  -- use stored pastel color if present
+
+        local tally = {0,0,0,0,0,0}
+        for numStr, faceStr in rollData.msg:gmatch("(%d+) (%a+)") do
+            local idx = faceIndex[faceStr]
+            if idx then
+                tally[idx] = tally[idx] + tonumber(numStr)
+            end
+        end
+
+        local totalDice = 0
+        for face = 1, 6 do
+            totalDice = totalDice + tally[face]
+        end
+
+        local prefix
+        if i == #lastRolls then
+            prefix = "Latest =>"
+        elseif i == 1 then
+            prefix = "Oldest =>"
+        else
+            prefix = string.format("Roll #%d =>", i)
+        end
+
+        local rollLine = prefix
+        for face = 1, 6 do
+            rollLine = rollLine .. string.format(" %s:%d", faceNames[face], tally[face])
+        end
+        rollLine = rollLine .. string.format(" [Total:%d]", totalDice)
+
+        printToAll(rollLine, rollColor)
+    end
+end
+
+
+
+function setValueCallback(obj, tab)
+    function insidef()
+        local data = JSON.decode(self.getDescription())
+
+        obj.setValue(tab[1])
+        if obj.tag == 'Dice' then
+            objType = tostring(obj)
+            callFaces = tonumber(string.match(objType, 'Die_(%d+).*'))
+            if callFaces == nil then callFaces = tonumber(customFace[obj.getCustomObject().type + 1]) end
+            diceGuidFaces[obj.getGUID()] = callFaces
+        end
+
+        local rotValues = obj.getRotationValues()
+	    obj.setRotation(rotValues[tab[1]].rotation + Vector(0, 180.0 + objectToPlaceDiceOn.getRotation()[2], 0))
+
+        return 1
+    end
+
+    startLuaCoroutine(self, 'insidef')
+end
+
+function waitFrames(frames)
+	while frames > 0 do
+		coroutine.yield(0)
+		frames = frames - 1
+	end
+end

@@ -1,0 +1,648 @@
+-- FTC-GUID: 32ed4c,83ab2a
+
+local measuringCircles = {}
+local isCurrentlyCheckingCoherency = false
+local hasBuiltUI = false
+local previousHighlightColor = nil
+local MM_TO_INCH = 0.0393701
+local MEASURING_RING_Y_OFFSET = 0.17
+local VALID_BASE_SIZES_IN_MM = {
+    {x = 25, z = 25},
+    {x = 28, z = 28},
+    {x = 30, z = 30},
+    {x = 32, z = 32},
+    {x = 40, z = 40},
+    {x = 50, z = 50},
+    {x = 55, z = 55},
+    {x = 60, z = 60},
+    {x = 65, z = 65},
+    {x = 80, z = 80},
+    {x = 90, z = 90},
+    {x = 100, z = 100},
+    {x = 130, z = 130},
+    {x = 160, z = 160},
+    {x = 25, z = 75},
+    {x = 75, z = 25},
+    {x = 35.5, z = 60},
+    {x = 60, z = 35.5},
+    {x = 40, z = 95},
+    {x = 95, z = 40},
+    {x = 52, z = 90},
+    {x = 90, z = 52},
+    {x = 70, z = 105},
+    {x = 105, z = 70},
+    {x = 92, z = 120},
+    {x = 120, z = 92},
+    {x = 95, z = 150},
+    {x = 150, z = 95},
+    {x = 109, z = 170},
+    {x = 170, z = 109}
+}
+
+local RedControlBoard = {
+    VortexGUID = "be2cdb",
+    StatHelper_GUID = "7c7c20",
+    SelectionHighlighterGUID = "27de4f",
+    ReservesBoardGUID = "fe7926",
+    CustomCounter = "42c161",
+    -- lethalFace = "redLethalFace",
+    bagIds = {
+        black = "771c41",
+        blue = "048595",
+        purple = "a8cbbb",
+        grey = "4433bb",
+        green = "21569d",
+        red = "14d612",
+        -- lightGrey = "791e47",
+        -- orange = "2ff2db",
+    },
+    options = {
+        {
+            name = "Selection Highlight",
+            state = true,
+            title = "Highlights selected models with players colour to show users which models they are talking about."
+        },
+        {
+            name = "Stat Helper",
+            state = false,
+            title = "Auto generate dice for selected units",
+            customHiddenPosition = {-4.078736, 0.87, 34.7377625}
+        },
+        {
+            name = "Vortex",
+            state = true,
+            title = "Toggle the Vortex feature",
+            customHiddenPosition = 0.6
+        },
+        {
+            name = "Fast Rolling",
+            state = false,
+            title = "Enable fast dice spawning for quicker rolls"
+        },
+        {
+            name = "Show Dice Bags",
+            state = false,
+            title = "Toggle visibility of dice bags on the table"
+        },
+        {
+            name = "Custom Counter",
+            state = false,
+            title = "Toggle the display of the custom counter",
+            customHiddenPosition = 1
+        },
+        {
+            name = "Action Tokens",
+            state = false,
+            title = "Toggle between Action Token groups"
+        },
+         --{
+         --    name = "Rotation 5 Degrees",
+         --    state = false,
+         --    title = "Toggle between 5 and native degrees for rotation"
+         --}
+        --  {
+        --     name = "Hide Hutber",
+        --     state = true,
+        --     title = "Hide Jamie Hutber's models from the table"
+        -- }
+    }
+}
+
+local BlueControlBoard = {
+    VortexGUID = "4b1a7b",
+    DiceMat_GUID = "a84ed2",
+    StatHelper_GUID = "b7ac7a",
+    SelectionHighlighterGUID = "84c3a4",
+    ReservesBoardGUID = "85f0cf",
+    CustomCounter = "42c164",
+    -- lethalFace = "blueLethalFace",
+    bagIds = {
+        d12  ="ab15ef",
+        greyD12 = "c3c404",
+        blueD12 = "1911c6",
+        black = "0ddfb6",
+        blue = "8ad6b4",
+        purple = "fc7feb",
+        grey = "0e6250",
+        green = "99582c",
+        red = "31b11f",
+        -- lightGrey = "176bc4",
+        -- orange = "a65625",
+    },
+    options = {
+        {
+            name = "Selection Highlight",
+            state = true,
+            title = "Highlights selected models with players colour to show users which models they are talking about."
+        },
+        {
+            name = "Stat Helper",
+            state = false,
+            title = "Auto generate dice for selected units",
+            customHiddenPosition = {4.078736, 0.86, -34.7377625}
+        },
+        {
+            name = "Vortex",
+            state = true,
+            title = "Toggle the Vortex feature",
+            customHiddenPosition = 0.6
+        },
+        {
+            name = "Fast Rolling",
+            state = false,
+            title = "Enable fast dice spawning for quicker rolls"
+        },
+        {
+            name = "Show Dice Bags",
+            state = false,
+            title = "Toggle visibility of dice bags on the table"
+        },
+        {
+            name = "Custom Counter",
+            state = false,
+            title = "Toggle the display of the custom counter",
+            customHiddenPosition =  1
+        },
+        {
+            name = "Action Tokens",
+            state = false,
+            title = "Toggle between Action Token groups"
+        },
+        -- {
+        --     name = "Rotation 5 Degrees",
+        --     state = false,
+        --     title = "Toggle between 5 and native degrees for rotation"
+        -- }
+    }
+}
+
+local boards = {
+    Red = RedControlBoard,
+    Blue = BlueControlBoard,
+}
+
+local originalPositions = {}
+
+function buildControlPanel(color)
+    local board = boards[color]
+    if not board then
+        print("Invalid color: " .. tostring(color))
+        return
+    end
+
+    -- Define pastel colors:
+    local onColor = "#77DD77|#66CC66|#55BB55"    -- Pastel green (normal, hover, pressed)
+    local offColor = "#FFCCCC|#FFB3B3|#FFA6A6"   -- Softer pastel red
+
+    local panel = {
+        tag = "VerticalLayout",
+        attributes = {
+            id = color .. "_controlPanel",
+            width = "546",
+            height = "728",
+            position = "0 0 -3",
+            color = "Black",
+            padding = "18",
+        },
+        children = {
+            {
+                tag = "Text",
+                attributes = {
+                    text = color .. " Control Board",
+                    fontSize = "43",
+                    alignment = "MiddleCenter",
+                    color = "White",
+                    fontStyle = "Bold",
+                    padding = "8",
+                },
+            },
+            {
+                tag = "VerticalLayout",
+                attributes = {
+                    id = color .. "_borderPanel",
+                    color = "Grey",
+                    padding = "18",
+                    childForceExpandHeight = true,
+                    childForceExpandWidth = true,
+                },
+                children = {},
+            },
+        },
+    }
+
+    for i, option in ipairs(board.options) do
+        local tooltipText = option.title or ("Toggle " .. option.name)
+        local stateText = option.state and "ON" or "OFF"
+        local stateColor = option.state and onColor or offColor
+
+        table.insert(panel.children[2].children, {
+            tag = "HorizontalLayout",
+            children = {
+                {
+                    tag = "Button",
+                    attributes = {
+                        text     = option.name,
+                        toolTip  = tooltipText,
+                        onClick  = "toggleOption(" .. i .. ", '" .. color .. "')",
+                        fontSize = "25",
+                        width    = "280",
+                        height   = "56",
+                    },
+                },
+                {
+                    tag = "Button",
+                    attributes = {
+                        id           = color .. "_status_" .. i,
+                        text         = stateText,
+                        toolTip      = "Current state of " .. option.name,
+                        fontSize     = "18",
+                        width        = "84",
+                        height       = "56",
+                        colors       = stateColor,
+                        interactable = "true",
+                        onClick      = "toggleOption(" .. i .. ", '" .. color .. "')"
+                    },
+                },
+            },
+        })
+    end
+
+    local boardObjectGUID = (color == "Red") and "32ed4c" or "83ab2a"
+    local boardObject = getObjectFromGUID(boardObjectGUID)
+    if boardObject then
+        boardObject.UI.setXmlTable({panel})
+    else
+        print("Failed to find object for color: " .. color)
+    end
+end
+
+function toggleObjectState(objectGUID, state, customHiddenPosition)
+    local obj = getObjectFromGUID(objectGUID)
+    if obj then
+        if not originalPositions[objectGUID] then
+            originalPositions[objectGUID] = obj.getPosition()
+        end
+
+        if state then
+            local newPosition
+            if type(customHiddenPosition) == "table" then
+                newPosition = {
+                    customHiddenPosition[1] or originalPositions[objectGUID][1],
+                    customHiddenPosition[2] or originalPositions[objectGUID][2],
+                    customHiddenPosition[3] or originalPositions[objectGUID][3]
+                }
+            else
+                newPosition = {
+                    originalPositions[objectGUID][1],
+                    (customHiddenPosition or originalPositions[objectGUID][2]),
+                    originalPositions[objectGUID][3]
+                }
+            end
+
+            obj.setPosition(newPosition)
+            obj.setLock(true)
+            obj.interactable = true
+        else
+            local hiddenPosition = {
+                originalPositions[objectGUID][1],
+                originalPositions[objectGUID][2] - 3,
+                originalPositions[objectGUID][3]
+            }
+            obj.setPosition(hiddenPosition)
+            obj.setLock(true)
+            obj.interactable = false
+        end
+    else
+        print("Object not found: " .. objectGUID)
+    end
+end
+
+
+
+function toggleOption(player, index, color)
+    -- Be tolerant of multiple calling styles from the UI:
+    -- 1) toggleOption(Player, idx, 'Red')
+    -- 2) toggleOption(idx, 'Red')  (TTS may inject Player automatically)
+    -- debug prints removed
+
+    -- Normalize index
+    local idx = tonumber(index) or tonumber(player) or tonumber(color)
+    if not idx then
+        print("toggleOption: could not determine index from arguments")
+        return
+    end
+
+    -- Determine expected board color (the board the script is on)
+    local expectedColor = (self.getGUID() == "32ed4c") and "Red" or "Blue"
+
+    -- Determine player color if available for access control
+    local playerColor = nil
+    if type(player) == 'table' and player.color then
+        playerColor = player.color
+    elseif type(index) == 'table' and index.color then
+        playerColor = index.color
+    elseif type(color) == 'table' and color.color then
+        playerColor = color.color
+    end
+
+    if playerColor and playerColor ~= expectedColor then
+        print("Access denied: " .. tostring(playerColor) .. " tried to use the " .. expectedColor .. " control board.")
+        return
+    end
+
+    local board = boards[expectedColor]
+    local option = board.options[tonumber(idx)]
+    if not option then
+        print("toggleOption: option not found for index: " .. tostring(idx))
+        return
+    end
+    -- Flip the state (on/off).
+    option.state = not option.state
+
+    local statusId = expectedColor .. "_status_" .. tostring(idx)
+    local newText = option.state and "ON" or "OFF"
+
+    -- Pastel color repeated 4 times: normal|hover|pressed|disabled
+    local onColor  = "#77DD77|#77DD77|#77DD77|#77DD77"
+    local offColor = "#FFCCCC|#FFCCCC|#FFCCCC|#FFCCCC"
+    local newColors = option.state and onColor or offColor
+
+    -- Update the button's text and the multi-state color attribute.
+    self.UI.setAttributes(statusId, {
+        text   = newText,
+        colors = newColors
+    })
+
+    -- Then do your logic for each option name:
+    if option.name == "Show Dice Bags" then
+        toggleDiceBags(board, option.state)
+    elseif option.name == "Selection Highlight" then
+        local highlighter = getObjectFromGUID(board.SelectionHighlighterGUID)
+        if highlighter then
+            if option.state then
+                highlighter.call("onLoad")
+            else
+                highlighter.call("onDestroy")
+            end
+        else
+            print("Selection highlighter object not found for " .. expectedColor)
+        end
+    elseif option.name == "Stat Helper" then
+        toggleObjectState(board.StatHelper_GUID, option.state, option.customHiddenPosition)
+    elseif option.name == "Dice Roller" then
+        toggleObjectState(board.DiceMat_GUID, option.state)
+    elseif option.name == "Vortex" then
+        toggleObjectState(board.VortexGUID, option.state, option.customHiddenPosition)
+    elseif option.name == "Hide Hutber" then
+        Global.setVar(board.lethalFace, option.state and true or false)
+    elseif option.name == "Fast Rolling" then
+        Global.setVar(
+            expectedColor == "Red" and "redDiceSpawnTime" or "blueDiceSpawnTime",
+            option.state and "fast" or "slow"
+        )
+    elseif option.name == "Custom Counter" then
+        toggleObjectState(board.CustomCounter, option.state, option.customHiddenPosition)
+    elseif option.name == "Rotation 5 Degrees" then
+        toggleRotationAngle(board.CustomCounter, option.state)
+    -- In toggleOption(), add new elseif block
+    elseif option.name == "Action Tokens" then
+        toggleActionTokens(option.state, expectedColor)
+    end
+end
+
+local rotationAngleState = 15  -- default is 15 degrees
+local rotationIncrement = 5    -- Rotation increment when the angle is toggled to "on"
+
+function toggleRotationAngle(color)
+    -- Toggle between 15 and 5 degrees.
+    if rotationAngleState == 15 then
+        rotationAngleState = 5
+    else
+        rotationAngleState = 15
+    end
+
+    -- Update the status button text.
+    local statusId = color .. "_status_rotation"
+    local newText = rotationAngleState .. " Degrees"
+
+    -- Pastel color for status button
+    local onColor  = "#77DD77|#77DD77|#77DD77|#77DD77"
+    local newColors = rotationAngleState == 5 and "#FFCCCC|#FFCCCC|#FFCCCC|#FFCCCC" or onColor
+
+    -- Update the button's text and the multi-state color attribute.
+    self.UI.setAttributes(statusId, {
+        text   = newText,
+        colors = newColors
+    })
+
+    -- Apply the new rotation behavior to all selected objects when the player picks them up
+    local playerObj = Player[color]
+    if not playerObj then
+      print("Player object not found for color: " .. playerColor)
+      return
+    end
+    local objs = playerObj.getSelectedObjects()
+
+    -- For each object, rotate by the specified amount
+    for _, obj in ipairs(objs) do
+        local currentRotation = obj.getRotation()
+        obj.setRotation({
+            currentRotation[1],
+            currentRotation[2] + rotationIncrement,  -- Apply the rotation increment here
+            currentRotation[3]
+        })
+    end
+end
+
+
+function toggleDiceBags(board, state)
+    for _, guid in pairs(board.bagIds) do
+        local obj = getObjectFromGUID(guid)
+        if obj then
+            if not originalPositions[guid] then
+                originalPositions[guid] = obj.getPosition()
+            end
+
+            if state then
+                obj.setPosition({
+                    originalPositions[guid][1],
+                    1,
+                    originalPositions[guid][3]
+                })
+                obj.setLock(false)
+                obj.interactable = true
+            else
+                local hiddenPosition = {
+                    originalPositions[guid][1],
+                    originalPositions[guid][2] - 3,
+                    originalPositions[guid][3]
+                }
+                obj.setPosition(hiddenPosition)
+                obj.setLock(true)
+                obj.interactable = false
+            end
+        else
+            print("Dice bag object not found: " .. guid)
+        end
+    end
+end
+
+-- Group definitions
+local groupBRed = {"ab9a21", "ad19a7", "ca12da"}
+local groupBBlue = {"3b0476", "a09c4e", "ae9056"}
+local groupARed = {"1c0491", "98e221", "21aa0e"}
+local groupABlue = {"8a7d71", "aba7a1", "9b9a9a"}
+
+function toggleActionTokens(state, color)
+    -- Toggle between showing groupA and groupB.
+    -- state == true  -> Show groupA (y=1) and hide groupB (under table).
+    -- state == false -> Show groupB (y=1) and hide groupA (under table).
+    local groupA, groupB
+    if color == "Blue" then
+        groupA = groupABlue
+        groupB = groupBBlue
+    else
+        groupA = groupARed
+        groupB = groupBRed
+    end
+
+    for _, g in ipairs(groupA) do
+        local o = getObjectFromGUID(g)
+        if o then
+            if not originalPositions[g] then originalPositions[g] = o.getPosition() end
+            if state then
+                -- show groupA
+                o.setPosition({ originalPositions[g][1], 1, originalPositions[g][3] })
+                o.setLock(false)
+                o.interactable = true
+            else
+                -- hide groupA under the table
+                o.setPosition({ originalPositions[g][1], originalPositions[g][2] - 3, originalPositions[g][3] })
+                o.setLock(true)
+                o.interactable = false
+            end
+        else
+            print('GroupA object not found: ' .. g)
+        end
+    end
+
+    for _, g in ipairs(groupB) do
+        local o = getObjectFromGUID(g)
+        if o then
+            if not originalPositions[g] then originalPositions[g] = o.getPosition() end
+            if state then
+                -- hide groupB under the table
+                o.setPosition({ originalPositions[g][1], originalPositions[g][2] - 3, originalPositions[g][3] })
+                o.setLock(true)
+                o.interactable = false
+            else
+                -- show groupB
+                o.setPosition({ originalPositions[g][1], 1, originalPositions[g][3] })
+                o.setLock(false)
+                o.interactable = true
+            end
+        else
+            print('GroupB object not found: ' .. g)
+        end
+    end
+end
+
+function onLoad()
+    print("Control Panel script loaded")
+
+    buildControlPanel("Red")
+    buildControlPanel("Blue")
+
+    -- Capture original positions for Action Token groups so restores use them
+    for _, g in ipairs(groupARed) do
+        local o = getObjectFromGUID(g)
+        if o and not originalPositions[g] then
+            originalPositions[g] = o.getPosition()
+        end
+    end
+    for _, g in ipairs(groupBRed) do
+        local o = getObjectFromGUID(g)
+        if o and not originalPositions[g] then
+            originalPositions[g] = o.getPosition()
+        end
+    end
+    for _, g in ipairs(groupABlue) do
+        local o = getObjectFromGUID(g)
+        if o and not originalPositions[g] then
+            originalPositions[g] = o.getPosition()
+        end
+    end
+    for _, g in ipairs(groupBBlue) do
+        local o = getObjectFromGUID(g)
+        if o and not originalPositions[g] then
+            originalPositions[g] = o.getPosition()
+        end
+    end
+
+    -- Initialize Action Tokens visibility according to Red board option state
+    local redBoard = boards.Red
+    if redBoard then
+        for _, opt in ipairs(redBoard.options) do
+            if opt.name == "Action Tokens" then
+                toggleActionTokens(opt.state, "Red")
+                break
+            end
+        end
+    end
+
+    -- Hide and disable DiceRollers, Dice Bags, and Custom Counter objects for each board.
+    for color, board in pairs(boards) do
+        local diceRoller = getObjectFromGUID(board.DiceMat_GUID)
+        if diceRoller then
+            if not originalPositions[board.DiceMat_GUID] then
+                originalPositions[board.DiceMat_GUID] = diceRoller.getPosition()
+            end
+            local hiddenPosition = {
+                originalPositions[board.DiceMat_GUID][1],
+                originalPositions[board.DiceMat_GUID][2] - 3,
+                originalPositions[board.DiceMat_GUID][3]
+            }
+            diceRoller.setPosition(hiddenPosition)
+            diceRoller.setLock(true)
+            diceRoller.interactable = false
+        else
+            print(color .. " DiceRoller object not found during onLoad")
+        end
+
+        for _, guid in pairs(board.bagIds) do
+            local obj = getObjectFromGUID(guid)
+            if obj then
+                if not originalPositions[guid] then
+                    originalPositions[guid] = obj.getPosition()
+                end
+                local hiddenPosition = {
+                    originalPositions[guid][1],
+                    originalPositions[guid][2] - 3,
+                    originalPositions[guid][3]
+                }
+                obj.setPosition(hiddenPosition)
+                obj.setLock(true)
+                obj.interactable = false
+            else
+                print(color .. " Dice bag object not found during onLoad: " .. guid)
+            end
+        end
+
+        local counter = getObjectFromGUID(board.CustomCounter)
+        if counter then
+            if not originalPositions[board.CustomCounter] then
+                originalPositions[board.CustomCounter] = counter.getPosition()
+            end
+            local hiddenPosition = {
+                originalPositions[board.CustomCounter][1],
+                originalPositions[board.CustomCounter][2] - 3,
+                originalPositions[board.CustomCounter][3]
+            }
+            counter.setPosition(hiddenPosition)
+            counter.setLock(true)
+            counter.interactable = false
+        else
+            print(color .. " CustomCounter object not found during onLoad: " .. board.CustomCounter)
+        end
+    end
+end

@@ -1,0 +1,16 @@
+*_compiled.json
+*.bak
+.history
+.tts
+.idea
+.lh
+AGENTS.md
+
+# Exclude large legacy / non-code folders
+Legacy/
+**/WTC/
+UKTC/
+MM/
+GW/
+*Alpine/
+.github/

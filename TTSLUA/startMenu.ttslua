@@ -1,0 +1,2997 @@
+-- FTC-GUID: 738804
+-- CONTENT:
+-- size changer manager
+-- deploy zones manager
+-- objectives manager
+-- mission manager
+-- game manager
+
+menuX = 18
+menuZ = 1.05-1.05
+
+MISSION_PACK_PARIAH_NEXUS = Global.getVar("MISSION_PACK_PARIAH_NEXUS")
+
+keepForTerrainEditor = true
+
+mat_GUID = Global.getVar("mat_GUID")
+ttsDebugEnabled = false
+
+function ttsDebugLog(message)
+    if ttsDebugEnabled then
+        print(message)
+    end
+end
+
+
+function onLoad(saved_data)
+    --self.setPosition({40,-4,0})
+    --self.setRotation({0,270,0})
+    -- load from saved
+    --getData()
+    deploySelected = nil
+    deployMode = nil
+    if saved_data ~= "" then
+        local loaded_data = JSON.decode(saved_data)
+        gameMode = loaded_data.svgameMode
+        singlesMode = loaded_data.svsSinglesMode
+        inGame = loaded_data.svinGame
+        currentTurn = loaded_data.svcurrentTurn
+        currentPhase = loaded_data.svcurrentPhase
+        mapSizeSelected = loaded_data.svmapSizeSelected
+        sizeConfirmed = loaded_data.svsizeConfirmed
+        deploySelected = loaded_data.svdeploySelected
+        deployMode = loaded_data.svdeployMode
+        packSelected = loaded_data.svPackSelected
+    end
+
+    if sizeConfirmed then
+        if isValidDeployMode(deployMode) then
+            setDeployZonesMode(deployMode, true)
+        else
+            setDeployZonesForSize(true)
+        end
+        if not deploySelected or not DeployZonesData[deploySelected] then
+            deploySelected = #DeployZonesData
+        end
+    else
+        deploySelected = #DeployZonesData
+    end
+
+    mat = getObjectFromGUID(mat_GUID)
+    if simulation then ttsDebugLog("THIS IS "..currentTurn.." TURN") end
+
+    redTurnCounter = getObjectFromGUID(Global.getVar("redTurnCounter_GUID"))
+    blueTurnCounter = getObjectFromGUID(Global.getVar("blueTurnCounter_GUID"))
+    gameTurnCounter = getObjectFromGUID(Global.getVar("gameTurnCounter_GUID"))
+    redCpCounter = getObjectFromGUID(Global.getVar("redCPCounter_GUID"))
+    blueCpCounter = getObjectFromGUID(Global.getVar("blueCPCounter_GUID"))
+    if inGame == false then
+        Notes.setNotes(notePadTxt)
+    else
+        Notes.setNotes("")
+    end
+    if packSelected then
+        local missionPackTable = Global.getTable("missionPackData")
+        if missionPackTable and missionPackTable[packSelected] then
+            missionPackData = missionPackTable[packSelected]
+        else
+            packSelected = nil
+            missionPackData = nil
+            ttsDebugLog("missionPackData not available during onLoad; clearing packSelected")
+        end
+    end
+    if gameTurnCounter then
+        gameTurnCounter.call("checkGameEnd")
+    else
+        ttsDebugLog("gameTurnCounter not found during onLoad")
+    end
+    writeMenus()
+    if not inGame then
+        makeAnnouncement()
+    end
+end
+
+function onSave()
+    saved_data = JSON.encode({
+        svinGame = inGame,
+        svgameMode = gameMode,
+        svsSinglesMode = singlesMode,
+        svcurrentTurn = currentTurn,
+        svcurrentPhase = currentPhase,
+        svmapSizeSelected = mapSizeSelected,
+        svsizeConfirmed = sizeConfirmed,
+        svdeploySelected = deploySelected,
+        svdeployMode = deployMode,
+        svPackSelected = packSelected,
+    })
+
+    return saved_data
+end
+
+function makeAnnouncement()
+    local features={
+    "1.7.1: fix: save and load deployMode @gareth3001 thanks for the fix",
+    -- "1.7.0: All thanks should go to @gareth3001 for 90% of the fixes below!",
+    -- "1.7.0: Another thanks to GabrielL for the Hidden Supplies Fix!",
+    -- "1.7.0: Version: bumped due to big changes to desync issues if 2 players were far away",
+    -- "1.7.0: Maps: Updated GW Map 4",
+    -- "1.7.0: deployments: Support added for killteam... I think",
+    -- "1.6.19: Maps: Added alternative Hammer and Anvil objective markers",
+    -- "1.6.18: Maps: Updated maps 2 & 6 with small tweaks to ruins thanks @Engwar01",
+    -- "1.6.18: Rules: Updated rule PDFs to latest",
+    -- "1.6.18: Fix: Added clock back, cus why was it even gone like?",
+    -- "1.6.17: Fix: Fix GW Map 8. Updated GW Map selection images",
+    -- "1.6.16: Feat: Updated UKTC maps",
+    -- "1.6.16: I've completely got back into compeitive painting!",
+    --"1.6.19: Maps: Added alternative Hammer and Anvil objective markers",
+    --"1.6.18: Maps: Updated maps 2 & 6 with small tweaks to ruins thanks @Engwar01",
+    --"1.6.18: Rules: Updated rule PDFs to latest",
+    --"1.6.18: Fix: Added clock back, cus why was it even gone like?",
+    --"1.6.17: Fix: Fix GW Map 8. Updated GW Map selection images",
+    --"1.6.16: Feat: Updated UKTC maps",
+    --"1.6.16: I've completely got back into compeitive painting!",
+    -- "1.6.15: Fix: Updated UKTC map 4 to correct map",
+    -- "1.6.14: Feat: Marcus Miniatures Maps updated after £4000 payment finally completed",
+    -- "1.6.13: Feat: Lethal and sustained hits completely reworked, now you can click multiple times to add more hits and right/left click to add 5/6 hits",
+    -- "1.6.12: Feat: Added a huge banner to make it the most obvious thing in the world that I have a pateron",
+    -- "1.6.11: Feat: Breaking changes to lethal/sustained hits, now they you left click for 6, right click for 5 & 6. You can multiple click the buttons for sustained 2,3 etc",
+    -- "1.6.10: Fix: Blue action tocken toggle fixed",
+    -- "1.6.10: Feat: Added CLear All Bulles button to the dice mate",
+    -- "1.6.9: Fix: Updated floor battleshock tokens abit to be a little better?",
+    -- "1.6.8: Update: UKTC Map Updates and starting to hide shelves by default",
+    -- "1.6.8: Fix: GW Map 8 now has the correct terrain placements",
+    -- "1.6.7: Fix: Buggy lethal hit dice being pulled in",
+    -- "1.6.6: Fix: Dice table now shows the correct number of dice on top of it",
+    -- "1.6.5: Fix: Added back in the extract terrain button",
+    -- "1.6.5: Fix: Fixed blue secondaries not recycling",
+    -- "1.6.4: Feat: I hate the reserves board being so far away. Button to move it closer",
+    -- "1.6.3: Chore: I'm going to keep the version number the same so we don't lose our hotkeys each time. You will only see a version change here.",
+    -- "1.6.3: Fix: WTC had wrong missions in random WTC mission selector",
+    -- "1.6.2: Feat: Added floor markers for action, advance and battleshocked",
+    -- "1.6.2: Fix: Added hotkeys for auto makers and improved floating icons",
+    -- "1.6.1: Fix: Added token bags next to toggle floating icons",
+    -- "1.6.1: Fix: Fixed floating icons allowing items to be clicked",
+    -- "1.6.1: Feat: Added a button to toggle floating icons on/off",
+    -- "1.6: Feat: Floating Icons Toggle Added",
+    -- "1.6: Update: Moved the tokens next to the new floating icons if users don't like them (Christian)",
+    -- "1.6: Update: Updated Custon Counter to not look like shit",
+    -- "1.5.18: Feat: Slowly adding more icons",
+    -- "1.5.17: Feat: Add kill counters for purge the foe",
+    -- "1.5.16: Feat: WTC 2025 Maps Added & UKTC Maps 1 & 4 Updated. I love balls.",
+    -- "1.5.15: Feat: 2\" gap now supports 3 models within 2\" at the start and end",
+    -- "1.5.14: Feat: When importing Oppos Dice lethal hits are now imported and moved to dice mat",
+    -- "1.5.13: Feat: Added 1,3,6,9,12\" bubbles that allow for multiple models at once",
+    -- "1.5.12: Fix: UKTC Map 5 Center RUins incorrectly placed, thanks @Cablenator",
+    -- "1.5.11: Feat: Added save/restore button for people who didn't know about the hotkeys",
+    -- "1.5.10: Fix: Make UKTC missions more clear update dice bags on display and moved control board up",
+    -- "1.5.9: Fix: Wrong deployment used for map 4 of UKTC",
+    -- "1.5.8: Fix: Updated Stat Helper to v2.14.2 & moved the coin so its easier to click plus AP on dice",
+    -- "1.5.7: Feat: Change reserves mat colour",
+    -- "1.5.6: Feat: Feedback button so you let me know how much you hate me! I love at least 80% of you! The rest I'm on the fence about.",
+    -- "1.5.5: Feat: Added Random UKTC Mission selector",
+    -- "1.5.5: Feat: UKTC Maps updated with Beta Maps. All thanks to Minyiky for this work!",
+    --"1.5.4: Feat: Updated GW maps 7 & 8 and updated mission selection with new CA 2025",
+    --"1.5.3: Fix: Made the auto buttons have random colours",
+    --"1.5.2: Feat: Updated copy players buttons and 1D6 2D6 auto buttons in better place",
+    -- "1.5.0: Feat: CA 2025 Cards Added PN Moved to Legacy HUGE thank you to pants99 for this work. It was beautiful code!",
+    -- "1.5.0: Feat: For Priah Nexus Missions, https://steamcommunity.com/sharedfiles/filedetails/?id=3492154265",
+    -- "1.5.0: Feat: New Stat Check site v0.02 published https://stats.hutber.com",
+    --"1.4.5: Fix: pastebin changes their RAW URL, which broke GW Map 1. Updated to new after losing 3-2 at UKTC :D",
+    --"1.4.4: Fix: Removed 5 dice because everybody only needs 1!! (For the deployment order)",
+    --"1.4.4: Feat: Alpine Cup 2025 Maps Added",
+    --"1.4.3: Feat: Added Terraform objective States",
+    --"1.4.2: Fix: Updated all objectives primary/red/blue",
+    -- "1.4.1: Feat: Objectives are now clickable anywhere",
+    -- "1.4.0: Feat: WTC 2025 Maps Updated",
+    -- "1.4.0: Feat: Updated Objective Markers to be more visible",
+    -- "1.3.8: Feat: Added random WTC mission selector",
+    --"1.3.8: Fix: A random situation where the game would not start, added `force start` by clicking start 3 times",
+    --"1.3.7: Fix: If Mission Select was not used `lock your secondaries` message was displayed",
+    --"1.3.6: Feat: Hide tokens into a bag and added the most used near the dice mat",
+    --"1.3.5: Fix: Updated Stats Helper to fix the errors that rarely occured",
+    --"1.3.4: Feat: Added Secondary Cards next to dice mat",
+    --"1.3.3: Fix: Rewrote the Last 5 Rolls",
+    --"1.3.3: Fix: Added colours on mod inital load to the control board",
+    --"1.3.2: Feat: Cannot start game without secondaries locked in (expect for single player mode)",
+    --"1.3.1: Feat: Auto position models 2\" apart",
+    --"1.3.0: Feat: Instant 9\"/12\" Bubble for Deep Strike on models",
+    --"1.3.0: Fix: Removed button that disabled remove 1s",
+    --"1.2.4.3: Feat: New Control Board Feature Custom Counter for Kabal Tokens, Eldar Agile Maneuvers etc",
+    --"1.2.4.3: Fix: Last 5 rolls not displaying (please comment if not working)",
+    --"1.2.4.2: Fix: Updated Storm Hostile Objective secondary to newest version",
+    --"1.2.4.1: Feat: Added Core Rule Update PDF",
+    --"1.2.3: Fix: Bug that meant old reserves board was under the table",
+    --"1.2.2: Fix: Update Storm Hostile Objective secondary to newest version",
+    --"1.2.1: Style: Small placement updates on various objects. Please feedback if you hate it",
+    --"1.2.0: Feat: New dice spawner. Fix: stat helper updated",
+    --"1.1.9: Fix: Grab oppos dice now import lethal hits for you",
+    --"1.1.8: Feat: Finally fixed Selection Tool. Fix: sometimes you could interact with old dice mat would",
+    --"1.1.7: Feat: Added revert dice that will put dice back to their previously rolled state",
+    --"1.1.6: Style: Reverted some of the colours back, they were far too wet looking",
+    --"1.1.5: Style: Updated intro screen and updated buttons with cleaner names",
+    --"1.1.4: Style: Updated game cards with clearer names",
+    --"1.1.3: Feat: Added Single Player",
+    --"1.1.2: Fix: Improve secruity for injection and cheating",
+    --"1.1.1: Feat: Added Doubles support, feedback needed",
+    --"1.0.3: Fix: Updated Pariah Nexus Tournament Companion from 1.2 to 1.4",
+    --"1.0.2: Fix: corrected GW maps search and destory added missing map 3 and removed incorrect map 8",
+    --"1.0.1: Feat: Add dmg, ap and Str to dice",
+    --"1.0.0: Feat: Updated WTC maps to latest",
+    --"0.17: Feat: Remove clear map selection button added for casual play",
+    --"0.16: Feat: 'Import Dice' button added which will take all dice from your opponents board\n                                  Fix: Default slow role added and toggle to enable fast rolling\n                                  Fix: small bug that heights of vortex and stats helper were not being set correctly when toggled.",
+    --"0.15: Feat: Dice tracking added with Stats & Chances Buttons\n                                  Fix: corrected GW map 6, moved vortex into table.\n                                  Feat: Added in stats checker with toggle.",
+    --"0.14: Feat: Sustained and lethal buttons added.",
+    --"0.13: Fix: UKTC maps 2 & 5 terrain updated & GW map 4 error fixed.",
+    --"0.12: Fix: the lethal hits now stack in order rather than on top of each other.",
+    --"0.11: Documentation: Added a guide to the notes",
+    --"0.1: Fix: Fixed selection tool, corrected board/roller/scoreboard buttons. Allowed mult click for lethal hits",
+    --"0.09: Feat: A new button 'Lethal hits'. First version so please give feedback!",
+    --"0.08: Feat: Added new reserves board",
+    --"0.07: Fix: Selection tool not working",
+    --"0.06: Fix: Correct dice matt not going through floor! Sorry about that :O",
+    --"0.05: Add new button to top left that allows you to click directly to the board and the score board, fix Del(-) issue",
+    --"0.04: Added UKTC maps",
+    --"0.03: Added GW/WTC maps",
+    --"0.02: Added control board to control feature",
+    }
+    printToAll("NEW FEATURES:", "Yellow")
+    for i, new in ipairs(features) do
+        printToAll("- "..new, "Yellow")
+    end
+end
+
+-- ********************
+-- SIZE CHANGER MANAGER
+-- ********************
+
+positionValue={0,-9.52,0}
+sizeData={
+    {id=1, name='King of the Colosseum - 36" x 36"', scale={1,1,1}, defaultObjectives=0},
+    {id=2, name='C o m b a t     P a t r o l - 44" x 30"', scale={1.22,1,0.83}, defaultObjectives=0},
+    {id=3, name='I n c u r s i o n - 44" x 60"', scale={0.83*2,1,1.22}, defaultObjectives=0},
+    {id=4, name='S t r i k e     F o r c e - 44" x 60"', scale={0.83*2,1,1.22}, defaultObjectives=0},
+    {id=5, name='O n s l a u g h t - 44" x 90"', scale={0.83*3,1,1.22}, defaultObjectives=0},
+}
+
+menuSizeX = 0
+menuSizeY = 5
+menuSizeZ = 16
+arrowOffset=9.5
+
+mapSizeSelected=4
+numberSizes=#sizeData
+sizeConfirmed=false
+sizeMenuBtn = {
+    index=1,
+    label="S E L E C T     B A T T L E F I E L D     S I Z E",
+    click_function="none",
+    function_owner=self,
+    position={menuSizeX, menuSizeY ,menuSizeZ-2.05},
+    rotation={0,0,0},
+    height=450,
+    width=8000,
+    scale={1.3,1.3,1.3},
+    font_size=300,
+    color={0.15, 0.15, 0.15},  -- Dark Grey
+    font_color={1,1,1}         -- White
+}
+sizeMenuBtn = {
+    index=1,
+    label="S E L E C T     B A T T L E F I E L D     S I Z E",
+    click_function="none",
+    function_owner=self,
+    position={menuSizeX, menuSizeY ,menuSizeZ-2.05},
+    rotation={0,0,0},
+    height=450,
+    width=8000,
+    scale={1.3,1.3,1.3},
+    font_size=300,
+    color={0.15, 0.15, 0.15},  -- Dark Grey
+    font_color={1,1,1}         -- White
+}
+
+sizeBtn = {
+    index= i,
+    label="Zone",
+    click_function="none",
+    function_owner=self,
+    position={-menuSizeX, menuSizeY ,menuSizeZ},
+    rotation={0,0,0},
+    height=450,
+    width=6000,
+    scale={1.3,1.3,1.3},
+    font_size=300,
+    color={0.8, 0.8, 0.8},  -- Light Grey
+    font_color={0.1, 0.1, 0.1}  -- Dark Charcoal
+}
+
+sizeUpBtn = {
+    index=1,
+    label="▲",  -- Up arrow symbol
+    click_function="sizeUp",
+    function_owner=self,
+    position={-menuSizeX+arrowOffset, menuSizeY ,menuSizeZ},
+    rotation={0,0,0},
+    height=450,
+    width=800,
+    scale={1.3,1.3,1.3},
+    font_size=300,
+    color={0.3, 0.3, 0.3},  -- Neutral Grey
+    font_color={1,1,1}       -- White
+}
+
+sizeDownBtn = {
+    index=1,
+    label="▼",  -- Down arrow symbol
+    click_function="sizeDown",
+    function_owner=self,
+    position={-menuSizeX-arrowOffset, menuSizeY ,menuSizeZ},
+    rotation={0,0,0},
+    height=450,
+    width=800,
+    scale={1.3,1.3,1.3},
+    font_size=300,
+    color={0.3, 0.3, 0.3},  -- Neutral Grey
+    font_color={1,1,1}       -- White
+}
+
+
+confirmBtn = {
+    index          = i,
+    label          = "1 Vs 1",
+    click_function = "confirmSizeGame",
+    function_owner = self,
+    position       = { -menuSizeX - 6.5, menuSizeY, menuSizeZ + 3 },
+    rotation       = { 0, 0, 0 },
+    height         = 1400,
+    width          = 4400,
+    scale          = { 1.3, 1.3, 1.3 },
+    font_size      = 500,
+    color          = {
+         0.191999942,
+        0.701,
+        0.167999923},  -- Rich Forest Green
+    font_color     = { 1.0, 1.0, 1.0 }  -- Pure White
+}
+
+confirmBtn2 = {
+    index          = i,
+    label          = "CRUSADE\n(Coming Soon) ((Maybe))",
+    click_function = "comingSoon",
+    function_owner = self,
+    position       = { -menuSizeX + 6.5, menuSizeY, menuSizeZ + 3  },
+    rotation       = { 0, 0, 0 },
+    height         = 1400,
+    width          = 4400,
+    scale          = { 1.3, 1.3, 1.3 },
+    font_size      = 300,
+    color          = {
+        0.856,
+        0.09999994,
+        0.09399993},  -- Deep Crimson Red
+    font_color     = { 1.0, 1.0, 1.0 }  -- Pure White
+}
+
+confirmBtn3 = {
+    index          = i,
+    label          = "2 Vs 2",
+    click_function = "confirmDoublesGame",
+    function_owner = self,
+    position       = { -menuSizeX - 6.5, menuSizeY, menuSizeZ + 7.5 },
+    rotation       = { 0, 0, 0 },
+    height         = 1400,
+    width          = 4400,
+    scale          = { 1.3, 1.3, 1.3 },
+    font_size      = 500,
+    color          = {
+        0.627,
+        0.124999948,0.941 }, -- Royal Purple
+    font_color     = { 1.0, 1.0, 1.0 }  -- Pure White
+}
+
+confirmBtn4 = {
+    index          = i,
+    label          = "SINGLE PLAYER /\nHOTSEAT",
+    click_function = "confirmForSingles",
+    function_owner = self,
+    position       = { -menuSizeX + 6.5, menuSizeY, menuSizeZ + 7.5 },
+    rotation       = { 0, 0, 0 },
+    height         = 1400,
+    width          = 4400,
+    scale          = { 1.3, 1.3, 1.3 },
+    font_size      = 500,
+    color          = {
+        0.117999949,
+        0.53,
+         1},  -- Vibrant Royal Blue
+    font_color     = { 1.0, 1.0, 1.0 }  -- Pure White
+}
+
+function refreshMat()
+    mat = getObjectFromGUID(mat_GUID)
+end
+
+function writeSizeMenu()
+    self.clearButtons()
+    if sizeConfirmed then
+        return
+    end
+    self.createButton(sizeMenuBtn)
+    sizeBtn.label=sizeData[mapSizeSelected].name
+    self.createButton(sizeBtn)
+    self.createButton(sizeUpBtn)
+    self.createButton(sizeDownBtn)
+    self.createButton(confirmBtn)
+    self.createButton(confirmBtn2)
+    self.createButton(removeMapsBtn)
+    self.createButton(confirmBtn3)
+    self.createButton(confirmBtn4)
+    mat.setScale(sizeData[mapSizeSelected].scale)
+    mat.setPosition(positionValue)
+end
+
+local showMapsToggle = false
+local spawnedObjectRef = nil -- Store a reference to the spawned object
+
+-- Function called when the button is clicked
+function onObjectClick(player_color, object_clicked)
+    showMapsToggle = true
+    local guidPositions = {
+        ["03286d"] = -4.776464939,
+        ["ca7711"] = -4.776464939,
+        ["cd649d"] = -4.776464939,
+        ["bf09bd"] = -4.776464939,
+        ["64c6bb"] = -4.776464939,
+        ["9a7c3c"] = -4.776464939,
+        ["d8d6da"] = -6.776464939,
+        ["3c8a1b"] = -6.19999981,
+        ["3c1373"] = -6.19999981,
+        ["8395b2"] = -6.19999981,
+        ["8a7c7a"] = -6.19999981,
+        ["64b6bb"] = -6.19999981,
+        ["4bb528"] = -6.19999981
+    }
+
+    -- Iterate over each GUID and destroy the object if found
+    for guid, _ in pairs(guidPositions) do
+        local obj = getObjectFromGUID(guid)
+        if obj then
+            destroyObject(obj) -- Destroy the object
+        else
+            print("Object with GUID " .. guid .. " not found.")
+        end
+    end
+
+    -- Destroy the spawned object
+    if spawnedObjectRef then
+        destroyObject(spawnedObjectRef)
+        spawnedObjectRef = nil -- Clear the reference after destruction
+    end
+end
+
+-- Function to set up click events for a spawned object
+function setupClickEvents(spawnedObject)
+    spawnedObject.setLock(true)
+
+    -- Save the reference to the spawned object
+    spawnedObjectRef = spawnedObject
+
+    -- Create the button
+    spawnedObject.createButton({
+        label = showMapsToggle and "Show Maps" or "Clear Map Selection",
+        click_function = "onObjectClick",
+        function_owner = self,
+        position = {0, 3, -27},
+        height = 800,
+        width = 6500,
+        font_size = 700,
+        color = {0.5, 0.5, 0.5},
+        font_color = {1, 1, 1},
+    })
+end
+
+-- Function to spawn an interactive object
+function spawnInteractiveObject()
+    spawnObject({
+        type = "BlockSquare",
+        position = {0, -2, 0},
+        scale = {1, 1, 1},
+        rotation = {0, -90, 0},
+        callback_function = function(spawnedObject)
+            if spawnedObject then
+                setupClickEvents(spawnedObject)
+            else
+                print("Failed to spawn object")
+            end
+        end
+    })
+end
+
+
+function sizeUp()
+    sizeUpDown(1)
+end
+
+function sizeDown()
+    sizeUpDown(-1)
+end
+
+function sizeUpDown(increment)
+    mapSizeSelected=mapSizeSelected+increment
+    if mapSizeSelected > #sizeData then
+        mapSizeSelected=1
+    end
+    if mapSizeSelected < 1 then
+        mapSizeSelected=#sizeData
+    end
+    updateDeployObjectivesSelection()
+    writeMenus()
+end
+
+
+function enableObjects()
+    local orangePCounter_GUID = Global.getVar("orangePCounter_GUID")
+    local purplePCounter_GUID = Global.getVar("purpleCPCounter_GUID")
+
+    local orangePCounter = getObjectFromGUID(orangePCounter_GUID)
+    local purplePCounter = getObjectFromGUID(purplePCounter_GUID)
+    local orangePCounterText = getObjectFromGUID("7ab8ca")
+
+    local purplePCounterText = getObjectFromGUID("028baa")
+    local AddNewPlayerBCounterText = getObjectFromGUID("838abc")
+    local RemoveOldPlayerBCounterText = getObjectFromGUID("9a85e3")
+
+    if orangePCounter then
+        orangePCounter.setPosition({51.3211021, -1.33, 37.5})
+        orangePCounterText.setPosition({54.35, 1.23999178, 37.5})
+        orangePCounter.interactable = true
+    else
+        print("Orange CP Counter not found!")
+    end
+
+    if purplePCounter then
+        RemoveOldPlayerBCounterText.setPosition({62.50006, -3.23998809, -37.49884})
+
+        -- setup new counter
+        purplePCounter.setPosition({59.5018, -1.33, -55})
+        purplePCounterText.setPosition({62.50006, 1.23998809, -55.019884})
+
+        AddNewPlayerBCounterText.setPosition({62.50006, 1.23998809, -37.49884})
+        purplePCounter.interactable = true
+    else
+        print("Purple CP Counter not found!")
+    end
+end
+
+
+function confirmDoublesGame()
+    -- inGame = true
+    --mapSizeSelected=3
+    selectPariahNexus()
+    -- Auto-assign teams
+    -- autoAssignTeams()
+    enableObjects()
+
+    -- Place tokens, shuffle team cards, or any other setup
+    placeGameTokens()
+
+    broadcastToAll("2v2 Doubles Game Mode Initialized!", {0.5, 0, 0.5})
+    confirmSizeMat("game")
+    --deleting the Combat Patrol Mission book unless on the appropriate map size
+    if sizeData[mapSizeSelected].id ~= 1 then
+        cpbook = getObjectFromGUID(Global.getVar("CPMissionBook_GUID"))
+        destroyObject(cpbook)
+    end
+    -- Change color of object with GUID "deb9f2" to blue
+    local blueObject = getObjectFromGUID("deb9f2")
+    if blueObject then
+        blueObject.setColorTint({r = 0, g = 0, b = 1})
+    end
+
+    -- Change color of object with GUID "e446f7" to orange
+    local orangeObject = getObjectFromGUID("e446f7")
+    if orangeObject then
+        orangeObject.setColorTint({r = 1, g = 0.5, b = 0})
+    end
+
+    local guidPositions = {
+        ["03286d"] = -4.776464939,
+        ["ca7711"] = -4.776464939,
+        ["cd649d"] = -4.776464939,
+        ["9a7c3c"] = -4.776464939,
+        ["bf09bd"] = -4.776464939,
+        ["3c8a1b"] = -6.19999981,
+        ["8a7c7a"] = -6.19999981,
+        ["8395b2"] = -6.19999981,
+        ["3c1373"] = -6.19999981,
+        ["64c6bb"] = -6.19999981,
+        ["64b6bb"] = -6.19999981,
+        ["4bb528"] = -6.19999981,
+        ["7abc5a"] = -6.19999981,
+        ["138b06"] = -6.19999981,
+        ["d8d6da"] = -6.19999981
+    }
+
+    -- Iterate over each GUID and destroy the object if found
+    for guid, _ in pairs(guidPositions) do
+        local obj = getObjectFromGUID(guid)
+        if obj then
+            destroyObject(obj) -- Destroy the object
+        else
+            print("Object with GUID " .. guid .. " not found.")
+        end
+    end
+    writeMenus()
+end
+
+function comingSoon()
+    broadcastToAll("Not yet! ;) But it is on my list of things to do!")
+end
+
+function createCounter(position, label)
+    local counter = spawnObject({
+        type = "Counter",
+        position = position,
+        scale = {1, 1, 1},
+    })
+    counter.setName(label)
+    counter.setValue(0)
+    return counter
+end
+
+function shuffleAndDealTeamCards()
+    local teamDeck = getObjectFromGUID(Global.getVar("teamDeck_GUID"))
+    teamDeck.shuffle()
+    local players = Player.getPlayers()
+    for i, player in ipairs(players) do
+        teamDeck.deal(1, player.color)
+    end
+    broadcastToAll("Teams have been randomized and dealt!", {0, 1, 0})
+end
+
+
+function placeGameTokens()
+    -- Check if the bag exists
+    local markedForDeathToken = getObjectFromGUID("cda0b3")
+    markedForDeathToken.setPosition({37.34079, 0.9, 29})
+
+    local cardsTeams = getObjectFromGUID("c59f7a")
+    cardsTeams.shuffle()
+    broadcastToAll("Team cards have been shuffled! Safe to Draw.", {0, 1, 0})
+    if cardsTeams then
+        cardsTeams.setPosition({42, 0.9, 37})
+        ttsDebugLog("cardsTeams new position: " .. tostring(cardsTeams.getPosition()))
+    else
+        ttsDebugLog("cardsTeams not found!")
+    end
+
+    local tokenBag = getObjectFromGUID("f8ddf5")
+    if not tokenBag then
+        broadcastToAll("Error: Token bag not found (GUID: f8ddf5).", {1, 0, 0})
+        return
+    end
+
+    -- Extract the token object from the bag
+    local tokenTemplate = tokenBag.takeObject({guid = "7a8aba"})
+    if not tokenTemplate then
+        broadcastToAll("Error: Token template (GUID: 7a8aba) not found in bag.", {1, 0, 0})
+        return
+    end
+
+    -- Clean up the extracted template
+    tokenTemplate.destruct()
+end
+
+
+
+function spawnToken(position, label)
+    local token = spawnObject({
+        type = "BlockSquare",
+        position = position,
+        scale = {0.5, 0.5, 0.5},
+    })
+    token.setName(label)
+    return token
+end
+
+function setupExtraDeepStrikeMaps()
+    -- Logic to spawn and manage extra deep strike/transport maps if required
+    broadcastToAll("Extra Deep Strike Maps Enabled!", {0, 0.5, 1})
+end
+
+function confirmForSingles()
+    singlesMode = "singles"
+    confirmSizeGame()
+end
+
+function confirmSizeGame()
+    spawnInteractiveObject()
+    confirmSizeMat("game")
+    --deleting the Combat Patrol Mission book unless on the appropriate map size
+    if sizeData[mapSizeSelected].id ~= 1 then
+        cpbook = getObjectFromGUID(Global.getVar("CPMissionBook_GUID"))
+        destroyObject(cpbook)
+    end
+
+    -- Table of GUIDs and their position to show on board
+    -- bascially to hide certain objects that are controlled by the control board
+    local guidPositions = {
+        ["03286d"] = 0.776464939,
+        ["ca7711"] = 0.776464939,
+        ["cd649d"] = 0.776464939,
+        ["9a7c3c"] = 0.776464939,
+        ["bf09bd"] = 0.776464939,
+        ["8a7c7a"] = 1.19999981,
+        ["3c8a1b"] = 1.19999981,
+        ["3c1373"] = 1.19999981,
+        ["8395b2"] = 1.19999981,
+        ["64b6bb"] = 1.19999981,
+        ["64c6bb"] = 1.19999981,
+        ["4bb528"] = 1.19999981
+    }
+
+
+    local destoryObjects = {
+        ["138b06"] = -6.19999981,
+        ["d8d6da"] = -6.19999981
+    }
+
+    -- Iterate over each GUID and destroy the object if found
+    for guid, _ in pairs(destoryObjects) do
+        local obj = getObjectFromGUID(guid)
+        if obj then
+            destroyObject(obj) -- Destroy the object
+        else
+            print("Object with GUID " .. guid .. " not found.")
+        end
+    end
+    self.createButton(clearAllDiceBtn)
+
+    -- Iterate over each GUID and set the new height
+    for guid, newPosY in pairs(guidPositions) do
+        local obj = getObjectFromGUID(guid)
+        if obj then
+            local position = obj.getPosition()
+            position.y = newPosY
+            obj.setPosition(position)
+            obj.setLock(true) -- Lock the object to prevent accidental movement
+        else
+            print("Object with GUID " .. guid .. " not found.")
+        end
+    end
+    local cardsTeams = getObjectFromGUID("c59f7a")
+    destroyObject(cardsTeams)
+    local mfdToken = getObjectFromGUID("cda0b3")
+    destroyObject(mfdToken)
+end
+
+function confirmSizeTerrain()
+    local cardsTeams = getObjectFromGUID("c59f7a")
+    destroyObject(cardsTeams)
+    local mfdToken = getObjectFromGUID("cda0b3")
+    destroyObject(mfdToken)
+    confirmSizeMat("terrain")
+end
+
+function confirmSizeMat(type)
+    gameMode= type
+    sizeConfirmed=true
+    mat.setScale(sizeData[mapSizeSelected].scale)
+    self.setRotation({0,270,0})
+    setDeployZonesForSize(false)
+    writeMenus()
+    if gameMode == "game" then
+    end
+    if gameMode == "terrain" then
+        switchToTerrainEditor()
+    end
+end
+
+function updateDeployObjectivesSelection()
+    deploySelected = #DeployZonesData
+end
+
+function switchToTerrainEditor()
+    printToAll("Deleting unnecessary things.\nPLEASE WAIT..", "Yellow")
+    local pos={}
+    for i, obj in ipairs(getAllObjects()) do
+        pos=obj.getPosition()
+        if ((pos.y > -8 and pos.y < 0.36) or pos.y > 0.71) and not obj.getVar("keepForTerrainEditor") then
+            obj.destroy()
+        end
+    end
+    Global.setVectorLines({})
+    printToAll("DONE!", "Yellow")
+end
+
+-- END size changer
+
+-- ********************
+-- DEPLOY ZONES MANAGER
+-- ********************
+
+DeployZonesStrikeForce = {
+    --Chapter Approved 2025 Missions
+    {name = "Hammer and Anvil", objectivesID = 101, draw = {
+        --[[1]]{type = "line", color = "Red", position = "x", fromSide = 18},
+        --[[2]]{type = "line", color = "Teal", position = "-x", fromSide = 18}}},
+    {name = "Dawn of War", objectivesID = 102, draw = {
+        --[[1]]{type = "line", color = "Teal", position = "-z", fromSide = 12},
+        --[[2]]{type = "line", color = "Red", position = "z", fromSide = 12}}},
+    {name = "Sweeping Engagement", objectivesID = 103, draw = {
+        --[[1]]{type = "stepped", color = "Teal", position = "-z", steps = {{fromSide = 8}, {fromSide = 14}}},
+        --[[2]]{type = "stepped", color = "Red", position = "z", steps = {{fromSide = 14}, {fromSide = 8}}}}},
+    {name = "Search and Destroy", objectivesID = 104, draw = {
+        --[[1]]{type = "quarter", color = "Teal", position = "-x-z", fromCenter = 9},
+        --[[2]]{type = "quarter", color = "Red", position = "xz", fromCenter = 9},
+        --[[3]]{type = "circle", color = "White", fromCenter = 9}}},
+    {name = "Crucible of Battle", objectivesID = 105, draw = {
+        --[[1]]{type = "triangle", color = "Red", position = "x"},
+        --[[2]]{type = "triangle", color = "Teal", position = "-x"}}},
+    {name = "Tipping Point", objectivesID = 106, draw = {
+        --[[1]]{type = "stepped", color = "Teal", position = "-x", steps = {{fromSide = 12}, {fromSide = 20}}},
+        --[[2]]{type = "stepped", color = "Red", position = "x", steps = {{fromSide = 20}, {fromSide = 12}}}}},
+    --Hidden Supplies variants
+    {name = "Hammer and Anvil (HS)", objectivesID = 107, draw = {
+        --[[1]]{type = "line", color = "Red", position = "x", fromSide = 18},
+        --[[2]]{type = "line", color = "Teal", position = "-x", fromSide = 18}}},
+    {name = "Hammer and Anvil (HS2)", objectivesID = 108, draw = {
+        --[[1]]{type = "line", color = "Red", position = "x", fromSide = 18},
+        --[[2]]{type = "line", color = "Teal", position = "-x", fromSide = 18}}},
+    {name = "Dawn of War (HS)", objectivesID = 109, draw = {
+        --[[1]]{type = "line", color = "Teal", position = "-z", fromSide = 12},
+        --[[2]]{type = "line", color = "Red", position = "z", fromSide = 12}}},
+    {name = "Dawn of War (HS2)", objectivesID = 110, draw = {
+        --[[1]]{type = "line", color = "Teal", position = "-z", fromSide = 12},
+        --[[2]]{type = "line", color = "Red", position = "z", fromSide = 12}}},
+    {name = "Sweeping Engagement (HS)", objectivesID = 111, draw = {
+        --[[1]]{type = "stepped", color = "Teal", position = "-z", steps = {{fromSide = 8}, {fromSide = 14}}},
+        --[[2]]{type = "stepped", color = "Red", position = "z", steps = {{fromSide = 14}, {fromSide = 8}}}}},
+    {name = "Sweeping Engagement (HS2)", objectivesID = 112, draw = {
+        --[[1]]{type = "stepped", color = "Teal", position = "-z", steps = {{fromSide = 8}, {fromSide = 14}}},
+        --[[2]]{type = "stepped", color = "Red", position = "z", steps = {{fromSide = 14}, {fromSide = 8}}}}},
+    {name = "Search and Destroy (HS)", objectivesID = 113, draw = {
+        --[[1]]{type = "quarter", color = "Teal", position = "-x-z", fromCenter = 9},
+        --[[2]]{type = "quarter", color = "Red", position = "xz", fromCenter = 9},
+        --[[3]]{type = "circle", color = "White", fromCenter = 9}}},
+    {name = "Search and Destroy (HS2)", objectivesID = 114, draw = {
+        --[[1]]{type = "quarter", color = "Teal", position = "-x-z", fromCenter = 9},
+        --[[2]]{type = "quarter", color = "Red", position = "xz", fromCenter = 9},
+        --[[3]]{type = "circle", color = "White", fromCenter = 9}}},
+    {name = "Crucible of Battle (HS)", objectivesID = 115, draw = {
+        --[[1]]{type = "triangle", color = "Red", position = "x"},
+        --[[2]]{type = "triangle", color = "Teal", position = "-x"}}},
+    {name = "Crucible of Battle (HS2)", objectivesID = 116, draw = {
+        --[[1]]{type = "triangle", color = "Red", position = "x"},
+        --[[2]]{type = "triangle", color = "Teal", position = "-x"}}},
+    {name = "Tipping Point (HS)", objectivesID = 117, draw = {
+        --[[1]]{type = "stepped", color = "Teal", position = "-x", steps = {{fromSide = 12}, {fromSide = 20}}},
+        --[[2]]{type = "stepped", color = "Red", position = "x", steps = {{fromSide = 20}, {fromSide = 12}}}}},
+    {name = "Tipping Point (HS2)", objectivesID = 118, draw = {
+        --[[1]]{type = "stepped", color = "Teal", position = "-x", steps = {{fromSide = 12}, {fromSide = 20}}},
+        --[[2]]{type = "stepped", color = "Red", position = "x", steps = {{fromSide = 20}, {fromSide = 12}}}}},
+    {name = "None", draw = {type = "none"}},
+}
+
+DeployZonesIncursion = {
+    --Chapter Approved 2025 Missions
+    {name = "(I) Hammer and Anvil", objectivesID = 201, draw = {
+        --[[1]]{type = "line", color = "Red", position = "x", fromSide = 18},
+        --[[2]]{type = "line", color = "Teal", position = "-x", fromSide = 18}}},
+    {name = "(I) Dawn of War", objectivesID = 202, draw = {
+        --[[1]]{type = "line", color = "Teal", position = "-z", fromSide = 12},
+        --[[2]]{type = "line", color = "Red", position = "z", fromSide = 12}}},
+    {name = "(I) Sweeping Engagement", objectivesID = 203, draw = {
+        --[[1]]{type = "stepped", color = "Teal", position = "-z", steps = {{fromSide = 8}, {fromSide = 14}}},
+        --[[2]]{type = "stepped", color = "Red", position = "z", steps = {{fromSide = 14}, {fromSide = 8}}}}},
+    {name = "(I) Search and Destroy", objectivesID = 204, draw = {
+        --[[1]]{type = "quarter", color = "Teal", position = "-x-z", fromCenter = 9},
+        --[[2]]{type = "quarter", color = "Red", position = "xz", fromCenter = 9},
+        --[[3]]{type = "circle", color = "White", fromCenter = 9}}},
+    {name = "(I) Crucible of Battle", objectivesID = 205, draw = {
+        --[[1]]{type = "triangle", color = "Red", position = "x"},
+        --[[2]]{type = "triangle", color = "Teal", position = "-x"}}},
+    {name = "(I) Tipping Point", objectivesID = 206, draw = {
+        --[[1]]{type = "stepped", color = "Teal", position = "-x", steps = {{fromSide = 12}, {fromSide = 20}}},
+        --[[2]]{type = "stepped", color = "Red", position = "x", steps = {{fromSide = 20}, {fromSide = 12}}}}},
+    --Hidden Supplies variants
+    {name = "(I) Hammer and Anvil (HS)", objectivesID = 207, draw = {
+        --[[1]]{type = "line", color = "Red", position = "x", fromSide = 18},
+        --[[2]]{type = "line", color = "Teal", position = "-x", fromSide = 18}}},
+    {name = "(I) Hammer and Anvil (HS2)", objectivesID = 208, draw = {
+        --[[1]]{type = "line", color = "Red", position = "x", fromSide = 18},
+        --[[2]]{type = "line", color = "Teal", position = "-x", fromSide = 18}}},
+    {name = "(I) Dawn of War (HS)", objectivesID = 209, draw = {
+        --[[1]]{type = "line", color = "Teal", position = "-z", fromSide = 12},
+        --[[2]]{type = "line", color = "Red", position = "z", fromSide = 12}}},
+    {name = "(I) Dawn of War (HS2)", objectivesID = 210, draw = {
+        --[[1]]{type = "line", color = "Teal", position = "-z", fromSide = 12},
+        --[[2]]{type = "line", color = "Red", position = "z", fromSide = 12}}},
+    {name = "(I) Sweeping Engagement (HS)", objectivesID = 211, draw = {
+        --[[1]]{type = "stepped", color = "Teal", position = "-z", steps = {{fromSide = 8}, {fromSide = 14}}},
+        --[[2]]{type = "stepped", color = "Red", position = "z", steps = {{fromSide = 14}, {fromSide = 8}}}}},
+    {name = "(I) Sweeping Engagement (HS2)", objectivesID = 212, draw = {
+        --[[1]]{type = "stepped", color = "Teal", position = "-z", steps = {{fromSide = 8}, {fromSide = 14}}},
+        --[[2]]{type = "stepped", color = "Red", position = "z", steps = {{fromSide = 14}, {fromSide = 8}}}}},
+    {name = "(I) Search and Destroy (HS)", objectivesID = 213, draw = {
+        --[[1]]{type = "quarter", color = "Teal", position = "-x-z", fromCenter = 9},
+        --[[2]]{type = "quarter", color = "Red", position = "xz", fromCenter = 9},
+        --[[3]]{type = "circle", color = "White", fromCenter = 9}}},
+    {name = "(I) Search and Destroy (HS2)", objectivesID = 214, draw = {
+        --[[1]]{type = "quarter", color = "Teal", position = "-x-z", fromCenter = 9},
+        --[[2]]{type = "quarter", color = "Red", position = "xz", fromCenter = 9},
+        --[[3]]{type = "circle", color = "White", fromCenter = 9}}},
+    {name = "(I) Crucible of Battle (HS)", objectivesID = 215, draw = {
+        --[[1]]{type = "triangle", color = "Red", position = "x"},
+        --[[2]]{type = "triangle", color = "Teal", position = "-x"}}},
+    {name = "(I) Crucible of Battle (HS2)", objectivesID = 216, draw = {
+        --[[1]]{type = "triangle", color = "Red", position = "x"},
+        --[[2]]{type = "triangle", color = "Teal", position = "-x"}}},
+    {name = "(I) Tipping Point (HS)", objectivesID = 217, draw = {
+        --[[1]]{type = "stepped", color = "Teal", position = "-x", steps = {{fromSide = 12}, {fromSide = 20}}},
+        --[[2]]{type = "stepped", color = "Red", position = "x", steps = {{fromSide = 20}, {fromSide = 12}}}}},
+    {name = "(I) Tipping Point (HS2)", objectivesID = 218, draw = {
+        --[[1]]{type = "stepped", color = "Teal", position = "-x", steps = {{fromSide = 12}, {fromSide = 20}}},
+        --[[2]]{type = "stepped", color = "Red", position = "x", steps = {{fromSide = 20}, {fromSide = 12}}}}},
+    {name = "None", draw = {type = "none"}},
+}
+
+DeployZonesCombatPatrol = {
+    {name = "(CP) Clash of Patrols", objectivesID = 22, draw = {
+        --[[1]]{type = "line", color = "Red", position = "-z", fromCenter = 10 },
+        --[[2]]{type = "line", color = "Teal", position = "z", fromCenter = 10}}},
+    {name = "(CP) Archeotech Recovery", objectivesID = 23, draw = {
+        --[[1]]{type = "line", color = "Red", position = "x", fromCenter = 12 },
+        --[[2]]{type = "line", color = "Teal", position = "-x", fromCenter = 12}}},
+    {name = "(CP) Forward Outpost", objectivesID = 24, draw = {
+        --[[1]]{type = "line", color = "Red", position = "x", fromCenter = 12 },
+        --[[2]]{type = "line", color = "Teal", position = "-x", fromCenter = 12}}},
+    {name = "(CP) Scorched Earth", objectivesID = 25, draw = {
+        --[[1]]{type = "triangle", color = "Red", position = "x"},
+        --[[2]]{type = "triangle", color = "Teal", position = "-x"}}},
+    {name = "(CP) Sweeping Raid", objectivesID = 26, draw = {
+        --[[1]]{type = "line", color = "Red", position = "x", fromCenter = 12 },
+        --[[2]]{type = "line", color = "Teal", position = "-x", fromCenter = 12}}},
+    {name = "(CP) Display of Might", objectivesID = 27, draw = {
+        --[[1]]{type = "line", color = "Red", position = "x", fromCenter = 12 },
+        --[[2]]{type = "line", color = "Teal", position = "-x", fromCenter = 12}}},
+    {name = "(CP) Four Corners", objectivesID = 28, draw = {
+        --[[1]]{type = "cornerRectangle", color = "Yellow", position = "xz", fromCenter = 9},
+        --[[2]]{type = "cornerRectangle", color = "Blue", position = "x-z", fromCenter = 9},
+        --[[3]]{type = "cornerRectangle", color = "Red", position = "-xz", fromCenter = 9},
+        --[[4]]{type = "cornerRectangle", color = "Black", position = "-x-z", fromCenter = 9}}},
+    {name = "(CP) Three Circles", objectivesID = 29, draw = {
+        --[[1]]{type = "circleDeployment", color = "Blue", position = "z", fromCenter = 13, radius = 9},
+        --[[2]]{type = "circleDeployment", color = "Black", position = "-x", fromCenter = 16, fromCenterZ = 13, radius = 9},
+        --[[3]]{type = "circleDeployment", color = "Yellow", position = "x", fromCenter = 16, fromCenterZ = 13, radius = 9}}},
+    {name = "None", draw = {type = "none"}},
+}
+
+DeployZonesColosseum = {
+    {name = "King of the Colosseum", objectivesID = 301, draw = {
+        --[[1]]{type = "line", color = "Teal", position = "-z", fromSide = 9},
+        --[[2]]{type = "line", color = "Red", position = "z", fromSide = 9}}},
+    {name = "None", draw = {type = "none"}},
+}
+
+DeployZonesDefault = {
+    {name = "None", draw = {type = "none"}},
+}
+
+DeployZonesData = DeployZonesDefault
+deployMode = "strikeForce"
+
+function isValidDeployMode(mode)
+    return mode == "colosseum" or mode == "combatPatrol" or mode == "incursion" or mode == "strikeForce"
+end
+
+function setDeployZonesForSize(preserveSelected)
+    -- Use Strike Force data if we have an invalid mapSizeSelected
+    local sizeEntry = sizeData[mapSizeSelected] or sizeData[4]
+    local sizeId = sizeEntry.id
+    if sizeId == 1 then
+        setDeployZonesMode("colosseum", preserveSelected)
+    elseif sizeId == 2 then
+        setDeployZonesMode("combatPatrol", preserveSelected)
+    elseif sizeId == 3 then
+        setDeployZonesMode("incursion", preserveSelected)
+    elseif sizeId == 4 or sizeId == 5 then
+        setDeployZonesMode("strikeForce", preserveSelected)
+    else
+        -- Default to Strike Force here as well
+        setDeployZonesMode("strikeForce", preserveSelected)
+    end
+end
+
+function setDeployZonesMode(mode, preserveSelected)
+    local byMode = {
+        colosseum = DeployZonesColosseum,
+        combatPatrol = DeployZonesCombatPatrol,
+        incursion = DeployZonesIncursion,
+        strikeForce = DeployZonesStrikeForce,
+    }
+    deployMode = mode
+    DeployZonesData = byMode[mode] or DeployZonesDefault
+    if preserveSelected and deploySelected and DeployZonesData[deploySelected] then
+        return
+    end
+    deploySelected = #DeployZonesData
+end
+
+deployLineHeight = 2.1
+deployLineYPos = deployLineHeight-0.1
+sizeMulti = 36
+arrowOffset = 7.5
+
+defaultDeployHeight=2
+deployOffset = 0
+
+secondRowOffset= 1.2
+deployBtn = {
+    index = i, label = "", click_function = "none", function_owner = self,
+    position = { - menuX, 5, 1}, rotation = {0, 0, 0}, height = 750, width = 6000,
+    font_size = 400, color = {1, 1, 1}, font_color = {0, 0, 0}
+}
+deployUpBtn = {
+    index = 1, label = "->", click_function = "deployUp", function_owner = self,
+    position = { - menuX + arrowOffset, 5, 1}, rotation = {0, 0, 0}, height = 750, width = 800,
+    font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
+}
+deployDownBtn = {
+    index = 1, label = "<-", click_function = "deployDown", function_owner = self,
+    position = { - menuX - arrowOffset, 5, 1}, rotation = {0, 0, 0}, height = 750, width = 800,
+    font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
+}
+deployOffsetMenuBtn = {
+    index = 1, label = "Deploy\nHeight", click_function = "none", function_owner = self,
+    position = {-menuX - 1.4*arrowOffset, 5, menuZ}, rotation = {0, 0, 0}, height = 450, width = 1000,
+    font_size = 150, color = {0, 0, 0}, font_color = {1, 1, 1}
+}
+deployOffsetUpBtn = {
+    index = 1, label = "+", click_function = "deployOffsetUp", function_owner = self,
+    position = {-menuX - 1.4*arrowOffset, 5, menuZ - secondRowOffset}, rotation = {0, 0, 0}, height = 450, width = 800,
+    font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
+}
+deployOffsetDownBtn = {
+    index = 1, label = "-", click_function = "deployOffsetDown", function_owner = self,
+    position = {-menuX - 1.4*arrowOffset, 5, menuZ + secondRowOffset}, rotation = {0, 0, 0}, height = 450, width = 800,
+    font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
+}
+
+function drawDeployZone(zone)
+    local drawDataZone = zone.draw
+    for i, drawData in ipairs(drawDataZone) do
+        if drawData.type == "arrow" then
+            drawArrow(drawData)
+        end
+        if drawData.type == "line" then
+            drawLine(drawData)
+        end
+        if drawData.type == "stepped" then
+            drawSteps(drawData)
+        end
+        if drawData.type == "quarter" then
+            drawQuarter(drawData)
+        end
+        if drawData.type == "diagonal" then
+            drawDiagonal(drawData)
+        end
+        if drawData.type == "rectangle" then
+            drawRectangle(drawData)
+        end
+        if drawData.type == "corner" then
+            drawCorner(drawData)
+        end
+        if drawData.type == "triangle" then
+            drawTriangle(drawData)
+        end
+        if drawData.type == "circle" then
+            drawCircle(drawData, "deployZone")
+        end
+        if drawData.type == "circleInZone" then
+            drawCircleInZone(drawData, "deployZone")
+        end
+        if drawData.type == "cornerRectangle" then
+            drawCornerRectangle(drawData)
+        end
+        if drawData.type == "circleDeployment" then
+            drawCircleDeployment(drawData)
+        end
+    end
+    setDeployHeight()
+end
+
+function setDeployHeight()
+    local pos = {0,0,0}
+    local found_GUID = {}
+    for i, obj in ipairs(getAllObjects()) do
+        if obj.getGMNotes() == "deployZone" then
+            table.insert(found_GUID, #found_GUID+1, obj.getGUID())
+        end
+    end
+    local found= nil
+    for j, guid in ipairs(found_GUID) do
+        found=getObjectFromGUID(guid)
+        pos = found.getPosition()
+        found.setPosition({pos[1], defaultDeployHeight+ deployOffset, pos[3]})
+    end
+end
+
+function drawRectangle(drawData)
+    local mat = getObjectFromGUID(mat_GUID)
+    local linePosL = {x = 0, y = deployLineYPos, z = 0}
+    local lineRotL = {x = 0, y = 90, z = 0}
+    local lineScaleL = {x = 5, y = deployLineHeight, z = 0.02}
+    local linePosS1 = {x = 0, y = deployLineYPos, z = 0}
+    local lineRotS1 = {x = 0, y = 0, z = 0}
+    local lineScaleS1 = {x = 5, y = deployLineHeight, z = 0.02}
+    local linePosS2 = {x = 0, y = deployLineYPos, z = 0}
+    local mapBase = mat.getScale().z * sizeMulti --short edge
+    local mapHeight = mat.getScale().x * sizeMulti --long edge
+    if drawData.position == "z" or drawData.position == "-z" then
+        mapBase = mat.getScale().x * sizeMulti
+        mapHeight = mat.getScale().z * sizeMulti
+    end
+    if drawData.wide ~= 0 then
+        mapBase = drawData.wide * 2
+    end
+
+    lineScaleL.x = drawData.wide * 2
+    linePosL.x = drawData.fromCenter
+
+    lineScaleS1.x = (mapHeight/2)-drawData.fromCenter
+    linePosS1.x = drawData.fromCenter + ((mapHeight/2) - drawData.fromCenter)/2
+    linePosS1.z = drawData.wide
+
+    linePosS2.x = linePosS1.x
+    linePosS2.z = -linePosS1.z
+
+    if drawData.position == "x" then
+        -- default values
+    end
+    if drawData.position == "-x" then
+            linePosL.x = - linePosL.x
+            linePosS2.x = -linePosS2.x
+            linePosS1.x = -linePosS1.x
+    end
+    if drawData.position == "z" then
+        linePosL.z = linePosL.x
+        linePosL.x = 0
+        lineRotL.y = 0
+
+        local tmp = linePosS1.z
+        linePosS1.z = linePosS1.x
+        linePosS1.x = tmp
+        lineRotS1.y = 90
+
+        linePosS2.z = linePosS1.z
+        linePosS2.x = -tmp
+
+    end
+    if drawData.position == "-z" then
+        linePosL.z = -linePosL.x
+        linePosL.x = 0
+        lineRotL.y = 0
+
+        local tmp = linePosS1.z
+        linePosS1.z = -linePosS1.x
+        linePosS1.x = -tmp
+        lineRotS1.y = 90
+
+        linePosS2.z = linePosS1.z
+        linePosS2.x = tmp
+
+    end
+    spawnLine(linePosL, lineRotL, lineScaleL, drawData.color, "deployZone") -- orizz
+    spawnLine(linePosS1, lineRotS1, lineScaleS1, drawData.color,  "deployZone") -- vert1
+    spawnLine(linePosS2, lineRotS1, lineScaleS1, drawData.color, "deployZone") -- vert2
+end
+
+function drawCorner(drawData)
+    local mat = getObjectFromGUID(mat_GUID)
+    local linePosL = {x = 0, y = deployLineYPos, z = 0}
+    local lineRotL = {x = 0, y = 0, z = 0}
+    local lineScaleL = {x = 5, y = deployLineHeight, z = 0.02}
+    local linePosS1 = {x = 0, y = deployLineYPos, z = 0}
+    local lineRotS1 = {x = 0, y = 90, z = 0}
+    local lineScaleS1 = {x = 5, y = deployLineHeight, z = 0.02}
+    local mapBase = mat.getScale().z * sizeMulti --short edge
+    local mapHeight = mat.getScale().x * sizeMulti --long edge
+    if drawData.position == "x" or drawData.position == "-x" then
+        mapBase = mat.getScale().x * sizeMulti
+        mapHeight = mat.getScale().z * sizeMulti
+    end
+    lineScaleL.x = (mapHeight/2) + drawData.wide
+    linePosL.x = (mapHeight/4)-(drawData.wide/2)
+    linePosL.z = drawData.fromCenter
+
+    lineScaleS1.x = (mapBase/2)-drawData.fromCenter
+    linePosS1.z = drawData.fromCenter + lineScaleS1.x/2
+    linePosS1.x = -drawData.wide
+
+    if drawData.position == "z" then
+        -- default values
+    end
+    if drawData.position == "-z" then
+            linePosL.x = - linePosL.x
+            linePosL.z = - linePosL.z
+
+            linePosS1.z = -linePosS1.z
+            linePosS1.x = -linePosS1.x
+    end
+    if drawData.position == "x" then -- not valid, to do
+        linePosL.z = linePosL.x
+        linePosL.x = 0
+        lineRotL.y = 0
+
+        local tmp = linePosS1.z
+        linePosS1.z = linePosS1.x
+        linePosS1.x = tmp
+        lineRotS1.y = 90
+    end
+    if drawData.position == "-x" then-- not valid, to do
+        linePosL.z = -linePosL.x
+        linePosL.x = 0
+        lineRotL.y = 0
+
+        local tmp = linePosS1.z
+        linePosS1.z = -linePosS1.x
+        linePosS1.x = -tmp
+        lineRotS1.y = 90
+    end
+    spawnLine(linePosL, lineRotL, lineScaleL, drawData.color, "deployZone") -- long
+    spawnLine(linePosS1, lineRotS1, lineScaleS1, drawData.color,  "deployZone") -- short
+end
+
+function drawDiagonal(drawData)
+    local mat = getObjectFromGUID(mat_GUID)
+    local linePos = {x = 0, y = deployLineYPos, z = 0}
+    local lineRot = {x = 0, y = 0, z = 0}
+    local lineScale = {x = 5, y = deployLineHeight, z = 0.02}
+    local mapBase = mat.getScale().z * sizeMulti --short edge
+    local mapHeight = mat.getScale().x * sizeMulti --long edge
+    if drawData.position == "x" or drawData.position == "-x" then
+        mapBase = mat.getScale().x * sizeMulti
+        mapHeight = mat.getScale().z * sizeMulti
+    end
+    local mainDiagonal = 0
+    local edgeLoss = 0
+    local triBase = 0 -- triangle with hypotenuse as the needed deploy line
+
+    local edgeAngle = 0 -- angle of the line from the given map edge
+    local edgeAngleRad = 0
+    local halfTriBase = 0 -- triangle with hypotenuse that is half the line lenght
+    local halfTriHeight = 0 -- triangle with hypotenuse that is half the line lenght
+    mainDiagonal = math.sqrt(math.pow(mapBase, 2) + math.pow(mapHeight, 2))
+    edgeAngleRad = math.atan(mapBase / mapHeight)
+    edgeAngle = math.deg(edgeAngleRad)
+    edgeLoss = drawData.fromCenter / math.cos(edgeAngleRad)
+    triBase = mapBase-edgeLoss
+    local ratio = triBase / mapBase
+    lineScale.x = mainDiagonal * ratio
+    lineRot.y = edgeAngle
+    halfTriBase = lineScale.x * math.sin(edgeAngleRad) / 2
+    halfTriHeight = lineScale.x * math.cos(edgeAngleRad) / 2
+    linePos.x = (mapHeight/2) - (lineScale.x/2) * math.cos(edgeAngleRad)
+    linePos.z = (mapBase/2) - (lineScale.x/2) * math.sin(edgeAngleRad)
+    if drawData.position == "z" then -- upper right
+        -- default values
+    end
+    if drawData.position == "-z" then
+        linePos.x = - linePos.x
+        linePos.z = - linePos.z
+    end
+    spawnLine(linePos, lineRot, lineScale, drawData.color,  "deployZone")
+end
+
+function drawTriangle(drawData)
+    local mat = getObjectFromGUID(mat_GUID)
+    local linePos = {x = 0, y = deployLineYPos, z = 0}
+    local lineRot = {x = 0, y = 0, z = 0}
+    local lineScale = {x = 5, y = deployLineHeight, z = 0.02}
+    local mapBase = mat.getScale().z * sizeMulti --short edge
+    local mapHeight = mat.getScale().x * sizeMulti --long edge
+    if drawData.position == "z" or drawData.position == "-z" then
+        mapBase = mat.getScale().x * sizeMulti
+        mapHeight = mat.getScale().z * sizeMulti
+    end
+
+    local triBase = 0 -- triangle with hypotenuse as the needed deploy line
+    local triHeight = 0 -- triangle with hypotenuse as the needed deploy line
+
+    local edgeAngle = 0 -- angle of the line from the given map edge
+    local edgeAngleRad = 0
+
+    triBase = mapBase
+    triHeight = mapHeight/2
+    edgeAngleRad = math.atan(triBase/triHeight )
+    if drawData.position == "z" or drawData.position == "-z" then
+        edgeAngleRad = -edgeAngleRad
+    end
+    edgeAngle = math.deg(edgeAngleRad)
+    lineScale.x = math.sqrt(triBase^2+triHeight^2)
+    lineRot.y = edgeAngle
+
+    if drawData.position == "x" then
+        linePos.x=mapHeight/4
+        linePos.z=0
+    end
+    if drawData.position == "-x" then
+        linePos.x=-mapHeight/4
+        linePos.z=0
+    end
+    if drawData.position == "z" then
+        lineRot.y= lineRot.y-90
+        linePos.x=0
+        linePos.z=mapHeight/4
+    end
+    if drawData.position == "-z" then
+        lineRot.y= lineRot.y+90
+        linePos.x=0
+        linePos.z=-mapHeight/4
+    end
+    spawnLine(linePos, lineRot, lineScale, drawData.color,  "deployZone")
+end
+
+function drawQuarter(drawData)
+    local mat = getObjectFromGUID(mat_GUID)
+    local linePos = {x = 0, y = deployLineYPos, z = 0}
+    local lineRot = {x = 0, y = 90, z = 0}
+    local lineScale = {x = 5, y = deployLineHeight, z = 0.02}
+    local mapBase = mat.getScale().z * sizeMulti --short edge
+    local mapHeight = mat.getScale().x * sizeMulti --long edge
+    if drawData.position == "x" then
+        mapBase = mat.getScale().x * sizeMulti
+        mapHeight = mat.getScale().z * sizeMulti
+    end
+    lineScale.x = (mapBase/2)-drawData.fromCenter
+    linePos.z =  (lineScale.x/2) + drawData.fromCenter
+    if drawData.position == "xz" then
+        -- default values
+    end
+    if drawData.position == "x-z" or drawData.position == "-x-z" then
+        linePos.z = -linePos.z
+    end
+    spawnLine(linePos, lineRot, lineScale, drawData.color,  "deployZone") -- short line
+    lineScale.x = (mapHeight/2)-drawData.fromCenter
+    linePos.z = 0
+    linePos.x =  (lineScale.x/2) + drawData.fromCenter
+    lineRot.y = 0
+    if drawData.position == "-xz" or drawData.position == "-x-z" then
+        linePos.x = -linePos.x
+    end
+    spawnLine(linePos, lineRot, lineScale, drawData.color, "deployZone") -- long line
+end
+
+function drawCircle(drawData, type)
+    local originalCircle=getObjectFromGUID(Global.getVar("centerCircle_GUID"))
+    local circleObj = originalCircle.clone({ position = {0, -5, 0}})
+    if circleObj then
+        circleObj.setLock(true)
+        circleObj.setScale({drawData.fromCenter, deployLineHeight, drawData.fromCenter})
+        circleObj.setPosition({0, deployLineYPos, 0})
+        circleObj.setColorTint(drawData.color)
+        circleObj.setGMNotes(type)
+        circleObj.setName("")
+        local blockComp = circleObj.getComponent("BoxCollider")
+        blockComp.set("enabled", false)
+    end
+end
+
+function drawCircleInZone(drawData, type)
+    local mat = getObjectFromGUID(mat_GUID)
+    local mapBase = mat.getScale().z * sizeMulti --short edge
+    local mapHeight = mat.getScale().x * sizeMulti --long edge
+    if drawData.position == "z" or drawData.position == "-z" then
+        mapBase = mat.getScale().x * sizeMulti
+        mapHeight = mat.getScale().z * sizeMulti
+    end
+    local posX=0
+    local posZ=0
+    if drawData.position == "x" then
+        posX=((mapHeight/2-drawData.deployFromCenter)/2)+drawData.deployFromCenter
+    end
+    if drawData.position == "-x" then
+        posX=-((mapHeight/2-drawData.deployFromCenter)/2)+drawData.deployFromCenter
+    end
+    if drawData.position == "z" then
+        posZ=((mapHeight/2-drawData.deployFromCenter)/2)+drawData.deployFromCenter
+    end
+    if drawData.position == "-z" then
+        posZ=-((mapHeight/2-drawData.deployFromCenter)/2)+drawData.deployFromCenter
+    end
+     drawCircleNotCentered(drawData, type, posX,posZ)
+end
+
+function drawCircleNotCentered(drawData, type, centerX, centerZ)
+    local originalCircle=getObjectFromGUID(Global.getVar("centerCircle_GUID"))
+    local circleObj = originalCircle.clone({ position = {0, -5, 0}})
+    if circleObj then
+        circleObj.setLock(true)
+        circleObj.setScale({drawData.fromCenter, deployLineHeight, drawData.fromCenter})
+        circleObj.setPosition({centerX, deployLineYPos, centerZ})
+        circleObj.setColorTint(drawData.color)
+        circleObj.setGMNotes(type)
+        circleObj.setName("")
+        local blockComp = circleObj.getComponent("BoxCollider")
+        blockComp.set("enabled", false)
+    end
+end
+
+function drawCornerRectangle(drawData)
+    local mat = getObjectFromGUID(mat_GUID)
+    local mapBase = mat.getScale().z * sizeMulti --short edge
+    local mapHeight = mat.getScale().x * sizeMulti --long edge
+
+    -- Calculate rectangle dimensions to extend from center boundary to map edge
+    local rectWidth = 0
+    local rectHeight = 0
+    local centerX = 0
+    local centerZ = 0
+
+    if drawData.position == "xz" then -- upper right (Blue)
+        rectWidth = (mapHeight/2) - drawData.fromCenter
+        rectHeight = (mapBase/2) - drawData.fromCenter
+        centerX = drawData.fromCenter + (rectWidth/2)
+        centerZ = drawData.fromCenter + (rectHeight/2)
+    elseif drawData.position == "x-z" then -- lower right (Black)
+        rectWidth = (mapHeight/2) - drawData.fromCenter
+        rectHeight = (mapBase/2) - drawData.fromCenter
+        centerX = drawData.fromCenter + (rectWidth/2)
+        centerZ = -(drawData.fromCenter + (rectHeight/2))
+    elseif drawData.position == "-xz" then -- upper left (Yellow)
+        rectWidth = (mapHeight/2) - drawData.fromCenter
+        rectHeight = (mapBase/2) - drawData.fromCenter
+        centerX = -(drawData.fromCenter + (rectWidth/2))
+        centerZ = drawData.fromCenter + (rectHeight/2)
+    elseif drawData.position == "-x-z" then -- lower left (Red)
+        rectWidth = (mapHeight/2) - drawData.fromCenter
+        rectHeight = (mapBase/2) - drawData.fromCenter
+        centerX = -(drawData.fromCenter + (rectWidth/2))
+        centerZ = -(drawData.fromCenter + (rectHeight/2))
+    end
+
+    -- Draw the four sides of the rectangle
+    -- Top edge
+    spawnLine({centerX, deployLineYPos, centerZ + rectHeight/2}, {0, 0, 0}, {rectWidth, deployLineHeight, 0.02}, drawData.color, "deployZone")
+    -- Bottom edge
+    spawnLine({centerX, deployLineYPos, centerZ - rectHeight/2}, {0, 0, 0}, {rectWidth, deployLineHeight, 0.02}, drawData.color, "deployZone")
+    -- Left edge
+    spawnLine({centerX - rectWidth/2, deployLineYPos, centerZ}, {0, 90, 0}, {rectHeight, deployLineHeight, 0.02}, drawData.color, "deployZone")
+    -- Right edge
+    spawnLine({centerX + rectWidth/2, deployLineYPos, centerZ}, {0, 90, 0}, {rectHeight, deployLineHeight, 0.02}, drawData.color, "deployZone")
+end
+
+function drawCircleDeployment(drawData)
+    local mat = getObjectFromGUID(mat_GUID)
+    local mapBase = mat.getScale().z * sizeMulti --short edge
+    local mapHeight = mat.getScale().x * sizeMulti --long edge
+
+    -- Calculate circle position based on position and fromCenter distance
+    local centerX = 0
+    local centerZ = 0
+
+    if drawData.position == "z" then -- top center
+        centerX = 0
+        centerZ = drawData.fromCenter
+    elseif drawData.position == "-z" then -- bottom center
+        centerX = 0
+        centerZ = -drawData.fromCenter
+    elseif drawData.position == "-x" then -- left side
+        centerX = -drawData.fromCenter
+        centerZ = -(drawData.fromCenterZ or 0)
+    elseif drawData.position == "x" then -- right side
+        centerX = drawData.fromCenter
+        centerZ = -(drawData.fromCenterZ or 0)
+    end
+
+    -- Draw the circle using the existing circle drawing function
+    local originalCircle = getObjectFromGUID(Global.getVar("centerCircle_GUID"))
+    local circleObj = originalCircle.clone({ position = {0, -5, 0}})
+    if circleObj then
+        circleObj.setLock(true)
+        circleObj.setScale({drawData.radius, deployLineHeight, drawData.radius})
+        circleObj.setPosition({centerX, deployLineYPos, centerZ})
+        circleObj.setColorTint(drawData.color)
+        circleObj.setGMNotes("deployZone")
+        circleObj.setName("")
+        local blockComp = circleObj.getComponent("BoxCollider")
+        blockComp.set("enabled", false)
+    end
+end
+
+function drawCornerQuarterCircles(radius, type)
+    local originalCircle=getObjectFromGUID(Global.getVar("quarterCircle_GUID"))
+    local mat = getObjectFromGUID(mat_GUID)
+    local lineScale = {x = 0, y = deployLineHeight, z = 0.02}
+    local x = mat.getScale().x * sizeMulti * 0.5 -- long edge
+    local z = mat.getScale().z * sizeMulti * 0.5 -- short edge
+    local cornerLocations = {
+        {position = {x, deployLineYPos, z}, rotation = {0, 270, 0}},
+        {position = {x, deployLineYPos, -z}, rotation = {0, 0, 0}},
+        {position = {-x, deployLineYPos, z}, rotation = {0, 180, 0}},
+        {position = {-x, deployLineYPos, -z}, rotation = {0, 90, 0}},
+    }
+
+    for i, location in ipairs(cornerLocations) do
+        local circleObj = originalCircle.clone()
+        if circleObj then
+            circleObj.setLock(true)
+            circleObj.setScale({radius, deployLineHeight, radius})
+            circleObj.setPosition(location.position)
+            circleObj.setRotation(location.rotation)
+            circleObj.setColorTint("White")
+            circleObj.setGMNotes(type)
+            circleObj.setName("")
+            local blockComp = circleObj.getComponent("BoxCollider")
+            blockComp.set("enabled", false)
+        end
+    end
+end
+
+function drawSteps(drawData)
+    local mat = getObjectFromGUID(mat_GUID)
+    local mapBase = mat.getScale().z * sizeMulti --short edge
+    local mapHeight = mat.getScale().x * sizeMulti --long edge
+    if drawData.position == "z" or drawData.position == "-z" then
+        mapBase = mat.getScale().x * sizeMulti
+        mapHeight = mat.getScale().z * sizeMulti
+    end
+
+    length = mapBase / #drawData.steps
+    zPos = (mapBase / 2) - (length / 2)
+    for index, step in pairs(drawData.steps) do
+        local xPos = 0
+        if step.fromCenter then
+            xPos = step.fromCenter
+        else
+            xPos = (mapHeight / 2) - step.fromSide
+        end
+        drawLineCommon(xPos, zPos, length, false, drawData.position, drawData.color)
+
+        zPos = zPos - (length / 2)
+
+        if index < #drawData.steps then
+            -- Also draw a line connecting this step and the next.
+            nextStepFromCenter = 0
+            if step.fromCenter then
+                nextStepFromCenter = drawData.steps[index + 1].fromCenter
+            else
+                nextStepFromCenter = (mapHeight / 2) - drawData.steps[index + 1].fromSide
+            end
+            connectorLength = nextStepFromCenter - xPos
+
+            connectorXPos = xPos + (connectorLength / 2)
+            connectorLength = math.abs(connectorLength)
+
+            drawLineCommon(connectorXPos, zPos, connectorLength, true, drawData.position, drawData.color)
+        end
+
+        zPos = zPos - (length / 2)
+    end
+end
+
+function drawLine(drawData)
+    local mat = getObjectFromGUID(mat_GUID)
+    local mapBase = mat.getScale().z * sizeMulti --short edge
+    local mapHeight = mat.getScale().x * sizeMulti --long edge
+    if drawData.position == "z" or drawData.position == "-z" then
+        mapBase = mat.getScale().x * sizeMulti
+        mapHeight = mat.getScale().z * sizeMulti
+    end
+    if drawData.fromSide then
+        if drawData.fromSide ~= 0 then
+            drawData.fromCenter = (mapHeight / 2) - drawData.fromSide
+        end
+    end
+    drawLineCommon(drawData.fromCenter, 0, mapBase, false, drawData.position, drawData.color)
+end
+
+function drawLineCommon(xPos, zPos, length, rotated, position, color)
+    local linePos = {x = xPos, y = deployLineYPos, z = zPos}
+    local lineRot = {x = 0, y = 90, z = 0}
+    if rotated then
+        lineRot.y = 0
+    end
+    local lineScale = {x = length, y = deployLineHeight, z = 0.02}
+    if position == "x" then
+        -- default values
+    end
+    if position == "-x" then
+        linePos.x = -linePos.x
+    end
+    if position == "z" then
+        lineRot.y = 90 - lineRot.y
+        local oldZ = linePos.z
+        linePos.z = linePos.x
+        linePos.x = oldZ
+    end
+    if position == "-z" then
+        lineRot.y = 90 - lineRot.y
+        local oldZ = linePos.z
+        linePos.z = -linePos.x
+        linePos.x = oldZ
+    end
+    spawnLine(linePos, lineRot, lineScale, color, "deployZone")
+end
+
+function drawArrow(drawData)
+    local mat = getObjectFromGUID(mat_GUID)
+    local linePos = {x = 0, y = deployLineYPos, z = 0}
+    local lineRot = {x = 0, y = 0, z = 0}
+    local lineScale = {x = 5, y = deployLineHeight, z = 0.02}
+    local mapBase =  mat.getScale().z * sizeMulti --short edge
+    local mapHeight = mat.getScale().x * sizeMulti --long edge
+    if drawData.position == "z" or drawData.position == "-z" then
+        mapBase = mat.getScale().x * sizeMulti
+        mapHeight = mat.getScale().z * sizeMulti
+    end
+    if drawData.wide ~= 0 then
+        mapBase = drawData.wide *2
+    end
+    local triBase = (mapBase / 2) -- triangle with hypotenuse as the needed deploy line
+    local triHeight = (mapHeight / 2) - drawData.fromCenter - drawData.fromEdge -- triangle with hypotenuse as the needed deploy line
+    local edgeAngle = 0 -- angle of the line from the given map edge
+    local edgeAngleRad = 0
+    local halfTriBase = 0 -- triangle with hypotenuse that is half the line lenght
+    local halfTriHeight = 0 -- triangle with hypotenuse that is half the line lenght
+    lineScale.x = math.sqrt(math.pow(triBase, 2) + math.pow(triHeight, 2))
+    edgeAngleRad = math.atan(triBase / triHeight)
+    edgeAngle = math.deg(edgeAngleRad)
+    lineRot.y = edgeAngle
+    halfTriBase = (lineScale.x / 2) * math.sin(edgeAngleRad)
+    halfTriHeight = (lineScale.x  / 2 ) * math.cos(edgeAngleRad)
+    linePos.x = triHeight - halfTriHeight + drawData.fromCenter
+    linePos.z = -1 * (triBase - halfTriBase)
+    if drawData.position == "x" then
+        --default values
+    end
+    if drawData.position == "-x" then
+        linePos.z = -linePos.z
+        linePos.x = -linePos.x
+    end
+    if drawData.position == "z" then
+        local tmp = linePos.z
+        linePos.z = linePos.x
+        linePos.x = -tmp
+        lineRot.y = 90 + lineRot.y
+    end
+    if drawData.position == "-z" then
+        local tmp = linePos.z
+        linePos.z = -linePos.x
+        linePos.x = tmp
+        lineRot.y = 90 + lineRot.y
+    end
+
+    spawnLine(linePos, lineRot, lineScale, drawData.color, "deployZone")
+    if drawData.position == "x" or drawData.position == "-x"  then
+        linePos.z = -linePos.z
+        lineRot.y = -lineRot.y
+    end
+    if drawData.position == "z" or drawData.position == "-z"  then
+        linePos.x = -linePos.x
+        lineRot.y = -lineRot.y
+    end
+    spawnLine(linePos, lineRot, lineScale, drawData.color, "deployZone")
+end
+
+function spawnLine(linePos, lineRot, lineScale, color, type)
+    local lineObj = spawnObject({ --Chip_10
+        type = "BlockSquare",
+        position = linePos,
+        rotation = lineRot,
+        scale = lineScale,
+    })
+    if lineObj then
+        lineObj.setLock(true)
+        lineObj.setGMNotes(type)
+        lineObj.setColorTint(color)
+        local blockComp = lineObj.getComponent("BoxCollider")
+        blockComp.set("enabled", false)
+    end
+end
+
+function destroyDeployZones()
+    for i, obj in ipairs(getAllObjects()) do
+        if obj.getGMNotes() == "deployZone" or obj.getGMNotes() == "deployZone9" then
+            obj.destroy()
+        end
+    end
+end
+
+function disableCollidersDeployZones()
+    for i, obj in ipairs(getAllObjects()) do
+        if obj.getGMNotes() == "deployZone" or obj.getGMNotes() == "areaDeny" or obj.getGMNotes() == "quarter" then
+            local blockComp = obj.getComponent("BoxCollider")
+            blockComp.set("enabled", false)
+        end
+    end
+
+end
+
+function placeDeploy()
+    destroyDeployZones()
+    local data = DeployZonesData[deploySelected]
+    drawDeployZone(data)
+    if data.objectivesID then
+        spawnObjectives()
+    end
+    writeMenus()
+end
+
+function deployUp()
+    deployUpDown(true)
+end
+
+function deployDown()
+    deployUpDown(false)
+end
+
+function deployUpDown(upDown)
+    deployOffset = 0
+    objectivesOffset = 0
+    deploymentPregamePlaced = true
+    if DeployZonesData[deploySelected].objectivesID then
+        destroyAllObjectives()
+    end
+    local add=1
+    if not upDown then
+        add=-1
+    end
+    deploySelected = deploySelected + add
+    if deploySelected > #DeployZonesData then
+        deploySelected = 1
+    end
+    if deploySelected < 1 then
+        deploySelected = #DeployZonesData
+    end
+    writeMenus()
+    placeDeploy()
+end
+
+function deployOffsetUp()
+    deployOffsetUpDown(true)
+end
+
+function deployOffsetDown()
+    deployOffsetUpDown(false)
+end
+
+function deployOffsetUpDown(upDown) -- true up, false down
+    local amt = 1
+    if not upDown then amt = -1 end
+    deployOffset = deployOffset + amt
+    if deployOffset > 25 then
+        deployOffset = 25
+    end
+    if deployOffset < 0 then
+        deployOffset = 0
+    end
+    writeMenus()
+    setDeployHeight()
+end
+
+-- END deploy zones manager
+
+-- ******************
+-- OBJECTIVES MANAGER
+-- ******************
+
+objectivesData = {
+    --Chapter Approved 2025 Missions
+        {id = 101, name = "Hammer and Anvil", objectives = {
+            {type = "fixed", pos={0, objectivesOffset, 0}},
+            {type = "fromSide", pos={10, objectivesOffset, 0}},
+            {type = "fromSide", pos={-10, objectivesOffset, 0}},
+            {type = "fromSide", pos={0, objectivesOffset, 6}},
+            {type = "fromSide", pos={0, objectivesOffset, -6}}}},
+        {id = 201, name = "(I) Hammer and Anvil", objectives = {
+            {type = "fixed", pos={0, objectivesOffset, 0}},
+            {type = "fromSide", pos={14, objectivesOffset, 0}},
+            {type = "fromSide", pos={-14, objectivesOffset, 0}},
+            {type = "fromSide", pos={0, objectivesOffset, 8}},
+            {type = "fromSide", pos={0, objectivesOffset, -8}}}},
+        {id = 102, name = "Dawn of War", objectives = {
+            {type = "fixed", pos={0, objectivesOffset, 0}},
+            {type = "fromSide", pos={10, objectivesOffset, 0}},
+            {type = "fromSide", pos={-10, objectivesOffset, 0}},
+            {type = "fromSide", pos={0, objectivesOffset, 6}},
+            {type = "fromSide", pos={0, objectivesOffset, -6}}}},
+        {id = 202, name = "(I) Dawn of War", objectives = {
+            {type = "fixed", pos={0, objectivesOffset, 0}},
+            {type = "fromSide", pos={14, objectivesOffset, 0}},
+            {type = "fromSide", pos={-14, objectivesOffset, 0}},
+            {type = "fromSide", pos={0, objectivesOffset, 8}},
+            {type = "fromSide", pos={0, objectivesOffset, -8}}}},
+        {id = 103, name = "Sweeping Engagement", objectives = {
+            {type = "fixed", pos={0, objectivesOffset, 0}},
+            {type = "fromSide", pos={18, objectivesOffset, 6}},
+            {type = "fromSide", pos={-18, objectivesOffset, -6}},
+            {type = "fromSide", pos={10, objectivesOffset, -18}},
+            {type = "fromSide", pos={-10, objectivesOffset, 18}}}},
+        {id = 203, name = "(I) Sweeping Engagement", objectives = {
+            {type = "fixed", pos={0, objectivesOffset, 0}},
+            {type = "fromSide", pos={20, objectivesOffset, 8}},
+            {type = "fromSide", pos={-20, objectivesOffset, -8}},
+            {type = "fromSide", pos={14, objectivesOffset, -18}},
+            {type = "fromSide", pos={-14, objectivesOffset, 18}}}},
+        {id = 104, name = "Search and Destroy", objectives = {
+            {type = "fixed", pos={0, objectivesOffset, 0}},
+            {type = "fromSide", pos={14, objectivesOffset, 10}},
+            {type = "fromSide", pos={-14, objectivesOffset, -10}},
+            {type = "fromSide", pos={14, objectivesOffset, -10}},
+            {type = "fromSide", pos={-14, objectivesOffset, 10}}}},
+        {id = 204, name = "(I) Search and Destroy", objectives = {
+            {type = "fixed", pos={0, objectivesOffset, 0}},
+            {type = "fromSide", pos={16, objectivesOffset, 12}},
+            {type = "fromSide", pos={-16, objectivesOffset, -12}},
+            {type = "fromSide", pos={16, objectivesOffset, -12}},
+            {type = "fromSide", pos={-16, objectivesOffset, 12}}}},
+        {id = 105, name = "Crucible of Battle", objectives = {
+            {type = "fixed", pos={0, objectivesOffset, 0}},
+            {type = "fromSide", pos={14, objectivesOffset, 10}},
+            {type = "fromSide", pos={-14, objectivesOffset, -10}},
+            {type = "fromSide", pos={20, objectivesOffset, -8}},
+            {type = "fromSide", pos={-20, objectivesOffset, 8}}}},
+        {id = 205, name = "(I) Crucible of Battle", objectives = {
+            {type = "fixed", pos={0, objectivesOffset, 0}},
+            {type = "fromSide", pos={16, objectivesOffset, 12}},
+            {type = "fromSide", pos={-16, objectivesOffset, -12}},
+            {type = "fromSide", pos={22, objectivesOffset, -10}},
+            {type = "fromSide", pos={-22, objectivesOffset, 10}}}},
+        {id = 106, name = "Tipping Point", objectives = {
+            {type = "fixed", pos={0, objectivesOffset, 0}},
+            {type = "fromSide", pos={14, objectivesOffset, 10}},
+            {type = "fromSide", pos={-14, objectivesOffset, -10}},
+            {type = "fromSide", pos={22, objectivesOffset, -8}},
+            {type = "fromSide", pos={-22, objectivesOffset, 8}}}},
+        {id = 206, name = "(I) Tipping Point", objectives = {
+            {type = "fixed", pos={0, objectivesOffset, 0}},
+            {type = "fromSide", pos={16, objectivesOffset, 14}},
+            {type = "fromSide", pos={-16, objectivesOffset, -14}},
+            {type = "fromSide", pos={22, objectivesOffset, -10}},
+            {type = "fromSide", pos={-22, objectivesOffset, 10}}}},
+     --Hidden Supplies variants
+        {id = 107, name = "Hammer and Anvil (HS)", objectives = {
+            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={10, objectivesOffset, 0}},
+            {type = "fromSide", pos={-10, objectivesOffset, 0}},
+            {type = "fromSide", pos={0, objectivesOffset, 6}},
+            {type = "fromSide", pos={0, objectivesOffset, -6}}}},
+        {id = 207, name = "(I) Hammer and Anvil (HS)", objectives = {
+            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={14, objectivesOffset, 0}},
+            {type = "fromSide", pos={-14, objectivesOffset, 0}},
+            {type = "fromSide", pos={0, objectivesOffset, 8}},
+            {type = "fromSide", pos={0, objectivesOffset, -8}}}},
+        {id = 108, name = "Hammer and Anvil (HS2)", objectives = {
+            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={10, objectivesOffset, 0}},
+            {type = "fromSide", pos={-10, objectivesOffset, 0}},
+            {type = "fromSide", pos={0, objectivesOffset, 6}},
+            {type = "fromSide", pos={0, objectivesOffset, -6}}}},
+        {id = 208, name = "(I) Hammer and Anvil (HS2)", objectives = {
+            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={14, objectivesOffset, 0}},
+            {type = "fromSide", pos={-14, objectivesOffset, 0}},
+            {type = "fromSide", pos={0, objectivesOffset, 8}},
+            {type = "fromSide", pos={0, objectivesOffset, -8}}}},
+        {id = 109, name = "Dawn of War (HS)", objectives = {
+            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={10, objectivesOffset, 0}},
+            {type = "fromSide", pos={-10, objectivesOffset, 0}},
+            {type = "fromSide", pos={0, objectivesOffset, 6}},
+            {type = "fromSide", pos={0, objectivesOffset, -6}}}},
+        {id = 209, name = "(I) Dawn of War (HS)", objectives = {
+            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={14, objectivesOffset, 0}},
+            {type = "fromSide", pos={-14, objectivesOffset, 0}},
+            {type = "fromSide", pos={0, objectivesOffset, 8}},
+            {type = "fromSide", pos={0, objectivesOffset, -8}}}},
+        {id = 110, name = "Dawn of War (HS2)", objectives = {
+            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={10, objectivesOffset, 0}},
+            {type = "fromSide", pos={-10, objectivesOffset, 0}},
+            {type = "fromSide", pos={0, objectivesOffset, 6}},
+            {type = "fromSide", pos={0, objectivesOffset, -6}}}},
+        {id = 210, name = "(I) Dawn of War (HS2)", objectives = {
+            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={14, objectivesOffset, 0}},
+            {type = "fromSide", pos={-14, objectivesOffset, 0}},
+            {type = "fromSide", pos={0, objectivesOffset, 8}},
+            {type = "fromSide", pos={0, objectivesOffset, -8}}}},
+        {id = 111, name = "Sweeping Engagement (HS)", objectives = {
+            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={18, objectivesOffset, 6}},
+            {type = "fromSide", pos={-18, objectivesOffset, -6}},
+            {type = "fromSide", pos={10, objectivesOffset, -18}},
+            {type = "fromSide", pos={-10, objectivesOffset, 18}}}},
+        {id = 211, name = "(I) Sweeping Engagement (HS)", objectives = {
+            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={20, objectivesOffset, 8}},
+            {type = "fromSide", pos={-20, objectivesOffset, -8}},
+            {type = "fromSide", pos={14, objectivesOffset, -18}},
+            {type = "fromSide", pos={-14, objectivesOffset, 18}}}},
+        {id = 112, name = "Sweeping Engagement (HS2)", objectives = {
+            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={18, objectivesOffset, 6}},
+            {type = "fromSide", pos={-18, objectivesOffset, -6}},
+            {type = "fromSide", pos={10, objectivesOffset, -18}},
+            {type = "fromSide", pos={-10, objectivesOffset, 18}}}},
+        {id = 212, name = "(I) Sweeping Engagement (HS2)", objectives = {
+            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={20, objectivesOffset, 8}},
+            {type = "fromSide", pos={-20, objectivesOffset, -8}},
+            {type = "fromSide", pos={14, objectivesOffset, -18}},
+            {type = "fromSide", pos={-14, objectivesOffset, 18}}}},
+        {id = 113, name = "Search and Destroy (HS)", objectives = {
+            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={14, objectivesOffset, 10}},
+            {type = "fromSide", pos={-14, objectivesOffset, -10}},
+            {type = "fromSide", pos={14, objectivesOffset, -10}},
+            {type = "fromSide", pos={-14, objectivesOffset, 10}}}},
+        {id = 213, name = "(I) Search and Destroy (HS)", objectives = {
+            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={16, objectivesOffset, 12}},
+            {type = "fromSide", pos={-16, objectivesOffset, -12}},
+            {type = "fromSide", pos={16, objectivesOffset, -12}},
+            {type = "fromSide", pos={-16, objectivesOffset, 12}}}},
+        {id = 114, name = "Search and Destroy (HS2)", objectives = {
+            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={14, objectivesOffset, 10}},
+            {type = "fromSide", pos={-14, objectivesOffset, -10}},
+            {type = "fromSide", pos={14, objectivesOffset, -10}},
+            {type = "fromSide", pos={-14, objectivesOffset, 10}}}},
+        {id = 214, name = "(I) Search and Destroy (HS2)", objectives = {
+            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={16, objectivesOffset, 12}},
+            {type = "fromSide", pos={-16, objectivesOffset, -12}},
+            {type = "fromSide", pos={16, objectivesOffset, -12}},
+            {type = "fromSide", pos={-16, objectivesOffset, 12}}}},
+        {id = 115, name = "Crucible of Battle (HS)", objectives = {
+            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={14, objectivesOffset, 10}},
+            {type = "fromSide", pos={-14, objectivesOffset, -10}},
+            {type = "fromSide", pos={20, objectivesOffset, -8}},
+            {type = "fromSide", pos={-20, objectivesOffset, 8}}}},
+        {id = 215, name = "(I) Crucible of Battle (HS)", objectives = {
+            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={16, objectivesOffset, 12}},
+            {type = "fromSide", pos={-16, objectivesOffset, -12}},
+            {type = "fromSide", pos={22, objectivesOffset, -10}},
+            {type = "fromSide", pos={-22, objectivesOffset, 10}}}},
+        {id = 116, name = "Crucible of Battle (HS2)", objectives = {
+            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={14, objectivesOffset, 10}},
+            {type = "fromSide", pos={-14, objectivesOffset, -10}},
+            {type = "fromSide", pos={20, objectivesOffset, -8}},
+            {type = "fromSide", pos={-20, objectivesOffset, 8}}}},
+        {id = 216, name = "(I) Crucible of Battle (HS2)", objectives = {
+            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={16, objectivesOffset, 12}},
+            {type = "fromSide", pos={-16, objectivesOffset, -12}},
+            {type = "fromSide", pos={22, objectivesOffset, -10}},
+            {type = "fromSide", pos={-22, objectivesOffset, 10}}}},
+        {id = 117, name = "Tipping Point (HS)", objectives = {
+            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={14, objectivesOffset, 10}},
+            {type = "fromSide", pos={-14, objectivesOffset, -10}},
+            {type = "fromSide", pos={22, objectivesOffset, -8}},
+            {type = "fromSide", pos={-22, objectivesOffset, 8}}}},
+        {id = 217, name = "(I) Tipping Point (HS)", objectives = {
+            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={16, objectivesOffset, 14}},
+            {type = "fromSide", pos={-16, objectivesOffset, -14}},
+            {type = "fromSide", pos={22, objectivesOffset, -10}},
+            {type = "fromSide", pos={-22, objectivesOffset, 10}}}},
+        {id = 118, name = "Tipping Point (HS2)", objectives = {
+            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={14, objectivesOffset, 10}},
+            {type = "fromSide", pos={-14, objectivesOffset, -10}},
+            {type = "fromSide", pos={22, objectivesOffset, -8}},
+            {type = "fromSide", pos={-22, objectivesOffset, 8}}}},
+        {id = 218, name = "(I) Tipping Point (HS2)", objectives = {
+            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
+            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
+            {type = "fromSide", pos={16, objectivesOffset, 14}},
+            {type = "fromSide", pos={-16, objectivesOffset, -14}},
+            {type = "fromSide", pos={22, objectivesOffset, -10}},
+            {type = "fromSide", pos={-22, objectivesOffset, 10}}}},
+    --Combat Patrol Missions
+        {id = 22, name = "(CP) Clash of Patrols", objectives = {
+            {type = "fixed", pos={10, objectivesOffset, 0}},
+            {type = "fixed", pos={-10, objectivesOffset, 0}},
+            {type = "fixed", pos={0, objectivesOffset, 6}},
+            {type = "fixed", pos={0, objectivesOffset, -6}}}},
+        {id = 23, name = "(CP) Archeotech Recovery", objectives = {
+            {type = "fixed", pos={0, objectivesOffset, 0}},
+            {type = "fixed", pos={16, objectivesOffset, 8}},
+            {type = "fixed", pos={-16, objectivesOffset, -8}},
+            {type = "fixed", pos={8, objectivesOffset, -8}},
+            {type = "fixed", pos={-8, objectivesOffset, 8}}}},
+        {id = 24, name = "(CP) Forward Outpost", objectives = {
+            {type = "fixed", pos={16, objectivesOffset, 0}},
+            {type = "fixed", pos={-16, objectivesOffset, 0}},
+            {type = "fixed", pos={0, objectivesOffset, 8}},
+            {type = "fixed", pos={0, objectivesOffset, -8}}}},
+        {id = 25, name = "(CP) Scorched Earth", objectives = {
+            {type = "fixed", pos={10, objectivesOffset, -4}},
+            {type = "fixed", pos={-10, objectivesOffset, 4}},
+            {type = "fixed", pos={0, objectivesOffset, 6}},
+            {type = "fixed", pos={0, objectivesOffset, -6}}}},
+        {id = 26, name = "(CP) Sweeping Raid", objectives = {
+            {type = "fixed", pos={16, objectivesOffset, 6}},
+            {type = "fixed", pos={-16, objectivesOffset, -6}},
+            {type = "fixed", pos={3, objectivesOffset, -9}},
+            {type = "fixed", pos={-3, objectivesOffset, 9}}}},
+        {id = 27, name = "(CP) Display of Might", objectives = {
+            {type = "fixed", pos={14, objectivesOffset, 0}},
+            {type = "fixed", pos={-14, objectivesOffset, 0}},
+            {type = "fixed", pos={0, objectivesOffset, 8}},
+            {type = "fixed", pos={0, objectivesOffset, -8}}}},
+        {id = 28, name = "(CP) Four Corners", objectives = {}},
+        {id = 29, name = "(CP) Three Circles", objectives = {}},
+    --King of the Colosseum
+        {id = 301, name = "King of the Colosseum", objectives = {
+            {type = "fixed", pos={0, objectivesOffset, 0}},
+            {type = "fromSide", pos={18, objectivesOffset, 5.5}},
+            {type = "fromSide", pos={-18, objectivesOffset, -5.5}},
+            {type = "fromSide", pos={5.5, objectivesOffset, -18}},
+            {type = "fromSide", pos={-5.5, objectivesOffset, 18}}}},
+        {id = 0, name = "None", objectives = {}},
+    }
+
+    objectivesOffsetMenuBtn = {
+    index = 1, label = "Obj.\nHeight", click_function = "none", function_owner = self,
+    position = {-menuX + 1.4*arrowOffset, 5, menuZ}, rotation = {0, 0, 0}, height = 450, width = 1000,
+    font_size = 150, color = {0, 0, 0}, font_color = {1, 1, 1}
+}
+objectivesOffsetUpBtn = {
+    index = 1, label = "+", click_function = "objectivesOffsetUp", function_owner = self,
+    position = {-menuX + 1.4*arrowOffset, 5, menuZ - secondRowOffset}, rotation = {0, 0, 0}, height = 450, width = 800,
+    font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
+}
+objectivesOffsetDownBtn = {
+    index = 1, label = "-", click_function = "objectivesOffsetDown", function_owner = self,
+    position = {-menuX + 1.4*arrowOffset, 5, menuZ + secondRowOffset}, rotation = {0, 0, 0}, height = 450, width = 800,
+    font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
+}
+
+-- 9" secondary deployment lines toggle button (teal 59decf)
+local nineInchColor = {0x59/255, 0xDE/255, 0xCF/255}
+nineFromDeployBtn = {
+    index = 1,
+    label = '9" from DZ',
+    tooltip = 'Toggle 9" lines offset from current deployment lines',
+    click_function = "toggleNineFromDeployment",
+    function_owner = self,
+    position = { -menuX, 5, menuZ + (secondRowOffset * 3) },
+    rotation = {0, 0, 0},
+    height = 450,
+    width = 1600,
+    font_size = 200,
+    color = nineInchColor,
+    font_color = {0, 0, 0}
+}
+
+defaultObjectivesHeight=1.0
+
+function spawnObjectives()
+    destroyAllObjectives()
+    if deploySelected < #DeployZonesData and DeployZonesData[deploySelected].objectivesID then
+        for id, objectiveSet in ipairs(objectivesData) do
+            if objectiveSet.id == DeployZonesData[deploySelected].objectivesID then
+                local spawned = nil
+                local pos={}
+                local template = getObjectFromGUID(Global.getVar("templateObjective_GUID"))
+                for i, objective in ipairs(objectiveSet.objectives) do
+                    pos={objective.pos[1], objective.pos[2], objective.pos[3]}
+                    if objectivesOffset == nil then pos[2] = 1 else pos[2] = defaultObjectivesHeight + objectivesOffset end
+                    if objective.type == "fixed" then
+                        -- no change to pos
+                    end
+                    if objective.type == "fromSide" then
+                        -- The X and Z values in pos are relative. A positive value is distance from
+                        -- one edge and a negative value is distance from the other. The value 0 is
+                        -- special and is actually absolute.
+                        local mapBase = mat.getScale().z * sizeMulti --short edge
+                        local mapHeight = mat.getScale().x * sizeMulti --long edge
+                        if pos[1] > 0 then
+                            pos[1] = (mapHeight / 2) - pos[1]
+                        elseif pos[1] < 0 then
+                            pos[1] = ((mapHeight / 2) + pos[1]) * -1
+                        end
+                        if pos[3] > 0 then
+                            pos[3] = (mapBase / 2) - pos[3]
+                        elseif pos[3] < 0 then
+                            pos[3] = ((mapBase / 2) + pos[3]) * -1
+                        end
+                    end
+                    if objective.type == "diagonal" then
+                        pos=calcDiagonalPos(objective.orientation, pos[1], pos[2])
+                    end
+                    spawned = template.clone({ position = pos })
+                    spawned.setGMNotes("objective")
+                    spawned.setPosition(pos)
+                    spawned.setRotation({0,270,180})
+                    spawned.setLock(true)
+                end
+                break
+            end
+        end
+    end
+end
+
+function calcDiagonalPos(orientation, relPosOnDiagonal, posY)
+    local posX = 0
+    local posZ = 0
+    local mat = getObjectFromGUID(mat_GUID)
+    local mapBase = mat.getScale().z * sizeMulti --short edge
+    local mapHeight = mat.getScale().x * sizeMulti --long edge
+
+
+    local edgeAngle = 0 -- angle of the line from the given map edge
+    local edgeAngleRad = 0
+    local halfTriBase = 0 -- triangle with hypotenuse that is half the line lenght
+    local halfTriHeight = 0 -- triangle with hypotenuse that is half the line lenght
+
+    edgeAngleRad = math.atan(mapBase / mapHeight)
+    edgeAngle = math.deg(edgeAngleRad)
+
+    posX=relPosOnDiagonal * math.cos(edgeAngleRad)
+    posZ=relPosOnDiagonal * math.sin(edgeAngleRad)
+    if orientation == "xz" then
+        -- default values
+    end
+    if orientation == "x-z" then
+        posZ=-posZ
+    end
+    if orientation == "-xz" then
+        posX=-posX
+    end
+    if orientation == "-x-z" then
+        posX=-posX
+        posZ=-posZ
+    end
+
+    return {posX,posY,posZ}
+end
+
+function destroyAllObjectives()
+    for i, obj in ipairs(getAllObjects()) do
+        if obj.getGMNotes() == "objective" then
+            obj.destroy()
+        end
+    end
+end
+
+function setObjectivesHeight()
+    local pos = {0,0,0}
+    local found_GUID = {}
+    for i, obj in ipairs(getAllObjects()) do
+        if obj.getGMNotes() == "objective" then
+            table.insert(found_GUID, #found_GUID+1, obj.getGUID())
+        end
+    end
+    local found= nil
+    for j, guid in ipairs(found_GUID) do
+        found=getObjectFromGUID(guid)
+        pos = found.getPosition()
+        found.setPosition({pos[1], defaultObjectivesHeight+ objectivesOffset, pos[3]})
+    end
+end
+
+function objectivesOffsetUp()
+    objectivesOffsetUpDown(true)
+end
+
+function objectivesOffsetDown()
+    objectivesOffsetUpDown(false)
+end
+
+function objectivesOffsetUpDown(upDown) -- true up, false down
+    local amt = 0.2
+    if not upDown then amt = -0.2 end
+    objectivesOffset = objectivesOffset + amt
+    if objectivesOffset > 25 then
+        objectivesOffset = 25
+    end
+    if objectivesOffset < 0 then
+        objectivesOffset = 0
+    end
+    writeMenus()
+    setObjectivesHeight()
+end
+
+-- END objectives manager
+
+-- ***************
+-- MISSION MANAGER
+-- ***************
+
+-- Why is there a mission manager here, but there's also a file "missionManager.ttslua"? They do indeed
+-- have similar roles; the code here handles the parts that are single-instance, while the other file
+-- handles the parts that are per-player. So, for example, when "Play Leviathan" is clicked, the code
+-- here fetches the deployment/primary/mission cards, while the per-player mission managers fetch the
+-- secondary cards.
+
+packSelected = nil
+missionPackData = nil
+
+selectPariahNexusBtn = {
+    label = "Play\nPariah Nexus",
+    click_function = "selectPariahNexus",
+    function_owner = self,
+    position = {2, 5, -16.5},
+    rotation = {0, 0, 0},
+    height = 700,
+    width = 1500,
+    font_size = 200,
+    color = {1, 1, 1},
+    font_color = {0, 0, 0},
+}
+
+selectedMission = 0
+canChangeMission = true
+missionHeaderBtn = {
+    label = "M I S S I O N   S E L E C T I O N",
+    click_function = "none",
+    function_owner = self,
+    position = {2.20, 5, -17.1},
+    rotation = {0, 0, 0},
+    height = 250,
+    width = 5550,
+    font_size = 200,
+    color = {1, 1, 1},
+    font_color = {0, 0, 0},
+}
+randomiseMissionBtn = {
+    label = "Fully\nRandom",
+    click_function = "randomiseMission",
+    function_owner = self,
+    position = {-3.00, 5, -16.2},
+    rotation = {0, 0, 0},
+    height = 550,
+    width = 750,
+    font_size = 160,
+    color = {1, 1, 1},
+    font_color = {0, 0, 0}
+}
+missionSelectionDownBtn = {
+    label = "<-",
+    click_function = "missionSelectionDown",
+    function_owner = self,
+    position = {-1.30, 5, -16.2},
+    rotation = {0, 0, 0},
+    height = 550,
+    width = 750,
+    font_size = 320,
+    color = {1, 1, 1},
+    font_color = {0, 0, 0}
+}
+missionSelectionDispBtn = {
+    label = "?",
+    click_function = "none",
+    function_owner = self,
+    position = {0.35, 5, -16.2},
+    rotation = {0, 0, 0},
+    height = 550,
+    width = 750,
+    font_size = 320,
+    color = {1, 1, 1},
+    font_color = {0, 0, 0}
+}
+missionSelectionUpBtn = {
+    label = "->",
+    click_function = "missionSelectionUp",
+    function_owner = self,
+    position = {2.00, 5, -16.2},
+    rotation = {0, 0, 0},
+    height = 550,
+    width = 750,
+    font_size = 320,
+    color = {1, 1, 1},
+    font_color = {0, 0, 0}
+}
+randomTournamentMissionBtn = {
+    label = "Random\nGW",
+    click_function = "randomTournamentMission",
+    function_owner = self,
+    position = {3.70, 5, -16.2},
+    rotation = {0, 0, 0},
+    height = 550,
+    width = 750,
+    font_size = 160,
+    color = {1, 1, 0},
+    font_color = {1, 0, 0}
+}
+randomWTCMissionBtn = {
+    label = "Random\nWTC",
+    click_function = "randomWTCMission",
+    function_owner = self,
+    position = {5.35, 5, -16.2},
+    rotation = {0, 0, 0},
+    height = 550,
+    width = 750,
+    font_size = 160,
+    color = {0, 0, 1},
+    font_color = {1, 1, 1}
+}
+randomUKTCMissionBtn = {
+    label = "Random\nUKTC",
+    click_function = "randomUKTCMission",
+    function_owner = self,
+    position = {7, 5, -16.2},
+    rotation = {0, 0, 0},
+    height = 550,
+    width = 750,
+    font_size = 160,
+    color = {0, 0, 0},
+    font_color = {1, 1, 1}
+}
+
+function selectPariahNexus()
+    selectMissionPack(MISSION_PACK_PARIAH_NEXUS)
+end
+
+function selectMissionPack(packIndex)
+    packSelected = packIndex
+    Global.call("setMissionPack", {pack = packSelected})
+
+    redMissionManager = getObjectFromGUID(Global.getVar("redMissionManager_GUID"))
+    redMissionManager.call("packSelected", {pack = packSelected})
+    blueMissionManager = getObjectFromGUID(Global.getVar("blueMissionManager_GUID"))
+    blueMissionManager.call("packSelected", {pack = packSelected})
+
+    missionPackData = Global.getTable("missionPackData")[packSelected]
+    deploymentDeck = getObjectFromGUID(missionPackData.deploymentDeck_GUID)
+    primaryDeck = getObjectFromGUID(missionPackData.primaryDeck_GUID)
+
+    deploymentDeck.setPosition({85, 0.94, 11})
+    deploymentDeck.locked = false
+    deploymentDeck.tooltip = true
+    deploymentDeck.interactable = true
+    primaryDeck.setPosition({85, 0.94, 5.6})
+    primaryDeck.locked = false
+    primaryDeck.tooltip = true
+    primaryDeck.interactable = true
+
+    writeMenus()
+end
+
+function missionSelectionDown()
+    if canChangeMission then
+        selectedMission = selectedMission - 1
+        if selectedMission <= 0 then selectedMission = #missionPackData.tournamentMissions end
+        updateMission()
+    end
+end
+
+function missionSelectionUp()
+    if canChangeMission then
+        selectedMission = selectedMission + 1
+        if selectedMission > #missionPackData.tournamentMissions then selectedMission = 1 end
+        updateMission()
+    end
+end
+
+function randomiseMission()
+    if canChangeMission then
+        selectedMission = 0
+        updateMission()
+    end
+end
+
+function randomTournamentMission()
+    if canChangeMission then
+        selectedMission = math.random(#missionPackData.tournamentMissions)
+        updateMission()
+    end
+end
+
+function randomWTCMission()
+    if canChangeMission then
+        math.randomseed(os.time())
+        local chars = {"B","F","E","O","P","J"}
+        local randomChar = chars[math.random(#chars)]
+        local foundIndex
+        for i, mission in ipairs(missionPackData.tournamentMissions) do
+            if mission and mission.name == randomChar then
+                foundIndex = i
+                break
+            end
+        end
+        if foundIndex then
+            selectedMission = foundIndex
+            updateMission()
+        end
+    end
+end
+
+
+function randomUKTCMission()
+    if canChangeMission then
+        math.randomseed(os.time())
+        local chars = {"H","F","O","N","C","D","R"}
+        local randomChar = chars[math.random(#chars)]
+        local foundIndex
+        for i, mission in ipairs(missionPackData.tournamentMissions) do
+            if mission and mission.name == randomChar then
+                foundIndex = i
+                break
+            end
+        end
+        if foundIndex then
+            selectedMission = foundIndex
+            updateMission()
+        end
+    end
+end
+
+
+
+function randomUKTCMission()
+    if canChangeMission then
+        math.randomseed(os.time())
+        local chars = {"V","W","Y","X","Z"}
+        local randomChar = chars[math.random(#chars)]
+        local foundIndex
+        for i, mission in ipairs(missionPackData.tournamentMissions) do
+            if mission and mission.name == randomChar then
+                foundIndex = i
+                break
+            end
+        end
+        if foundIndex then
+            selectedMission = foundIndex
+            updateMission()
+        end
+    end
+end
+
+
+
+function updateMission()
+    canChangeMission = false
+    Global.call("moveAllFromZoneToDeck", {zone = "deployment", deck = "deployment"})
+    Global.call("moveAllFromZoneToDeck", {zone = "primary", deck = "primary"})
+    if selectedMission == 0 then
+        missionSelectionDispBtn.label = "?"
+        Global.call("moveOneFromDeckToZone", {deck = "deployment", zone = "deployment"})
+        Global.call("moveOneFromDeckToZone", {deck = "primary", zone = "primary"})
+    else
+        mission = missionPackData.tournamentMissions[selectedMission]
+        missionSelectionDispBtn.label = mission.name
+        Global.call("moveOneFromDeckToZone", {deck = "deployment", zone = "deployment", card = mission.deployment})
+        Global.call("moveOneFromDeckToZone", {deck = "primary", zone = "primary", card = mission.primary})
+    end
+    writeMenus()
+
+    Wait.time(function() canChangeMission = true end, 0.3)
+end
+
+
+-- function updateMission()
+--     canChangeMission = false
+--     Global.call("moveAllFromZoneToDeck", {zone = "deployment", deck = "deployment"})
+--     Global.call("moveAllFromZoneToDeck", {zone = "mission", deck = "mission"})
+--     Global.call("moveAllFromZoneToDeck", {zone = "primary", deck = "primary"})
+
+--     if selectedMission == 0 then
+--         missionSelectionDispBtn.label = "?"
+--         Global.call("moveOneFromDeckToZone", {deck = "deployment", zone = "deployment"})
+--         Global.call("moveOneFromDeckToZone", {deck = "mission", zone = "mission"})
+--         Global.call("moveOneFromDeckToZone", {deck = "primary", zone = "primary"})
+--     else
+--         mission = missionPackData.tournamentMissions[selectedMission]
+--         missionSelectionDispBtn.label = mission.name
+--         Global.call("moveOneFromDeckToZone", {deck = "deployment", zone = "deployment", card = mission.deployment})
+--         Global.call("moveOneFromDeckToZone", {deck = "mission", zone = "mission", card = mission.mission})
+--         Global.call("moveOneFromDeckToZone", {deck = "primary", zone = "primary", card = mission.primary})
+--     end
+--     writeMenus()
+
+--     Wait.time(function() canChangeMission = true end, 0.3)
+-- end
+
+-- END MISSION MANAGER
+
+-- ************
+-- GAME MANAGER
+-- ************
+
+simulation = false -- is used to test in single player
+redFirstLbl = "R  e  d    p l a y e r    f i r s t\n(click to toggle)"
+blueFirstLbl = "B l u e    p l a y e r    f i r s t\n(click to toggle)"
+inGame = false
+gameTurnCounter = nil
+armyMover = ""
+first = "Red"
+currentTurn = "Red"
+cpEveryTurn = true
+
+-- track if player has gained CP so far this battle round
+-- true if a CP has been gained, else false
+redCpIncrementTracker = false
+blueCpIncrementTracker = false
+
+phases = {"Command", "Movement", "Shooting", "Charge", "Fight"}
+currentPhase = 1
+startBtn = {
+    index = 1, label = "S T A R T  G A M E", click_function = "startGame", function_owner = self,
+    position = {0, 5, - 1}, rotation = {0, 0, 0}, height = 750, width = 5000,
+    font_size = 500, color = {0, 0.6, 0}, font_color = {1, 1, 1}
+}
+firstPlayerBtn = {
+    index = 1, label = redFirstLbl, click_function = "togglePlyr", function_owner = self,
+    position = {0, 5, 1}, rotation = {0, 0, 0}, height = 750, width = 5000,
+    font_size = 300, color = {1, 0, 0}, font_color = {1, 1, 1}
+}
+feedbackBtn = {
+    index = 1, label = "Feedback", click_function = "openFeedbackPopup", function_owner = self,
+    position = {17, 5, 2.8}, rotation = {0, 0, 0}, height = 550, width = 5000,
+    font_size = 300, color = {0.2, 0.2, 0.2}, font_color = {1, 1, 1}
+}
+nextPhaseLbl = "P A S S\nT U R N"
+nextPhaseBtn = {
+    index = 1, label = nextPhaseLbl, tooltip = "Left click - Next phase\nRight click - Skip to next turn", click_function = "nextPhase", function_owner = self,
+    position = {0, 5, 0}, rotation = {0, 0, 0}, height = 1500, width = 5000,
+    font_size = 600, color = {1, 0, 0}, font_color = {1, 1, 1}
+}
+IncrementRedCpBtn = {
+    index = 1, label = "Gain a CP", tooltip = "Increment Red CP counter\nWill only increment once per Round", click_function = "incrementRedCp", function_owner = self,
+    position = {-46.2, 5, -3.75}, rotation = {0, 0, 0}, height = 1650, width = 3000,
+    font_size = 600, color = {1, 0, 0}, font_color = {1, 1, 1}
+}
+IncrementBlueCpBtn = {
+    index = 1, label = "Gain a CP", tooltip = "Increment Blue CP counter\nWill only increment once per Round", click_function = "incrementBlueCp", function_owner = self,
+    position = {46.2, 5, -3.75}, rotation = {0, 0, 0}, height = 1650, width = 3000,
+    font_size = 600, color = {0, 0, 1}, font_color = {1, 1, 1}
+}
+position = {menuX, 5, menuZ}
+notePadTxt = "This is the Hutber version of the brilliant FTC Competitive 40k Map Base 10th. Only Grand Tournament play is supported. Everything is taken from him and I just wanted to see some new features. \n\nPlease raise issues at https://github.com/hutber/hutber-tts/issues.\nOr file issues with the original base map project: https://github.com/ThePants999/tts-comp-ftc-base-lua-scripts\n\nInstructions can be found in the Notebook.\n\nIf any of the maps need updating please let me know via the github issues.\n\n\nJoin the TTS 40K Discord server: https://discord.gg/Drpzcwwmm6"
+
+
+function writeMenus()
+    self.clearButtons()
+    if not sizeConfirmed then
+        writeSizeMenu()
+        writeDeployMenu()
+    else
+        if inGame == false then
+            writeStartMenu()
+            writeDeployMenu()
+        else
+            writeIngameMenu()
+        end
+    end
+    self.createButton(feedbackBtn)
+end
+
+function writeStartMenu()
+    if gameMode ~= "game" then return end
+    self.createButton(startBtn)
+    self.createButton(firstPlayerBtn)
+end
+
+function writeDeployMenu()
+    if not deploySelected or not DeployZonesData[deploySelected] then
+        deploySelected = #DeployZonesData
+    end
+    deployBtn.label = DeployZonesData[deploySelected].name
+    self.createButton(deployBtn)
+    self.createButton(deployUpBtn)
+    self.createButton(deployDownBtn)
+    self.createButton(deployOffsetMenuBtn)
+    self.createButton(deployOffsetUpBtn)
+    self.createButton(deployOffsetDownBtn)
+    self.createButton(objectivesOffsetDownBtn)
+    self.createButton(objectivesOffsetUpBtn)
+    self.createButton(objectivesOffsetMenuBtn)
+    -- self.createButton(nineFromDeployBtn)
+
+    if gameMode == "game" then
+        if not packSelected then
+            -- change to skip mission selecting
+            selectPariahNexus()
+        else
+            self.createButton(missionHeaderBtn)
+            self.createButton(randomiseMissionBtn)
+            self.createButton(randomTournamentMissionBtn)
+            self.createButton(randomWTCMissionBtn)
+            self.createButton(randomUKTCMissionBtn)
+            self.createButton(missionSelectionDownBtn)
+            self.createButton(missionSelectionUpBtn)
+            self.createButton(missionSelectionDispBtn)
+        end
+    end
+end
+
+function writeIngameMenu()
+    self.createButton(IncrementRedCpBtn)
+    self.createButton(IncrementBlueCpBtn)
+    self.createButton(deployOffsetMenuBtn)
+    self.createButton(deployOffsetUpBtn)
+    self.createButton(deployOffsetDownBtn)
+    self.createButton(objectivesOffsetDownBtn)
+    self.createButton(objectivesOffsetUpBtn)
+    self.createButton(objectivesOffsetMenuBtn)
+    destroyNineInchDeployLines()
+
+    nextPhaseBtn.color = currentTurn
+    local visibleTo=nextPhaseBtn.color
+    Global.UI.setAttribute("passTurn", "visibility", visibleTo)
+    Global.UI.setAttribute("passTurnBtn", "color", nextPhaseBtn.color)
+    nextPhaseBtn.label = phases[currentPhase].."\nNEXT PHASE"
+    if currentPhase == #phases then
+        nextPhaseBtn.label = phases[currentPhase].."\nPASS TURN"
+    end
+    Global.UI.setValue("passTurnTxt", nextPhaseBtn.label)
+    self.createButton(nextPhaseBtn)
+end
+
+function getContainedItems(container)
+    local contained = {}
+    local bounds = container.getBounds()
+    if not bounds then
+        return contained
+    end
+    for _, obj in ipairs(getAllObjects()) do
+        if obj ~= container then
+            local pos = obj.getPosition()
+            if pos.x > (bounds.center.x - bounds.size.x/2) and pos.x < (bounds.center.x + bounds.size.x/2) and
+               pos.z > (bounds.center.z - bounds.size.z/2) and pos.z < (bounds.center.z + bounds.size.z/2) and
+               pos.y > (bounds.center.y - bounds.size.y/2) and pos.y < (bounds.center.y + bounds.size.y/2) then
+                table.insert(contained, obj)
+            end
+        end
+    end
+    return contained
+end
+
+function getCounterValueByGuidVar(guidVarName)
+    local counterGuid = Global.getVar(guidVarName)
+    if not counterGuid then
+        return nil
+    end
+
+    local counterObj = getObjectFromGUID(counterGuid)
+    if not counterObj or not counterObj.Counter or not counterObj.Counter.getValue then
+        return nil
+    end
+
+    local ok, value = pcall(function()
+        return counterObj.Counter.getValue()
+    end)
+    if not ok then
+        return nil
+    end
+    return value
+end
+
+function getRoundNumber()
+    local round = getCounterValueByGuidVar("gameTurnCounter_GUID")
+    if round == nil then
+        return nil
+    end
+    return tonumber(round)
+end
+
+function startGame(obj, player, alt)
+    if alt then
+        simulation = true
+    end
+    if singlesMode ~= "singles" then
+        local count = Global.getVar("LOCKED_IN_SECONDARIES")
+        forceStartCounter = forceStartCounter or 0
+
+        if count ~= 2 then
+            if forceStartCounter < 2 then
+            forceStartCounter = forceStartCounter + 1
+            local remaining = 3 - forceStartCounter
+            if remaining > 0 then
+                broadcastToAll("Please Lock in your Secondaries. Click "..remaining.." more times to force start the game", {1,0,0})
+                return
+            else
+                broadcastToAll("Force starting the game!", {1,0,0})
+            end
+            end
+        else
+            forceStartCounter = 0
+        end
+
+        -- Count the number of players (if needed later)
+        local playerList = Player.getPlayers()
+        local numberOfPlayers = 0
+        for i, p in ipairs(playerList) do
+            numberOfPlayers = numberOfPlayers + 1
+        end
+
+
+        if not Player["Red"].seated or not Player["Blue"].seated then
+            broadcastToAll("Must have both players seated", {1, 0, 0})
+            if not simulation then
+                return
+            end
+        end
+    end
+
+    Global.call("recordPlayers")
+    inGame = true
+
+    local scoresheet = getObjectFromGUID(Global.getVar("scoresheet_GUID"))
+    scoresheet.call("startGame")
+
+    startCustomTurns()
+    destroyDeployZones()
+    broadcastToAll(phases[currentPhase].." phase", "Yellow")
+    resetActivationTokens()
+    Notes.setNotes("")
+    writeMenus()
+    simulation = false
+end
+
+
+function resetActivationTokens()
+    for i, obj in ipairs(getAllObjects()) do
+        if obj.getVar("BCBtype") == "ActivationToken" then
+            obj.call("resetAlredyActed")
+        end
+    end
+end
+
+function newRoundStarted()
+    redCpIncrementTracker = false
+    blueCpIncrementTracker = false
+end
+
+function incrementRedCp(params)
+    if not inGame then return end
+    if not redCpIncrementTracker then
+        redCpIncrementTracker = true
+        redCpCounter.Counter.increment()
+    else
+        broadcastToAll("Red has already gained a CP this battle round!", "Yellow")
+    end
+end
+
+function incrementBlueCp(params)
+    if not inGame then return end
+    if not blueCpIncrementTracker then
+        blueCpIncrementTracker = true
+        blueCpCounter.Counter.increment()
+    else
+        broadcastToAll("Blue has already gained a CP this battle round!", "Yellow")
+    end
+end
+
+function nextPhase(obj, player_color_click, alt_click)
+    resetActivationTokens()
+    if alt_click then
+        passTurn(obj, player_color_click, alt_click)
+        return
+    end
+    currentPhase = currentPhase + 1
+    if currentPhase > #phases then
+        currentPhase = 1
+        passTurn(obj, player_color_click, alt_click)
+    end
+    broadcastToAll(phases[currentPhase].." phase", "Yellow")
+    writeMenus()
+end
+
+function passTurn(obj, player_color_click, alt_click)
+    if(singlesMode != "singles") then
+        if player_color_click ~= currentTurn then
+            if simulation then
+                broadcastToAll("INTRUDER", "Pink")
+            else
+                return
+            end
+        end
+    end
+
+    currentPhase = 1
+    local orangePCounter = getObjectFromGUID(Global.getVar("orangePCounter_GUID"))
+    local purplePCounter = getObjectFromGUID(Global.getVar("purpleCPCounter_GUID"))
+
+    if currentTurn == "Red" then
+        currentTurn = "Blue"
+        blueTurnCounter.call("increaseSelf")
+        blueCpCounter.Counter.increment()
+        orangePCounter.Counter.increment() -- Increment Orange CP
+        if cpEveryTurn then
+            redCpCounter.Counter.increment()
+            purplePCounter.Counter.increment() -- Increment Purple CP
+            Wait.time(function() broadcastToAll("Both CPs incremented!", "White") end, 0.3)
+        else
+            Wait.time(function() broadcastToAll("Blue CPs incremented!", "Blue") end, 0.3)
+        end
+    else
+        currentTurn = "Red"
+        redTurnCounter.call("increaseSelf")
+        redCpCounter.Counter.increment()
+        purplePCounter.Counter.increment() -- Increment Purple CP
+        if cpEveryTurn then
+            blueCpCounter.Counter.increment()
+            orangePCounter.Counter.increment() -- Increment Orange CP
+            Wait.time(function() broadcastToAll("Both CPs incremented!", "White") end, 0.3)
+        else
+            Wait.time(function() broadcastToAll("Red CPs incremented!", "Red") end, 0.3)
+        end
+    end
+
+    if simulation then
+        broadcastToAll("It's " .. currentTurn .. " turn", currentTurn)
+    else
+        if Player[currentTurn].steam_name then
+            broadcastToAll("It's " .. Player[currentTurn].steam_name .. " turn", currentTurn)
+        else
+            broadcastToAll("It's " .. currentTurn .. " turn", currentTurn)
+        end
+    end
+    writeMenus()
+end
+
+
+function startCustomTurns()
+    if first == "Red" then
+        currentTurn = "Blue" -- it has to be the opposite
+    else
+        currentTurn = "Red"
+    end
+    passTurn(self, currentTurn, false)
+end
+
+function startBuiltinTurns()
+    if first == "Red" then
+        Turns.order = {"Red", "Blue"}
+    else
+        Turns.order = {"Blue", "Red"}
+    end
+    Turns.pass_turns = true
+    Turns.enable = false
+    Turns.enable = true
+end
+
+function togglePlyr()
+    self.clearButtons()
+    if first == "Red" then
+        firstPlayerBtn.label = blueFirstLbl
+        firstPlayerBtn.color = {0, 0, 1}
+        first = "Blue"
+    else
+        firstPlayerBtn.label = redFirstLbl
+        firstPlayerBtn.color = {1, 0, 0}
+        first = "Red"
+    end
+    writeMenus()
+end
+
+function showHideIngameDeployment()
+    local state = Global.getVar("interactiveButtonDeploymentZones")
+    if state == 1 then -- place
+        Global.setVar("interactiveButtonDeploymentZones", 2)
+        if deploySelected < #DeployZonesData then
+            drawDeployZone(DeployZonesData[deploySelected])
+        end
+    else -- recall
+        Global.setVar("interactiveButtonDeploymentZones", 1)
+        if deploySelected < #DeployZonesData then
+            destroyDeployZones()
+        end
+    end
+end
+
+
+-- 9" secondary deployment lines (toggle + helpers)
+function destroyNineInchDeployLines()
+    for i, obj in ipairs(getAllObjects()) do
+        if obj.getGMNotes() == "deployZone9" then
+            obj.destroy()
+        end
+    end
+end
+
+function toggleNineFromDeployment()
+    -- Remove if present, else add at 9"
+    local present = false
+    for i, obj in ipairs(getAllObjects()) do
+        if obj.getGMNotes() == "deployZone9" then
+            present = true
+            break
+        end
+    end
+    if present then
+        destroyNineInchDeployLines()
+        return
+    end
+    addNineInchDeployLines(9)
+end
+
+function addNineInchDeployLines(distance)
+    for i, obj in ipairs(getAllObjects()) do
+        if obj.getGMNotes() == "deployZone" then
+            local sc = obj.getScale()
+            -- Only process thin straight lines, skip circles and other shapes
+            if sc.z and sc.z <= 0.05 then
+                local rot = obj.getRotation()
+                local pos = obj.getPosition()
+
+                local yawRad = math.rad(rot.y)
+                -- normal vector in XZ plane (perpendicular to line axis)
+                local nx = math.cos(yawRad + math.rad(90))
+                local nz = math.sin(yawRad + math.rad(90))
+                -- point towards table center
+                local cx = -pos.x
+                local cz = -pos.z
+                local dot = (nx * cx) + (nz * cz)
+                if dot < 0 then
+                    nx = -nx
+                    nz = -nz
+                end
+
+                local newPos = { x = pos.x + nx * distance, y = pos.y, z = pos.z + nz * distance }
+                local newRot = { x = rot.x, y = rot.y, z = rot.z }
+                local newScale = { x = sc.x, y = sc.y, z = sc.z }
+                spawnLine(newPos, newRot, newScale, nineInchColor, "deployZone9")
+            end
+        end
+    end
+end
+
+
+function recallAll()
+    destroyAllObjectives()
+    destroyDeployZones()
+end
+
+function none()
+end
+
+
+-- The feedback popup panel is now defined in the base XML (hidden by default). We only show/hide
+-- it and wire up onClick handlers via setAttribute().
+-- IMPORTANT: We never call Global.UI.setXml() at runtime because it rebuilds the entire Global UI
+-- and causes host/guest desync over high-latency links.
+
+function openFeedbackPopup()
+    local guid = self.getGUID()
+    Global.UI.setAttribute("feedbackSubmitBtn", "onClick", guid .. "/submitFeedback")
+    Global.UI.setAttribute("feedbackCloseBtn", "onClick", guid .. "/closeFeedbackPopup")
+    Global.UI.setAttribute("feedbackPopup", "active", "true")
+end
+
+function closeFeedbackPopup()
+    Global.UI.setAttribute("feedbackPopup", "active", "false")
+end
+
+function submitFeedback(player, color, alt)
+    broadcastToAll("Feedback not available in this version.", {1, 1, 0})
+    closeFeedbackPopup()
+end
+
+
