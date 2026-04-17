@@ -11,6 +11,9 @@ This repo now contains the actual TTS JSON file.
 
 Examples:
 
+To run the compiler via python run this from the Compiler folder
+python3 compile.py --test 
+
 - Windows PowerShell:
 
   ```powershell
