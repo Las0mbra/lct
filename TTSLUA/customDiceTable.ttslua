@@ -83,44 +83,49 @@ orderedRollGroup3Btn={
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
 
+add1d3Btn={
+    label="+ 1d3", click_function="spawnDice1d3", function_owner=self,
+    position={-0.5, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
+    font_size=60, color={1,1,1}, font_color={0,0,0}
+}
 add1d6Btn={
     label="+ 1d6", click_function="spawnDice1", function_owner=self,
-    position={-0.5, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
+    position={0.0, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
 add2d6Btn={
     label="+ 2d6", click_function="spawnDice2", function_owner=self,
-    position={0.0, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
+    position={0.5, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
 add3d6Btn={
     label="+ 3d6", click_function="spawnDice3", function_owner=self,
-    position={0.5, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
+    position={1.0, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
 add4d6Btn={
     label="+ 4d6", click_function="spawnDice4", function_owner=self,
-    position={1.0, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
+    position={1.5, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
 add5d6Btn={
     label="+ 5d6", click_function="spawnDice5", function_owner=self,
-    position={1.5, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
+    position={2.0, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
 add10d6Btn={
     label="+ 10d6", click_function="spawnDice10", function_owner=self,
-    position={2.0, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
+    position={2.5, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
 add25d6Btn={
     label="+ 25d6", click_function="spawnDice25", function_owner=self,
-    position={2.5, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
+    position={3.0, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
 
 colorBtnDimension=150
-colorBtnOffset=3.0
+colorBtnOffset=3.5
 color1Btn={
     label="", click_function="modifyMenu1", function_owner=self,
     position={colorBtnOffset, Yoffset ,-0.87}, rotation={0,0,0}, height=colorBtnDimension, width=colorBtnDimension,
@@ -995,13 +1000,13 @@ function modifyBtns()
     local sign=""
     for i=1, 6 do
         if lowerUpper then sign = lowerSign else sign = upperSign end
-        self.editButton({ index = (16+i*2), label = clearDiceBtnLabel .. i .. sign })
+        self.editButton({ index = (17+i*2), label = clearDiceBtnLabel .. i .. sign })
 
         local selOrRollLabel = "Roll\n"
         if not rollMode then
             selOrRollLabel = "Sel\n"
         end
-        self.editButton({ index = (17+i*2), label = selOrRollLabel .. i .. sign })
+        self.editButton({ index = (18+i*2), label = selOrRollLabel .. i .. sign })
     end
 end
 
@@ -1176,6 +1181,51 @@ function spawnDice10(obj, player, alt)
 end
 function spawnDice25(obj, player, alt)
     spawnDice(25,player)
+end
+
+function spawnDice1d3(obj, player, alt)
+    spawnD3(1, player)
+end
+
+function spawnD3(n, player)
+    local playerDiceSpeed = player == "Red" and Global.getVar("redDiceSpawnTime") or Global.getVar("blueDiceSpawnTime")
+    local currentTime = os.time()
+    local disableTime = (playerDiceSpeed == "slow") and 0.6 or 0.2
+    if currentTime - lastClick < disableTime then
+        printToColor("Wait a bit!", player, "Yellow")
+        return
+    end
+    lastClick = currentTime
+    local offset = #getDice()
+    if offset + n > 128 then printToColor("Dice limit reached!", player, "Orange") end
+    local grid, row, col = 0, 0, 0
+    for i = 1, offset do
+        col = col + 1
+        if col > 4 then col = 0; row = row + 1
+            if row > 4 then row = 0; grid = grid + 1 end
+        end
+    end
+    if offset + n > 128 then n = 128 - offset end
+    local d3Bag = getObjectFromGUID("2d9705")
+    if not d3Bag then
+        printToColor("D3 bag not found!", player, "Red")
+        return
+    end
+    for i = 1, n do
+        local pos = self.positionToWorld({4 - grid*1.5 - col*0.25, 0.5, -0.3 + row*0.25})
+        d3Bag.takeObject({
+            position          = pos,
+            rotation          = self.getRotation() + Vector(0.0, 180.0, 0.0),
+            smooth            = false,
+            callback_function = function(obj)
+                if selectedColor ~= nil then obj.setColorTint(selectedColor) end
+            end
+        })
+        col = col + 1
+        if col > 4 then col = 0; row = row + 1
+            if row > 4 then row = 0; grid = grid + 1 end
+        end
+    end
 end
 
 function spawnDice(n,player)
@@ -1548,6 +1598,7 @@ function onload()
     self.createButton(orderedRollBtn)
     self.createButton(orderedRollGroup2Btn)
     self.createButton(orderedRollGroup3Btn)
+    self.createButton(add1d3Btn)
     self.createButton(add1d6Btn)
     self.createButton(add2d6Btn)
     self.createButton(add5d6Btn)
@@ -2074,16 +2125,16 @@ function modifyMenu(color)
     customDiceImage = nil
     selectedColor = color
     setDiceType()
-    self.editButton({index=7, color=color})
     self.editButton({index=8, color=color})
     self.editButton({index=9, color=color})
     self.editButton({index=10, color=color})
     self.editButton({index=11, color=color})
-    self.editButton({index=32, color=color})
+    self.editButton({index=12, color=color})
     self.editButton({index=33, color=color})
-    self.editButton({index=34, color="White"})
+    self.editButton({index=34, color=color})
     self.editButton({index=35, color="White"})
     self.editButton({index=36, color="White"})
+    self.editButton({index=37, color="White"})
 end
 
 function setDiceType()
