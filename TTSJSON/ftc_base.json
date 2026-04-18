@@ -40859,7 +40859,8 @@
         }
       ]
     },
-    {
+    //Custom table textuire
+    {  
       "GUID": "28865a",
       "Name": "Custom_Tile",
       "Transform": {
@@ -40895,7 +40896,7 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomImage": {
-        "ImageURL": "https://cdn.create.vista.com/api/media/medium/173629162/stock-photo-dark-wooden-background?token=",
+        "ImageURL": "https://i.imgur.com/TxKuCNk.jpeg",
         "ImageSecondaryURL": "",
         "ImageScalar": 1.0,
         "WidthScale": 0.0,
