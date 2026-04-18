@@ -149,9 +149,16 @@ def main():
     for find_guid, file_idx in lua_guids:
         print(f"Injecting {lua_files[file_idx].name} (GUID {find_guid})... ", end="")
         found = False
-        for entry_idx, (_, guid_val) in enumerate(json_guid_entries):
+        for guid_line_idx, guid_val in json_guid_entries:
             if find_guid == guid_val:
-                lua_slot_idx = json_lua_line_idxs[entry_idx + 1]
+                # Find the first LuaScript slot that appears after this GUID's line.
+                # This is always the LuaScript field belonging to the same object block.
+                lua_slot_idx = next(
+                    (idx for idx in json_lua_line_idxs if idx > guid_line_idx), None
+                )
+                if lua_slot_idx is None:
+                    print(f"No LuaScript slot found after GUID {find_guid}! Ending compilation.")
+                    sys.exit(1)
                 inject_lua_into_line(json_lines, lua_slot_idx, lua_files[file_idx])
                 print("Done.")
                 found = True
