@@ -1,18 +1,14 @@
-# Competitive Lst-40k Base: LUA scripts
+# Simple Competitive 40k TTS base: LUA scripts
 Hutber Map Base LUA Scripts
 
 This is a fork of the original hutber/ftc table, modified to remove any telemetry and some additional features.
-This repo now contains the actual TTS JSON file.
 
-## Compiling
-
-- Requirements: PowerShell (Windows PowerShell or PowerShell Core `pwsh`) installed.
-- Run from the `Compiler/` directory so relative paths to `..\TTSLUA` and `..\TTSJSON` resolve.
-
-Examples:
+## Development
 
 To run the compiler via python run this from the Compiler folder
-python3 compile.py --test 
+python3 compile.py --test  
+
+This will create a new save file called X
 
 - Windows PowerShell:
 

@@ -2572,8 +2572,7 @@ IncrementBlueCpBtn = {
     font_size = 600, color = {0, 0, 1}, font_color = {1, 1, 1}
 }
 position = {menuX, 5, menuZ}
-notePadTxt = "This is the Hutber version of the brilliant FTC Competitive 40k Map Base 10th. Only Grand Tournament play is supported. Everything is taken from him and I just wanted to see some new features. \n\nPlease raise issues at https://github.com/hutber/hutber-tts/issues.\nOr file issues with the original base map project: https://github.com/ThePants999/tts-comp-ftc-base-lua-scripts\n\nInstructions can be found in the Notebook.\n\nIf any of the maps need updating please let me know via the github issues.\n\n\nJoin the TTS 40K Discord server: https://discord.gg/Drpzcwwmm6"
-
+notePadTxt = ""
 
 function writeMenus()
     self.clearButtons()
