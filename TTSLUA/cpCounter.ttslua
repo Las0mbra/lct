@@ -1,0 +1,20 @@
+-- FTC-GUID: e446f7,deb9f2
+-- Polls the built-in Counter value every 0.5s and pushes changes to the VP Scores HUD.
+-- This catches direct widget interactions that bypass startMenu's updateCpHUD().
+
+local _lastValue = nil
+local _watchId   = nil
+
+function onLoad()
+    _lastValue = self.Counter.getValue()
+    _watchId   = (self.getGUID() == "e446f7") and "CPWatch1" or "CPWatch2"
+    Wait.time(checkValue, 0.5, -1)
+end
+
+function checkValue()
+    local current = self.Counter.getValue()
+    if current ~= _lastValue then
+        _lastValue = current
+        Global.UI.setAttribute(_watchId, "text", "CP: " .. current)
+    end
+end

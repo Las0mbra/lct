@@ -2768,11 +2768,17 @@ function newRoundStarted()
     blueCpIncrementTracker = false
 end
 
+function updateCpHUD()
+    Global.UI.setAttribute("CPWatch1", "text", "CP: " .. redCpCounter.Counter.getValue())
+    Global.UI.setAttribute("CPWatch2", "text", "CP: " .. blueCpCounter.Counter.getValue())
+end
+
 function incrementRedCp(params)
     if not inGame then return end
     if not redCpIncrementTracker then
         redCpIncrementTracker = true
         redCpCounter.Counter.increment()
+        updateCpHUD()
     else
         broadcastToAll("Red has already gained a CP this battle round!", "Yellow")
     end
@@ -2783,6 +2789,7 @@ function incrementBlueCp(params)
     if not blueCpIncrementTracker then
         blueCpIncrementTracker = true
         blueCpCounter.Counter.increment()
+        updateCpHUD()
     else
         broadcastToAll("Blue has already gained a CP this battle round!", "Yellow")
     end
@@ -2843,6 +2850,7 @@ function passTurn(obj, player_color_click, alt_click)
             Wait.time(function() broadcastToAll("Red CPs incremented!", "Red") end, 0.3)
         end
     end
+    updateCpHUD()
 
     if simulation then
         broadcastToAll("It's " .. currentTurn .. " turn", currentTurn)

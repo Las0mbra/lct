@@ -557,7 +557,7 @@ function playerSum(pId)
 	if score > 100 then score = 100 end
 	-- painted army gives +10
 
-	Global.UI.setAttribute("VPWatch" .. pId, "text", (pId == 1 and "P1: " or "P2: ") .. score)
+	Global.UI.setAttribute("VPWatch" .. pId, "text", (pId == 1 and "VP 1: " or "VP 2: ") .. score)
 
 	return score
 end

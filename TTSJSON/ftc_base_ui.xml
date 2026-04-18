@@ -49,13 +49,19 @@
   </VerticalLayout>
 </Panel>
 
-<Panel id="VP Scores" active="true" scale="0.8 0.8 0.8" width="240" height="148" rectAlignment="UpperRight" offsetXY="-270 -130" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="VP Scores" active="true" scale="0.8 0.8 0.8" width="380" height="148" rectAlignment="UpperLeft" offsetXY="270 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <VerticalLayout spacing="6" padding="6">
     <Panel id="VPPanel1" color="#1A5FC8E6" outline="#5B8FDECC" outlineSize="2">
-      <Text id="VPWatch1" text="P1: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+      <HorizontalLayout spacing="4" padding="4">
+        <Text id="VPWatch1" text="VP 1: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <Text id="CPWatch1" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+      </HorizontalLayout>
     </Panel>
     <Panel id="VPPanel2" color="#B52020E6" outline="#D46060CC" outlineSize="2">
-      <Text id="VPWatch2" text="P2: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+      <HorizontalLayout spacing="4" padding="4">
+        <Text id="VPWatch2" text="VP 2: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <Text id="CPWatch2" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+      </HorizontalLayout>
     </Panel>
   </VerticalLayout>
 </Panel>
