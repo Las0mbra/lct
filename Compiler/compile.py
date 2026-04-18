@@ -20,10 +20,12 @@ SCRIPT_DIR = Path(__file__).parent
 PATH_LUA   = SCRIPT_DIR.parent / "TTSLUA"
 PATH_JSON  = SCRIPT_DIR.parent / "TTSJSON"
 JSON_NAME  = "ftc_base"
+XML_NAME   = "ftc_base_ui"
 
-REGEX_LUA_GUID      = re.compile(r'([0-9a-f]{6})')
-REGEX_JSON_GUID     = re.compile(r'"GUID": "(.*)"')
+REGEX_LUA_GUID       = re.compile(r'([0-9a-f]{6})')
+REGEX_JSON_GUID      = re.compile(r'"GUID": "(.*)"')
 REGEX_JSON_LUASCRIPT = re.compile(r'"LuaScript": ')
+REGEX_JSON_XMLUI     = re.compile(r'"XmlUI":\s+"')
 
 
 def get_tts_saves_path() -> Path:
@@ -36,6 +38,27 @@ def get_tts_saves_path() -> Path:
         return home / "Library" / "Tabletop Simulator" / "Saves"
     else:
         return home / ".local" / "share" / "Tabletop Simulator" / "Saves"
+
+
+def inject_xml(json_lines: list, xml_file: Path):
+    """Replace the top-level XmlUI value with the content of the xml file.
+    Empty per-object XmlUI fields ("XmlUI": "") are skipped."""
+    xml_content = json.dumps(xml_file.read_text(encoding="utf-8-sig"))
+    for i, line in enumerate(json_lines):
+        m = REGEX_JSON_XMLUI.search(line)
+        if not m:
+            continue
+        # Skip empty per-object entries that end with "" (no real content)
+        stripped = line.rstrip()
+        if stripped.endswith('""') or stripped.endswith('"",'):
+            continue
+        # m.end() points to the char after the opening quote of the value.
+        # Reconstruct: prefix up to (not including) that opening quote + new encoded value + trailing comma.
+        prefix = line[:m.end() - 1]
+        json_lines[i] = prefix + xml_content + ","
+        print(f"  Writing to line {i + 1}. Done.")
+        return
+    print("WARNING: populated XmlUI line not found in JSON — XML not injected.")
 
 
 def inject_lua_into_line(json_lines: list, line_idx: int, lua_file: Path):
@@ -108,6 +131,14 @@ def main():
             json_lua_line_idxs.append(i)
 
     print(f"{len(json_guid_entries)} GUIDs, {len(json_lua_line_idxs)} LuaScript slots found.")
+
+    # --- Inject ftc_base_ui.xml into the top-level XmlUI field ---
+    xml_file = PATH_JSON / f"{XML_NAME}.xml"
+    if not xml_file.exists():
+        print(f"ERROR: {xml_file} not found. Ending compilation.")
+        sys.exit(1)
+    print(f"Injecting {xml_file.name}... ", end="")
+    inject_xml(json_lines, xml_file)
 
     # --- Inject global.ttslua into the first LuaScript slot ---
     print("Injecting global.ttslua... ", end="")
