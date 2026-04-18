@@ -893,8 +893,12 @@ function ensureChessStopwatchUI()
 	end
 
 	local guid = self.getGUID()
-	Global.UI.setAttribute("ChsStpBtn1", "onClick", guid .. "/Click_1")
-	Global.UI.setAttribute("ChsStpBtn2", "onClick", guid .. "/Click_2")
+	Global.UI.setAttribute("ChsStpBtn1",   "onClick", guid .. "/Click_1")
+	Global.UI.setAttribute("ChsStpBtn2",   "onClick", guid .. "/Click_2")
+	Global.UI.setAttribute("ChsStpMinus1", "onClick", guid .. "/SubTime1")
+	Global.UI.setAttribute("ChsStpPlus1",  "onClick", guid .. "/AddTime1")
+	Global.UI.setAttribute("ChsStpMinus2", "onClick", guid .. "/SubTime2")
+	Global.UI.setAttribute("ChsStpPlus2",  "onClick", guid .. "/AddTime2")
 	Global.UI.setAttribute("ChsStpPanel1", "color", uiPanelColors.pColor1)
 	Global.UI.setAttribute("ChsStpPanel2", "color", uiPanelColors.pColor2)
 	Global.UI.setAttribute("Chess Stopwatch", "active", "true")
@@ -927,6 +931,12 @@ function changeColors(clickPlayer, clickBtn, buttonID)
 		changeButtonColors()
 	end
 end
+
+-- +/- 5-minute adjustments from the HUD buttons
+function AddTime1() data.seconds_1 = data.seconds_1 + 300; DisplayClock(1, data.seconds_1) end
+function SubTime1() data.seconds_1 = math.max(0, data.seconds_1 - 300); DisplayClock(1, data.seconds_1) end
+function AddTime2() data.seconds_2 = data.seconds_2 + 300; DisplayClock(2, data.seconds_2) end
+function SubTime2() data.seconds_2 = math.max(0, data.seconds_2 - 300); DisplayClock(2, data.seconds_2) end
 
 -- Calculates numbers for UI clock
 function DisplayUIClock(which) -- which 1,2
