@@ -46,8 +46,7 @@ redLethalFace = true
 blueLethalFace = true
 
 -- End Hutber IDS
-redVPCounter_GUID = "8b0541"
-blueVPCounter_GUID = "a77a54"
+scoreSheet_GUID = "06d627"
 redCPCounter_GUID = "e446f7"
 blueCPCounter_GUID = "deb9f2"
 orangePCounter_GUID = "25fc4a"

@@ -1,10 +1,6 @@
 -- FTC-GUID: 06d627
 
 startGameObj = getObjectFromGUID(Global.getVar("startMenu_GUID"))
-playerCounter = {}
-playerCounter[1] = getObjectFromGUID(Global.getVar("redVPCounter_GUID"))
-playerCounter[2] = getObjectFromGUID(Global.getVar("blueVPCounter_GUID"))
-
 secondary11ZoneObj = getObjectFromGUID(Global.getVar("secondary11CardZone_GUID"))
 secondary12ZoneObj = getObjectFromGUID(Global.getVar("secondary12CardZone_GUID"))
 secondary21ZoneObj = getObjectFromGUID(Global.getVar("secondary21CardZone_GUID"))
@@ -561,9 +557,7 @@ function playerSum(pId)
 	if score > 100 then score = 100 end
 	-- painted army gives +10
 
-	if playerCounter[pId] then
-		playerCounter[pId].Counter.setValue(score)
-	end
+	Global.UI.setAttribute("VPWatch" .. pId, "text", (pId == 1 and "P1: " or "P2: ") .. score)
 
 	return score
 end

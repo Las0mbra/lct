@@ -49,6 +49,17 @@
   </VerticalLayout>
 </Panel>
 
+<Panel id="VP Scores" active="true" scale="0.8 0.8 0.8" width="240" height="148" rectAlignment="UpperRight" offsetXY="-270 -130" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+  <VerticalLayout spacing="6" padding="6">
+    <Panel id="VPPanel1" color="#1A5FC8E6" outline="#5B8FDECC" outlineSize="2">
+      <Text id="VPWatch1" text="P1: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+    </Panel>
+    <Panel id="VPPanel2" color="#B52020E6" outline="#D46060CC" outlineSize="2">
+      <Text id="VPWatch2" text="P2: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+    </Panel>
+  </VerticalLayout>
+</Panel>
+
 <Panel id="feedbackPopup" active="false" width="400" height="420" rectAlignment="MiddleCenter" allowDragging="false" color="#000000EE">
   <VerticalLayout spacing="5" padding="10">
     <VerticalLayout spacing="5" padding="10" childControlHeight="false" childForceExpandHeight="false">

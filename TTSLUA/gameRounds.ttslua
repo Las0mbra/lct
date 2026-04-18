@@ -23,9 +23,8 @@ continueBtn={
     font_size=90, color={0,0.6,0}, font_color={1,1,1}
 }
 function onLoad()
-    counterA=getObjectFromGUID(Global.getVar("redVPCounter_GUID"))
-    counterB=getObjectFromGUID(Global.getVar("blueVPCounter_GUID"))
     startObject=getObjectFromGUID(Global.getVar("startMenu_GUID"))
+    scoreSheet=getObjectFromGUID(Global.getVar("scoreSheet_GUID"))
 end
 
 function writeButtons()
@@ -60,13 +59,15 @@ function gameOver()
     self.clearButtons()
     startObject.setVar("checkEnd", false)
     startObject.call("writeMenus")
-    if  counterA.Counter.getValue() > counterB.Counter.getValue() then
+    local scoreA = scoreSheet.call("playerSum", {1})
+    local scoreB = scoreSheet.call("playerSum", {2})
+    if scoreA > scoreB then
         broadcastToAll("Red Player WINS !", "Green")
     end
-    if  counterA.Counter.getValue() < counterB.Counter.getValue() then
+    if scoreA < scoreB then
         broadcastToAll("Blue Player WINS !", "Green")
     end
-    if  counterA.Counter.getValue() == counterB.Counter.getValue() then
+    if scoreA == scoreB then
         broadcastToAll("Game ends in a DRAW !", "Green")
     end
 end
