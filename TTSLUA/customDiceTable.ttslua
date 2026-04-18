@@ -90,42 +90,42 @@ add1d3Btn={
 }
 add1d6Btn={
     label="+ 1d6", click_function="spawnDice1", function_owner=self,
-    position={0.0, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
+    position={-0.03, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
 add2d6Btn={
     label="+ 2d6", click_function="spawnDice2", function_owner=self,
-    position={0.5, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
+    position={0.44, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
 add3d6Btn={
     label="+ 3d6", click_function="spawnDice3", function_owner=self,
-    position={1.0, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
+    position={0.91, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
 add4d6Btn={
     label="+ 4d6", click_function="spawnDice4", function_owner=self,
-    position={1.5, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
+    position={1.38, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
 add5d6Btn={
     label="+ 5d6", click_function="spawnDice5", function_owner=self,
-    position={2.0, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
+    position={1.85, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
 add10d6Btn={
     label="+ 10d6", click_function="spawnDice10", function_owner=self,
-    position={2.5, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
+    position={2.32, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
 add25d6Btn={
     label="+ 25d6", click_function="spawnDice25", function_owner=self,
-    position={3.0, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
+    position={2.79, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
 
 colorBtnDimension=150
-colorBtnOffset=3.5
+colorBtnOffset=3.2
 color1Btn={
     label="", click_function="modifyMenu1", function_owner=self,
     position={colorBtnOffset, Yoffset ,-0.87}, rotation={0,0,0}, height=colorBtnDimension, width=colorBtnDimension,
@@ -2125,6 +2125,7 @@ function modifyMenu(color)
     customDiceImage = nil
     selectedColor = color
     setDiceType()
+    self.editButton({index=7, color=color})
     self.editButton({index=8, color=color})
     self.editButton({index=9, color=color})
     self.editButton({index=10, color=color})
