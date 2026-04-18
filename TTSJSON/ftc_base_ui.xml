@@ -36,11 +36,11 @@
   <VerticalLayout spacing="5" padding="5">
     <Panel id="ChsStpPanel1" color="Blue">
       <Button id="ChsStpBtn1" scale="1 1 1" width="180" height="60" onClick="" color="rgba(0,0,0,0)"/>
-      <Text id="ChsStpWatch1" text="0:00:00" fontSize="40" color="White"/>
+      <Text id="ChsStpWatch1" text="0:00" fontSize="40" color="White"/>
     </Panel>
     <Panel id="ChsStpPanel2" color="Red">
       <Button id="ChsStpBtn2" scale="1 1 1" width="180" height="60" onClick="" color="rgba(0,0,0,0)"/>
-      <Text id="ChsStpWatch2" text="0:00:00" fontSize="40" color="White"/>
+      <Text id="ChsStpWatch2" text="0:00" fontSize="40" color="White"/>
     </Panel>
   </VerticalLayout>
 </Panel>

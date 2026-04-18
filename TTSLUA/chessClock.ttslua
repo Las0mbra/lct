@@ -140,37 +140,46 @@ end
 -- Gizmo's click functions
 	function Click_1(player, _, _)
 	    if hold_1Time<HOLD then
-	        if data.ended_2==true and data.seconds_2==0 then
-	            data.storedState=11 data.ended_2=false
-	            data.seconds_2 = data.start_2
+	        if data.ended_1==true and data.seconds_1==0 then
+	            data.storedState=11 data.ended_1=false
+	            data.seconds_1 = data.start_1
 	        end
 	        if player.color == "Grey" or (data.DoTurns == true and data.color_1 ~= player.color and data.color_2 ~= player.color and player.color ~= "Black") then
 				holding_1=true
 	            hold_1Time=0
 	            return
 	        end
-	        if data.state==11 or data.state==1 or data.state==3 or data.state==9 then
-				-- Start Liyarin's Color code
-					self.setColorTint(pColors.pColor2)
-					Global.UI.setAttribute("ChsStpPanel1", "scale", "0.9 0.9 0.9")
-					Global.UI.setAttribute("ChsStpPanel2", "scale", "1.1 1.1 1.1")
-				-- End Liyarin's Color code
-				Resume()
-	            if data.start_2==0 then
-	                data.seconds_2 = data.seconds_2-data.bonus_2
-	                if data.delay_2==0 then
-	                    data.state = 2
+	        -- Blue clock already running → pause and turn panel Beige
+	        if data.state==1 or data.state==3 or data.state==9 then
+	            Pause()
+	            Global.UI.setAttribute("ChsStpPanel1", "color", "Beige")
+	            Global.UI.setAttribute("ChsStpPanel1", "scale", "1.0 1.0 1.0")
+	            Global.UI.setAttribute("ChsStpWatch1", "color", "Black")
+	        elseif data.state==11 or data.state==1 or data.state==3 or data.state==9 or data.state==2 or data.state==4 or data.state==10 then
+	            -- Start player 1 (Blue) clock
+	            self.setColorTint(pColors.pColor1)
+	            Global.UI.setAttribute("ChsStpPanel1", "scale", "1.1 1.1 1.1")
+	            Global.UI.setAttribute("ChsStpPanel2", "scale", "0.9 0.9 0.9")
+	            Global.UI.setAttribute("ChsStpPanel1", "color", pColors.pColor1)
+	            Global.UI.setAttribute("ChsStpWatch1", "color", "White")
+	            Global.UI.setAttribute("ChsStpPanel2", "color", pColors.pColor2)
+	            Global.UI.setAttribute("ChsStpWatch2", "color", "White")
+	            Resume()
+	            if data.start_1==0 then
+	                data.seconds_1 = data.seconds_1-data.bonus_1
+	                if data.delay_1==0 then
+	                    data.state = 1
 	                else
-	                    data.delayed = data.delay_2
-	                    data.state = 10
+	                    data.delayed = data.delay_1
+	                    data.state = 9
 	                end
 	            else
-	                data.seconds_2 = data.seconds_2+data.bonus_2
-	                if data.delay_2==0 then
-	                    data.state = 4
+	                data.seconds_1 = data.seconds_1+data.bonus_1
+	                if data.delay_1==0 then
+	                    data.state = 3
 	                else
-	                    data.delayed = data.delay_2
-	                    data.state = 10
+	                    data.delayed = data.delay_1
+	                    data.state = 9
 	                end
 	            end
 	            SetTurn()
@@ -207,37 +216,46 @@ end
 	end
 	function Click_2(player, _, _)
 	    if hold_2Time<HOLD then
-	        if data.ended_1==true and data.seconds_1==0 then
-	            data.storedState=11 data.ended_1=false
-	            data.seconds_1 = data.start_1
+	        if data.ended_2==true and data.seconds_2==0 then
+	            data.storedState=11 data.ended_2=false
+	            data.seconds_2 = data.start_2
 	        end
 	        if player.color == "Grey" or (data.DoTurns == true and data.color_1 ~= player.color and data.color_2 ~= player.color and player.color ~= "Black") then
 	            holding_2=true
 	            hold_2Time=0
 	            return
 	        end
-	        if data.state==11 or data.state==2 or data.state==4 or data.state==10 then
-				-- Start Liyarin's Color code
-					self.setColorTint(pColors.pColor1)
-					Global.UI.setAttribute("ChsStpPanel1", "scale", "1.1 1.1 1.1")
-					Global.UI.setAttribute("ChsStpPanel2", "scale", "0.9 0.9 0.9")
-				-- End Liyarin's Color code
+	        -- Red clock already running → pause and turn panel Beige
+	        if data.state==2 or data.state==4 or data.state==10 then
+	            Pause()
+	            Global.UI.setAttribute("ChsStpPanel2", "color", "Beige")
+	            Global.UI.setAttribute("ChsStpPanel2", "scale", "1.0 1.0 1.0")
+	            Global.UI.setAttribute("ChsStpWatch2", "color", "Black")
+	        elseif data.state==11 or data.state==1 or data.state==3 or data.state==9 or data.state==2 or data.state==4 or data.state==10 then
+	            -- Start player 2 (Red) clock
+	            self.setColorTint(pColors.pColor2)
+	            Global.UI.setAttribute("ChsStpPanel1", "scale", "0.9 0.9 0.9")
+	            Global.UI.setAttribute("ChsStpPanel2", "scale", "1.1 1.1 1.1")
+	            Global.UI.setAttribute("ChsStpPanel2", "color", pColors.pColor2)
+	            Global.UI.setAttribute("ChsStpWatch2", "color", "White")
+	            Global.UI.setAttribute("ChsStpPanel1", "color", pColors.pColor1)
+	            Global.UI.setAttribute("ChsStpWatch1", "color", "White")
 	            Resume()
-	            if data.start_1==0 then
-	                data.seconds_1 = data.seconds_1-data.bonus_1
-	                if data.delay_1==0 then
-	                    data.state = 1
+	            if data.start_2==0 then
+	                data.seconds_2 = data.seconds_2-data.bonus_2
+	                if data.delay_2==0 then
+	                    data.state = 2
 	                else
-	                    data.delayed = data.delay_1
-	                    data.state = 9
+	                    data.delayed = data.delay_2
+	                    data.state = 10
 	                end
 	            else
-	                data.seconds_1 = data.seconds_1+data.bonus_1
-	                if data.delay_1==0 then
-	                    data.state = 3
+	                data.seconds_2 = data.seconds_2+data.bonus_2
+	                if data.delay_2==0 then
+	                    data.state = 4
 	                else
-	                    data.delayed = data.delay_1
-	                    data.state = 9
+	                    data.delayed = data.delay_2
+	                    data.state = 10
 	                end
 	            end
 	            SetTurn()
@@ -895,7 +913,7 @@ end
 -- Calculates numbers for UI clock
 function DisplayUIClock(which) -- which 1,2
 	ensureChessStopwatchUI()
-	local clockString = math.floor(hours%10) ..":".. math.floor(minutes/10) .. math.floor(minutes%10) ..":".. math.floor(secs/10) .. math.floor(secs%10)
+	local clockString = math.floor(hours%10) ..":".. math.floor(minutes/10) .. math.floor(minutes%10)
 
 	Global.UI.setAttribute("ChsStpWatch"..which, "text", clockString)
 end

@@ -1,8 +1,7 @@
-# Competitive Hutber Base: LUA scripts
+# Competitive Lst-40k Base: LUA scripts
 Hutber Map Base LUA Scripts
 
-The following files contain all the LUA scripts contained in the Competitive FTC Base Map for the TTS 40k community. If a file does not exist for an object within the TTS save, then that object does not contain any scripts.
-
+This is a fork of the original hutber/ftc table, modified to remove any telemetry and some additional features.
 This repo now contains the actual TTS JSON file.
 
 ## Compiling
@@ -11,6 +10,9 @@ This repo now contains the actual TTS JSON file.
 - Run from the `Compiler/` directory so relative paths to `..\TTSLUA` and `..\TTSJSON` resolve.
 
 Examples:
+
+To run the compiler via python run this from the Compiler folder
+python3 compile.py --test 
 
 - Windows PowerShell:
 
