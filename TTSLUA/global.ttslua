@@ -42,8 +42,6 @@ blueLethalHits_GUID = "71ab21"
 RedVortexGUID = "be2cdb"
 BlueVortexGUID = "4b1a7b"
 
-redLethalFace = true
-blueLethalFace = true
 
 -- End Hutber IDS
 scoreSheet_GUID = "06d627"
