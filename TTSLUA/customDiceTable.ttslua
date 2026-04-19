@@ -383,17 +383,17 @@ function restore(playerColor)
 end
 
 local auto1D6 = {
-    label          = "Instant 1D6",
-    tooltip="Roll 1D6 Instantly",
-    click_function = "autoRoll1D6",
+    label          = "Stats",
+    tooltip        = "Show dice roll statistics",
+    click_function = "showCombinedStats",
     function_owner = self,
     position       = {-7.5, Yoffset, 0.52},
     rotation       = { 0, 0, 0 },
     width = 1300, height = 300, font_size = 150,
-    color = {0.13, 0.13, 0.13, 1}, -- Black button (not pure black for smoother look)
-    font_color = {1, 1, 1}, -- White text for high contrast
-    hover_color = {0.2, 0.2, 0.2, 1}, -- Dark gray when hovered
-    press_color = {0.27, 0.27, 0.27, 1}, -- Slightly lighter gray when pressed
+    color = {0.13, 0.13, 0.13, 1},
+    font_color = {1, 1, 1},
+    hover_color = {0.2, 0.2, 0.2, 1},
+    press_color = {0.27, 0.27, 0.27, 1},
     scale = {0.5, 0.5, 0.5}
 }
 
@@ -443,36 +443,17 @@ local redoRollBtn = {
     scale = {0.5, 0.5, 0.5}
 }
 
--- Background Box (Soft Off-White for a Professional Look)
-local customDiceInputBG = {
-    label = "", click_function = "none", function_owner = self,
-    position = {-7.5, Yoffset, -0.82}, rotation = {0, 0, 0},
-    width = 1300, height = 375, font_size = 100,
-    color = {0.95, 0.95, 0.95, 1}, -- Soft off-white
-    scale = {0.5, 0.5, 0.5}
-}
-
--- Input Field (Bright White)
-local customDiceInput = {
-    label = "Enter Dice #", input_function = "setCustomDiceCount", function_owner = self,
-    position = {-7.5, Yoffset, -0.82}, rotation = {0, 0, 0},
-    width = 1100, height = 225, font_size = 180, alignment = 2, scale = {0.5, 0.5, 0.5},
-    color = {1, 1, 1, 1}, -- Pure white
-    font_color = {0.2, 0.2, 0.2} -- Dark gray text
-}
-
--- Modern Black "Spawn Dice" Button
+-- Modern Black "Last 5 Rolls" Button
 local customDiceSpawnButton = {
-    label = "Spawn Dice", click_function = "spawnCustomDice", function_owner = self,
+    label = "Last 5 Rolls", click_function = "callLast5Rolls", function_owner = self,
     position = {-7.5, Yoffset, -0.50}, rotation = {0, 0, 0},
     width = 1300, height = 300, font_size = 150,
-    color = {0.13, 0.13, 0.13, 1}, -- Black button (not pure black for smoother look)
-    font_color = {1, 1, 1}, -- White text for high contrast
-    hover_color = {0.2, 0.2, 0.2, 1}, -- Dark gray when hovered
-    press_color = {0.27, 0.27, 0.27, 1}, -- Slightly lighter gray when pressed
+    color = {0.13, 0.13, 0.13, 1},
+    font_color = {1, 1, 1},
+    hover_color = {0.2, 0.2, 0.2, 1},
+    press_color = {0.27, 0.27, 0.27, 1},
     scale = {0.5, 0.5, 0.5}
 }
-local customDiceCount = 1 -- Default number of dice
 
 lethalHitsThreshold = 6
 sustainedHitsThreshold = 6
@@ -793,30 +774,6 @@ local function evalSimpleExpr(expr)
   return stack[1]
 end
 
-function setCustomDiceCount(_, player, value, _)
-  -- Accept either a plain number or a simple math expression
-  local num = tonumber(value)
-  if not num then
-    local result, err = evalSimpleExpr(tostring(value or ""))
-    if result then num = result end
-  end
-  if num and num > 0 and num <= 128 then
-    customDiceCount = math.floor(num)
-  else
-    printToColor("Invalid Number! Enter a number or expression between 1 and 128.", player, "Red")
-  end
-end
-
-function spawnCustomDice(_, player, _)
-    if customDiceCount and customDiceCount > 0 then
-        spawnDice(customDiceCount, player)
-        customDiceCount = nil -- Reset custom dice count
-        self.editInput({index = 0, value = ""}) -- Clear the input field (replace index if needed)
-        printToColor("Custom Dice Count reset after spawning.", player, "Yellow")
-    else
-        printToColor("No valid custom dice count set.", player, "Red")
-    end
-end
 
 function autoRoll(obj, player, alt, numDice)
     numDice = numDice or 1
@@ -893,12 +850,23 @@ function resetSpawnPosition()
     diceCount = 0
 end
 
-function autoRoll1D6(obj, player, alt)
-    autoRoll(obj, player, alt, 1)
-end
-
 function autoRoll2D6(obj, player, alt)
     autoRoll(obj, player, alt, 2)
+end
+
+function showCombinedStats(obj, player, alt)
+    local r = getObjectFromGUID(rollerGUID)
+    if r then
+        r.call("showStats")
+        r.call("printChances")
+    end
+end
+
+function callLast5Rolls(obj, player, alt)
+    local r = getObjectFromGUID(rollerGUID)
+    if r then
+        r.call("printLast5Innovative")
+    end
 end
 
 function getDice()
@@ -1650,9 +1618,7 @@ function onload()
     self.createButton(clearMeasureAllBtn)
     self.createButton(gap2Btn)
     self.createButton(gap1Btn)
-    self.createInput(customDiceInput)
     self.createButton(customDiceSpawnButton)
-    self.createButton(customDiceInputBG)
     if self.getPosition().z < 0 then selectedColor="Blue" else selectedColor="Red" end modifyMenu(selectedColor)
 
 end
