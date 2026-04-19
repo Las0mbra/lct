@@ -443,7 +443,6 @@ function onObjectClick(player_color, object_clicked)
         ["bf09bd"] = -4.776464939,
         ["64c6bb"] = -4.776464939,
         ["9a7c3c"] = -4.776464939,
-        ["d8d6da"] = -6.776464939,
         ["3c8a1b"] = -6.19999981,
         ["3c1373"] = -6.19999981,
         ["8395b2"] = -6.19999981,
@@ -602,9 +601,7 @@ function confirmDoublesGame()
         ["64c6bb"] = -6.19999981,
         ["64b6bb"] = -6.19999981,
         ["4bb528"] = -6.19999981,
-        ["7abc5a"] = -6.19999981,
-        ["138b06"] = -6.19999981,
-        ["d8d6da"] = -6.19999981
+        ["7abc5a"] = -6.19999981
     }
 
     -- Iterate over each GUID and destroy the object if found
@@ -719,21 +716,6 @@ function confirmSizeGame()
         ["4bb528"] = 1.19999981
     }
 
-
-    local destoryObjects = {
-        ["138b06"] = -6.19999981,
-        ["d8d6da"] = -6.19999981
-    }
-
-    -- Iterate over each GUID and destroy the object if found
-    for guid, _ in pairs(destoryObjects) do
-        local obj = getObjectFromGUID(guid)
-        if obj then
-            destroyObject(obj) -- Destroy the object
-        else
-            print("Object with GUID " .. guid .. " not found.")
-        end
-    end
     self.createButton(clearAllDiceBtn)
 
     -- Iterate over each GUID and set the new height
