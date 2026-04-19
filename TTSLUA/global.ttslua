@@ -412,6 +412,31 @@ function onLoad(saved_data)
         Global.UI.setAttribute("main", "active", "false")
     end
     --startPolling()
+    Wait.time(function()
+        -- Selection Highlight
+        local redHighlighter = getObjectFromGUID(RedSelectionHighlighter)
+        if redHighlighter then redHighlighter.call("onLoad") end
+        local blueHighlighter = getObjectFromGUID(BlueSelectionHighlighter)
+        if blueHighlighter then blueHighlighter.call("onLoad") end
+
+        -- Stat Helper: move to active positions
+        local redStatHelper = getObjectFromGUID("7c7c20")
+        if redStatHelper then redStatHelper.setPosition({-4.078736, 0.87, 34.7377625}) end
+        local blueStatHelper = getObjectFromGUID("b7ac7a")
+        if blueStatHelper then blueStatHelper.setPosition({4.078736, 0.86, -34.7377625}) end
+
+        -- Vortex: raise to Y=0.6
+        local redVortex = getObjectFromGUID(RedVortexGUID)
+        if redVortex then
+            local pos = redVortex.getPosition()
+            redVortex.setPosition({pos.x, 0.6, pos.z})
+        end
+        local blueVortex = getObjectFromGUID(BlueVortexGUID)
+        if blueVortex then
+            local pos = blueVortex.getPosition()
+            blueVortex.setPosition({pos.x, 0.6, pos.z})
+        end
+    end, 2)
 end
 
 function setMissionPack(params)
@@ -995,30 +1020,3 @@ function onToggleButtonHotKey(type, target)
     toggleFloatingIconGeneric(params)
 end
 
-function onLoad()
-    Wait.time(function()
-        -- Selection Highlight
-        local redHighlighter = getObjectFromGUID(RedSelectionHighlighter)
-        if redHighlighter then redHighlighter.call("onLoad") end
-        local blueHighlighter = getObjectFromGUID(BlueSelectionHighlighter)
-        if blueHighlighter then blueHighlighter.call("onLoad") end
-
-        -- Stat Helper: move to active positions
-        local redStatHelper = getObjectFromGUID("7c7c20")
-        if redStatHelper then redStatHelper.setPosition({-4.078736, 0.87, 34.7377625}) end
-        local blueStatHelper = getObjectFromGUID("b7ac7a")
-        if blueStatHelper then blueStatHelper.setPosition({4.078736, 0.86, -34.7377625}) end
-
-        -- Vortex: raise to Y=0.6
-        local redVortex = getObjectFromGUID(RedVortexGUID)
-        if redVortex then
-            local pos = redVortex.getPosition()
-            redVortex.setPosition({pos.x, 0.6, pos.z})
-        end
-        local blueVortex = getObjectFromGUID(BlueVortexGUID)
-        if blueVortex then
-            local pos = blueVortex.getPosition()
-            blueVortex.setPosition({pos.x, 0.6, pos.z})
-        end
-    end, 2)
-end
