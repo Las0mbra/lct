@@ -2539,11 +2539,6 @@ firstPlayerBtn = {
     position = {0, 5, 1}, rotation = {0, 0, 0}, height = 750, width = 5000,
     font_size = 300, color = {1, 0, 0}, font_color = {1, 1, 1}
 }
-feedbackBtn = {
-    index = 1, label = "Feedback", click_function = "openFeedbackPopup", function_owner = self,
-    position = {17, 5, 2.8}, rotation = {0, 0, 0}, height = 550, width = 5000,
-    font_size = 300, color = {0.2, 0.2, 0.2}, font_color = {1, 1, 1}
-}
 nextPhaseLbl = "P A S S\nT U R N"
 nextPhaseBtn = {
     index = 1, label = nextPhaseLbl, tooltip = "Left click - Next phase\nRight click - Skip to next turn", click_function = "nextPhase", function_owner = self,
@@ -2576,7 +2571,6 @@ function writeMenus()
             writeIngameMenu()
         end
     end
-    self.createButton(feedbackBtn)
 end
 
 function writeStartMenu()
@@ -2969,25 +2963,5 @@ function none()
 end
 
 
--- The feedback popup panel is now defined in the base XML (hidden by default). We only show/hide
--- it and wire up onClick handlers via setAttribute().
--- IMPORTANT: We never call Global.UI.setXml() at runtime because it rebuilds the entire Global UI
--- and causes host/guest desync over high-latency links.
-
-function openFeedbackPopup()
-    local guid = self.getGUID()
-    Global.UI.setAttribute("feedbackSubmitBtn", "onClick", guid .. "/submitFeedback")
-    Global.UI.setAttribute("feedbackCloseBtn", "onClick", guid .. "/closeFeedbackPopup")
-    Global.UI.setAttribute("feedbackPopup", "active", "true")
-end
-
-function closeFeedbackPopup()
-    Global.UI.setAttribute("feedbackPopup", "active", "false")
-end
-
-function submitFeedback(player, color, alt)
-    broadcastToAll("Feedback not available in this version.", {1, 1, 0})
-    closeFeedbackPopup()
-end
 
 

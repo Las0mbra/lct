@@ -65,32 +65,3 @@
     </Panel>
   </VerticalLayout>
 </Panel>
-
-<Panel id="feedbackPopup" active="false" width="400" height="420" rectAlignment="MiddleCenter" allowDragging="false" color="#000000EE">
-  <VerticalLayout spacing="5" padding="10">
-    <VerticalLayout spacing="5" padding="10" childControlHeight="false" childForceExpandHeight="false">
-      <InputField id="feedbackName" placeholder="Name" onValueChanged="onNameChanged" />
-      <InputField id="feedbackEmail" value="jamie@hutber.com" placeholder="Email" onValueChanged="onEmailChanged" />
-      <Dropdown id="feedbackType" onValueChanged="onTypeChanged">
-        <Option value="">Type</Option>
-        <Option value="bug">Bug</Option>
-        <Option value="feature">Feature Request</Option>
-        <Option value="other">Other</Option>
-        <Option value="single">Are you single?</Option>
-      </Dropdown>
-      <InputField id="feedbackMessage" placeholder="Your feedback" lineType="MultiLineNewline" height="150" onValueChanged="onMessageChanged" />
-      <Dropdown id="feedbackLike" onValueChanged="onLikeChanged">
-        <Option value="">Do you hate the Lethal Face?</Option>
-        <Option value="loveit">Actually its not that bad (I love it)</Option>
-        <Option value="Yes">Yes</Option>
-        <Option value="No">No</Option>
-        <Option value="I fucking HATE IT">I fucking HATE IT</Option>
-        <Option value="You bastard">I don't like you</Option>
-      </Dropdown>
-    </VerticalLayout>
-    <HorizontalLayout spacing="2" height="40">
-      <Button id="feedbackSubmitBtn" text="Submit" onClick="" width="120" height="40"/>
-      <Button id="feedbackCloseBtn" text="Close" onClick="" width="120" height="40"/>
-    </HorizontalLayout>
-  </VerticalLayout>
-</Panel>
