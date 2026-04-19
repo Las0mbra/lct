@@ -15,29 +15,6 @@ totalHits = 0          -- Total successful hits
 missedHits = 0         -- Total missed hits
 totalWounds = 0        -- Total successful wounds
 
-printLastBtn={
-    label="Last roll", click_function="printLast", function_owner=self,
-    position={-2.5,0.1,-0.57}, rotation={0,0,0}, height=50, width=400,
-    font_size=60, color={0,0,0}, font_color={1,1,1}, scale={scaleBtn,scaleBtn,scaleBtn}
-}
-printLast5Btn={
-    label="Last 5 rolls", click_function="printLast5Innovative", function_owner=self,
-    position={2.5,0.1,-0.57}, rotation={0,0,0}, height=50, width=400,
-    font_size=60, color={0,0,0}, font_color={1,1,1}, scale={scaleBtn,scaleBtn,scaleBtn}
-}
-printDiceChancesBtn={
-    label="Roll Stats", click_function="printChances", function_owner=self,
-    position={2.5,0.1,0.5}, rotation={0,0,0}, height=50, width=400,
-    font_size=60, color={0,0,0}, font_color={1,1,1}, scale={scaleBtn,scaleBtn,scaleBtn}
-}
-
--- NEW CODE START
--- (1) Define a new button for "Show Stats"
-showStatsBtn={
-    label="Stats", click_function="showStats", function_owner=self,
-    position={-2.5,0.1,0.5}, rotation={0,0,0}, height=50, width=400,
-    font_size=60, color={0,0,0}, font_color={1,1,1}, scale={scaleBtn,scaleBtn,scaleBtn}
-}
 function trackRoll(dice)
     currentRoll = {}
     for _, die in ipairs(dice) do
@@ -221,11 +198,6 @@ function onLoad(save_state)
     if self.getDescription() == '' then
 		setDefaultState()
 	end
-	self.createButton(printLastBtn)
-	self.createButton(printLast5Btn)
-    self.createButton(printDiceChancesBtn)
-    -- NEW CODE: Add the Show Stats button to the object
-    self.createButton(showStatsBtn)
 end
 
 function onSave()
