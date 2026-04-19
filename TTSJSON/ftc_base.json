@@ -31,7 +31,7 @@
   "PlayArea": 1.0,
   "Table": "Table_None",
   "Sky": "Sky_Museum",
-  "Note": "This is the GT fork of version 2.63+ of https://github.com/hutber/tts-map-base.\n\nFull cre\n\nInstructions and credits can both be found in the Notepad.\n\nSearch for FTC or BCB Map Additive Load on the workshop for maps to load!\n\n\nJoin the TTS 40K Discord server:\ndiscord.gg/XkBbs5M\n\nReport any bugs or issues at: https://github.com/hutber/tts-map-base/issues",
+  "Note": "",
   "Rules": "",
   "MusicPlayer": {},
   "Grid": {
@@ -1045,7 +1045,7 @@
       "Transform": {
         "posX": 51.8294678,
         "posY": 0.999999464,
-        "posZ": -42,
+        "posZ": -34,
         "rotX": -4.52026654e-07,
         "rotY": 270.01593,
         "rotZ": -1.60382342e-06,
@@ -1082,63 +1082,6 @@
       "Hands": false,
       "CustomImage": {
         "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/18395342256881191528/F49462F67144A18AA0377B410ECDAAE1A039905B/",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1,
-        "WidthScale": 0,
-        "CustomToken": {
-          "Thickness": 0.2,
-          "MergeDistancePixels": 15,
-          "StandUp": false,
-          "Stackable": false
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "9a8b52",
-      "Name": "Custom_Token",
-      "Transform": {
-        "posX": 51.8294678,
-        "posY": 0.999999464,
-        "posZ": -34,
-        "rotX": -4.52026654e-07,
-        "rotY": 270.01593,
-        "rotZ": -1.60382342e-06,
-        "scaleX": 1.69734128,
-        "scaleY": 1,
-        "scaleZ": 1.69734128
-      },
-      "Nickname": "Interactive Buttons - 9 Inch Zone",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/10999378060036050360/9F5C124A50E18E06CD6D9637022497C40211DA10/",
         "ImageSecondaryURL": "",
         "ImageScalar": 1,
         "WidthScale": 0,
