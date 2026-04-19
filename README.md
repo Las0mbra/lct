@@ -1,37 +1,28 @@
-# Simple Competitive 40k TTS base: LUA scripts
-Hutber Map Base LUA Scripts
+# LCT - 40k TTS Base
 
-This is a fork of the original hutber/ftc table, modified to remove any telemetry and some additional features.
+A lightweight and actively maintained base for Warhammer 40k Tabletop Simulator maps, focused on gameplay clarity and quality-of-life improvements.
+
+This project is a fork of Hutber’s FTC table (shared with permission), building on that strong foundation with additional features, refinements, and a slightly different design direction.
+
+The aim of this fork is to provide a clean, self-contained experience while continuing to iterate on usability and tooling for both players and developers.
+
+## Features
+
+- VP/CP overlay for easier score tracking  
+- Improved chess clock  
+- Expanded dice functionality (including D3 support and quick right-click rolling)  
+- Cleaner handling of drawn lines and bubble elements  
+- Streamlined and simplified UI  
+- Removal of unused UI components  
+- Developer-friendly PowerShell compiler improvements  
+
+Some integrations have also been adjusted to keep the project more self-contained.
+
+Dynamic map generation (based on missions) is not yet implemented, but is currently in active development.
 
 ## Development
 
-To run the compiler via python run this from the Compiler folder
-python3 compile.py --test  
+To run the compiler via Python, execute the following from the `Compiler` folder:
 
-This will create a new save file called X
-
-- Windows PowerShell:
-
-  ```powershell
-  cd Compiler
-  powershell -ExecutionPolicy Bypass -File .\compile.ps1
-  ```
-
-- macOS / Linux (PowerShell Core):
-
-  ```bash
-  cd Compiler
-  pwsh -File ./compile.ps1
-  ```
-
-- To run a test build that copies the compiled JSON to the local TTS saves path (uses the `-test` switch):
-
-  ```powershell
-  cd Compiler
-  pwsh -File ./compile.ps1 -test
-  # The script will prompt for a version string; leave blank for no version.
-  ```
-
-Output: the script writes `ftc_base_compiled.json` (or `ftc_base_<version>_compiled.json`) in the `Compiler/` folder.
-
-The base was completely built upon the FTC map!!!! And Continues to receive updates from it, thank you eternally for their help!
+```bash
+python3 compile.py --test
