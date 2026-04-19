@@ -2542,14 +2542,10 @@ function writeIngameMenu()
     destroyNineInchDeployLines()
 
     nextPhaseBtn.color = currentTurn
-    local visibleTo=nextPhaseBtn.color
-    Global.UI.setAttribute("passTurn", "visibility", visibleTo)
-    Global.UI.setAttribute("passTurnBtn", "color", nextPhaseBtn.color)
     nextPhaseBtn.label = phases[currentPhase].."\nNEXT PHASE"
     if currentPhase == #phases then
         nextPhaseBtn.label = phases[currentPhase].."\nPASS TURN"
     end
-    Global.UI.setValue("passTurnTxt", nextPhaseBtn.label)
     self.createButton(nextPhaseBtn)
 end
 
