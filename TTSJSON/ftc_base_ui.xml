@@ -27,11 +27,6 @@
   <Button id="closeBtn" offsetXY="0 -500" color="#2C3E50" textColor="#FFFFFF" width="500" height="100" fontSize="40" fontStyle="Bold" onClick="closeMenu" outline="#34495E" outlineSize="5" roundEdges="true">CLOSE MENU</Button>
 </Panel>
 
-<Panel id="passTurn" active="true" position="525 495 0" scale="0.5 0.5 0.5" offsetXY="40 0" color="#00000000" visibility="Black">
-  <Button id="passTurnBtn" offsetXY="0 0" color="#C0392B" textColor="#FFFFFF" width="200" height="180" fontSize="40" fontStyle="Bold" roundEdges="true" onClick="nextPhase"></Button>
-  <Text id="passTurnTxt" offsetXY="0 0" color="#FFFFFF" width="180" height="180" fontSize="35" fontStyle="Bold" onClick="nextPhase">NEXT PHASE</Text>
-</Panel>
-
 <Panel id="Chess Stopwatch" active="false" scale="0.8 0.8 0.8" width="240" height="148" rectAlignment="UpperRight" offsetXY="-270 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <VerticalLayout spacing="6" padding="6">
     <Panel id="ChsStpPanel1" color="#1A5FC8E6" outline="#5B8FDECC" outlineSize="2">
