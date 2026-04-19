@@ -1090,10 +1090,8 @@ function clearDiceAll(obj, color, alt)
         printToColor("Use right click!", color, "Orange")
         return
     end
-    createLethalText(true)
     cleanupLethalHits()
     clearDiceX(6, true, color)
-    moveDiceBackToBoard(color)
 end
 
 function clearDice1(obj, color, alt)
@@ -1707,6 +1705,10 @@ function moveLethalHits(isSustainedAndLethal)
 end
 
 function cleanupLethalHits()
+    for guid, _ in pairs(originalPositions) do
+        local die = getObjectFromGUID(guid)
+        if die then die.destruct() end
+    end
     originalPositions = {}
     for mat, t in pairs(lethalTextDisplays) do
         if t then t.destruct() end
