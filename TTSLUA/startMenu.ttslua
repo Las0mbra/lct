@@ -1016,6 +1016,11 @@ defaultDeployHeight=2
 deployOffset = 0
 
 secondRowOffset= 1.2
+deployHeaderBtn = {
+    index = 1, label = "Deployment", click_function = "none", function_owner = self,
+    position = { -menuX, 5, -0.5 }, rotation = {0, 0, 0}, height = 0, width = 6000,
+    font_size = 600, color = {0, 0, 0}, font_color = {1, 1, 1}
+}
 deployBtn = {
     index = i, label = "", click_function = "none", function_owner = self,
     position = { - menuX, 5, 1}, rotation = {0, 0, 0}, height = 750, width = 6000,
@@ -2508,6 +2513,7 @@ function writeDeployMenu()
         deploySelected = #DeployZonesData
     end
     deployBtn.label = DeployZonesData[deploySelected].name
+    self.createButton(deployHeaderBtn)
     self.createButton(deployBtn)
     self.createButton(deployUpBtn)
     self.createButton(deployDownBtn)
