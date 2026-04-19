@@ -194,7 +194,7 @@ warningBtn={
 
 lowerUpper=true
 oneTimeUpper=true
-lethalButtonsOffset = -4
+lethalButtonsOffset = -4.2
 
 lethalLabel = "Lethal Hits"
 lethalTip   = "Left-click: move dice >= 6. Right-click: move dice >= 5."
@@ -1136,32 +1136,32 @@ function clearDiceX(n, deleteLower, color)
 end
 
 function spawnDice1(obj, player, alt)
-    spawnDice(1,player)
+    spawnDice(1,player,alt)
 end
 function spawnDice2(obj, player, alt)
-    spawnDice(2,player)
+    spawnDice(2,player,alt)
 end
 function spawnDice3(obj, player, alt)
-    spawnDice(3,player)
+    spawnDice(3,player,alt)
 end
 function spawnDice4(obj, player, alt)
-    spawnDice(4,player)
+    spawnDice(4,player,alt)
 end
 function spawnDice5(obj, player, alt)
-    spawnDice(5,player)
+    spawnDice(5,player,alt)
 end
 function spawnDice10(obj, player, alt)
-    spawnDice(10,player)
+    spawnDice(10,player,alt)
 end
 function spawnDice25(obj, player, alt)
-    spawnDice(25,player)
+    spawnDice(25,player,alt)
 end
 
 function spawnDice1d3(obj, player, alt)
-    spawnD3(1, player)
+    spawnD3(1, player, alt)
 end
 
-function spawnD3(n, player)
+function spawnD3(n, player, alt)
     local playerDiceSpeed = player == "Red" and Global.getVar("redDiceSpawnTime") or Global.getVar("blueDiceSpawnTime")
     local currentTime = os.time()
     local disableTime = (playerDiceSpeed == "slow") and 0.6 or 0.2
@@ -1200,9 +1200,12 @@ function spawnD3(n, player)
             if row > 4 then row = 0; grid = grid + 1 end
         end
     end
+    if alt then
+        Wait.time(function() moveDiceToRoller(player, getDice()) end, 0.5)
+    end
 end
 
-function spawnDice(n,player)
+function spawnDice(n,player,alt)
     local playerDiceSpeed = player == "Red" and Global.getVar("redDiceSpawnTime") or Global.getVar("blueDiceSpawnTime")
     local currentTime = os.time()
     local disableTime = (playerDiceSpeed == "slow") and 0.6 or 0.2
@@ -1255,6 +1258,9 @@ function spawnDice(n,player)
         if selectedColor ~= nil then
             die.setColorTint(selectedColor)
         end
+    end
+    if alt then
+        Wait.time(function() moveDiceToRoller(player, getDice()) end, 0.5)
     end
 end
 
