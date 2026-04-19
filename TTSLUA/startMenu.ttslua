@@ -1031,22 +1031,6 @@ deployDownBtn = {
     position = { - menuX - arrowOffset, 5, 1}, rotation = {0, 0, 0}, height = 750, width = 800,
     font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
-deployOffsetMenuBtn = {
-    index = 1, label = "Deploy\nHeight", click_function = "none", function_owner = self,
-    position = {-menuX - 1.4*arrowOffset, 5, menuZ}, rotation = {0, 0, 0}, height = 450, width = 1000,
-    font_size = 150, color = {0, 0, 0}, font_color = {1, 1, 1}
-}
-deployOffsetUpBtn = {
-    index = 1, label = "+", click_function = "deployOffsetUp", function_owner = self,
-    position = {-menuX - 1.4*arrowOffset, 5, menuZ - secondRowOffset}, rotation = {0, 0, 0}, height = 450, width = 800,
-    font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
-}
-deployOffsetDownBtn = {
-    index = 1, label = "-", click_function = "deployOffsetDown", function_owner = self,
-    position = {-menuX - 1.4*arrowOffset, 5, menuZ + secondRowOffset}, rotation = {0, 0, 0}, height = 450, width = 800,
-    font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
-}
-
 function drawDeployZone(zone)
     local drawDataZone = zone.draw
     for i, drawData in ipairs(drawDataZone) do
@@ -1738,28 +1722,6 @@ function deployUpDown(upDown)
     placeDeploy()
 end
 
-function deployOffsetUp()
-    deployOffsetUpDown(true)
-end
-
-function deployOffsetDown()
-    deployOffsetUpDown(false)
-end
-
-function deployOffsetUpDown(upDown) -- true up, false down
-    local amt = 1
-    if not upDown then amt = -1 end
-    deployOffset = deployOffset + amt
-    if deployOffset > 25 then
-        deployOffset = 25
-    end
-    if deployOffset < 0 then
-        deployOffset = 0
-    end
-    writeMenus()
-    setDeployHeight()
-end
-
 -- END deploy zones manager
 
 -- ******************
@@ -2053,22 +2015,6 @@ objectivesData = {
         {id = 0, name = "None", objectives = {}},
     }
 
-    objectivesOffsetMenuBtn = {
-    index = 1, label = "Obj.\nHeight", click_function = "none", function_owner = self,
-    position = {-menuX + 1.4*arrowOffset, 5, menuZ}, rotation = {0, 0, 0}, height = 450, width = 1000,
-    font_size = 150, color = {0, 0, 0}, font_color = {1, 1, 1}
-}
-objectivesOffsetUpBtn = {
-    index = 1, label = "+", click_function = "objectivesOffsetUp", function_owner = self,
-    position = {-menuX + 1.4*arrowOffset, 5, menuZ - secondRowOffset}, rotation = {0, 0, 0}, height = 450, width = 800,
-    font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
-}
-objectivesOffsetDownBtn = {
-    index = 1, label = "-", click_function = "objectivesOffsetDown", function_owner = self,
-    position = {-menuX + 1.4*arrowOffset, 5, menuZ + secondRowOffset}, rotation = {0, 0, 0}, height = 450, width = 800,
-    font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
-}
-
 -- 9" secondary deployment lines toggle button (teal 59decf)
 local nineInchColor = {0x59/255, 0xDE/255, 0xCF/255}
 nineFromDeployBtn = {
@@ -2191,28 +2137,6 @@ function setObjectivesHeight()
         pos = found.getPosition()
         found.setPosition({pos[1], defaultObjectivesHeight+ objectivesOffset, pos[3]})
     end
-end
-
-function objectivesOffsetUp()
-    objectivesOffsetUpDown(true)
-end
-
-function objectivesOffsetDown()
-    objectivesOffsetUpDown(false)
-end
-
-function objectivesOffsetUpDown(upDown) -- true up, false down
-    local amt = 0.2
-    if not upDown then amt = -0.2 end
-    objectivesOffset = objectivesOffset + amt
-    if objectivesOffset > 25 then
-        objectivesOffset = 25
-    end
-    if objectivesOffset < 0 then
-        objectivesOffset = 0
-    end
-    writeMenus()
-    setObjectivesHeight()
 end
 
 -- END objectives manager
@@ -2587,12 +2511,6 @@ function writeDeployMenu()
     self.createButton(deployBtn)
     self.createButton(deployUpBtn)
     self.createButton(deployDownBtn)
-    self.createButton(deployOffsetMenuBtn)
-    self.createButton(deployOffsetUpBtn)
-    self.createButton(deployOffsetDownBtn)
-    self.createButton(objectivesOffsetDownBtn)
-    self.createButton(objectivesOffsetUpBtn)
-    self.createButton(objectivesOffsetMenuBtn)
     -- self.createButton(nineFromDeployBtn)
 
     if gameMode == "game" then
@@ -2615,12 +2533,6 @@ end
 function writeIngameMenu()
     self.createButton(IncrementRedCpBtn)
     self.createButton(IncrementBlueCpBtn)
-    self.createButton(deployOffsetMenuBtn)
-    self.createButton(deployOffsetUpBtn)
-    self.createButton(deployOffsetDownBtn)
-    self.createButton(objectivesOffsetDownBtn)
-    self.createButton(objectivesOffsetUpBtn)
-    self.createButton(objectivesOffsetMenuBtn)
     destroyNineInchDeployLines()
 
     nextPhaseBtn.color = currentTurn
