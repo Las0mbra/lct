@@ -97,7 +97,6 @@ interactiveButtonAreaDenial = 1
 interactiveButtonStratReserves = 1
 interactiveButtonDeploymentZones = 1
 
-CPMissionBook_GUID = "731ec4"
 
 teamModels = { Red = {}, Blue = {} }
 Global.setTable("teamModels", teamModels)

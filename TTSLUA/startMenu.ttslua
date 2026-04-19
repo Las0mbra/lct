@@ -577,11 +577,6 @@ function confirmDoublesGame()
 
     broadcastToAll("2v2 Doubles Game Mode Initialized!", {0.5, 0, 0.5})
     confirmSizeMat("game")
-    --deleting the Combat Patrol Mission book unless on the appropriate map size
-    if sizeData[mapSizeSelected].id ~= 1 then
-        cpbook = getObjectFromGUID(Global.getVar("CPMissionBook_GUID"))
-        destroyObject(cpbook)
-    end
     -- Change color of object with GUID "deb9f2" to blue
     local blueObject = getObjectFromGUID("deb9f2")
     if blueObject then
@@ -707,12 +702,6 @@ end
 function confirmSizeGame()
     spawnInteractiveObject()
     confirmSizeMat("game")
-    --deleting the Combat Patrol Mission book unless on the appropriate map size
-    if sizeData[mapSizeSelected].id ~= 1 then
-        cpbook = getObjectFromGUID(Global.getVar("CPMissionBook_GUID"))
-        destroyObject(cpbook)
-    end
-
     -- Table of GUIDs and their position to show on board
     -- bascially to hide certain objects that are controlled by the control board
     local guidPositions = {
