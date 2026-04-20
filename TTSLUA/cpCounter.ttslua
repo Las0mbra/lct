@@ -7,7 +7,13 @@ local _watchId   = nil
 
 function onLoad()
     _lastValue = self.Counter.getValue()
-    _watchId   = (self.getGUID() == "e446f7") and "CPWatch1" or "CPWatch2"
+    local isP1 = (self.getGUID() == "e446f7")
+    _watchId   = isP1 and "CPWatch1" or "CPWatch2"
+    local guid    = self.getGUID()
+    local plusId  = isP1 and "CPPlus1"  or "CPPlus2"
+    local minusId = isP1 and "CPMinus1" or "CPMinus2"
+    Global.UI.setAttribute(plusId,  "onClick", guid .. "/increment")
+    Global.UI.setAttribute(minusId, "onClick", guid .. "/decrement")
     Wait.time(checkValue, 0.5, -1)
 end
 
@@ -17,4 +23,12 @@ function checkValue()
         _lastValue = current
         Global.UI.setAttribute(_watchId, "text", "CP: " .. current)
     end
+end
+
+function increment()
+    self.Counter.increment()
+end
+
+function decrement()
+    self.Counter.decrement()
 end

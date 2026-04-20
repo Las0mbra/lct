@@ -44,18 +44,34 @@
   </VerticalLayout>
 </Panel>
 
-<Panel id="VP Scores" active="true" scale="0.8 0.8 0.8" width="380" height="148" rectAlignment="UpperLeft" offsetXY="270 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="VP Scores" active="true" scale="0.8 0.8 0.8" width="490" height="215" rectAlignment="UpperLeft" offsetXY="270 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <VerticalLayout spacing="6" padding="6">
     <Panel id="VPPanel1" color="#1A5FC8E6" outline="#5B8FDECC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
+        <Text id="TVWatch1" text="T:0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <Text id="VPWatch1" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <Text id="CPWatch1" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <VerticalLayout spacing="2">
+          <Button id="CPPlus1"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+          <Button id="CPMinus1" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+        </VerticalLayout>
       </HorizontalLayout>
     </Panel>
     <Panel id="VPPanel2" color="#B52020E6" outline="#D46060CC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
+        <Text id="TVWatch2" text="T:0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <Text id="VPWatch2" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <Text id="CPWatch2" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <VerticalLayout spacing="2">
+          <Button id="CPPlus2"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+          <Button id="CPMinus2" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+        </VerticalLayout>
+      </HorizontalLayout>
+    </Panel>
+    <Panel id="GameStatePanel" color="#1A1A2AE6" outline="#2a2a4aCC" outlineSize="2">
+      <HorizontalLayout spacing="4" padding="4">
+        <Text id="PhaseWatch" text="Pre-Game" fontSize="36" color="White" shadow="#000000AA" shadowDistance="1 -1" flexibleWidth="1" alignment="MiddleLeft"/>
+        <Text id="RoundWatch" text="Battle Round: 0" fontSize="36" color="White" shadow="#000000AA" shadowDistance="1 -1" alignment="MiddleRight"/>
       </HorizontalLayout>
     </Panel>
   </VerticalLayout>
