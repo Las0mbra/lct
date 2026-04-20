@@ -128,7 +128,7 @@
   "TabStates": {
     "0": {
       "title": "New Features",
-      "body": "New Features Exaplined:\r\n\r\n\nInjection Detection Tool:\n• The code checks every 15 seconds to see if any objects currently on the board have been 'infected'\n• If you have an infected object you will see a large red error wanring you and\na 'Virus' will appear in the center of the battle field\nInteraction Changes\n• Some changes have been made with how you will use the map base:\n• You will need to click `Confirm for gaming` to you see secondaries and other game related features.\n\n\rSelection Tool:\n• It will now highlight for everybody in the game which models have been selcted.\n• I use this when I want to show guys 'ok these will shot'\n• The Selection tool is debatable if you need it. Most use tab to do this, but not me. It just felt more natural to highlight the unit.\n\n\rLethal Hits Buttons\n• The 'Lethal hits' button is a new feature and its still a little ropey\n• It will need more work to be a little smarted\n• I will add sustained and susatined+letahsl etoo.\n\n\rVortex:\n• Vortex is there, but as explained in my reddit post, I do not believe we need\nfrom a performance perspective. It was the injected code is what was causing the game to be laggy. But its a beautiful tool (user hutber)",
+      "body": "New Features Exaplined:\r\n\r\n\nInjection Detection Tool:\n\u2022 The code checks every 15 seconds to see if any objects currently on the board have been 'infected'\n\u2022 If you have an infected object you will see a large red error wanring you and\na 'Virus' will appear in the center of the battle field\nInteraction Changes\n\u2022 Some changes have been made with how you will use the map base:\n\u2022 You will need to click `Confirm for gaming` to you see secondaries and other game related features.\n\n\rSelection Tool:\n\u2022 It will now highlight for everybody in the game which models have been selcted.\n\u2022 I use this when I want to show guys 'ok these will shot'\n\u2022 The Selection tool is debatable if you need it. Most use tab to do this, but not me. It just felt more natural to highlight the unit.\n\n\rLethal Hits Buttons\n\u2022 The 'Lethal hits' button is a new feature and its still a little ropey\n\u2022 It will need more work to be a little smarted\n\u2022 I will add sustained and susatined+letahsl etoo.\n\n\rVortex:\n\u2022 Vortex is there, but as explained in my reddit post, I do not believe we need\nfrom a performance perspective. It was the injected code is what was causing the game to be laggy. But its a beautiful tool (user hutber)",
       "color": "Grey",
       "visibleColor": {
         "r": 0.5,
@@ -139,7 +139,7 @@
     },
     "1": {
       "title": "Gaming instructions",
-      "body": "SETTING UP THE GAME\r\n\r\nWhen loading or connecting choose your seat in the shown menu.\r\n\r\nAdditive load a terrain save file for FTC Gaming Template v2.0 or above, the map and the mat background will be placed. Confirm it or remove if you want to change with another map. In the table control menu (on one of the table legs) there is a button to erase all but the table in the gaming area, in case you wrongly confirmed. This button erases already placed armies and other things too.\r\n\r\nYou can then import your army. If you import one made with the FTC Army Builder v2.0 or above (you can find it in the workshop) just additive load the save file and use the buttons to place the army on your side or remove it if you want to change it. Make sure that nobody loads a new army until the previous one is placed or deleted to prevent physics spaz.\r\n\r\nUse the menu on the top of the gaming mat to place the chosen deployment areas and objectives for the chosen mission. If terrain is interfering with the deployment zones or objectives, you can use the + and - buttons to raise or lower them.\r\n\r\n\r\nSTARTING THE GAME\r\n\r\nDeploy the armies as per the rules for the mission you are playing. Select the starting player with the toggle button, and when you are ready, start the game with the clearly marked button. Turns will be automatically taken in the chosen order, and the battle-forged CP will be automatically added each turn.\r\n\r\nDuring the game you can re-show and re-hide the selected deployment zones by clicking on the corresponding buttons placed near the top of battle mat. There are also buttons to show table quarters, Engage zones, Strategic Reserves zones, and to show 3\" and 6\" distances from the center. You also can use buttons on the upper left to go easily to dice roller and back (select a model first to go back to it)\r\n\r\nYou can save and load your game at any point of the game or setup. When loading a save file of a started game, the players will be automatically placed in the seats they had when they started to play.\r\n\r\n\r\nPLAYING THE GAME\r\n\r\nObjective markers have multiple states. The default state (1) provides a mat showing both the marker and the control radius. State 2 shows you the marker itself. State 3 provides a 3\" cylinder so you can easily check range. States 4 and 5 are the same as state 1 but in red and blue, useful for highlighting control or sticky control.\r\n\r\nTo roll dice simply drop them into the small cardboard box, it will roll them and place them in order on the rolling mat. The rolling mat will display the results along with the total dice rolled. Also present are buttons to spawn dice of 4 colors, to select them and to delete them. Near each row of dice are present buttons to delete or re-roll dice rows, left click affects only that row, right click affects that row plus all the lower (-). If you click the \" - / + \" button, the next right click will delete/re-roll that row plus all the higher dice instead. Use the description of the small box to change your preferences and the behavior of the tool. You can also switch between re-rolling and selecting. There's also buttons to roll dice showing you what order they were rolled in, useful for Feel No Pain rolls, and a button to mark whatever die is currently on the mat as the die to spawn copies of, useful if you've got a custom (e.g. faction) die you'd like to use.\r\n\r\nYou can find a set of useful generic tokens at the head of the table, copy them and use them as you see fit.\r\n\r\nActivation tokens: an interactive token can be placed near each unit to keep track of which ones have acted in each phase. Green means that the unit has to act; red that it has already acted. To change the state, just click on the coloured button. All the tokens are reset automatically at each phase/turn change. You can manually reset them by clicking on any \"Reset Activation tokens\" button. With the token selected, you can use the Numpad1 and Numpad2 to lower/raise the position of the button.\r\n\r\nWound trackers: an interactive token can be placed near each model to keep track of its remaining wounds. To reduce the number left click on the button, to increase it right click. With the token selected you can use the Numpad1 and Numpad2 to lower/raise the position of the button.\r\n\r\nThe counters are self explanatory; the player's turn and the battle round ones are automatic, you don't need to update them manually. The victory ones will reflect the value of the score sheet if you use it.\r\n\r\nIf you want to use the chess clock, you can pass the time to your opponent by clicking on the time shown on the top-right of the UI. Alternatively, you can press keypad 7 if you're red, or 9 if you're blue.\r\n\r\n\r\nMISCELLANEOUS\r\n\r\nThe battle mat is a modified \"Flex Table\" (by MrStump) with fixed dimensions. You can change the background of the mat by clicking on the white button on one of the legs and paste the URL of the image.\r\n\r\nYou can store URLs in memory by adding them individually so you can recall them easily if you want to make a local version with stored images. An improvement in version 2 is that you now only need to provide the image of the battle mat itself, you don’t need to edit a massive image containing the felt part. For best results, use an image with the correct ratio!\r\n\r\nReport any bugs at https://github.com/hutber/tts-map-base/issues\r\n",
+      "body": "SETTING UP THE GAME\r\n\r\nWhen loading or connecting choose your seat in the shown menu.\r\n\r\nAdditive load a terrain save file for FTC Gaming Template v2.0 or above, the map and the mat background will be placed. Confirm it or remove if you want to change with another map. In the table control menu (on one of the table legs) there is a button to erase all but the table in the gaming area, in case you wrongly confirmed. This button erases already placed armies and other things too.\r\n\r\nYou can then import your army. If you import one made with the FTC Army Builder v2.0 or above (you can find it in the workshop) just additive load the save file and use the buttons to place the army on your side or remove it if you want to change it. Make sure that nobody loads a new army until the previous one is placed or deleted to prevent physics spaz.\r\n\r\nUse the menu on the top of the gaming mat to place the chosen deployment areas and objectives for the chosen mission. If terrain is interfering with the deployment zones or objectives, you can use the + and - buttons to raise or lower them.\r\n\r\n\r\nSTARTING THE GAME\r\n\r\nDeploy the armies as per the rules for the mission you are playing. Select the starting player with the toggle button, and when you are ready, start the game with the clearly marked button. Turns will be automatically taken in the chosen order, and the battle-forged CP will be automatically added each turn.\r\n\r\nDuring the game you can re-show and re-hide the selected deployment zones by clicking on the corresponding buttons placed near the top of battle mat. There are also buttons to show table quarters, Engage zones, Strategic Reserves zones, and to show 3\" and 6\" distances from the center. You also can use buttons on the upper left to go easily to dice roller and back (select a model first to go back to it)\r\n\r\nYou can save and load your game at any point of the game or setup. When loading a save file of a started game, the players will be automatically placed in the seats they had when they started to play.\r\n\r\n\r\nPLAYING THE GAME\r\n\r\nObjective markers have multiple states. The default state (1) provides a mat showing both the marker and the control radius. State 2 shows you the marker itself. State 3 provides a 3\" cylinder so you can easily check range. States 4 and 5 are the same as state 1 but in red and blue, useful for highlighting control or sticky control.\r\n\r\nTo roll dice simply drop them into the small cardboard box, it will roll them and place them in order on the rolling mat. The rolling mat will display the results along with the total dice rolled. Also present are buttons to spawn dice of 4 colors, to select them and to delete them. Near each row of dice are present buttons to delete or re-roll dice rows, left click affects only that row, right click affects that row plus all the lower (-). If you click the \" - / + \" button, the next right click will delete/re-roll that row plus all the higher dice instead. Use the description of the small box to change your preferences and the behavior of the tool. You can also switch between re-rolling and selecting. There's also buttons to roll dice showing you what order they were rolled in, useful for Feel No Pain rolls, and a button to mark whatever die is currently on the mat as the die to spawn copies of, useful if you've got a custom (e.g. faction) die you'd like to use.\r\n\r\nYou can find a set of useful generic tokens at the head of the table, copy them and use them as you see fit.\r\n\r\nActivation tokens: an interactive token can be placed near each unit to keep track of which ones have acted in each phase. Green means that the unit has to act; red that it has already acted. To change the state, just click on the coloured button. All the tokens are reset automatically at each phase/turn change. You can manually reset them by clicking on any \"Reset Activation tokens\" button. With the token selected, you can use the Numpad1 and Numpad2 to lower/raise the position of the button.\r\n\r\nWound trackers: an interactive token can be placed near each model to keep track of its remaining wounds. To reduce the number left click on the button, to increase it right click. With the token selected you can use the Numpad1 and Numpad2 to lower/raise the position of the button.\r\n\r\nThe counters are self explanatory; the player's turn and the battle round ones are automatic, you don't need to update them manually. The victory ones will reflect the value of the score sheet if you use it.\r\n\r\nIf you want to use the chess clock, you can pass the time to your opponent by clicking on the time shown on the top-right of the UI. Alternatively, you can press keypad 7 if you're red, or 9 if you're blue.\r\n\r\n\r\nMISCELLANEOUS\r\n\r\nThe battle mat is a modified \"Flex Table\" (by MrStump) with fixed dimensions. You can change the background of the mat by clicking on the white button on one of the legs and paste the URL of the image.\r\n\r\nYou can store URLs in memory by adding them individually so you can recall them easily if you want to make a local version with stored images. An improvement in version 2 is that you now only need to provide the image of the battle mat itself, you don\u2019t need to edit a massive image containing the felt part. For best results, use an image with the correct ratio!\r\n\r\nReport any bugs at https://github.com/hutber/tts-map-base/issues\r\n",
       "color": "Grey",
       "visibleColor": {
         "r": 0.5,
@@ -3359,26 +3359,26 @@
           "XmlUI": "",
           "ContainedObjects": [
             {
-              "GUID": "3fc012",
+              "GUID": "33d0d2",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -4.26201725,
-                "posY": 1.0995208,
-                "posZ": 0.07101029,
-                "rotX": -0.000111711088,
-                "rotY": 90.00004,
-                "rotZ": -1.51473905e-05,
+                "posX": -10.9033546,
+                "posY": 0.987210631,
+                "posZ": -2.070026,
+                "rotX": -0.0005850351,
+                "rotY": 89.9999542,
+                "rotZ": 359.751465,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
               "Nickname": "CRUCIBLE OF BATTLE - 1",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -3399,11 +3399,11 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 23900,
+              "CardID": 18800,
               "SidewaysCard": false,
               "CustomDeck": {
-                "239": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10347653629492504708/6FA263F3CA698396550BCBC28463642B2C4856CC/",
+                "188": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223138303/4443BAB0DBE26C76CCBCE373AD825EC82530D0B1/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -3417,26 +3417,26 @@
               "XmlUI": ""
             },
             {
-              "GUID": "b15763",
+              "GUID": "89b2d9",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -4.63845348,
-                "posY": 1.10912645,
-                "posZ": -0.385279536,
-                "rotX": -0.000785989745,
-                "rotY": 90.00005,
-                "rotZ": 0.000388085085,
+                "posX": -10.49992,
+                "posY": 1.02921891,
+                "posZ": -2.32806063,
+                "rotX": 0.0119935721,
+                "rotY": 90.00004,
+                "rotZ": 359.785919,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
               "Nickname": "CRUCIBLE OF BATTLE - 2",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -3457,11 +3457,11 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 24100,
+              "CardID": 18900,
               "SidewaysCard": false,
               "CustomDeck": {
-                "241": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13388933570042625574/68099545DBA5B578F73A0F72D8AFE8363F57B201/",
+                "189": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223138364/C996F404598414C4C3515CC48DD9FB13DDB42C62/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -3475,26 +3475,26 @@
               "XmlUI": ""
             },
             {
-              "GUID": "c2cd85",
+              "GUID": "8e7589",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -4.03786945,
-                "posY": 1.118746,
-                "posZ": -0.193898588,
-                "rotX": -0.000281446963,
-                "rotY": 90.00003,
-                "rotZ": -8.858947e-05,
+                "posX": -10.4523706,
+                "posY": 1.06256342,
+                "posZ": -1.90399051,
+                "rotX": 0.0003967046,
+                "rotY": 89.9999847,
+                "rotZ": 359.7853,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
               "Nickname": "CRUCIBLE OF BATTLE - 3",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -3515,11 +3515,11 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 24400,
+              "CardID": 19000,
               "SidewaysCard": false,
               "CustomDeck": {
-                "244": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11065350889772293649/66082561849DB5F7F26660D1A9AC726E8D6DDB46/",
+                "190": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223138407/5B0C432E2D0D021AF12502D86D54C4CF656F4A38/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -3533,26 +3533,26 @@
               "XmlUI": ""
             },
             {
-              "GUID": "6e6df1",
+              "GUID": "868e4d",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -4.291545,
-                "posY": 1.12838447,
-                "posZ": -0.398655772,
-                "rotX": -0.000577318948,
-                "rotY": 90.00004,
-                "rotZ": 0.0003056207,
+                "posX": -10.5186653,
+                "posY": 1.07428861,
+                "posZ": -1.99630666,
+                "rotX": 359.9939,
+                "rotY": 90.00002,
+                "rotZ": 359.7956,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
               "Nickname": "CRUCIBLE OF BATTLE - 4 - 5",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -3573,11 +3573,11 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 24600,
+              "CardID": 19100,
               "SidewaysCard": false,
               "CustomDeck": {
-                "246": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9808380847313596008/8BE78AA473F8318A8580474BEFD13A43AB1EA7E2/",
+                "191": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223138417/C4E92B75B9A589A1A4E9195D72438BABBFF0D427/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -3591,26 +3591,26 @@
               "XmlUI": ""
             },
             {
-              "GUID": "a959e1",
+              "GUID": "606c8d",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -4.248926,
-                "posY": 1.13801253,
-                "posZ": -0.3545987,
-                "rotX": -0.0005572702,
-                "rotY": 90.00004,
-                "rotZ": 0.0003044528,
+                "posX": -11.36292,
+                "posY": 1.085421,
+                "posZ": -1.64123571,
+                "rotX": 0.00378896738,
+                "rotY": 89.99997,
+                "rotZ": 359.7977,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
               "Nickname": "CRUCIBLE OF BATTLE - 6",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -3631,11 +3631,11 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 24800,
+              "CardID": 19200,
               "SidewaysCard": false,
               "CustomDeck": {
-                "248": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/16553745212492328141/42DD1ED9BB8FE9966BD12F361D0D9E568FCD1BF2/",
+                "192": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223138468/115E65E908337D5EC1C4B0EFDC444D646AE40AA6/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -3649,26 +3649,26 @@
               "XmlUI": ""
             },
             {
-              "GUID": "095609",
+              "GUID": "f600aa",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -4.422169,
-                "posY": 1.147636,
-                "posZ": -0.309269369,
-                "rotX": -0.0006033207,
-                "rotY": 90.00004,
-                "rotZ": 0.000318381557,
+                "posX": -11.56502,
+                "posY": 1.09097517,
+                "posZ": -2.557869,
+                "rotX": 359.986877,
+                "rotY": 90.00007,
+                "rotZ": 359.791565,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
               "Nickname": "CRUCIBLE OF BATTLE - 7",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -3689,11 +3689,11 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 25000,
+              "CardID": 19300,
               "SidewaysCard": false,
               "CustomDeck": {
-                "250": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/15772015392811088148/7BDAA5D6DE1E017B465E741209BB265D9872D856/",
+                "193": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223155537/20F4F175C40BACA41BAA6C4F26A77EF182374DF8/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -3707,26 +3707,26 @@
               "XmlUI": ""
             },
             {
-              "GUID": "6b5633",
+              "GUID": "a5cc03",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -3.80892229,
-                "posY": 1.15727842,
-                "posZ": -0.717347562,
-                "rotX": -0.000328982162,
-                "rotY": 90.00004,
-                "rotZ": 0.000178674338,
+                "posX": -10.8936958,
+                "posY": 1.100678,
+                "posZ": -2.57633758,
+                "rotX": 0.005051752,
+                "rotY": 90.0,
+                "rotZ": 359.792877,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
               "Nickname": "CRUCIBLE OF BATTLE - 8",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -3747,11 +3747,11 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 25200,
+              "CardID": 19400,
               "SidewaysCard": false,
               "CustomDeck": {
-                "252": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13069499453679512168/0E4A5BE695A40EFEE5CF0ED66BFC09C94F454F81/",
+                "194": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223038387/6C98385CC9BFDBA82DE498F1DE4E2629CC97B39C/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -3884,7 +3884,7 @@
             "scaleZ": 1
           },
           "Nickname": "WTC MISSION OUTLINE [WTC Teams]",
-          "Description": "• [Tipping Point] Supply Drop\n• [Hammer and Anvil] Hidden Supplies\n• [Hammer and Anvil] Take and Hold\n• [Crucible Of Battle] Terraform\n• [Crucible Of Battle] Scorched Earth\n• [Search and Destroy] Linchpin\n• [Search and Destroy] Take and Hold",
+          "Description": "\u2022 [Tipping Point] Supply Drop\n\u2022 [Hammer and Anvil] Hidden Supplies\n\u2022 [Hammer and Anvil] Take and Hold\n\u2022 [Crucible Of Battle] Terraform\n\u2022 [Crucible Of Battle] Scorched Earth\n\u2022 [Search and Destroy] Linchpin\n\u2022 [Search and Destroy] Take and Hold",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0,
@@ -4608,7 +4608,7 @@
             "scaleZ": 1
           },
           "Nickname": "WTC MISSION OUTLINE [Warmaster Singles]",
-          "Description": "• [Tipping Point] Supply Drop\n• [Hammer and Anvil] Hidden Supplies\n• [Hammer and Anvil] Take and Hold\n• [Crucible Of Battle] Terraform\n• [Crucible Of Battle] Scorched Earth\n• [Search and Destroy] Linchpin\n• [Search and Destroy] Hidden Supplies\n• [Tipping Point] Scorched Earth\n• [Search and Destroy] Take and Hold",
+          "Description": "\u2022 [Tipping Point] Supply Drop\n\u2022 [Hammer and Anvil] Hidden Supplies\n\u2022 [Hammer and Anvil] Take and Hold\n\u2022 [Crucible Of Battle] Terraform\n\u2022 [Crucible Of Battle] Scorched Earth\n\u2022 [Search and Destroy] Linchpin\n\u2022 [Search and Destroy] Hidden Supplies\n\u2022 [Tipping Point] Scorched Earth\n\u2022 [Search and Destroy] Take and Hold",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0,
@@ -4933,64 +4933,6 @@
               "XmlUI": ""
             },
             {
-              "GUID": "d5fde1",
-              "Name": "CardCustom",
-              "Transform": {
-                "posX": -3.75525379,
-                "posY": 1.09949911,
-                "posZ": 6.19218,
-                "rotX": -0.0001391151,
-                "rotY": 90,
-                "rotZ": -6.787992e-05,
-                "scaleX": 1.5,
-                "scaleY": 1,
-                "scaleZ": 1.5
-              },
-              "Nickname": "HAMMER AND ANVIL - 4 - 5",
-              "Description": "",
-              "GMNotes": "",
-              "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
-              "ColorDiffuse": {
-                "r": 0.713235259,
-                "g": 0.713235259,
-                "b": 0.713235259
-              },
-              "LayoutGroupSortIndex": 0,
-              "Value": 0,
-              "Locked": false,
-              "Grid": true,
-              "Snap": true,
-              "IgnoreFoW": false,
-              "MeasureMovement": false,
-              "DragSelectable": true,
-              "Autoraise": true,
-              "Sticky": true,
-              "Tooltip": true,
-              "GridProjection": false,
-              "HideWhenFaceDown": true,
-              "Hands": true,
-              "CardID": 25400,
-              "SidewaysCard": false,
-              "CustomDeck": {
-                "254": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/16634104180186555254/292AE3727B130B19AE3F0F61F7BFAD25195D5416/",
-                  "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 1
-                }
-              },
-              "LuaScript": "",
-              "LuaScriptState": "",
-              "XmlUI": ""
-            },
-            {
               "GUID": "fa21d0",
               "Name": "CardCustom",
               "Transform": {
@@ -5049,26 +4991,26 @@
               "XmlUI": ""
             },
             {
-              "GUID": "8c1f64",
+              "GUID": "c0b9cf",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -3.74510956,
-                "posY": 1.10911357,
-                "posZ": 6.0617137,
-                "rotX": -0.000136299073,
-                "rotY": 90,
-                "rotZ": -7.85960437e-05,
+                "posX": -16.4205246,
+                "posY": 1.07317448,
+                "posZ": -2.29860854,
+                "rotX": 359.991852,
+                "rotY": 90.00006,
+                "rotZ": 359.7925,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
-              "Nickname": "HAMMER AND ANVIL - 7",
+              "Nickname": "HAMMER AND ANVIL - 4 - 5",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -5089,11 +5031,11 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 199600,
+              "CardID": 18200,
               "SidewaysCard": false,
               "CustomDeck": {
-                "256": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13496722374640063514/93B19C90DC894295DBE3E70D114E2DD528DE5FA1/",
+                "182": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223038665/630A41F8D0B5741FDB67D0257D273BBAA3CBD32D/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -5107,26 +5049,26 @@
               "XmlUI": ""
             },
             {
-              "GUID": "bdc099",
+              "GUID": "0a185d",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -3.939023,
-                "posY": 1.13879991,
-                "posZ": 5.48739958,
-                "rotX": -0.0009923384,
-                "rotY": 90.00007,
-                "rotZ": 0.3666163,
+                "posX": -16.38015,
+                "posY": 1.095426,
+                "posZ": -1.58736658,
+                "rotX": 359.992157,
+                "rotY": 90.0000458,
+                "rotZ": 359.794952,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
-              "Nickname": "HAMMER AND ANVIL - 8",
+              "Nickname": "HAMMER AND ANVIL - 7",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -5147,11 +5089,69 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 199700,
+              "CardID": 18500,
               "SidewaysCard": false,
               "CustomDeck": {
-                "258": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12977387890689345380/EBD03F7BE526D693A29DC05BBC2849FAB89297E5/",
+                "185": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223038723/23A0E7EE8A3FA98E6485DE21A1E0CCBC77C3ABAA/",
+                  "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
+                  "NumWidth": 1,
+                  "NumHeight": 1,
+                  "BackIsHidden": true,
+                  "UniqueBack": false,
+                  "Type": 1
+                }
+              },
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "5313c3",
+              "Name": "CardCustom",
+              "Transform": {
+                "posX": -16.84895,
+                "posY": 1.10058522,
+                "posZ": -2.65199161,
+                "rotX": 359.989624,
+                "rotY": 90.0000839,
+                "rotZ": 359.7917,
+                "scaleX": 1.5,
+                "scaleY": 1.0,
+                "scaleZ": 1.5
+              },
+              "Nickname": "HAMMER AND ANVIL - 8",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 18400,
+              "SidewaysCard": false,
+              "CustomDeck": {
+                "184": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223038772/D62776C679A5ED81D7A92190C0B57F96371264A3/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -5287,26 +5287,26 @@
           "XmlUI": "",
           "ContainedObjects": [
             {
-              "GUID": "9c11d1",
+              "GUID": "5e4497",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -3.8562336,
-                "posY": 1.12867594,
-                "posZ": -6.348805,
-                "rotX": -0.000295032165,
-                "rotY": 90.00006,
-                "rotZ": 359.465729,
+                "posX": -4.39659548,
+                "posY": 0.9735848,
+                "posZ": -2.58211756,
+                "rotX": 0.000147872372,
+                "rotY": 90.00005,
+                "rotZ": -0.000474851142,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
               "Nickname": "SEARCH AND DESTROY - 1",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -5327,11 +5327,11 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 199800,
+              "CardID": 19600,
               "SidewaysCard": false,
               "CustomDeck": {
-                "259": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10851968057176203390/7731AA720B7ACBC2E3E29A34F8B1AD4C1E02C4A2/",
+                "196": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223183963/E52F9673B0CC7ABF1AE29392EE6B4CFE3CEF6760/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -5345,26 +5345,26 @@
               "XmlUI": ""
             },
             {
-              "GUID": "1bb358",
+              "GUID": "538515",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -4.00847864,
-                "posY": 1.1335156,
-                "posZ": -6.487949,
-                "rotX": -0.00149462419,
-                "rotY": 90.00008,
-                "rotZ": 359.554047,
+                "posX": -4.88175964,
+                "posY": 1.00957334,
+                "posZ": -3.157455,
+                "rotX": 0.0023743934,
+                "rotY": 90.00003,
+                "rotZ": -0.00183493027,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
               "Nickname": "SEARCH AND DESTROY - 2",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -5385,11 +5385,11 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 199900,
+              "CardID": 19700,
               "SidewaysCard": false,
               "CustomDeck": {
-                "261": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12905444509440858890/43131A05A4D3D76ED4CABEEA9E72C13ED9166982/",
+                "197": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223184062/B854507608242E2A8BB7D95CACB813F834781357/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -5403,26 +5403,26 @@
               "XmlUI": ""
             },
             {
-              "GUID": "52c6fe",
+              "GUID": "a35354",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -3.711937,
-                "posY": 1.1395148,
-                "posZ": -6.381746,
-                "rotX": -0.005029874,
-                "rotY": 90.00008,
-                "rotZ": 359.621765,
+                "posX": -4.307707,
+                "posY": 1.05144513,
+                "posZ": -1.9397136,
+                "rotX": -0.000143140845,
+                "rotY": 90.0000153,
+                "rotZ": -0.00017003926,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
               "Nickname": "SEARCH AND DESTROY - 3",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -5443,11 +5443,11 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 200000,
+              "CardID": 19800,
               "SidewaysCard": false,
               "CustomDeck": {
-                "263": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/15913569487456004585/9140D64CC6E0BDC62C8DF4A5E1355F166A70283A/",
+                "198": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223184121/45B52E7DFCD6B5B72015AF37470EE56E24B934B0/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -5461,26 +5461,26 @@
               "XmlUI": ""
             },
             {
-              "GUID": "4b00f3",
+              "GUID": "980dfa",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -3.651584,
-                "posY": 1.14388216,
-                "posZ": -6.767794,
-                "rotX": -0.000202037525,
-                "rotY": 90,
-                "rotZ": 359.7164,
+                "posX": -4.22316456,
+                "posY": 1.06102526,
+                "posZ": -2.56465578,
+                "rotX": -0.000101888152,
+                "rotY": 90.00001,
+                "rotZ": -0.000233338564,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
               "Nickname": "SEARCH AND DESTROY - 4 - 5",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -5501,11 +5501,11 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 26500,
+              "CardID": 19900,
               "SidewaysCard": false,
               "CustomDeck": {
-                "265": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14748471509916088979/7AC7D49ADF480BA2ECB356E739710D9DEFE771B7/",
+                "199": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223184172/F07BEF239AA4576465809D2F761DFB5C1CAE9F34/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -5519,26 +5519,26 @@
               "XmlUI": ""
             },
             {
-              "GUID": "ef3f6a",
+              "GUID": "2cedfe",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -4.008868,
-                "posY": 1.1496917,
-                "posZ": -6.740624,
-                "rotX": -0.0004572558,
-                "rotY": 90.0000153,
-                "rotZ": 359.7861,
+                "posX": -4.67042,
+                "posY": 1.07067323,
+                "posZ": -2.46145058,
+                "rotX": -0.000523935654,
+                "rotY": 89.9999847,
+                "rotZ": -5.28064775e-05,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
               "Nickname": "SEARCH AND DESTROY - 6",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -5559,11 +5559,11 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 26700,
+              "CardID": 20000,
               "SidewaysCard": false,
               "CustomDeck": {
-                "267": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/15088932988496094977/AE455439CB17DCF977F38AC095D0A47869D8F5F0/",
+                "200": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223184245/ED15D9B1DDB2529DED8D592E1CD6FD323F4DC67F/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -5577,26 +5577,26 @@
               "XmlUI": ""
             },
             {
-              "GUID": "fd84f6",
+              "GUID": "e3d0f4",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -3.83322,
-                "posY": 1.14765465,
-                "posZ": -7.17590237,
-                "rotX": -8.943725e-05,
-                "rotY": 180,
-                "rotZ": -0.000244946015,
+                "posX": -4.34516335,
+                "posY": 1.08028674,
+                "posZ": -2.879785,
+                "rotX": -0.000398522767,
+                "rotY": 90.00001,
+                "rotZ": -0.0001286215,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
               "Nickname": "SEARCH AND DESTROY - 7",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -5617,11 +5617,11 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 26900,
+              "CardID": 21300,
               "SidewaysCard": false,
               "CustomDeck": {
-                "269": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18006782597698482559/E764AB1646C92E1986A01F8BD8DE88CEA7398FE8/",
+                "213": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223184287/30ECA2E697524987AD2468FDC924C810E13122FB/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -5635,26 +5635,26 @@
               "XmlUI": ""
             },
             {
-              "GUID": "9ba3c6",
+              "GUID": "d4bfdf",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -3.63664961,
-                "posY": 1.15727723,
-                "posZ": -7.89309835,
-                "rotX": -0.000229120269,
-                "rotY": 90.00004,
-                "rotZ": 0.000105462132,
+                "posX": -4.67606258,
+                "posY": 1.089918,
+                "posZ": -2.2957592,
+                "rotX": -0.000495324959,
+                "rotY": 90.0000153,
+                "rotZ": -3.91589674e-05,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
               "Nickname": "SEARCH AND DESTROY - 8",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -5675,11 +5675,11 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 27100,
+              "CardID": 20200,
               "SidewaysCard": false,
               "CustomDeck": {
-                "271": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17031898419468308991/469475E53AAC8B470D12E4F16CB87F531271E796/",
+                "202": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223184350/DBBA2956E5A4DD0AC0DE34A26471ECEC19431DB5/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -5815,180 +5815,6 @@
           "XmlUI": "",
           "ContainedObjects": [
             {
-              "GUID": "cf295e",
-              "Name": "CardCustom",
-              "Transform": {
-                "posX": -12.52106,
-                "posY": 1.11856389,
-                "posZ": 5.996919,
-                "rotX": 0.000207627338,
-                "rotY": 90,
-                "rotZ": 0.000542360242,
-                "scaleX": 1.5,
-                "scaleY": 1,
-                "scaleZ": 1.5
-              },
-              "Nickname": "TIPPING POINT - 1",
-              "Description": "",
-              "GMNotes": "",
-              "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
-              "ColorDiffuse": {
-                "r": 0.713235259,
-                "g": 0.713235259,
-                "b": 0.713235259
-              },
-              "LayoutGroupSortIndex": 0,
-              "Value": 0,
-              "Locked": false,
-              "Grid": true,
-              "Snap": true,
-              "IgnoreFoW": false,
-              "MeasureMovement": false,
-              "DragSelectable": true,
-              "Autoraise": true,
-              "Sticky": true,
-              "Tooltip": true,
-              "GridProjection": false,
-              "HideWhenFaceDown": true,
-              "Hands": true,
-              "CardID": 27300,
-              "SidewaysCard": false,
-              "CustomDeck": {
-                "273": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12128695125471683406/BB0FED5CDB5AEE026D253743021F0346BE60A8F4/",
-                  "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 1
-                }
-              },
-              "LuaScript": "",
-              "LuaScriptState": "",
-              "XmlUI": ""
-            },
-            {
-              "GUID": "e436d0",
-              "Name": "CardCustom",
-              "Transform": {
-                "posX": -13.0960159,
-                "posY": 1.10911262,
-                "posZ": 6.034258,
-                "rotX": -0.0008297616,
-                "rotY": 90,
-                "rotZ": 0.0003934177,
-                "scaleX": 1.5,
-                "scaleY": 1,
-                "scaleZ": 1.5
-              },
-              "Nickname": "TIPPING POINT - 2",
-              "Description": "",
-              "GMNotes": "",
-              "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
-              "ColorDiffuse": {
-                "r": 0.713235259,
-                "g": 0.713235259,
-                "b": 0.713235259
-              },
-              "LayoutGroupSortIndex": 0,
-              "Value": 0,
-              "Locked": false,
-              "Grid": true,
-              "Snap": true,
-              "IgnoreFoW": false,
-              "MeasureMovement": false,
-              "DragSelectable": true,
-              "Autoraise": true,
-              "Sticky": true,
-              "Tooltip": true,
-              "GridProjection": false,
-              "HideWhenFaceDown": true,
-              "Hands": true,
-              "CardID": 200100,
-              "SidewaysCard": false,
-              "CustomDeck": {
-                "275": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13639531136691967681/8162030F33883A0750E4B693FB49D7552B06A83C/",
-                  "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 1
-                }
-              },
-              "LuaScript": "",
-              "LuaScriptState": "",
-              "XmlUI": ""
-            },
-            {
-              "GUID": "1956ef",
-              "Name": "CardCustom",
-              "Transform": {
-                "posX": -13.199152,
-                "posY": 1.12336826,
-                "posZ": 6.397612,
-                "rotX": -0.000203041389,
-                "rotY": 90.00004,
-                "rotZ": 359.91568,
-                "scaleX": 1.5,
-                "scaleY": 1,
-                "scaleZ": 1.5
-              },
-              "Nickname": "TIPPING POINT - 3",
-              "Description": "",
-              "GMNotes": "",
-              "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
-              "ColorDiffuse": {
-                "r": 0.713235259,
-                "g": 0.713235259,
-                "b": 0.713235259
-              },
-              "LayoutGroupSortIndex": 0,
-              "Value": 0,
-              "Locked": false,
-              "Grid": true,
-              "Snap": true,
-              "IgnoreFoW": false,
-              "MeasureMovement": false,
-              "DragSelectable": true,
-              "Autoraise": true,
-              "Sticky": true,
-              "Tooltip": true,
-              "GridProjection": false,
-              "HideWhenFaceDown": true,
-              "Hands": true,
-              "CardID": 200200,
-              "SidewaysCard": false,
-              "CustomDeck": {
-                "277": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/15193241732361506910/3280BC5D31BFE5D13916C14FE759E3FA6F8980A7/",
-                  "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
-                  "NumWidth": 1,
-                  "NumHeight": 1,
-                  "BackIsHidden": true,
-                  "UniqueBack": false,
-                  "Type": 1
-                }
-              },
-              "LuaScript": "",
-              "LuaScriptState": "",
-              "XmlUI": ""
-            },
-            {
               "GUID": "126e24",
               "Name": "CardCustom",
               "Transform": {
@@ -6047,26 +5873,200 @@
               "XmlUI": ""
             },
             {
-              "GUID": "fd9b44",
+              "GUID": "251948",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -12.7571878,
-                "posY": 1.12838185,
-                "posZ": 6.05951357,
-                "rotX": -0.0005931981,
-                "rotY": 90.0000153,
-                "rotZ": 0.000302705419,
+                "posX": 2.56168962,
+                "posY": 0.97359854,
+                "posZ": -2.96722436,
+                "rotX": 4.504142e-05,
+                "rotY": 90.00004,
+                "rotZ": -0.000147880855,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
+                "scaleZ": 1.5
+              },
+              "Nickname": "TIPPING POINT - 1",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 20300,
+              "SidewaysCard": false,
+              "CustomDeck": {
+                "203": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223039513/2C3C4C341554A9DB926B3B7F0F102883525E3DA9/",
+                  "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
+                  "NumWidth": 1,
+                  "NumHeight": 1,
+                  "BackIsHidden": true,
+                  "UniqueBack": false,
+                  "Type": 1
+                }
+              },
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "50cb27",
+              "Name": "CardCustom",
+              "Transform": {
+                "posX": 2.98459578,
+                "posY": 1.01746821,
+                "posZ": -3.60411835,
+                "rotX": -0.000566582137,
+                "rotY": 90.00001,
+                "rotZ": -0.000537216838,
+                "scaleX": 1.5,
+                "scaleY": 1.0,
+                "scaleZ": 1.5
+              },
+              "Nickname": "TIPPING POINT - 2",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 21900,
+              "SidewaysCard": false,
+              "CustomDeck": {
+                "219": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223039541/BCD3E4537BE0F233CE1419B8AD0D6B9DC80EE35E/",
+                  "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
+                  "NumWidth": 1,
+                  "NumHeight": 1,
+                  "BackIsHidden": true,
+                  "UniqueBack": false,
+                  "Type": 1
+                }
+              },
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "20df55",
+              "Name": "CardCustom",
+              "Transform": {
+                "posX": 1.470998,
+                "posY": 1.05137384,
+                "posZ": -3.74601579,
+                "rotX": -0.00148517289,
+                "rotY": 90.00003,
+                "rotZ": -0.000940030965,
+                "scaleX": 1.5,
+                "scaleY": 1.0,
+                "scaleZ": 1.5
+              },
+              "Nickname": "TIPPING POINT - 3",
+              "Description": "",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.713235259,
+                "g": 0.713235259,
+                "b": 0.713235259
+              },
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": false,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": true,
+              "Hands": true,
+              "CardID": 22000,
+              "SidewaysCard": false,
+              "CustomDeck": {
+                "220": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223039587/F9C659E8C5BA66A006754D8A5D54BCE98B8155EB/",
+                  "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
+                  "NumWidth": 1,
+                  "NumHeight": 1,
+                  "BackIsHidden": true,
+                  "UniqueBack": false,
+                  "Type": 1
+                }
+              },
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            },
+            {
+              "GUID": "8cd36f",
+              "Name": "CardCustom",
+              "Transform": {
+                "posX": 2.37679887,
+                "posY": 1.07068872,
+                "posZ": -3.42939234,
+                "rotX": -0.0002498961,
+                "rotY": 90.00003,
+                "rotZ": -0.00023531534,
+                "scaleX": 1.5,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
               "Nickname": "TIPPING POINT - 6",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -6087,11 +6087,11 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 200300,
+              "CardID": 22200,
               "SidewaysCard": false,
               "CustomDeck": {
-                "279": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/16082987346184029664/794D136CF227CDFCF351A0DB1487E6E6BE68888E/",
+                "222": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223039683/209F6F3744C623A42AFBB218DB12418733E45B9F/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -6105,26 +6105,26 @@
               "XmlUI": ""
             },
             {
-              "GUID": "ec6d5e",
+              "GUID": "d78a87",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -13.0178785,
-                "posY": 1.13797545,
-                "posZ": 6.71424627,
-                "rotX": -0.00105162477,
-                "rotY": 89.99999,
-                "rotZ": 0.0006950567,
+                "posX": -1.68355048,
+                "posY": 4.64512062,
+                "posZ": -19.003273,
+                "rotX": -1.5779203e-07,
+                "rotY": 90.00001,
+                "rotZ": 7.64692e-08,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
               "Nickname": "TIPPING POINT - 7",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -6145,11 +6145,11 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 200400,
+              "CardID": 22600,
               "SidewaysCard": false,
               "CustomDeck": {
-                "282": {
-                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/16902164873722924891/A10B24BEC813CCB7E52B03CEC7A41059407BF184/",
+                "226": {
+                  "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223039723/4BB6E56555567B45ECF4F677635E2DCCC04F5848/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
                   "NumHeight": 1,
@@ -6163,26 +6163,26 @@
               "XmlUI": ""
             },
             {
-              "GUID": "8a0534",
+              "GUID": "168de4",
               "Name": "CardCustom",
               "Transform": {
-                "posX": -0.212716192,
-                "posY": 1.98489368,
-                "posZ": -29.23825,
-                "rotX": -5.26228128e-08,
-                "rotY": 89.9999847,
-                "rotZ": -8.820357e-09,
+                "posX": 3.7195344,
+                "posY": 1.08987117,
+                "posZ": -3.32600355,
+                "rotX": 3.67729626e-05,
+                "rotY": 90.00003,
+                "rotZ": -0.000387306151,
                 "scaleX": 1.5,
-                "scaleY": 1,
+                "scaleY": 1.0,
                 "scaleZ": 1.5
               },
               "Nickname": "TIPPING POINT - 8",
               "Description": "",
               "GMNotes": "",
               "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
               },
               "ColorDiffuse": {
                 "r": 0.713235259,
@@ -6203,10 +6203,10 @@
               "GridProjection": false,
               "HideWhenFaceDown": true,
               "Hands": true,
-              "CardID": 23600,
+              "CardID": 22400,
               "SidewaysCard": false,
               "CustomDeck": {
-                "236": {
+                "224": {
                   "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223039748/4DDA04DA1593D64912B908DBCB83EEF764BE37CA/",
                   "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9675400223040213/EE3C586C9EC593B290087AE71EEAD3F2702F5027/",
                   "NumWidth": 1,
@@ -19271,7 +19271,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Missions Outline Teams",
-          "Description": "• [Hammer & Anvil] Fog of War / Linchpin\r\n• [Search & Destroy] Swift Action / Scorched Earth\r\n• [Crucible of Battle] Raise Banners / Purge the Foe\r\n• [Tipping Point] Inspired Leadership / Burden of Trust\r\n• [Sweeping Engagement] Smoke and Mirrors / Take and Hold",
+          "Description": "\u2022 [Hammer & Anvil] Fog of War / Linchpin\r\n\u2022 [Search & Destroy] Swift Action / Scorched Earth\r\n\u2022 [Crucible of Battle] Raise Banners / Purge the Foe\r\n\u2022 [Tipping Point] Inspired Leadership / Burden of Trust\r\n\u2022 [Sweeping Engagement] Smoke and Mirrors / Take and Hold",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -20931,7 +20931,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Missions Outline Singles",
-          "Description": "• [Hammer & Anvil] Fog of War / Linchpin\r\n• [Search & Destroy] Swift Action / Scored Earth\r\n• [Crucible of Battle] Raise Banners / Purge the Foe\r\n• [Tipping Point] Inspired Leadership / Burden of Trust\r\n• [Sweeping Engagement] Smoke and Mirrors / Take and Hold\r\n• [Search & Destroy] Swift Action / Scorched Earth",
+          "Description": "\u2022 [Hammer & Anvil] Fog of War / Linchpin\r\n\u2022 [Search & Destroy] Swift Action / Scored Earth\r\n\u2022 [Crucible of Battle] Raise Banners / Purge the Foe\r\n\u2022 [Tipping Point] Inspired Leadership / Burden of Trust\r\n\u2022 [Sweeping Engagement] Smoke and Mirrors / Take and Hold\r\n\u2022 [Search & Destroy] Swift Action / Scorched Earth",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -37482,7 +37482,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "A Tempting Target",
-          "Description": "When this Secondary Mission card is drawn, your opponent must select one objective marker in No Man’s Land.\r\n\r\nAt the end of your turn, if you control that selected objective marker, this Secondary Mission is achieved and you score 5VP.\r",
+          "Description": "When this Secondary Mission card is drawn, your opponent must select one objective marker in No Man\u2019s Land.\r\n\r\nAt the end of your turn, if you control that selected objective marker, this Secondary Mission is achieved and you score 5VP.\r",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -37543,7 +37543,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Capture Enemy Outpost",
-          "Description": "At the end of your turn, if you control one or more objective markers in your opponent’s deployment zone, this Secondary Mission is achieved and you score 8VP.",
+          "Description": "At the end of your turn, if you control one or more objective markers in your opponent\u2019s deployment zone, this Secondary Mission is achieved and you score 8VP.",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -37604,7 +37604,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Area Denial",
-          "Description": "At the end of your turn, if one or more units from your army (excluding Battle-shocked units) are wholly within 6” of the centre of the battlefield, and there are no enemy units wholly within 6” of the centre of the battlefield, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf, at the end of your turn, there are one or more enemy units wholly within 6” of the centre of the battlefield, but there are no enemy units within 3” of the centre of the battlefield, then this Secondary Mission is still achieved, but in this instance you score 3VP instead of 5VP.\r\n",
+          "Description": "At the end of your turn, if one or more units from your army (excluding Battle-shocked units) are wholly within 6\u201d of the centre of the battlefield, and there are no enemy units wholly within 6\u201d of the centre of the battlefield, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf, at the end of your turn, there are one or more enemy units wholly within 6\u201d of the centre of the battlefield, but there are no enemy units within 3\u201d of the centre of the battlefield, then this Secondary Mission is still achieved, but in this instance you score 3VP instead of 5VP.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -37665,7 +37665,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Defend Stronghold",
-          "Description": "At the end of your opponent’s turn, or at the end of the battle (whichever comes first), if you control one or more objective markers in your own deployment zone, this Secondary Mission is achieved and you score 3VP.\r\n\r\nThis Secondary Mission cannot be achieved during the first battle round. If you randomly drew this Secondary Mission card during the first battle round, draw a new Secondary Mission card and shuffle this Secondary Mission card back into your Secondary Mission deck.\r\n",
+          "Description": "At the end of your opponent\u2019s turn, or at the end of the battle (whichever comes first), if you control one or more objective markers in your own deployment zone, this Secondary Mission is achieved and you score 3VP.\r\n\r\nThis Secondary Mission cannot be achieved during the first battle round. If you randomly drew this Secondary Mission card during the first battle round, draw a new Secondary Mission card and shuffle this Secondary Mission card back into your Secondary Mission deck.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -37726,7 +37726,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Extend Battle Lines",
-          "Description": "At the end of your turn, if you control one or more objective markers in your own deployment zone and you also control one or more objective markers in No Man’s Land, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf you only have one unit remaining in your army, then this Secondary Mission is instead achieved at the end of your turn if that unit controls one objective marker in No Man’s Land, but in this instance you score 2VP instead of 5VP.\r\n",
+          "Description": "At the end of your turn, if you control one or more objective markers in your own deployment zone and you also control one or more objective markers in No Man\u2019s Land, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf you only have one unit remaining in your army, then this Secondary Mission is instead achieved at the end of your turn if that unit controls one objective marker in No Man\u2019s Land, but in this instance you score 2VP instead of 5VP.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -37787,7 +37787,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Investigate Signals",
-          "Description": "In your Shooting phase, you can select one or more units from your army that are not Battle-shocked and are eligible to shoot. Until the end of your turn, the units you selected are not eligible to shoot or declare a charge.\r\n\r\nAt the end of your turn, each corner of the battlefield that has one or more of these selected units wholly within 9” of it is scanned by your army.\r\n\r\nIf one or more corners are scanned by your army, this Secondary Mission is achieved and you score 2VP for each corner scanned by your army this turn.\r\n",
+          "Description": "In your Shooting phase, you can select one or more units from your army that are not Battle-shocked and are eligible to shoot. Until the end of your turn, the units you selected are not eligible to shoot or declare a charge.\r\n\r\nAt the end of your turn, each corner of the battlefield that has one or more of these selected units wholly within 9\u201d of it is scanned by your army.\r\n\r\nIf one or more corners are scanned by your army, this Secondary Mission is achieved and you score 2VP for each corner scanned by your army this turn.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -37970,7 +37970,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Secure No Man's Land",
-          "Description": "At the end of your turn, if you control two or more objective markers in No Man’s Land, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf, at the end of your turn, you only control one objective marker in No Man’s Land, this Secondary Mission is still achieved, but in this instance you score 2VP instead of 5VP.\r",
+          "Description": "At the end of your turn, if you control two or more objective markers in No Man\u2019s Land, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf, at the end of your turn, you only control one objective marker in No Man\u2019s Land, this Secondary Mission is still achieved, but in this instance you score 2VP instead of 5VP.\r",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -38157,7 +38157,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Assassination",
-          "Description": "If you are using Fixed Missions, then while this Secondary Mission is active, each time an enemy [b]CHARACTER[/b] model is destroyed, you score 4VP. \r\n\r\nIf you are using Tactical Missions, then at the end of the turn, if either of the conditions below are satisfied, this Secondary Mission is achieved and you score 5VP:\r\n\r\n* One or more enemy [b]CHARACTER[/b] units were destroyed during this turn.\r\n* All [b]CHARACTER[/b] units from your opponent’s Army Roster have been destroyed during the battle.\r\n\r\nNote that if you are using Tactical Missions, this Secondary MIssion is achieved even if such a unit was destroyed and then subsequently resurrected for any reason.\r\n",
+          "Description": "If you are using Fixed Missions, then while this Secondary Mission is active, each time an enemy [b]CHARACTER[/b] model is destroyed, you score 4VP. \r\n\r\nIf you are using Tactical Missions, then at the end of the turn, if either of the conditions below are satisfied, this Secondary Mission is achieved and you score 5VP:\r\n\r\n* One or more enemy [b]CHARACTER[/b] units were destroyed during this turn.\r\n* All [b]CHARACTER[/b] units from your opponent\u2019s Army Roster have been destroyed during the battle.\r\n\r\nNote that if you are using Tactical Missions, this Secondary MIssion is achieved even if such a unit was destroyed and then subsequently resurrected for any reason.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -38218,7 +38218,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Behind Enemy Lines",
-          "Description": "At the end of your turn, if two or more units from your army (excluding [b]AIRCRAFT[/b]) are wholly within your opponent’s deployment zone, this secondary mission is achieved and you score 4VP (or 5VP if you are using Tactical Missions).\r\n\r\nIf, at the end of your turn, only one unit from your army (excluding [b]AIRCRAFT[/b]) is wholly within your opponent’s deployment zone, then this Secondary Mission is still achieved, but in this instance you score 3VP instead of 4VP (or instead of 5VP).\r\n",
+          "Description": "At the end of your turn, if two or more units from your army (excluding [b]AIRCRAFT[/b]) are wholly within your opponent\u2019s deployment zone, this secondary mission is achieved and you score 4VP (or 5VP if you are using Tactical Missions).\r\n\r\nIf, at the end of your turn, only one unit from your army (excluding [b]AIRCRAFT[/b]) is wholly within your opponent\u2019s deployment zone, then this Secondary Mission is still achieved, but in this instance you score 3VP instead of 4VP (or instead of 5VP).\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -38401,7 +38401,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Engage On All Fronts",
-          "Description": "At the end of your turn, if you have one or more qualifying units (see below) from your army wholly within three or more different table quarters, and those units are all more than 3” away from any other table quarter, this Secondary Mission is achieved and you score 4VP if you have qualifying units in four different table quarters, or 2VP if you have qualifying units in three different table quarters.\r\n\r\nWhile a unit is Battle-shocked, it is not a qualifying unit.\r\n\r\nIf, when you draw this Secondary Mission card, you only have one or two qualifying units remaining in your army, you can discard this Secondary Mission card and draw a new Secondary mission card.\r\n\r\nIf you are using Tactical Missions, then when this Secondary Mission is achieved you score an extra 1VP (for a maximum of 5VP).\r\n",
+          "Description": "At the end of your turn, if you have one or more qualifying units (see below) from your army wholly within three or more different table quarters, and those units are all more than 3\u201d away from any other table quarter, this Secondary Mission is achieved and you score 4VP if you have qualifying units in four different table quarters, or 2VP if you have qualifying units in three different table quarters.\r\n\r\nWhile a unit is Battle-shocked, it is not a qualifying unit.\r\n\r\nIf, when you draw this Secondary Mission card, you only have one or two qualifying units remaining in your army, you can discard this Secondary Mission card and draw a new Secondary mission card.\r\n\r\nIf you are using Tactical Missions, then when this Secondary Mission is achieved you score an extra 1VP (for a maximum of 5VP).\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -38523,7 +38523,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Deploy Teleport Homer",
-          "Description": "In your Shooting phase, you can select one unit from your army that is not Battle-shocked and is eligible to shoot. Until the end of your turn, that unit is not eligible to shoot or declare a charge. \r\n\r\nAt the end of your turn, if that unit is within your opponent’s deployment zone, or within 6” of the centre of the battlefield, it deploys a teleport homer at that location, this Secondary Mission is achieved and you score a number of VP depending on where the teleport homer was deployed, as follows:\r\n\r\nCentre of battlefield = 3VP\r\n\r\nOpponent’s deployment zone = 4VP if you are using Fixed Missions, or 5VP if you are using Tactical Missions.\r\n",
+          "Description": "In your Shooting phase, you can select one unit from your army that is not Battle-shocked and is eligible to shoot. Until the end of your turn, that unit is not eligible to shoot or declare a charge. \r\n\r\nAt the end of your turn, if that unit is within your opponent\u2019s deployment zone, or within 6\u201d of the centre of the battlefield, it deploys a teleport homer at that location, this Secondary Mission is achieved and you score a number of VP depending on where the teleport homer was deployed, as follows:\r\n\r\nCentre of battlefield = 3VP\r\n\r\nOpponent\u2019s deployment zone = 4VP if you are using Fixed Missions, or 5VP if you are using Tactical Missions.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -38727,7 +38727,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Sites of Power",
-          "Description": "The objective markers in No Man’s Land are sites of power. At the end of each Command phase, the player whose turn it is empowers all sites of power that they control that have one or more [b]CHARACTER[/b] models from their army within range; each site of power remains empowered by that player while one or more of their [b]CHARACTER[/b] model remains within range of it.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores VP as follows (up to 15VP per turn):\r\n\r\n* 3VP for each objective marker they control.\r\n* 3VP for each site of power that they have empowered.\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n",
+          "Description": "The objective markers in No Man\u2019s Land are sites of power. At the end of each Command phase, the player whose turn it is empowers all sites of power that they control that have one or more [b]CHARACTER[/b] models from their army within range; each site of power remains empowered by that player while one or more of their [b]CHARACTER[/b] model remains within range of it.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores VP as follows (up to 15VP per turn):\r\n\r\n* 3VP for each objective marker they control.\r\n* 3VP for each site of power that they have empowered.\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -38788,7 +38788,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Scorched Earth",
-          "Description": "From the second battle round, in each player’s Shooting phase, the player whose turn it is can select one unit from their army that is not Battle-shocked and is eligible to shoot. Until the end of that turn, that unit is not eligible to shoot or declare a charge. At the start of its controlling player’s next Command phase, if that unit is within 1” of an objective marker that the player whose turn it is controls, that objective marker is burned and removed from the battlefield.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 5VP for each objective marker they control (up to 10VP per turn).\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n\r\n[b]At the end of the battle:[/b]\r\n\r\nEach player scores 5VP if one or more objective markers in No Man’s Land were burned by a unit from their army, and 10VP if the objective marker in their opponent’s deployment zone was burned.\r\n",
+          "Description": "From the second battle round, in each player\u2019s Shooting phase, the player whose turn it is can select one unit from their army that is not Battle-shocked and is eligible to shoot. Until the end of that turn, that unit is not eligible to shoot or declare a charge. At the start of its controlling player\u2019s next Command phase, if that unit is within 1\u201d of an objective marker that the player whose turn it is controls, that objective marker is burned and removed from the battlefield.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 5VP for each objective marker they control (up to 10VP per turn).\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n\r\n[b]At the end of the battle:[/b]\r\n\r\nEach player scores 5VP if one or more objective markers in No Man\u2019s Land were burned by a unit from their army, and 10VP if the objective marker in their opponent\u2019s deployment zone was burned.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -38971,7 +38971,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Deploy Servo-Skulls",
-          "Description": "The objective markers that start the battle in No Man’s Land are servo-skulls. At the end of each turn, each of these objective markers can be moved up to 6” in any direction by the player that controls it. When moving objective markers, they cannot end that move on top of any other objective marker or model, or inside impassable parts of terrain features (such as the walls of a ruin).\r\n\r\n[b]In the second, third, fourth and fifth battle rounds:[/b]\r\n\r\nAt the end of each turn, the player whose turn it is scores VP as follows:\r\n\r\n\r\n* 2VP for each servo-skull that is wholly within 12” of their opponent’s deployment zone.\r\n* 5VP for each servo-skull that is wholly within 6” of their opponent’s deployment zone.\r\n* 8VP for each servo-skull that is wholly within their opponent’s deployment zone.\r\n\r\nNote that these conditions are not cumulative; if more than one applies, the player whose turn it is scores the applicable condition that carries the highest VP reward.\r\n",
+          "Description": "The objective markers that start the battle in No Man\u2019s Land are servo-skulls. At the end of each turn, each of these objective markers can be moved up to 6\u201d in any direction by the player that controls it. When moving objective markers, they cannot end that move on top of any other objective marker or model, or inside impassable parts of terrain features (such as the walls of a ruin).\r\n\r\n[b]In the second, third, fourth and fifth battle rounds:[/b]\r\n\r\nAt the end of each turn, the player whose turn it is scores VP as follows:\r\n\r\n\r\n* 2VP for each servo-skull that is wholly within 12\u201d of their opponent\u2019s deployment zone.\r\n* 5VP for each servo-skull that is wholly within 6\u201d of their opponent\u2019s deployment zone.\r\n* 8VP for each servo-skull that is wholly within their opponent\u2019s deployment zone.\r\n\r\nNote that these conditions are not cumulative; if more than one applies, the player whose turn it is scores the applicable condition that carries the highest VP reward.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -39093,7 +39093,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Supply Drop",
-          "Description": "At the start of the battle, players randomly select two different objective markers in No Man’s Land: the first selected is the Alpha objective, the second selected is the Omega objective. At the start of the fourth battle round, the Alpha objective is removed from the battlefield. At the start of the fifth battle round, all objective markers in No Man’s Land apart from the Omega objective are also removed.\r\n\r\n[b]In the second and third battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 5VP for each objective marker they control in No Man’s Land.\r\n\r\n[b]In the fourth battle round:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 8VP for each objective marker they control in No Man’s Land.\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores 15VP at the end of their Command phase if they control the objective marker in No Man’s Land.\r\n\r\nThe player who has the second turn scores 15VP at the end of their turn if they control the objective marker in No Man’s Land.\r",
+          "Description": "At the start of the battle, players randomly select two different objective markers in No Man\u2019s Land: the first selected is the Alpha objective, the second selected is the Omega objective. At the start of the fourth battle round, the Alpha objective is removed from the battlefield. At the start of the fifth battle round, all objective markers in No Man\u2019s Land apart from the Omega objective are also removed.\r\n\r\n[b]In the second and third battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 5VP for each objective marker they control in No Man\u2019s Land.\r\n\r\n[b]In the fourth battle round:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 8VP for each objective marker they control in No Man\u2019s Land.\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores 15VP at the end of their Command phase if they control the objective marker in No Man\u2019s Land.\r\n\r\nThe player who has the second turn scores 15VP at the end of their turn if they control the objective marker in No Man\u2019s Land.\r",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -39154,7 +39154,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "The Ritual",
-          "Description": "When setting up the battlefield, remove all objective markers in No Man’s Land except the one closest to the centre of the battlefield.\r\n\r\nIn each player’s Shooting phase, the player whose turn it is can select one unit from their army that is not Battle-shocked and is eligible to shoot. Until the end of that turn, that unit is not eligible to shoot or declare a charge. At the end of that turn, the player whose turn it is can set up one objective marker wholly within No Man’s Land and within 1” of that unit provided it can be set up exactly 9” from one other objective marker and not within 6” of any other objective marker.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 5VP for each objective marker in No Man’s Land they control (up to 15VP per turn).\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n",
+          "Description": "When setting up the battlefield, remove all objective markers in No Man\u2019s Land except the one closest to the centre of the battlefield.\r\n\r\nIn each player\u2019s Shooting phase, the player whose turn it is can select one unit from their army that is not Battle-shocked and is eligible to shoot. Until the end of that turn, that unit is not eligible to shoot or declare a charge. At the end of that turn, the player whose turn it is can set up one objective marker wholly within No Man\u2019s Land and within 1\u201d of that unit provided it can be set up exactly 9\u201d from one other objective marker and not within 6\u201d of any other objective marker.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 5VP for each objective marker in No Man\u2019s Land they control (up to 15VP per turn).\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -39215,7 +39215,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Vital Ground",
-          "Description": "If you draw this and the Hidden Supplies Mission Rule card, discard this card and draw a new Primary Mission card.\r\n\r\nAfter setting up the battlefield, remove the objective marker in No Man’s Land that is closest to the centre of the battlefield.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores VP as follows:\r\n\r\n* If they control the objective marker in their own deployment zone, they score 2VP\r\n* For each objective marker in No Man’s Land that they control, they score 5VP.\r\n* If they control the objective marker in their opponent’s deployment zone, they score 6VP.\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn score VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n",
+          "Description": "If you draw this and the Hidden Supplies Mission Rule card, discard this card and draw a new Primary Mission card.\r\n\r\nAfter setting up the battlefield, remove the objective marker in No Man\u2019s Land that is closest to the centre of the battlefield.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores VP as follows:\r\n\r\n* If they control the objective marker in their own deployment zone, they score 2VP\r\n* For each objective marker in No Man\u2019s Land that they control, they score 5VP.\r\n* If they control the objective marker in their opponent\u2019s deployment zone, they score 6VP.\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn score VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
