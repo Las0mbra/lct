@@ -128,7 +128,7 @@
   "TabStates": {
     "0": {
       "title": "New Features",
-      "body": "New Features Exaplined:\r\n\r\n\nInjection Detection Tool:\n\u2022 The code checks every 15 seconds to see if any objects currently on the board have been 'infected'\n\u2022 If you have an infected object you will see a large red error wanring you and\na 'Virus' will appear in the center of the battle field\nInteraction Changes\n\u2022 Some changes have been made with how you will use the map base:\n\u2022 You will need to click `Confirm for gaming` to you see secondaries and other game related features.\n\n\rSelection Tool:\n\u2022 It will now highlight for everybody in the game which models have been selcted.\n\u2022 I use this when I want to show guys 'ok these will shot'\n\u2022 The Selection tool is debatable if you need it. Most use tab to do this, but not me. It just felt more natural to highlight the unit.\n\n\rLethal Hits Buttons\n\u2022 The 'Lethal hits' button is a new feature and its still a little ropey\n\u2022 It will need more work to be a little smarted\n\u2022 I will add sustained and susatined+letahsl etoo.\n\n\rVortex:\n\u2022 Vortex is there, but as explained in my reddit post, I do not believe we need\nfrom a performance perspective. It was the injected code is what was causing the game to be laggy. But its a beautiful tool (user hutber)",
+      "body": "New Features Exaplined:\r\n\r\n\nInjection Detection Tool:\n• The code checks every 15 seconds to see if any objects currently on the board have been 'infected'\n• If you have an infected object you will see a large red error wanring you and\na 'Virus' will appear in the center of the battle field\nInteraction Changes\n• Some changes have been made with how you will use the map base:\n• You will need to click `Confirm for gaming` to you see secondaries and other game related features.\n\n\rSelection Tool:\n• It will now highlight for everybody in the game which models have been selcted.\n• I use this when I want to show guys 'ok these will shot'\n• The Selection tool is debatable if you need it. Most use tab to do this, but not me. It just felt more natural to highlight the unit.\n\n\rLethal Hits Buttons\n• The 'Lethal hits' button is a new feature and its still a little ropey\n• It will need more work to be a little smarted\n• I will add sustained and susatined+letahsl etoo.\n\n\rVortex:\n• Vortex is there, but as explained in my reddit post, I do not believe we need\nfrom a performance perspective. It was the injected code is what was causing the game to be laggy. But its a beautiful tool (user hutber)",
       "color": "Grey",
       "visibleColor": {
         "r": 0.5,
@@ -139,7 +139,7 @@
     },
     "1": {
       "title": "Gaming instructions",
-      "body": "SETTING UP THE GAME\r\n\r\nWhen loading or connecting choose your seat in the shown menu.\r\n\r\nAdditive load a terrain save file for FTC Gaming Template v2.0 or above, the map and the mat background will be placed. Confirm it or remove if you want to change with another map. In the table control menu (on one of the table legs) there is a button to erase all but the table in the gaming area, in case you wrongly confirmed. This button erases already placed armies and other things too.\r\n\r\nYou can then import your army. If you import one made with the FTC Army Builder v2.0 or above (you can find it in the workshop) just additive load the save file and use the buttons to place the army on your side or remove it if you want to change it. Make sure that nobody loads a new army until the previous one is placed or deleted to prevent physics spaz.\r\n\r\nUse the menu on the top of the gaming mat to place the chosen deployment areas and objectives for the chosen mission. If terrain is interfering with the deployment zones or objectives, you can use the + and - buttons to raise or lower them.\r\n\r\n\r\nSTARTING THE GAME\r\n\r\nDeploy the armies as per the rules for the mission you are playing. Select the starting player with the toggle button, and when you are ready, start the game with the clearly marked button. Turns will be automatically taken in the chosen order, and the battle-forged CP will be automatically added each turn.\r\n\r\nDuring the game you can re-show and re-hide the selected deployment zones by clicking on the corresponding buttons placed near the top of battle mat. There are also buttons to show table quarters, Engage zones, Strategic Reserves zones, and to show 3\" and 6\" distances from the center. You also can use buttons on the upper left to go easily to dice roller and back (select a model first to go back to it)\r\n\r\nYou can save and load your game at any point of the game or setup. When loading a save file of a started game, the players will be automatically placed in the seats they had when they started to play.\r\n\r\n\r\nPLAYING THE GAME\r\n\r\nObjective markers have multiple states. The default state (1) provides a mat showing both the marker and the control radius. State 2 shows you the marker itself. State 3 provides a 3\" cylinder so you can easily check range. States 4 and 5 are the same as state 1 but in red and blue, useful for highlighting control or sticky control.\r\n\r\nTo roll dice simply drop them into the small cardboard box, it will roll them and place them in order on the rolling mat. The rolling mat will display the results along with the total dice rolled. Also present are buttons to spawn dice of 4 colors, to select them and to delete them. Near each row of dice are present buttons to delete or re-roll dice rows, left click affects only that row, right click affects that row plus all the lower (-). If you click the \" - / + \" button, the next right click will delete/re-roll that row plus all the higher dice instead. Use the description of the small box to change your preferences and the behavior of the tool. You can also switch between re-rolling and selecting. There's also buttons to roll dice showing you what order they were rolled in, useful for Feel No Pain rolls, and a button to mark whatever die is currently on the mat as the die to spawn copies of, useful if you've got a custom (e.g. faction) die you'd like to use.\r\n\r\nYou can find a set of useful generic tokens at the head of the table, copy them and use them as you see fit.\r\n\r\nActivation tokens: an interactive token can be placed near each unit to keep track of which ones have acted in each phase. Green means that the unit has to act; red that it has already acted. To change the state, just click on the coloured button. All the tokens are reset automatically at each phase/turn change. You can manually reset them by clicking on any \"Reset Activation tokens\" button. With the token selected, you can use the Numpad1 and Numpad2 to lower/raise the position of the button.\r\n\r\nWound trackers: an interactive token can be placed near each model to keep track of its remaining wounds. To reduce the number left click on the button, to increase it right click. With the token selected you can use the Numpad1 and Numpad2 to lower/raise the position of the button.\r\n\r\nThe counters are self explanatory; the player's turn and the battle round ones are automatic, you don't need to update them manually. The victory ones will reflect the value of the score sheet if you use it.\r\n\r\nIf you want to use the chess clock, you can pass the time to your opponent by clicking on the time shown on the top-right of the UI. Alternatively, you can press keypad 7 if you're red, or 9 if you're blue.\r\n\r\n\r\nMISCELLANEOUS\r\n\r\nThe battle mat is a modified \"Flex Table\" (by MrStump) with fixed dimensions. You can change the background of the mat by clicking on the white button on one of the legs and paste the URL of the image.\r\n\r\nYou can store URLs in memory by adding them individually so you can recall them easily if you want to make a local version with stored images. An improvement in version 2 is that you now only need to provide the image of the battle mat itself, you don\u2019t need to edit a massive image containing the felt part. For best results, use an image with the correct ratio!\r\n\r\nReport any bugs at https://github.com/hutber/tts-map-base/issues\r\n",
+      "body": "SETTING UP THE GAME\r\n\r\nWhen loading or connecting choose your seat in the shown menu.\r\n\r\nAdditive load a terrain save file for FTC Gaming Template v2.0 or above, the map and the mat background will be placed. Confirm it or remove if you want to change with another map. In the table control menu (on one of the table legs) there is a button to erase all but the table in the gaming area, in case you wrongly confirmed. This button erases already placed armies and other things too.\r\n\r\nYou can then import your army. If you import one made with the FTC Army Builder v2.0 or above (you can find it in the workshop) just additive load the save file and use the buttons to place the army on your side or remove it if you want to change it. Make sure that nobody loads a new army until the previous one is placed or deleted to prevent physics spaz.\r\n\r\nUse the menu on the top of the gaming mat to place the chosen deployment areas and objectives for the chosen mission. If terrain is interfering with the deployment zones or objectives, you can use the + and - buttons to raise or lower them.\r\n\r\n\r\nSTARTING THE GAME\r\n\r\nDeploy the armies as per the rules for the mission you are playing. Select the starting player with the toggle button, and when you are ready, start the game with the clearly marked button. Turns will be automatically taken in the chosen order, and the battle-forged CP will be automatically added each turn.\r\n\r\nDuring the game you can re-show and re-hide the selected deployment zones by clicking on the corresponding buttons placed near the top of battle mat. There are also buttons to show table quarters, Engage zones, Strategic Reserves zones, and to show 3\" and 6\" distances from the center. You also can use buttons on the upper left to go easily to dice roller and back (select a model first to go back to it)\r\n\r\nYou can save and load your game at any point of the game or setup. When loading a save file of a started game, the players will be automatically placed in the seats they had when they started to play.\r\n\r\n\r\nPLAYING THE GAME\r\n\r\nObjective markers have multiple states. The default state (1) provides a mat showing both the marker and the control radius. State 2 shows you the marker itself. State 3 provides a 3\" cylinder so you can easily check range. States 4 and 5 are the same as state 1 but in red and blue, useful for highlighting control or sticky control.\r\n\r\nTo roll dice simply drop them into the small cardboard box, it will roll them and place them in order on the rolling mat. The rolling mat will display the results along with the total dice rolled. Also present are buttons to spawn dice of 4 colors, to select them and to delete them. Near each row of dice are present buttons to delete or re-roll dice rows, left click affects only that row, right click affects that row plus all the lower (-). If you click the \" - / + \" button, the next right click will delete/re-roll that row plus all the higher dice instead. Use the description of the small box to change your preferences and the behavior of the tool. You can also switch between re-rolling and selecting. There's also buttons to roll dice showing you what order they were rolled in, useful for Feel No Pain rolls, and a button to mark whatever die is currently on the mat as the die to spawn copies of, useful if you've got a custom (e.g. faction) die you'd like to use.\r\n\r\nYou can find a set of useful generic tokens at the head of the table, copy them and use them as you see fit.\r\n\r\nActivation tokens: an interactive token can be placed near each unit to keep track of which ones have acted in each phase. Green means that the unit has to act; red that it has already acted. To change the state, just click on the coloured button. All the tokens are reset automatically at each phase/turn change. You can manually reset them by clicking on any \"Reset Activation tokens\" button. With the token selected, you can use the Numpad1 and Numpad2 to lower/raise the position of the button.\r\n\r\nWound trackers: an interactive token can be placed near each model to keep track of its remaining wounds. To reduce the number left click on the button, to increase it right click. With the token selected you can use the Numpad1 and Numpad2 to lower/raise the position of the button.\r\n\r\nThe counters are self explanatory; the player's turn and the battle round ones are automatic, you don't need to update them manually. The victory ones will reflect the value of the score sheet if you use it.\r\n\r\nIf you want to use the chess clock, you can pass the time to your opponent by clicking on the time shown on the top-right of the UI. Alternatively, you can press keypad 7 if you're red, or 9 if you're blue.\r\n\r\n\r\nMISCELLANEOUS\r\n\r\nThe battle mat is a modified \"Flex Table\" (by MrStump) with fixed dimensions. You can change the background of the mat by clicking on the white button on one of the legs and paste the URL of the image.\r\n\r\nYou can store URLs in memory by adding them individually so you can recall them easily if you want to make a local version with stored images. An improvement in version 2 is that you now only need to provide the image of the battle mat itself, you don’t need to edit a massive image containing the felt part. For best results, use an image with the correct ratio!\r\n\r\nReport any bugs at https://github.com/hutber/tts-map-base/issues\r\n",
       "color": "Grey",
       "visibleColor": {
         "r": 0.5,
@@ -660,122 +660,6 @@
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": "<Defaults>\r\n  <Text fontSize = \"70\" resizeTextForBestFit = \"true\"></Text>\r\n  <Text class = \"Header\" color = \"#c4be45\" fontSize = \"70\" resizeTextForBestFit = \"false\"></Text>\r\n  <Button fontSize = \"70\" preferredWidth = \"200\" preferredHeight = \"200\"></Button>\r\n</Defaults>\r\n<VerticalLayout position = \"-10.125 0 -10\" width = \"2250\" childForceExpandHeight = \"false\" childForceExpandWidth = \"false\" childAlignment = \"MiddleCenter\">\r\n  <HorizontalLayout preferredHeight = \"100\" childForceExpandHeight = \"false\" childForceExpandWidth = \"false\">\r\n    <Button fontSize = \"60\" preferredWidth = \"1425\" preferredHeight = \"100\" onClick = \"onCountClicked\">Show weapon stats</Button>\r\n    <InputField fontSize = \"60\" preferredWidth = \"725\" preferredHeight = \"100\" characterValidation = \"Integer\" textAlignment = \"MiddleCenter\" placeholder = \"Enter range to draw it\" onEndEdit = \"onShowRangeEditEnd\"></InputField>\r\n    <Button fontSize = \"60\" preferredWidth = \"300\" preferredHeight = \"100\" onClick = \"onCleanClicked\">Clean</Button>\r\n  </HorizontalLayout>\r\n  <TableLayout preferredHeight = \"150\" preferredWidth = \"2250\" columnWidths = \"600 800 200 350 350\" rowBackgroundColor = \"#888888\" >\r\n    <Row preferredHeight = \"130\">\r\n      <Cell><Text class = \"Header\">Name</Text></Cell>\r\n      <Cell><Text class = \"Header\">Stats</Text></Cell>\r\n      <Cell><Text class = \"Header\">Count</Text></Cell>\r\n      <Cell><Text class = \"Header\">Attacks</Text></Cell>\r\n      <Cell><Text class = \"Header\">Range</Text></Cell>\r\n    </Row>\r\n  </TableLayout>\r\n  <TableLayout preferredHeight = \"150\" preferredWidth = \"2250\" columnWidths = \"600 800 200 350 350\" rowBackgroundColor = \"#CCCCCC\">\r\n  </TableLayout>\r\n</VerticalLayout>"
-    },
-    {
-      "GUID": "64c6bb",
-      "Name": "CardCustom",
-      "Transform": {
-        "posX": 37.7512856,
-        "posY": 1.18,
-        "posZ": 38.1768532,
-        "rotX": 1.10573467e-06,
-        "rotY": 346.292236,
-        "rotZ": -7.75089745e-07,
-        "scaleX": 1,
-        "scaleY": 1,
-        "scaleZ": 1
-      },
-      "Nickname": "Corrr a bloody new thing!!",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 0.713235259,
-        "g": 0.713235259,
-        "b": 0.713235259
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": true,
-      "Hands": true,
-      "CardID": 182300,
-      "SidewaysCard": false,
-      "CustomDeck": {
-        "1823": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11958910485415805338/853BB6FCD83FFEE794D657DD291AEB13FDF4D5C3/",
-          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/11958910485415805338/853BB6FCD83FFEE794D657DD291AEB13FDF4D5C3/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "64b6bb",
-      "Name": "CardCustom",
-      "Transform": {
-        "posX": -37.37495,
-        "posY": 1.185186,
-        "posZ": -38.4182472,
-        "rotX": 358.9882,
-        "rotY": 165.533981,
-        "rotZ": 350.801758,
-        "scaleX": 1,
-        "scaleY": 1,
-        "scaleZ": 1
-      },
-      "Nickname": "Corrr a bloody new thing!!",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 0.713235259,
-        "g": 0.713235259,
-        "b": 0.713235259
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": true,
-      "Hands": true,
-      "CardID": 182300,
-      "SidewaysCard": false,
-      "CustomDeck": {
-        "1823": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11958910485415805338/853BB6FCD83FFEE794D657DD291AEB13FDF4D5C3/",
-          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/11958910485415805338/853BB6FCD83FFEE794D657DD291AEB13FDF4D5C3/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
     },
     {
       "GUID": "531758",
@@ -1829,348 +1713,6 @@
       ]
     },
     {
-      "GUID": "ab9a21",
-      "Name": "Custom_Token",
-      "Transform": {
-        "posX": 34.4295425,
-        "posY": 0.949998,
-        "posZ": 41.0663,
-        "rotX": 1.5843658e-06,
-        "rotY": 359.977844,
-        "rotZ": -5.47284856e-07,
-        "scaleX": 0.766083837,
-        "scaleY": 1,
-        "scaleZ": 0.766083837
-      },
-      "Nickname": "Advanced",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": true,
-      "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13599023424133435651/70EAB474609C925585CFED9AF60F4A6D137585BC/",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1,
-        "WidthScale": 0,
-        "CustomToken": {
-          "Thickness": 0.1,
-          "MergeDistancePixels": 25,
-          "StandUp": false,
-          "Stackable": false
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "ad19a7",
-      "Name": "Custom_Token",
-      "Transform": {
-        "posX": 31.1273727,
-        "posY": 0.949998,
-        "posZ": 41.0697861,
-        "rotX": 1.5514828e-06,
-        "rotY": -2.6805003e-07,
-        "rotZ": -5.29483941e-07,
-        "scaleX": 0.766083837,
-        "scaleY": 1,
-        "scaleZ": 0.766083837
-      },
-      "Nickname": "Action in progress",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": true,
-      "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/12413768925086392778/385D1E7F4CF527EE13008502130B0288E17AF648/",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1,
-        "WidthScale": 0,
-        "CustomToken": {
-          "Thickness": 0.1,
-          "MergeDistancePixels": 25,
-          "StandUp": false,
-          "Stackable": false
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "ca12da",
-      "Name": "Custom_Token",
-      "Transform": {
-        "posX": 27.7646751,
-        "posY": 0.949998,
-        "posZ": 41.07474,
-        "rotX": 1.66851214e-06,
-        "rotY": 359.993835,
-        "rotZ": -4.863968e-07,
-        "scaleX": 0.7828339,
-        "scaleY": 1,
-        "scaleZ": 0.7828339
-      },
-      "Nickname": "Battle-shocked - Click to toggle battleshock state on object",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": true,
-      "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13010387546801221302/5C4BD741352EA2EFD9EB642178AAACA4F853518E/",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1,
-        "WidthScale": 0,
-        "CustomToken": {
-          "Thickness": 0.1,
-          "MergeDistancePixels": 25,
-          "StandUp": false,
-          "Stackable": false
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "3b0476",
-      "Name": "Custom_Token",
-      "Transform": {
-        "posX": -34.4295425,
-        "posY": 0.949998,
-        "posZ": -41.0663,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.766083837,
-        "scaleY": 1,
-        "scaleZ": 0.766083837
-      },
-      "Nickname": "Advanced - Click to toggle battleshock state on object",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": true,
-      "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13599023424133435651/70EAB474609C925585CFED9AF60F4A6D137585BC/",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1,
-        "WidthScale": 0,
-        "CustomToken": {
-          "Thickness": 0.1,
-          "MergeDistancePixels": 25,
-          "StandUp": false,
-          "Stackable": false
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "a09c4e",
-      "Name": "Custom_Token",
-      "Transform": {
-        "posX": -31.1273727,
-        "posY": 0.949998,
-        "posZ": -41.0697861,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.766083837,
-        "scaleY": 1,
-        "scaleZ": 0.766083837
-      },
-      "Nickname": "Action in progress - Click to toggle battleshock state on object",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": true,
-      "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/12413768925086392778/385D1E7F4CF527EE13008502130B0288E17AF648/",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1,
-        "WidthScale": 0,
-        "CustomToken": {
-          "Thickness": 0.1,
-          "MergeDistancePixels": 25,
-          "StandUp": false,
-          "Stackable": false
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "ae9056",
-      "Name": "Custom_Token",
-      "Transform": {
-        "posX": -27.7646751,
-        "posY": 0.949998,
-        "posZ": -41.07474,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.7828339,
-        "scaleY": 1,
-        "scaleZ": 0.7828339
-      },
-      "Nickname": "Battle-shocked - Click to toggle battleshock state on object",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": true,
-      "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13010387546801221302/5C4BD741352EA2EFD9EB642178AAACA4F853518E/",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1,
-        "WidthScale": 0,
-        "CustomToken": {
-          "Thickness": 0.1,
-          "MergeDistancePixels": 25,
-          "StandUp": false,
-          "Stackable": false
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
       "GUID": "838115",
       "Name": "CardCustom",
       "Transform": {
@@ -2386,312 +1928,6 @@
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": ""
-    },
-    {
-      "GUID": "c59f7a",
-      "Name": "Deck",
-      "Transform": {
-        "posX": 42,
-        "posY": -0.940184832,
-        "posZ": 36.9678841,
-        "rotX": -5.225335e-07,
-        "rotY": 270.001343,
-        "rotZ": 180,
-        "scaleX": 3.37806225,
-        "scaleY": 1,
-        "scaleZ": 3.37806225
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 0.713235259,
-        "g": 0.713235259,
-        "b": 0.713235259
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": true,
-      "Hands": false,
-      "SidewaysCard": false,
-      "DeckIDs": [
-        200,
-        100,
-        100,
-        200
-      ],
-      "CustomDeck": {
-        "1": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/1812144765315040155/1A8E9320373E7B5CE25B904C187A562840FB78ED/",
-          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/1812144765315040332/0BC8EC1A3E08FAB87774FF86685E0B1135447987/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        },
-        "2": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/1812144765315041194/3F931A1CA2BA1AA106B5B5529C100AA1635AF01D/",
-          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/1812144765315040332/0BC8EC1A3E08FAB87774FF86685E0B1135447987/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "ContainedObjects": [
-        {
-          "GUID": "850a04",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": -7.18162251,
-            "posY": 1.82140374,
-            "posZ": 8.092239,
-            "rotX": 354.318817,
-            "rotY": 272.249756,
-            "rotZ": 5.368504,
-            "scaleX": 3.37806225,
-            "scaleY": 1.0,
-            "scaleZ": 3.37806225
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 200,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "2": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/1812144765315041194/3F931A1CA2BA1AA106B5B5529C100AA1635AF01D/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/1812144765315040332/0BC8EC1A3E08FAB87774FF86685E0B1135447987/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "6e5278",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": -6.472144,
-            "posY": 3.44495559,
-            "posZ": 7.820305,
-            "rotX": 11.1594324,
-            "rotY": 271.608856,
-            "rotZ": 8.681611,
-            "scaleX": 3.37806225,
-            "scaleY": 1.0,
-            "scaleZ": 3.37806225
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 100,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/1812144765315040155/1A8E9320373E7B5CE25B904C187A562840FB78ED/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/1812144765315040332/0BC8EC1A3E08FAB87774FF86685E0B1135447987/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "ee5afe",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": -7.32176161,
-            "posY": 2.71259618,
-            "posZ": 8.754245,
-            "rotX": 359.903931,
-            "rotY": 269.995728,
-            "rotZ": 0.130230755,
-            "scaleX": 3.37806225,
-            "scaleY": 1.0,
-            "scaleZ": 3.37806225
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 100,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/1812144765315040155/1A8E9320373E7B5CE25B904C187A562840FB78ED/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/1812144765315040332/0BC8EC1A3E08FAB87774FF86685E0B1135447987/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "e6751e",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": -7.66730547,
-            "posY": 2.19388342,
-            "posZ": 7.67515135,
-            "rotX": 356.622864,
-            "rotY": 270.1848,
-            "rotZ": 4.36659241,
-            "scaleX": 3.37806225,
-            "scaleY": 1.0,
-            "scaleZ": 3.37806225
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 200,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "2": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/1812144765315041194/3F931A1CA2BA1AA106B5B5529C100AA1635AF01D/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/1812144765315040332/0BC8EC1A3E08FAB87774FF86685E0B1135447987/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        }
-      ]
     },
     {
       "GUID": "c09349",
@@ -4648,7 +3884,7 @@
             "scaleZ": 1
           },
           "Nickname": "WTC MISSION OUTLINE [WTC Teams]",
-          "Description": "\u2022 [Tipping Point] Supply Drop\n\u2022 [Hammer and Anvil] Hidden Supplies\n\u2022 [Hammer and Anvil] Take and Hold\n\u2022 [Crucible Of Battle] Terraform\n\u2022 [Crucible Of Battle] Scorched Earth\n\u2022 [Search and Destroy] Linchpin\n\u2022 [Search and Destroy] Take and Hold",
+          "Description": "• [Tipping Point] Supply Drop\n• [Hammer and Anvil] Hidden Supplies\n• [Hammer and Anvil] Take and Hold\n• [Crucible Of Battle] Terraform\n• [Crucible Of Battle] Scorched Earth\n• [Search and Destroy] Linchpin\n• [Search and Destroy] Take and Hold",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0,
@@ -5372,7 +4608,7 @@
             "scaleZ": 1
           },
           "Nickname": "WTC MISSION OUTLINE [Warmaster Singles]",
-          "Description": "\u2022 [Tipping Point] Supply Drop\n\u2022 [Hammer and Anvil] Hidden Supplies\n\u2022 [Hammer and Anvil] Take and Hold\n\u2022 [Crucible Of Battle] Terraform\n\u2022 [Crucible Of Battle] Scorched Earth\n\u2022 [Search and Destroy] Linchpin\n\u2022 [Search and Destroy] Hidden Supplies\n\u2022 [Tipping Point] Scorched Earth\n\u2022 [Search and Destroy] Take and Hold",
+          "Description": "• [Tipping Point] Supply Drop\n• [Hammer and Anvil] Hidden Supplies\n• [Hammer and Anvil] Take and Hold\n• [Crucible Of Battle] Terraform\n• [Crucible Of Battle] Scorched Earth\n• [Search and Destroy] Linchpin\n• [Search and Destroy] Hidden Supplies\n• [Tipping Point] Scorched Earth\n• [Search and Destroy] Take and Hold",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0,
@@ -9378,110 +8614,6 @@
           ]
         },
         {
-          "GUID": "0bd055",
-          "Name": "Custom_Dice",
-          "Transform": {
-            "posX": 34.4842,
-            "posY": 1.23019779,
-            "posZ": 45.949,
-            "rotX": 90,
-            "rotY": 180.2637,
-            "rotZ": 0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "scaleZ": 1
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 0.0410041735,
-            "g": 0.6231773,
-            "b": 0.6724739
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/34445199169908109/E64F1EA392D5A021317BA057524418CAA98FD30A/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1,
-            "WidthScale": 0,
-            "CustomDice": {
-              "Type": 1
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "RotationValues": [
-            {
-              "Value": "1",
-              "Rotation": {
-                "x": -90,
-                "y": 0,
-                "z": 0
-              }
-            },
-            {
-              "Value": "2",
-              "Rotation": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              }
-            },
-            {
-              "Value": "3",
-              "Rotation": {
-                "x": 0,
-                "y": 0,
-                "z": -90
-              }
-            },
-            {
-              "Value": "4",
-              "Rotation": {
-                "x": 0,
-                "y": 0,
-                "z": 90
-              }
-            },
-            {
-              "Value": "5",
-              "Rotation": {
-                "x": 0,
-                "y": 0,
-                "z": -180
-              }
-            },
-            {
-              "Value": "6",
-              "Rotation": {
-                "x": 90,
-                "y": 0,
-                "z": 0
-              }
-            }
-          ]
-        },
-        {
           "GUID": "22a40b",
           "Name": "Custom_Model_Infinite_Bag",
           "Transform": {
@@ -10456,110 +9588,6 @@
               "LuaScript": "",
               "LuaScriptState": "",
               "XmlUI": ""
-            }
-          ]
-        },
-        {
-          "GUID": "15cecb",
-          "Name": "Custom_Dice",
-          "Transform": {
-            "posX": 28.529,
-            "posY": 1.230198,
-            "posZ": 46.1388,
-            "rotX": 90,
-            "rotY": 179.3449,
-            "rotZ": 0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "scaleZ": 1
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/34445199169908109/E64F1EA392D5A021317BA057524418CAA98FD30A/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1,
-            "WidthScale": 0,
-            "CustomDice": {
-              "Type": 1
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "RotationValues": [
-            {
-              "Value": "1",
-              "Rotation": {
-                "x": -90,
-                "y": 0,
-                "z": 0
-              }
-            },
-            {
-              "Value": "2",
-              "Rotation": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              }
-            },
-            {
-              "Value": "3",
-              "Rotation": {
-                "x": 0,
-                "y": 0,
-                "z": -90
-              }
-            },
-            {
-              "Value": "4",
-              "Rotation": {
-                "x": 0,
-                "y": 0,
-                "z": 90
-              }
-            },
-            {
-              "Value": "5",
-              "Rotation": {
-                "x": 0,
-                "y": 0,
-                "z": -180
-              }
-            },
-            {
-              "Value": "6",
-              "Rotation": {
-                "x": 90,
-                "y": 0,
-                "z": 0
-              }
             }
           ]
         },
@@ -12854,169 +11882,6 @@
               "XmlUI": ""
             }
           ]
-        },
-        {
-          "GUID": "1c0491",
-          "Name": "Custom_Model_Infinite_Bag",
-          "Transform": {
-            "posX": 33.8689,
-            "posY": -5.9499977,
-            "posZ": 50.5283,
-            "rotX": 1.51981192e-06,
-            "rotY": 359.9937,
-            "rotZ": -6.007102e-07,
-            "scaleX": 1.9,
-            "scaleY": 0.1,
-            "scaleZ": 1.9
-          },
-          "Nickname": "[b][i]Advanced[/i][/b]",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1,
-            "a": 0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "MaterialIndex": -1,
-          "MeshIndex": -1,
-          "CustomMesh": {
-            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071991282/5C391C2599AE5F6972D6EFA7BFC04B41D6E821E3/",
-            "DiffuseURL": "",
-            "NormalURL": "",
-            "ColliderURL": "",
-            "Convex": true,
-            "MaterialIndex": 0,
-            "TypeIndex": 7,
-            "CastShadows": true
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "ContainedObjects": [
-            {
-              "GUID": "b20417",
-              "Name": "Custom_Token",
-              "Transform": {
-                "posX": 0,
-                "posY": 0,
-                "posZ": 0,
-                "rotX": 0,
-                "rotY": 0,
-                "rotZ": 0,
-                "scaleX": 0.5,
-                "scaleY": 1,
-                "scaleZ": 0.5
-              },
-              "Nickname": "[b][i]Advanced[/i][/b]",
-              "Description": "",
-              "GMNotes": "",
-              "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
-              "ColorDiffuse": {
-                "r": 1,
-                "g": 1,
-                "b": 1
-              },
-              "LayoutGroupSortIndex": 0,
-              "Value": 0,
-              "Locked": false,
-              "Grid": true,
-              "Snap": true,
-              "IgnoreFoW": false,
-              "MeasureMovement": false,
-              "DragSelectable": true,
-              "Autoraise": true,
-              "Sticky": true,
-              "Tooltip": true,
-              "GridProjection": false,
-              "HideWhenFaceDown": false,
-              "Hands": true,
-              "CustomImage": {
-                "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13599023424133435651/70EAB474609C925585CFED9AF60F4A6D137585BC/",
-                "ImageSecondaryURL": "",
-                "ImageScalar": 1,
-                "WidthScale": 0,
-                "CustomToken": {
-                  "Thickness": 0.1,
-                  "MergeDistancePixels": 25,
-                  "StandUp": false,
-                  "Stackable": false
-                }
-              },
-              "LuaScript": "",
-              "LuaScriptState": "",
-              "XmlUI": ""
-            }
-          ],
-          "ChildObjects": [
-            {
-              "GUID": "9cdd75",
-              "Name": "Custom_Token",
-              "Transform": {
-                "posX": 0,
-                "posY": 0,
-                "posZ": 0,
-                "rotX": 0,
-                "rotY": 0,
-                "rotZ": 0,
-                "scaleX": 0.267505437,
-                "scaleY": 5,
-                "scaleZ": 0.267947078
-              },
-              "Nickname": "",
-              "Description": "",
-              "GMNotes": "",
-              "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
-              "LayoutGroupSortIndex": 0,
-              "Value": 0,
-              "Locked": false,
-              "Grid": true,
-              "Snap": true,
-              "IgnoreFoW": false,
-              "MeasureMovement": false,
-              "DragSelectable": true,
-              "Autoraise": true,
-              "Sticky": true,
-              "Tooltip": true,
-              "GridProjection": false,
-              "CustomImage": {
-                "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13599023424133435651/70EAB474609C925585CFED9AF60F4A6D137585BC/",
-                "ImageSecondaryURL": "",
-                "ImageScalar": 1,
-                "WidthScale": 0
-              },
-              "LuaScript": "",
-              "LuaScriptState": "",
-              "XmlUI": ""
-            }
-          ]
         }
       ]
     },
@@ -13184,332 +12049,6 @@
       ]
     },
     {
-      "GUID": "aba7a1",
-      "Name": "Custom_Model_Infinite_Bag",
-      "Transform": {
-        "posX": -31.0072365,
-        "posY": 0.9788831,
-        "posZ": -40.9186,
-        "rotX": 0.007888253,
-        "rotY": 179.951233,
-        "rotZ": -0.003034184,
-        "scaleX": 2.99615288,
-        "scaleY": 0.157692254,
-        "scaleZ": 2.99615288
-      },
-      "Nickname": "[b][i]Action-In-Progress[/i][/b]",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1,
-        "a": 0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": false,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "MaterialIndex": -1,
-      "MeshIndex": -1,
-      "CustomMesh": {
-        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071991282/5C391C2599AE5F6972D6EFA7BFC04B41D6E821E3/",
-        "DiffuseURL": "",
-        "NormalURL": "",
-        "ColliderURL": "",
-        "Convex": true,
-        "MaterialIndex": 0,
-        "TypeIndex": 7,
-        "CastShadows": true
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "ContainedObjects": [
-        {
-          "GUID": "b20417",
-          "Name": "Custom_Token",
-          "Transform": {
-            "posX": 0,
-            "posY": 0,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 0,
-            "rotZ": 0,
-            "scaleX": 0.5,
-            "scaleY": 1,
-            "scaleZ": 0.5
-          },
-          "Nickname": "[b][i]Action-In-Progress[/i][/b]",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/12413768925086392778/385D1E7F4CF527EE13008502130B0288E17AF648/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1,
-            "WidthScale": 0,
-            "CustomToken": {
-              "Thickness": 0.1,
-              "MergeDistancePixels": 25,
-              "StandUp": false,
-              "Stackable": false
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        }
-      ],
-      "ChildObjects": [
-        {
-          "GUID": "9cdd75",
-          "Name": "Custom_Token",
-          "Transform": {
-            "posX": 0,
-            "posY": 0,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 0,
-            "rotZ": 0,
-            "scaleX": 0.267505437,
-            "scaleY": 5,
-            "scaleZ": 0.267947078
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/12413768925086392778/385D1E7F4CF527EE13008502130B0288E17AF648/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1,
-            "WidthScale": 0
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        }
-      ]
-    },
-    {
-      "GUID": "8a7d71",
-      "Name": "Custom_Model_Infinite_Bag",
-      "Transform": {
-        "posX": -34.3626747,
-        "posY": 0.9788665,
-        "posZ": -40.9165649,
-        "rotX": -0.0021367874,
-        "rotY": 180.059464,
-        "rotZ": 359.992279,
-        "scaleX": 2.99615288,
-        "scaleY": 0.157692254,
-        "scaleZ": 2.99615288
-      },
-      "Nickname": "[b][i]Advanced[/i][/b]",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1,
-        "a": 0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": false,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "MaterialIndex": -1,
-      "MeshIndex": -1,
-      "CustomMesh": {
-        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071991282/5C391C2599AE5F6972D6EFA7BFC04B41D6E821E3/",
-        "DiffuseURL": "",
-        "NormalURL": "",
-        "ColliderURL": "",
-        "Convex": true,
-        "MaterialIndex": 0,
-        "TypeIndex": 7,
-        "CastShadows": true
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "ContainedObjects": [
-        {
-          "GUID": "b20417",
-          "Name": "Custom_Token",
-          "Transform": {
-            "posX": 0,
-            "posY": 0,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 0,
-            "rotZ": 0,
-            "scaleX": 0.5,
-            "scaleY": 1,
-            "scaleZ": 0.5
-          },
-          "Nickname": "[b][i]Advanced[/i][/b]",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13599023424133435651/70EAB474609C925585CFED9AF60F4A6D137585BC/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1,
-            "WidthScale": 0,
-            "CustomToken": {
-              "Thickness": 0.1,
-              "MergeDistancePixels": 25,
-              "StandUp": false,
-              "Stackable": false
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        }
-      ],
-      "ChildObjects": [
-        {
-          "GUID": "9cdd75",
-          "Name": "Custom_Token",
-          "Transform": {
-            "posX": 0,
-            "posY": 0,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 0,
-            "rotZ": 0,
-            "scaleX": 0.267505437,
-            "scaleY": 5,
-            "scaleZ": 0.267947078
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13599023424133435651/70EAB474609C925585CFED9AF60F4A6D137585BC/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1,
-            "WidthScale": 0
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        }
-      ]
-    },
-    {
       "GUID": "10a26a",
       "Name": "Bag",
       "Transform": {
@@ -13559,169 +12098,6 @@
       "LuaScriptState": "{\"ml\":{\"02ebc4\":{\"lock\":false,\"pos\":{\"x\":-36.4797,\"y\":0.95,\"z\":-48.1368},\"rot\":{\"x\":0,\"y\":179.9915,\"z\":0}},\"0c536a\":{\"lock\":false,\"pos\":{\"x\":-40.642,\"y\":0.95,\"z\":-48.0263},\"rot\":{\"x\":0,\"y\":179.9914,\"z\":0}},\"0cf80c\":{\"lock\":false,\"pos\":{\"x\":-28.5446,\"y\":1.2302,\"z\":-46.2453},\"rot\":{\"x\":90,\"y\":359.4167,\"z\":0}},\"1a4215\":{\"lock\":false,\"pos\":{\"x\":-34.0084,\"y\":0.95,\"z\":-50.4516},\"rot\":{\"x\":0,\"y\":179.9914,\"z\":0}},\"24c450\":{\"lock\":false,\"pos\":{\"x\":-38.4797,\"y\":0.95,\"z\":-46.1368},\"rot\":{\"x\":0,\"y\":179.9915,\"z\":0}},\"2924aa\":{\"lock\":false,\"pos\":{\"x\":-24.4798,\"y\":0.95,\"z\":-46.1368},\"rot\":{\"x\":0,\"y\":179.9915,\"z\":0}},\"2fce45\":{\"lock\":false,\"pos\":{\"x\":-38.507,\"y\":0.95,\"z\":-44.1161},\"rot\":{\"x\":0,\"y\":179.9883,\"z\":0}},\"34e075\":{\"lock\":false,\"pos\":{\"x\":-20.4774,\"y\":0.95,\"z\":-48.2175},\"rot\":{\"x\":0,\"y\":179.9916,\"z\":0}},\"38b87c\":{\"lock\":false,\"pos\":{\"x\":-36.4797,\"y\":0.95,\"z\":-46.1368},\"rot\":{\"x\":0,\"y\":179.9915,\"z\":0}},\"39a367\":{\"lock\":false,\"pos\":{\"x\":-26.4798,\"y\":0.95,\"z\":-44.1368},\"rot\":{\"x\":0,\"y\":179.9915,\"z\":0}},\"4930e4\":{\"lock\":false,\"pos\":{\"x\":-24.4798,\"y\":0.95,\"z\":-48.1368},\"rot\":{\"x\":0,\"y\":179.9915,\"z\":0}},\"5a4941\":{\"lock\":false,\"pos\":{\"x\":-20.4394,\"y\":0.95,\"z\":-46.1468},\"rot\":{\"x\":0,\"y\":179.9915,\"z\":0}},\"6a76c1\":{\"lock\":false,\"pos\":{\"x\":-32.4595,\"y\":0.95,\"z\":-44.2468},\"rot\":{\"x\":0,\"y\":179.9916,\"z\":0}},\"6ae1c4\":{\"lock\":false,\"pos\":{\"x\":-29.2153,\"y\":0.95,\"z\":-50.4559},\"rot\":{\"x\":0,\"y\":180.0299,\"z\":0}},\"70af5a\":{\"lock\":false,\"pos\":{\"x\":-26.4798,\"y\":0.95,\"z\":-46.1368},\"rot\":{\"x\":0,\"y\":179.9915,\"z\":0}},\"a9d027\":{\"lock\":false,\"pos\":{\"x\":-20.4797,\"y\":0.95,\"z\":-44.1375},\"rot\":{\"x\":0,\"y\":179.9915,\"z\":0}},\"aa0f7e\":{\"lock\":false,\"pos\":{\"x\":-24.5056,\"y\":0.95,\"z\":-44.0949},\"rot\":{\"x\":0,\"y\":179.9818,\"z\":0}},\"aadb4a\":{\"lock\":false,\"pos\":{\"x\":-34.4998,\"y\":1.2302,\"z\":-46.0555},\"rot\":{\"x\":90,\"y\":359.4167,\"z\":0}},\"b43316\":{\"lock\":false,\"pos\":{\"x\":-40.5915,\"y\":0.95,\"z\":-46.0521},\"rot\":{\"x\":0,\"y\":179.9916,\"z\":0}},\"bf22a5\":{\"lock\":false,\"pos\":{\"x\":-32.4871,\"y\":0.95,\"z\":-46.2503},\"rot\":{\"x\":0,\"y\":179.9916,\"z\":0}},\"c15e43\":{\"lock\":false,\"pos\":{\"x\":-31.5851,\"y\":0.95,\"z\":-50.448},\"rot\":{\"x\":0,\"y\":179.9955,\"z\":0}},\"c233ef\":{\"lock\":false,\"pos\":{\"x\":-22.4579,\"y\":0.95,\"z\":-46.1494},\"rot\":{\"x\":0,\"y\":179.9916,\"z\":0}},\"c60778\":{\"lock\":false,\"pos\":{\"x\":-22.4798,\"y\":0.95,\"z\":-44.1368},\"rot\":{\"x\":0,\"y\":179.9915,\"z\":0}},\"cbbff6\":{\"lock\":false,\"pos\":{\"x\":-40.4797,\"y\":0.95,\"z\":-44.1368},\"rot\":{\"x\":0,\"y\":179.9915,\"z\":0}},\"ccd8a9\":{\"lock\":false,\"pos\":{\"x\":-22.4774,\"y\":0.95,\"z\":-48.2175},\"rot\":{\"x\":0,\"y\":179.9916,\"z\":0}},\"d01b30\":{\"lock\":false,\"pos\":{\"x\":-30.4853,\"y\":0.95,\"z\":-44.2049},\"rot\":{\"x\":0,\"y\":179.9818,\"z\":0}},\"d1e9cb\":{\"lock\":false,\"pos\":{\"x\":-30.487,\"y\":0.95,\"z\":-46.2503},\"rot\":{\"x\":0,\"y\":179.9916,\"z\":0}},\"e3707e\":{\"lock\":false,\"pos\":{\"x\":-38.5142,\"y\":0.95,\"z\":-48.1774},\"rot\":{\"x\":0,\"y\":179.9916,\"z\":0}},\"e4b032\":{\"lock\":false,\"pos\":{\"x\":-26.4798,\"y\":0.95,\"z\":-48.1368},\"rot\":{\"x\":0,\"y\":179.9915,\"z\":0}},\"e7c017\":{\"lock\":false,\"pos\":{\"x\":-36.4797,\"y\":0.95,\"z\":-44.1368},\"rot\":{\"x\":0,\"y\":179.9915,\"z\":0}},\"ee4cb1\":{\"lock\":false,\"pos\":{\"x\":-30.487,\"y\":0.95,\"z\":-48.2503},\"rot\":{\"x\":0,\"y\":179.9916,\"z\":0}},\"f5a0f3\":{\"lock\":false,\"pos\":{\"x\":-32.4871,\"y\":0.95,\"z\":-48.2503},\"rot\":{\"x\":0,\"y\":179.9916,\"z\":0}}}}",
       "XmlUI": "",
       "ContainedObjects": [
-        {
-          "GUID": "c15e43",
-          "Name": "Custom_Model_Infinite_Bag",
-          "Transform": {
-            "posX": -31.5851212,
-            "posY": 0.9500011,
-            "posZ": -50.44798,
-            "rotX": -1.53926953e-06,
-            "rotY": 179.995468,
-            "rotZ": 6.256746e-07,
-            "scaleX": 1.9,
-            "scaleY": 0.1,
-            "scaleZ": 1.9
-          },
-          "Nickname": "[b][i]Action-In-Progress[/i][/b]",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1,
-            "a": 0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "MaterialIndex": -1,
-          "MeshIndex": -1,
-          "CustomMesh": {
-            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071991282/5C391C2599AE5F6972D6EFA7BFC04B41D6E821E3/",
-            "DiffuseURL": "",
-            "NormalURL": "",
-            "ColliderURL": "",
-            "Convex": true,
-            "MaterialIndex": 0,
-            "TypeIndex": 7,
-            "CastShadows": true
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "ContainedObjects": [
-            {
-              "GUID": "b20417",
-              "Name": "Custom_Token",
-              "Transform": {
-                "posX": 0,
-                "posY": 0,
-                "posZ": 0,
-                "rotX": 0,
-                "rotY": 0,
-                "rotZ": 0,
-                "scaleX": 0.5,
-                "scaleY": 1,
-                "scaleZ": 0.5
-              },
-              "Nickname": "[b][i]Action-In-Progress[/i][/b]",
-              "Description": "",
-              "GMNotes": "",
-              "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
-              "ColorDiffuse": {
-                "r": 1,
-                "g": 1,
-                "b": 1
-              },
-              "LayoutGroupSortIndex": 0,
-              "Value": 0,
-              "Locked": false,
-              "Grid": true,
-              "Snap": true,
-              "IgnoreFoW": false,
-              "MeasureMovement": false,
-              "DragSelectable": true,
-              "Autoraise": true,
-              "Sticky": true,
-              "Tooltip": true,
-              "GridProjection": false,
-              "HideWhenFaceDown": false,
-              "Hands": true,
-              "CustomImage": {
-                "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/12413768925086392778/385D1E7F4CF527EE13008502130B0288E17AF648/",
-                "ImageSecondaryURL": "",
-                "ImageScalar": 1,
-                "WidthScale": 0,
-                "CustomToken": {
-                  "Thickness": 0.1,
-                  "MergeDistancePixels": 25,
-                  "StandUp": false,
-                  "Stackable": false
-                }
-              },
-              "LuaScript": "",
-              "LuaScriptState": "",
-              "XmlUI": ""
-            }
-          ],
-          "ChildObjects": [
-            {
-              "GUID": "9cdd75",
-              "Name": "Custom_Token",
-              "Transform": {
-                "posX": 0,
-                "posY": 0,
-                "posZ": 0,
-                "rotX": 0,
-                "rotY": 0,
-                "rotZ": 0,
-                "scaleX": 0.267505437,
-                "scaleY": 5,
-                "scaleZ": 0.267947078
-              },
-              "Nickname": "",
-              "Description": "",
-              "GMNotes": "",
-              "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
-              "LayoutGroupSortIndex": 0,
-              "Value": 0,
-              "Locked": false,
-              "Grid": true,
-              "Snap": true,
-              "IgnoreFoW": false,
-              "MeasureMovement": false,
-              "DragSelectable": true,
-              "Autoraise": true,
-              "Sticky": true,
-              "Tooltip": true,
-              "GridProjection": false,
-              "CustomImage": {
-                "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/12413768925086392778/385D1E7F4CF527EE13008502130B0288E17AF648/",
-                "ImageSecondaryURL": "",
-                "ImageScalar": 1,
-                "WidthScale": 0
-              },
-              "LuaScript": "",
-              "LuaScriptState": "",
-              "XmlUI": ""
-            }
-          ]
-        },
         {
           "GUID": "cbbff6",
           "Name": "Custom_Model_Infinite_Bag",
@@ -15099,110 +13475,6 @@
           ]
         },
         {
-          "GUID": "aadb4a",
-          "Name": "Custom_Dice",
-          "Transform": {
-            "posX": -34.4998,
-            "posY": 1.23020113,
-            "posZ": -46.0555,
-            "rotX": 90,
-            "rotY": 359.4167,
-            "rotZ": 0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "scaleZ": 1
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 0.0410042033,
-            "g": 0.6231773,
-            "b": 0.6724739
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/34445199169908109/E64F1EA392D5A021317BA057524418CAA98FD30A/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1,
-            "WidthScale": 0,
-            "CustomDice": {
-              "Type": 1
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "RotationValues": [
-            {
-              "Value": "1",
-              "Rotation": {
-                "x": -90,
-                "y": 0,
-                "z": 0
-              }
-            },
-            {
-              "Value": "2",
-              "Rotation": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              }
-            },
-            {
-              "Value": "3",
-              "Rotation": {
-                "x": 0,
-                "y": 0,
-                "z": -90
-              }
-            },
-            {
-              "Value": "4",
-              "Rotation": {
-                "x": 0,
-                "y": 0,
-                "z": 90
-              }
-            },
-            {
-              "Value": "5",
-              "Rotation": {
-                "x": 0,
-                "y": 0,
-                "z": -180
-              }
-            },
-            {
-              "Value": "6",
-              "Rotation": {
-                "x": 90,
-                "y": 0,
-                "z": 0
-              }
-            }
-          ]
-        },
-        {
           "GUID": "bf22a5",
           "Name": "Custom_Model_Infinite_Bag",
           "Transform": {
@@ -16177,599 +14449,6 @@
               "LuaScript": "",
               "LuaScriptState": "",
               "XmlUI": ""
-            }
-          ]
-        },
-        {
-          "GUID": "c15e43",
-          "Name": "Custom_Model_Infinite_Bag",
-          "Transform": {
-            "posX": -31.5851,
-            "posY": 0.9500011,
-            "posZ": -50.448,
-            "rotX": -1.5279237e-06,
-            "rotY": 179.9955,
-            "rotZ": 5.27535065e-07,
-            "scaleX": 1.9,
-            "scaleY": 0.1,
-            "scaleZ": 1.9
-          },
-          "Nickname": "[b][i]Battle-shocked[/i][/b]",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1,
-            "a": 0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "MaterialIndex": -1,
-          "MeshIndex": -1,
-          "CustomMesh": {
-            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071991282/5C391C2599AE5F6972D6EFA7BFC04B41D6E821E3/",
-            "DiffuseURL": "",
-            "NormalURL": "",
-            "ColliderURL": "",
-            "Convex": true,
-            "MaterialIndex": 0,
-            "TypeIndex": 7,
-            "CastShadows": true
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "ContainedObjects": [
-            {
-              "GUID": "b20417",
-              "Name": "Custom_Token",
-              "Transform": {
-                "posX": 0,
-                "posY": 0,
-                "posZ": 0,
-                "rotX": 0,
-                "rotY": 0,
-                "rotZ": 0,
-                "scaleX": 0.5,
-                "scaleY": 1,
-                "scaleZ": 0.5
-              },
-              "Nickname": "[b][i]Battle-shocked[/i][/b]",
-              "Description": "",
-              "GMNotes": "",
-              "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
-              "ColorDiffuse": {
-                "r": 1,
-                "g": 1,
-                "b": 1
-              },
-              "LayoutGroupSortIndex": 0,
-              "Value": 0,
-              "Locked": false,
-              "Grid": true,
-              "Snap": true,
-              "IgnoreFoW": false,
-              "MeasureMovement": false,
-              "DragSelectable": true,
-              "Autoraise": true,
-              "Sticky": true,
-              "Tooltip": true,
-              "GridProjection": false,
-              "HideWhenFaceDown": false,
-              "Hands": true,
-              "CustomImage": {
-                "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13010387546801221302/5C4BD741352EA2EFD9EB642178AAACA4F853518E/",
-                "ImageSecondaryURL": "",
-                "ImageScalar": 1,
-                "WidthScale": 0,
-                "CustomToken": {
-                  "Thickness": 0.1,
-                  "MergeDistancePixels": 25,
-                  "StandUp": false,
-                  "Stackable": false
-                }
-              },
-              "LuaScript": "",
-              "LuaScriptState": "",
-              "XmlUI": ""
-            }
-          ],
-          "ChildObjects": [
-            {
-              "GUID": "9cdd75",
-              "Name": "Custom_Token",
-              "Transform": {
-                "posX": 0,
-                "posY": 0,
-                "posZ": 0,
-                "rotX": 0,
-                "rotY": 0,
-                "rotZ": 0,
-                "scaleX": 0.267505437,
-                "scaleY": 5,
-                "scaleZ": 0.267947078
-              },
-              "Nickname": "",
-              "Description": "",
-              "GMNotes": "",
-              "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
-              "LayoutGroupSortIndex": 0,
-              "Value": 0,
-              "Locked": false,
-              "Grid": true,
-              "Snap": true,
-              "IgnoreFoW": false,
-              "MeasureMovement": false,
-              "DragSelectable": true,
-              "Autoraise": true,
-              "Sticky": true,
-              "Tooltip": true,
-              "GridProjection": false,
-              "CustomImage": {
-                "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13010387546801221302/5C4BD741352EA2EFD9EB642178AAACA4F853518E/",
-                "ImageSecondaryURL": "",
-                "ImageScalar": 1,
-                "WidthScale": 0
-              },
-              "LuaScript": "",
-              "LuaScriptState": "",
-              "XmlUI": ""
-            }
-          ]
-        },
-        {
-          "GUID": "1a4215",
-          "Name": "Custom_Model_Infinite_Bag",
-          "Transform": {
-            "posX": -34.0084,
-            "posY": 0.9500011,
-            "posZ": -50.4516,
-            "rotX": -1.52274856e-06,
-            "rotY": 179.9914,
-            "rotZ": 4.64722149e-07,
-            "scaleX": 1.9,
-            "scaleY": 0.1,
-            "scaleZ": 1.9
-          },
-          "Nickname": "[b][i]Advanced[/i][/b]",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1,
-            "a": 0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "MaterialIndex": -1,
-          "MeshIndex": -1,
-          "CustomMesh": {
-            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071991282/5C391C2599AE5F6972D6EFA7BFC04B41D6E821E3/",
-            "DiffuseURL": "",
-            "NormalURL": "",
-            "ColliderURL": "",
-            "Convex": true,
-            "MaterialIndex": 0,
-            "TypeIndex": 7,
-            "CastShadows": true
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "ContainedObjects": [
-            {
-              "GUID": "b20417",
-              "Name": "Custom_Token",
-              "Transform": {
-                "posX": 0,
-                "posY": 0,
-                "posZ": 0,
-                "rotX": 0,
-                "rotY": 0,
-                "rotZ": 0,
-                "scaleX": 0.5,
-                "scaleY": 1,
-                "scaleZ": 0.5
-              },
-              "Nickname": "[b][i]Advanced[/i][/b]",
-              "Description": "",
-              "GMNotes": "",
-              "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
-              "ColorDiffuse": {
-                "r": 1,
-                "g": 1,
-                "b": 1
-              },
-              "LayoutGroupSortIndex": 0,
-              "Value": 0,
-              "Locked": false,
-              "Grid": true,
-              "Snap": true,
-              "IgnoreFoW": false,
-              "MeasureMovement": false,
-              "DragSelectable": true,
-              "Autoraise": true,
-              "Sticky": true,
-              "Tooltip": true,
-              "GridProjection": false,
-              "HideWhenFaceDown": false,
-              "Hands": true,
-              "CustomImage": {
-                "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13599023424133435651/70EAB474609C925585CFED9AF60F4A6D137585BC/",
-                "ImageSecondaryURL": "",
-                "ImageScalar": 1,
-                "WidthScale": 0,
-                "CustomToken": {
-                  "Thickness": 0.1,
-                  "MergeDistancePixels": 25,
-                  "StandUp": false,
-                  "Stackable": false
-                }
-              },
-              "LuaScript": "",
-              "LuaScriptState": "",
-              "XmlUI": ""
-            }
-          ],
-          "ChildObjects": [
-            {
-              "GUID": "9cdd75",
-              "Name": "Custom_Token",
-              "Transform": {
-                "posX": 0,
-                "posY": 0,
-                "posZ": 0,
-                "rotX": 0,
-                "rotY": 0,
-                "rotZ": 0,
-                "scaleX": 0.267505437,
-                "scaleY": 5,
-                "scaleZ": 0.267947078
-              },
-              "Nickname": "",
-              "Description": "",
-              "GMNotes": "",
-              "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
-              "LayoutGroupSortIndex": 0,
-              "Value": 0,
-              "Locked": false,
-              "Grid": true,
-              "Snap": true,
-              "IgnoreFoW": false,
-              "MeasureMovement": false,
-              "DragSelectable": true,
-              "Autoraise": true,
-              "Sticky": true,
-              "Tooltip": true,
-              "GridProjection": false,
-              "CustomImage": {
-                "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13599023424133435651/70EAB474609C925585CFED9AF60F4A6D137585BC/",
-                "ImageSecondaryURL": "",
-                "ImageScalar": 1,
-                "WidthScale": 0
-              },
-              "LuaScript": "",
-              "LuaScriptState": "",
-              "XmlUI": ""
-            }
-          ]
-        },
-        {
-          "GUID": "6ae1c4",
-          "Name": "Custom_Model_Infinite_Bag",
-          "Transform": {
-            "posX": -29.2153,
-            "posY": 0.9500011,
-            "posZ": -50.4559,
-            "rotX": -1.57955515e-06,
-            "rotY": 180.0299,
-            "rotZ": 4.90289153e-07,
-            "scaleX": 1.9,
-            "scaleY": 0.1,
-            "scaleZ": 1.9
-          },
-          "Nickname": "[b][i]Battle-shocked[/i][/b]",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1,
-            "a": 0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "MaterialIndex": -1,
-          "MeshIndex": -1,
-          "CustomMesh": {
-            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071991282/5C391C2599AE5F6972D6EFA7BFC04B41D6E821E3/",
-            "DiffuseURL": "",
-            "NormalURL": "",
-            "ColliderURL": "",
-            "Convex": true,
-            "MaterialIndex": 0,
-            "TypeIndex": 7,
-            "CastShadows": true
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "ContainedObjects": [
-            {
-              "GUID": "b20417",
-              "Name": "Custom_Token",
-              "Transform": {
-                "posX": 0,
-                "posY": 0,
-                "posZ": 0,
-                "rotX": 0,
-                "rotY": 0,
-                "rotZ": 0,
-                "scaleX": 0.5,
-                "scaleY": 1,
-                "scaleZ": 0.5
-              },
-              "Nickname": "[b][i]Battle-shocked[/i][/b]",
-              "Description": "",
-              "GMNotes": "",
-              "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
-              "ColorDiffuse": {
-                "r": 1,
-                "g": 1,
-                "b": 1
-              },
-              "LayoutGroupSortIndex": 0,
-              "Value": 0,
-              "Locked": false,
-              "Grid": true,
-              "Snap": true,
-              "IgnoreFoW": false,
-              "MeasureMovement": false,
-              "DragSelectable": true,
-              "Autoraise": true,
-              "Sticky": true,
-              "Tooltip": true,
-              "GridProjection": false,
-              "HideWhenFaceDown": false,
-              "Hands": true,
-              "CustomImage": {
-                "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13010387546801221302/5C4BD741352EA2EFD9EB642178AAACA4F853518E/",
-                "ImageSecondaryURL": "",
-                "ImageScalar": 1,
-                "WidthScale": 0,
-                "CustomToken": {
-                  "Thickness": 0.1,
-                  "MergeDistancePixels": 25,
-                  "StandUp": false,
-                  "Stackable": false
-                }
-              },
-              "LuaScript": "",
-              "LuaScriptState": "",
-              "XmlUI": ""
-            }
-          ],
-          "ChildObjects": [
-            {
-              "GUID": "9cdd75",
-              "Name": "Custom_Token",
-              "Transform": {
-                "posX": 0,
-                "posY": 0,
-                "posZ": 0,
-                "rotX": 0,
-                "rotY": 0,
-                "rotZ": 0,
-                "scaleX": 0.267505437,
-                "scaleY": 5,
-                "scaleZ": 0.267947078
-              },
-              "Nickname": "",
-              "Description": "",
-              "GMNotes": "",
-              "AltLookAngle": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
-              "LayoutGroupSortIndex": 0,
-              "Value": 0,
-              "Locked": false,
-              "Grid": true,
-              "Snap": true,
-              "IgnoreFoW": false,
-              "MeasureMovement": false,
-              "DragSelectable": true,
-              "Autoraise": true,
-              "Sticky": true,
-              "Tooltip": true,
-              "GridProjection": false,
-              "CustomImage": {
-                "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13010387546801221302/5C4BD741352EA2EFD9EB642178AAACA4F853518E/",
-                "ImageSecondaryURL": "",
-                "ImageScalar": 1,
-                "WidthScale": 0
-              },
-              "LuaScript": "",
-              "LuaScriptState": "",
-              "XmlUI": ""
-            }
-          ]
-        },
-        {
-          "GUID": "0cf80c",
-          "Name": "Custom_Dice",
-          "Transform": {
-            "posX": -28.5445976,
-            "posY": 1.23018956,
-            "posZ": -46.2453,
-            "rotX": 90,
-            "rotY": 359.4167,
-            "rotZ": 0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "scaleZ": 1
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/34445199169908109/E64F1EA392D5A021317BA057524418CAA98FD30A/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1,
-            "WidthScale": 0,
-            "CustomDice": {
-              "Type": 1
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "RotationValues": [
-            {
-              "Value": "1",
-              "Rotation": {
-                "x": -90,
-                "y": 0,
-                "z": 0
-              }
-            },
-            {
-              "Value": "2",
-              "Rotation": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              }
-            },
-            {
-              "Value": "3",
-              "Rotation": {
-                "x": 0,
-                "y": 0,
-                "z": -90
-              }
-            },
-            {
-              "Value": "4",
-              "Rotation": {
-                "x": 0,
-                "y": 0,
-                "z": 90
-              }
-            },
-            {
-              "Value": "5",
-              "Rotation": {
-                "x": 0,
-                "y": 0,
-                "z": -180
-              }
-            },
-            {
-              "Value": "6",
-              "Rotation": {
-                "x": 90,
-                "y": 0,
-                "z": 0
-              }
             }
           ]
         },
@@ -21592,7 +19271,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Missions Outline Teams",
-          "Description": "\u2022 [Hammer & Anvil] Fog of War / Linchpin\r\n\u2022 [Search & Destroy] Swift Action / Scorched Earth\r\n\u2022 [Crucible of Battle] Raise Banners / Purge the Foe\r\n\u2022 [Tipping Point] Inspired Leadership / Burden of Trust\r\n\u2022 [Sweeping Engagement] Smoke and Mirrors / Take and Hold",
+          "Description": "• [Hammer & Anvil] Fog of War / Linchpin\r\n• [Search & Destroy] Swift Action / Scorched Earth\r\n• [Crucible of Battle] Raise Banners / Purge the Foe\r\n• [Tipping Point] Inspired Leadership / Burden of Trust\r\n• [Sweeping Engagement] Smoke and Mirrors / Take and Hold",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -23252,7 +20931,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Missions Outline Singles",
-          "Description": "\u2022 [Hammer & Anvil] Fog of War / Linchpin\r\n\u2022 [Search & Destroy] Swift Action / Scored Earth\r\n\u2022 [Crucible of Battle] Raise Banners / Purge the Foe\r\n\u2022 [Tipping Point] Inspired Leadership / Burden of Trust\r\n\u2022 [Sweeping Engagement] Smoke and Mirrors / Take and Hold\r\n\u2022 [Search & Destroy] Swift Action / Scorched Earth",
+          "Description": "• [Hammer & Anvil] Fog of War / Linchpin\r\n• [Search & Destroy] Swift Action / Scored Earth\r\n• [Crucible of Battle] Raise Banners / Purge the Foe\r\n• [Tipping Point] Inspired Leadership / Burden of Trust\r\n• [Sweeping Engagement] Smoke and Mirrors / Take and Hold\r\n• [Search & Destroy] Swift Action / Scorched Earth",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -23658,169 +21337,6 @@
           "GridProjection": false,
           "CustomImage": {
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/12413768925086392778/385D1E7F4CF527EE13008502130B0288E17AF648/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1,
-            "WidthScale": 0
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        }
-      ]
-    },
-    {
-      "GUID": "1c0491",
-      "Name": "Custom_Model_Infinite_Bag",
-      "Transform": {
-        "posX": 34.4295425,
-        "posY": 0.958821535,
-        "posZ": 41.0663,
-        "rotX": 1.63278776e-06,
-        "rotY": 359.977875,
-        "rotZ": -4.63449254e-07,
-        "scaleX": 2.94117641,
-        "scaleY": 0.117647044,
-        "scaleZ": 2.94117641
-      },
-      "Nickname": "[b][i]Advanced[/i][/b]",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1,
-        "a": 0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "MaterialIndex": -1,
-      "MeshIndex": -1,
-      "CustomMesh": {
-        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071991282/5C391C2599AE5F6972D6EFA7BFC04B41D6E821E3/",
-        "DiffuseURL": "",
-        "NormalURL": "",
-        "ColliderURL": "",
-        "Convex": true,
-        "MaterialIndex": 0,
-        "TypeIndex": 7,
-        "CastShadows": true
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "ContainedObjects": [
-        {
-          "GUID": "b20417",
-          "Name": "Custom_Token",
-          "Transform": {
-            "posX": 0,
-            "posY": 0,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 0,
-            "rotZ": 0,
-            "scaleX": 0.5,
-            "scaleY": 1,
-            "scaleZ": 0.5
-          },
-          "Nickname": "[b][i]Advanced[/i][/b]",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13599023424133435651/70EAB474609C925585CFED9AF60F4A6D137585BC/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1,
-            "WidthScale": 0,
-            "CustomToken": {
-              "Thickness": 0.1,
-              "MergeDistancePixels": 25,
-              "StandUp": false,
-              "Stackable": false
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        }
-      ],
-      "ChildObjects": [
-        {
-          "GUID": "9b8a5",
-          "Name": "Custom_Token",
-          "Transform": {
-            "posX": 0,
-            "posY": 0,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 0,
-            "rotZ": 0,
-            "scaleX": 0.267505437,
-            "scaleY": 5,
-            "scaleZ": 0.267947078
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13599023424133435651/70EAB474609C925585CFED9AF60F4A6D137585BC/",
             "ImageSecondaryURL": "",
             "ImageScalar": 1,
             "WidthScale": 0
@@ -37043,7 +34559,7 @@
         },
         {
           "GUID": "cb09b4",
-          "Name": "Custom_Model_Infinite_Bag",
+          "Name": "FTC_Token_Advanced_Blue_Player",
           "Transform": {
             "posX": 71.2338943,
             "posY": 3.01657057,
@@ -39966,7 +37482,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "A Tempting Target",
-          "Description": "When this Secondary Mission card is drawn, your opponent must select one objective marker in No Man\u2019s Land.\r\n\r\nAt the end of your turn, if you control that selected objective marker, this Secondary Mission is achieved and you score 5VP.\r",
+          "Description": "When this Secondary Mission card is drawn, your opponent must select one objective marker in No Man’s Land.\r\n\r\nAt the end of your turn, if you control that selected objective marker, this Secondary Mission is achieved and you score 5VP.\r",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -40027,7 +37543,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Capture Enemy Outpost",
-          "Description": "At the end of your turn, if you control one or more objective markers in your opponent\u2019s deployment zone, this Secondary Mission is achieved and you score 8VP.",
+          "Description": "At the end of your turn, if you control one or more objective markers in your opponent’s deployment zone, this Secondary Mission is achieved and you score 8VP.",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -40088,7 +37604,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Area Denial",
-          "Description": "At the end of your turn, if one or more units from your army (excluding Battle-shocked units) are wholly within 6\u201d of the centre of the battlefield, and there are no enemy units wholly within 6\u201d of the centre of the battlefield, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf, at the end of your turn, there are one or more enemy units wholly within 6\u201d of the centre of the battlefield, but there are no enemy units within 3\u201d of the centre of the battlefield, then this Secondary Mission is still achieved, but in this instance you score 3VP instead of 5VP.\r\n",
+          "Description": "At the end of your turn, if one or more units from your army (excluding Battle-shocked units) are wholly within 6” of the centre of the battlefield, and there are no enemy units wholly within 6” of the centre of the battlefield, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf, at the end of your turn, there are one or more enemy units wholly within 6” of the centre of the battlefield, but there are no enemy units within 3” of the centre of the battlefield, then this Secondary Mission is still achieved, but in this instance you score 3VP instead of 5VP.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -40149,7 +37665,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Defend Stronghold",
-          "Description": "At the end of your opponent\u2019s turn, or at the end of the battle (whichever comes first), if you control one or more objective markers in your own deployment zone, this Secondary Mission is achieved and you score 3VP.\r\n\r\nThis Secondary Mission cannot be achieved during the first battle round. If you randomly drew this Secondary Mission card during the first battle round, draw a new Secondary Mission card and shuffle this Secondary Mission card back into your Secondary Mission deck.\r\n",
+          "Description": "At the end of your opponent’s turn, or at the end of the battle (whichever comes first), if you control one or more objective markers in your own deployment zone, this Secondary Mission is achieved and you score 3VP.\r\n\r\nThis Secondary Mission cannot be achieved during the first battle round. If you randomly drew this Secondary Mission card during the first battle round, draw a new Secondary Mission card and shuffle this Secondary Mission card back into your Secondary Mission deck.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -40210,7 +37726,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Extend Battle Lines",
-          "Description": "At the end of your turn, if you control one or more objective markers in your own deployment zone and you also control one or more objective markers in No Man\u2019s Land, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf you only have one unit remaining in your army, then this Secondary Mission is instead achieved at the end of your turn if that unit controls one objective marker in No Man\u2019s Land, but in this instance you score 2VP instead of 5VP.\r\n",
+          "Description": "At the end of your turn, if you control one or more objective markers in your own deployment zone and you also control one or more objective markers in No Man’s Land, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf you only have one unit remaining in your army, then this Secondary Mission is instead achieved at the end of your turn if that unit controls one objective marker in No Man’s Land, but in this instance you score 2VP instead of 5VP.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -40271,7 +37787,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Investigate Signals",
-          "Description": "In your Shooting phase, you can select one or more units from your army that are not Battle-shocked and are eligible to shoot. Until the end of your turn, the units you selected are not eligible to shoot or declare a charge.\r\n\r\nAt the end of your turn, each corner of the battlefield that has one or more of these selected units wholly within 9\u201d of it is scanned by your army.\r\n\r\nIf one or more corners are scanned by your army, this Secondary Mission is achieved and you score 2VP for each corner scanned by your army this turn.\r\n",
+          "Description": "In your Shooting phase, you can select one or more units from your army that are not Battle-shocked and are eligible to shoot. Until the end of your turn, the units you selected are not eligible to shoot or declare a charge.\r\n\r\nAt the end of your turn, each corner of the battlefield that has one or more of these selected units wholly within 9” of it is scanned by your army.\r\n\r\nIf one or more corners are scanned by your army, this Secondary Mission is achieved and you score 2VP for each corner scanned by your army this turn.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -40454,7 +37970,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Secure No Man's Land",
-          "Description": "At the end of your turn, if you control two or more objective markers in No Man\u2019s Land, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf, at the end of your turn, you only control one objective marker in No Man\u2019s Land, this Secondary Mission is still achieved, but in this instance you score 2VP instead of 5VP.\r",
+          "Description": "At the end of your turn, if you control two or more objective markers in No Man’s Land, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf, at the end of your turn, you only control one objective marker in No Man’s Land, this Secondary Mission is still achieved, but in this instance you score 2VP instead of 5VP.\r",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -40641,7 +38157,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Assassination",
-          "Description": "If you are using Fixed Missions, then while this Secondary Mission is active, each time an enemy [b]CHARACTER[/b] model is destroyed, you score 4VP. \r\n\r\nIf you are using Tactical Missions, then at the end of the turn, if either of the conditions below are satisfied, this Secondary Mission is achieved and you score 5VP:\r\n\r\n* One or more enemy [b]CHARACTER[/b] units were destroyed during this turn.\r\n* All [b]CHARACTER[/b] units from your opponent\u2019s Army Roster have been destroyed during the battle.\r\n\r\nNote that if you are using Tactical Missions, this Secondary MIssion is achieved even if such a unit was destroyed and then subsequently resurrected for any reason.\r\n",
+          "Description": "If you are using Fixed Missions, then while this Secondary Mission is active, each time an enemy [b]CHARACTER[/b] model is destroyed, you score 4VP. \r\n\r\nIf you are using Tactical Missions, then at the end of the turn, if either of the conditions below are satisfied, this Secondary Mission is achieved and you score 5VP:\r\n\r\n* One or more enemy [b]CHARACTER[/b] units were destroyed during this turn.\r\n* All [b]CHARACTER[/b] units from your opponent’s Army Roster have been destroyed during the battle.\r\n\r\nNote that if you are using Tactical Missions, this Secondary MIssion is achieved even if such a unit was destroyed and then subsequently resurrected for any reason.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -40702,7 +38218,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Behind Enemy Lines",
-          "Description": "At the end of your turn, if two or more units from your army (excluding [b]AIRCRAFT[/b]) are wholly within your opponent\u2019s deployment zone, this secondary mission is achieved and you score 4VP (or 5VP if you are using Tactical Missions).\r\n\r\nIf, at the end of your turn, only one unit from your army (excluding [b]AIRCRAFT[/b]) is wholly within your opponent\u2019s deployment zone, then this Secondary Mission is still achieved, but in this instance you score 3VP instead of 4VP (or instead of 5VP).\r\n",
+          "Description": "At the end of your turn, if two or more units from your army (excluding [b]AIRCRAFT[/b]) are wholly within your opponent’s deployment zone, this secondary mission is achieved and you score 4VP (or 5VP if you are using Tactical Missions).\r\n\r\nIf, at the end of your turn, only one unit from your army (excluding [b]AIRCRAFT[/b]) is wholly within your opponent’s deployment zone, then this Secondary Mission is still achieved, but in this instance you score 3VP instead of 4VP (or instead of 5VP).\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -40885,7 +38401,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Engage On All Fronts",
-          "Description": "At the end of your turn, if you have one or more qualifying units (see below) from your army wholly within three or more different table quarters, and those units are all more than 3\u201d away from any other table quarter, this Secondary Mission is achieved and you score 4VP if you have qualifying units in four different table quarters, or 2VP if you have qualifying units in three different table quarters.\r\n\r\nWhile a unit is Battle-shocked, it is not a qualifying unit.\r\n\r\nIf, when you draw this Secondary Mission card, you only have one or two qualifying units remaining in your army, you can discard this Secondary Mission card and draw a new Secondary mission card.\r\n\r\nIf you are using Tactical Missions, then when this Secondary Mission is achieved you score an extra 1VP (for a maximum of 5VP).\r\n",
+          "Description": "At the end of your turn, if you have one or more qualifying units (see below) from your army wholly within three or more different table quarters, and those units are all more than 3” away from any other table quarter, this Secondary Mission is achieved and you score 4VP if you have qualifying units in four different table quarters, or 2VP if you have qualifying units in three different table quarters.\r\n\r\nWhile a unit is Battle-shocked, it is not a qualifying unit.\r\n\r\nIf, when you draw this Secondary Mission card, you only have one or two qualifying units remaining in your army, you can discard this Secondary Mission card and draw a new Secondary mission card.\r\n\r\nIf you are using Tactical Missions, then when this Secondary Mission is achieved you score an extra 1VP (for a maximum of 5VP).\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -41007,7 +38523,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Deploy Teleport Homer",
-          "Description": "In your Shooting phase, you can select one unit from your army that is not Battle-shocked and is eligible to shoot. Until the end of your turn, that unit is not eligible to shoot or declare a charge. \r\n\r\nAt the end of your turn, if that unit is within your opponent\u2019s deployment zone, or within 6\u201d of the centre of the battlefield, it deploys a teleport homer at that location, this Secondary Mission is achieved and you score a number of VP depending on where the teleport homer was deployed, as follows:\r\n\r\nCentre of battlefield = 3VP\r\n\r\nOpponent\u2019s deployment zone = 4VP if you are using Fixed Missions, or 5VP if you are using Tactical Missions.\r\n",
+          "Description": "In your Shooting phase, you can select one unit from your army that is not Battle-shocked and is eligible to shoot. Until the end of your turn, that unit is not eligible to shoot or declare a charge. \r\n\r\nAt the end of your turn, if that unit is within your opponent’s deployment zone, or within 6” of the centre of the battlefield, it deploys a teleport homer at that location, this Secondary Mission is achieved and you score a number of VP depending on where the teleport homer was deployed, as follows:\r\n\r\nCentre of battlefield = 3VP\r\n\r\nOpponent’s deployment zone = 4VP if you are using Fixed Missions, or 5VP if you are using Tactical Missions.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -41211,7 +38727,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Sites of Power",
-          "Description": "The objective markers in No Man\u2019s Land are sites of power. At the end of each Command phase, the player whose turn it is empowers all sites of power that they control that have one or more [b]CHARACTER[/b] models from their army within range; each site of power remains empowered by that player while one or more of their [b]CHARACTER[/b] model remains within range of it.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores VP as follows (up to 15VP per turn):\r\n\r\n* 3VP for each objective marker they control.\r\n* 3VP for each site of power that they have empowered.\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n",
+          "Description": "The objective markers in No Man’s Land are sites of power. At the end of each Command phase, the player whose turn it is empowers all sites of power that they control that have one or more [b]CHARACTER[/b] models from their army within range; each site of power remains empowered by that player while one or more of their [b]CHARACTER[/b] model remains within range of it.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores VP as follows (up to 15VP per turn):\r\n\r\n* 3VP for each objective marker they control.\r\n* 3VP for each site of power that they have empowered.\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -41272,7 +38788,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Scorched Earth",
-          "Description": "From the second battle round, in each player\u2019s Shooting phase, the player whose turn it is can select one unit from their army that is not Battle-shocked and is eligible to shoot. Until the end of that turn, that unit is not eligible to shoot or declare a charge. At the start of its controlling player\u2019s next Command phase, if that unit is within 1\u201d of an objective marker that the player whose turn it is controls, that objective marker is burned and removed from the battlefield.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 5VP for each objective marker they control (up to 10VP per turn).\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n\r\n[b]At the end of the battle:[/b]\r\n\r\nEach player scores 5VP if one or more objective markers in No Man\u2019s Land were burned by a unit from their army, and 10VP if the objective marker in their opponent\u2019s deployment zone was burned.\r\n",
+          "Description": "From the second battle round, in each player’s Shooting phase, the player whose turn it is can select one unit from their army that is not Battle-shocked and is eligible to shoot. Until the end of that turn, that unit is not eligible to shoot or declare a charge. At the start of its controlling player’s next Command phase, if that unit is within 1” of an objective marker that the player whose turn it is controls, that objective marker is burned and removed from the battlefield.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 5VP for each objective marker they control (up to 10VP per turn).\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n\r\n[b]At the end of the battle:[/b]\r\n\r\nEach player scores 5VP if one or more objective markers in No Man’s Land were burned by a unit from their army, and 10VP if the objective marker in their opponent’s deployment zone was burned.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -41455,7 +38971,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Deploy Servo-Skulls",
-          "Description": "The objective markers that start the battle in No Man\u2019s Land are servo-skulls. At the end of each turn, each of these objective markers can be moved up to 6\u201d in any direction by the player that controls it. When moving objective markers, they cannot end that move on top of any other objective marker or model, or inside impassable parts of terrain features (such as the walls of a ruin).\r\n\r\n[b]In the second, third, fourth and fifth battle rounds:[/b]\r\n\r\nAt the end of each turn, the player whose turn it is scores VP as follows:\r\n\r\n\r\n* 2VP for each servo-skull that is wholly within 12\u201d of their opponent\u2019s deployment zone.\r\n* 5VP for each servo-skull that is wholly within 6\u201d of their opponent\u2019s deployment zone.\r\n* 8VP for each servo-skull that is wholly within their opponent\u2019s deployment zone.\r\n\r\nNote that these conditions are not cumulative; if more than one applies, the player whose turn it is scores the applicable condition that carries the highest VP reward.\r\n",
+          "Description": "The objective markers that start the battle in No Man’s Land are servo-skulls. At the end of each turn, each of these objective markers can be moved up to 6” in any direction by the player that controls it. When moving objective markers, they cannot end that move on top of any other objective marker or model, or inside impassable parts of terrain features (such as the walls of a ruin).\r\n\r\n[b]In the second, third, fourth and fifth battle rounds:[/b]\r\n\r\nAt the end of each turn, the player whose turn it is scores VP as follows:\r\n\r\n\r\n* 2VP for each servo-skull that is wholly within 12” of their opponent’s deployment zone.\r\n* 5VP for each servo-skull that is wholly within 6” of their opponent’s deployment zone.\r\n* 8VP for each servo-skull that is wholly within their opponent’s deployment zone.\r\n\r\nNote that these conditions are not cumulative; if more than one applies, the player whose turn it is scores the applicable condition that carries the highest VP reward.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -41577,7 +39093,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Supply Drop",
-          "Description": "At the start of the battle, players randomly select two different objective markers in No Man\u2019s Land: the first selected is the Alpha objective, the second selected is the Omega objective. At the start of the fourth battle round, the Alpha objective is removed from the battlefield. At the start of the fifth battle round, all objective markers in No Man\u2019s Land apart from the Omega objective are also removed.\r\n\r\n[b]In the second and third battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 5VP for each objective marker they control in No Man\u2019s Land.\r\n\r\n[b]In the fourth battle round:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 8VP for each objective marker they control in No Man\u2019s Land.\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores 15VP at the end of their Command phase if they control the objective marker in No Man\u2019s Land.\r\n\r\nThe player who has the second turn scores 15VP at the end of their turn if they control the objective marker in No Man\u2019s Land.\r",
+          "Description": "At the start of the battle, players randomly select two different objective markers in No Man’s Land: the first selected is the Alpha objective, the second selected is the Omega objective. At the start of the fourth battle round, the Alpha objective is removed from the battlefield. At the start of the fifth battle round, all objective markers in No Man’s Land apart from the Omega objective are also removed.\r\n\r\n[b]In the second and third battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 5VP for each objective marker they control in No Man’s Land.\r\n\r\n[b]In the fourth battle round:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 8VP for each objective marker they control in No Man’s Land.\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores 15VP at the end of their Command phase if they control the objective marker in No Man’s Land.\r\n\r\nThe player who has the second turn scores 15VP at the end of their turn if they control the objective marker in No Man’s Land.\r",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -41638,7 +39154,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "The Ritual",
-          "Description": "When setting up the battlefield, remove all objective markers in No Man\u2019s Land except the one closest to the centre of the battlefield.\r\n\r\nIn each player\u2019s Shooting phase, the player whose turn it is can select one unit from their army that is not Battle-shocked and is eligible to shoot. Until the end of that turn, that unit is not eligible to shoot or declare a charge. At the end of that turn, the player whose turn it is can set up one objective marker wholly within No Man\u2019s Land and within 1\u201d of that unit provided it can be set up exactly 9\u201d from one other objective marker and not within 6\u201d of any other objective marker.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 5VP for each objective marker in No Man\u2019s Land they control (up to 15VP per turn).\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n",
+          "Description": "When setting up the battlefield, remove all objective markers in No Man’s Land except the one closest to the centre of the battlefield.\r\n\r\nIn each player’s Shooting phase, the player whose turn it is can select one unit from their army that is not Battle-shocked and is eligible to shoot. Until the end of that turn, that unit is not eligible to shoot or declare a charge. At the end of that turn, the player whose turn it is can set up one objective marker wholly within No Man’s Land and within 1” of that unit provided it can be set up exactly 9” from one other objective marker and not within 6” of any other objective marker.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 5VP for each objective marker in No Man’s Land they control (up to 15VP per turn).\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -41699,7 +39215,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Vital Ground",
-          "Description": "If you draw this and the Hidden Supplies Mission Rule card, discard this card and draw a new Primary Mission card.\r\n\r\nAfter setting up the battlefield, remove the objective marker in No Man\u2019s Land that is closest to the centre of the battlefield.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores VP as follows:\r\n\r\n* If they control the objective marker in their own deployment zone, they score 2VP\r\n* For each objective marker in No Man\u2019s Land that they control, they score 5VP.\r\n* If they control the objective marker in their opponent\u2019s deployment zone, they score 6VP.\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn score VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n",
+          "Description": "If you draw this and the Hidden Supplies Mission Rule card, discard this card and draw a new Primary Mission card.\r\n\r\nAfter setting up the battlefield, remove the objective marker in No Man’s Land that is closest to the centre of the battlefield.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores VP as follows:\r\n\r\n* If they control the objective marker in their own deployment zone, they score 2VP\r\n* For each objective marker in No Man’s Land that they control, they score 5VP.\r\n* If they control the objective marker in their opponent’s deployment zone, they score 6VP.\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn score VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -45161,6 +42677,984 @@
       "LuaScript": "",
       "LuaScriptState": "{\"label\":\"Token Counter\",\"light_font\":true,\"use_prefix\":false,\"value\":0}",
       "XmlUI": ""
+    },
+    {
+      "GUID": "cb09b4",
+      "Name": "Custom_Model_Infinite_Bag",
+      "Transform": {
+        "posX": 34.4295,
+        "posY": 0.95,
+        "posZ": 41.07,
+        "rotX": 1.63278776e-06,
+        "rotY": 359.977875,
+        "rotZ": -4.63449254e-07,
+        "scaleX": 2.94117641,
+        "scaleY": 0.117647044,
+        "scaleZ": 2.94117641
+      },
+      "Nickname": "[b][i]Advance buffed[/i][/b]",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071991282/5C391C2599AE5F6972D6EFA7BFC04B41D6E821E3/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 7,
+        "CastShadows": true
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "4b68bf",
+          "Name": "Custom_Token",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 0.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 0.5,
+            "scaleY": 1.0,
+            "scaleZ": 0.5
+          },
+          "Nickname": "[b][i]Advance buffed[/i][/b]",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2019350432615805995/0F6B9570242B105EDDFC4BF3F605AD393B70EE44/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomToken": {
+              "Thickness": 0.1,
+              "MergeDistancePixels": 25.0,
+              "StandUp": false,
+              "Stackable": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ],
+      "ChildObjects": [
+        {
+          "GUID": "9cdd64",
+          "Name": "Custom_Token",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 0.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 0.267505437,
+            "scaleY": 5.0,
+            "scaleZ": 0.267947078
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2019350432615805995/0F6B9570242B105EDDFC4BF3F605AD393B70EE44/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ]
+    },
+    {
+      "GUID": "cb09c5",
+      "Name": "Custom_Model_Infinite_Bag",
+      "Transform": {
+        "posX": 27.7647,
+        "posY": 0.95,
+        "posZ": 41.07,
+        "rotX": 1.66851214e-06,
+        "rotY": 359.993835,
+        "rotZ": -4.863968e-07,
+        "scaleX": 2.94117641,
+        "scaleY": 0.117647044,
+        "scaleZ": 2.94117641
+      },
+      "Nickname": "[b][i]Battle-shocked[/i][/b]",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071991282/5C391C2599AE5F6972D6EFA7BFC04B41D6E821E3/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 7,
+        "CastShadows": true
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "b20417",
+          "Name": "Custom_Token",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 0.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 0.5,
+            "scaleY": 1.0,
+            "scaleZ": 0.5
+          },
+          "Nickname": "[b][i]Battle-shocked[/i][/b]",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2023852627028978974/145793176D2BE7F72E4697E5F0F2C4B33850AB89/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomToken": {
+              "Thickness": 0.1,
+              "MergeDistancePixels": 25.0,
+              "StandUp": false,
+              "Stackable": false
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ],
+      "ChildObjects": [
+        {
+          "GUID": "9cdd75",
+          "Name": "Custom_Token",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 0.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 0.267505437,
+            "scaleY": 5.0,
+            "scaleZ": 0.267947078
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2023852627028978974/145793176D2BE7F72E4697E5F0F2C4B33850AB89/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ]
+    },
+    {
+      "GUID": "cc09ba",
+      "Name": "Custom_Model_Infinite_Bag",
+      "Transform": {
+        "posX": 31.0971,
+        "posY": 0.95,
+        "posZ": 41.07,
+        "rotX": 1.5514828e-06,
+        "rotY": -2.6805003e-07,
+        "rotZ": -5.29483941e-07,
+        "scaleX": 2.94117641,
+        "scaleY": 0.117647044,
+        "scaleZ": 2.94117641
+      },
+      "Nickname": "[b][i]Action in progress (red)[/i][/b]",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071991282/5C391C2599AE5F6972D6EFA7BFC04B41D6E821E3/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 7,
+        "CastShadows": true
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "84b44e",
+          "Name": "Custom_Token",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 0.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 0.5,
+            "scaleY": 1.0,
+            "scaleZ": 0.5
+          },
+          "Nickname": "[b][i]Action in progress (red)[/i][/b]",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2035105196650237494/6430E4D3952A86B07FC8D5FBAEA315FFA2300D55/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomToken": {
+              "Thickness": 0.1,
+              "MergeDistancePixels": 25.0,
+              "StandUp": false,
+              "Stackable": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ],
+      "ChildObjects": [
+        {
+          "GUID": "9cdd6a",
+          "Name": "Custom_Token",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 0.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 0.267505437,
+            "scaleY": 5.0,
+            "scaleZ": 0.267947078
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2035105196650237494/6430E4D3952A86B07FC8D5FBAEA315FFA2300D55/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ]
+    },
+    {
+      "GUID": "341539",
+      "Name": "Custom_Model_Infinite_Bag",
+      "Transform": {
+        "posX": -31.0637,
+        "posY": 0.9789,
+        "posZ": -40.92,
+        "rotX": 0.007888253,
+        "rotY": 179.951233,
+        "rotZ": -0.003034184,
+        "scaleX": 2.99615288,
+        "scaleY": 0.157692254,
+        "scaleZ": 2.99615288
+      },
+      "Nickname": "[b][i]Action in progress (red)[/i][/b]",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071991282/5C391C2599AE5F6972D6EFA7BFC04B41D6E821E3/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 7,
+        "CastShadows": true
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "84b44e",
+          "Name": "Custom_Token",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 0.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 0.5,
+            "scaleY": 1.0,
+            "scaleZ": 0.5
+          },
+          "Nickname": "[b][i]Action in progress (red)[/i][/b]",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2035105196650237494/6430E4D3952A86B07FC8D5FBAEA315FFA2300D55/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomToken": {
+              "Thickness": 0.1,
+              "MergeDistancePixels": 25.0,
+              "StandUp": false,
+              "Stackable": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ],
+      "ChildObjects": [
+        {
+          "GUID": "9cdd6a",
+          "Name": "Custom_Token",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 0.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 0.267505437,
+            "scaleY": 5.0,
+            "scaleZ": 0.267947078
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2035105196650237494/6430E4D3952A86B07FC8D5FBAEA315FFA2300D55/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ]
+    },
+    {
+      "GUID": "afd570",
+      "Name": "Custom_Model_Infinite_Bag",
+      "Transform": {
+        "posX": -27.7647,
+        "posY": 0.9789,
+        "posZ": -40.92,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 2.99615288,
+        "scaleY": 0.157692254,
+        "scaleZ": 2.99615288
+      },
+      "Nickname": "[b][i]Battle-shocked[/i][/b]",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071991282/5C391C2599AE5F6972D6EFA7BFC04B41D6E821E3/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 7,
+        "CastShadows": true
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "b20417",
+          "Name": "Custom_Token",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 0.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 0.5,
+            "scaleY": 1.0,
+            "scaleZ": 0.5
+          },
+          "Nickname": "[b][i]Battle-shocked[/i][/b]",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2023852627028978974/145793176D2BE7F72E4697E5F0F2C4B33850AB89/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomToken": {
+              "Thickness": 0.1,
+              "MergeDistancePixels": 25.0,
+              "StandUp": false,
+              "Stackable": false
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ],
+      "ChildObjects": [
+        {
+          "GUID": "9cdd75",
+          "Name": "Custom_Token",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 0.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 0.267505437,
+            "scaleY": 5.0,
+            "scaleZ": 0.267947078
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2023852627028978974/145793176D2BE7F72E4697E5F0F2C4B33850AB89/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ]
+    },
+    {
+      "GUID": "c50a00",
+      "Name": "Custom_Model_Infinite_Bag",
+      "Transform": {
+        "posX": -34.3627,
+        "posY": 0.9789,
+        "posZ": -40.92,
+        "rotX": -0.0021367874,
+        "rotY": 180.059464,
+        "rotZ": 359.992279,
+        "scaleX": 2.99615288,
+        "scaleY": 0.157692254,
+        "scaleZ": 2.99615288
+      },
+      "Nickname": "[b][i]Advance buffed[/i][/b]",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071991282/5C391C2599AE5F6972D6EFA7BFC04B41D6E821E3/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 7,
+        "CastShadows": true
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "4b68bf",
+          "Name": "Custom_Token",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 0.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 0.5,
+            "scaleY": 1.0,
+            "scaleZ": 0.5
+          },
+          "Nickname": "[b][i]Advance buffed[/i][/b]",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2019350432615805995/0F6B9570242B105EDDFC4BF3F605AD393B70EE44/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomToken": {
+              "Thickness": 0.1,
+              "MergeDistancePixels": 25.0,
+              "StandUp": false,
+              "Stackable": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ],
+      "ChildObjects": [
+        {
+          "GUID": "9cdd64",
+          "Name": "Custom_Token",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 0.0,
+            "posZ": 0.0,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 0.267505437,
+            "scaleY": 5.0,
+            "scaleZ": 0.267947078
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2019350432615805995/0F6B9570242B105EDDFC4BF3F605AD393B70EE44/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ]
     }
   ]
 }

@@ -441,13 +441,11 @@ function onObjectClick(player_color, object_clicked)
         ["ca7711"] = -4.776464939,
         ["cd649d"] = -4.776464939,
         ["bf09bd"] = -4.776464939,
-        ["64c6bb"] = -4.776464939,
         ["9a7c3c"] = -4.776464939,
         ["3c8a1b"] = -6.19999981,
         ["3c1373"] = -6.19999981,
         ["8395b2"] = -6.19999981,
         ["8a7c7a"] = -6.19999981,
-        ["64b6bb"] = -6.19999981,
         ["4bb528"] = -6.19999981
     }
 
@@ -598,8 +596,6 @@ function confirmDoublesGame()
         ["8a7c7a"] = -6.19999981,
         ["8395b2"] = -6.19999981,
         ["3c1373"] = -6.19999981,
-        ["64c6bb"] = -6.19999981,
-        ["64b6bb"] = -6.19999981,
         ["4bb528"] = -6.19999981,
         ["7abc5a"] = -6.19999981
     }
@@ -646,16 +642,6 @@ function placeGameTokens()
     -- Check if the bag exists
     local markedForDeathToken = getObjectFromGUID("cda0b3")
     markedForDeathToken.setPosition({37.34079, 0.9, 29})
-
-    local cardsTeams = getObjectFromGUID("c59f7a")
-    cardsTeams.shuffle()
-    broadcastToAll("Team cards have been shuffled! Safe to Draw.", {0, 1, 0})
-    if cardsTeams then
-        cardsTeams.setPosition({42, 0.9, 37})
-        ttsDebugLog("cardsTeams new position: " .. tostring(cardsTeams.getPosition()))
-    else
-        ttsDebugLog("cardsTeams not found!")
-    end
 
     local tokenBag = getObjectFromGUID("f8ddf5")
     if not tokenBag then
@@ -711,8 +697,6 @@ function confirmSizeGame()
         ["3c8a1b"] = 1.19999981,
         ["3c1373"] = 1.19999981,
         ["8395b2"] = 1.19999981,
-        ["64b6bb"] = 1.19999981,
-        ["64c6bb"] = 1.19999981,
         ["4bb528"] = 1.19999981
     }
 
@@ -745,15 +729,11 @@ function confirmSizeGame()
             print("Object with GUID " .. guid .. " not found.")
         end
     end
-    local cardsTeams = getObjectFromGUID("c59f7a")
-    destroyObject(cardsTeams)
     local mfdToken = getObjectFromGUID("cda0b3")
     destroyObject(mfdToken)
 end
 
 function confirmSizeTerrain()
-    local cardsTeams = getObjectFromGUID("c59f7a")
-    destroyObject(cardsTeams)
     local mfdToken = getObjectFromGUID("cda0b3")
     destroyObject(mfdToken)
     confirmSizeMat("terrain")
