@@ -2648,11 +2648,19 @@ function updateCpHUD()
     Global.UI.setAttribute("CPWatch2", "text", "CP: " .. blueCpCounter.Counter.getValue())
 end
 
+function hudNextPhase()
+    nextPhase(self, currentTurn, false)
+end
+
+function hudPassTurn()
+    passTurn(self, currentTurn, false)
+end
+
 function updateGameStateHUD()
     local roundObj = getObjectFromGUID("ee92cf")
     local round = roundObj and roundObj.Counter.getValue() or 0
-    Global.UI.setAttribute("PhaseWatch", "text", inGame and phases[currentPhase] or "Pre-Game")
-    Global.UI.setAttribute("RoundWatch", "text", "Battle Round: " .. round)
+    Global.UI.setValue("PhaseWatch", inGame and phases[currentPhase] or "Pre-Game")
+    Global.UI.setValue("RoundWatch", "Round " .. round)
     local panelColor = inGame and (currentTurn == "Red" and "#B52020E6" or "#1A5FC8E6") or "#1A1A2AE6"
     Global.UI.setAttribute("GameStatePanel", "color", panelColor)
 end
