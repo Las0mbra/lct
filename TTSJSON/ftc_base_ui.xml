@@ -27,7 +27,7 @@
   <Button id="closeBtn" offsetXY="0 -500" color="#2C3E50" textColor="#FFFFFF" width="500" height="100" fontSize="40" fontStyle="Bold" onClick="closeMenu" outline="#34495E" outlineSize="5" roundEdges="true">CLOSE MENU</Button>
 </Panel>
 
-<Panel id="Chess Stopwatch" active="false" scale="0.8 0.8 0.8" width="240" height="148" rectAlignment="UpperRight" offsetXY="-270 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="Chess Stopwatch" active="false" scale="0.48 0.48 0.48" width="240" height="148" rectAlignment="UpperRight" offsetXY="-270 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <VerticalLayout spacing="6" padding="6">
     <Panel id="ChsStpPanel1" color="#1A5FC8E6" outline="#5B8FDECC" outlineSize="2">
       <Button id="ChsStpBtn1" width="130" height="58" onClick="" color="rgba(0,0,0,0)" roundEdges="true" offsetXY="20 0"/>
@@ -44,7 +44,7 @@
   </VerticalLayout>
 </Panel>
 
-<Panel id="VP Scores" active="true" scale="0.8 0.8 0.8" width="620" height="215" rectAlignment="UpperLeft" offsetXY="270 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="VP Scores" active="true" scale="0.48 0.48 0.48" width="620" height="215" rectAlignment="UpperLeft" offsetXY="270 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <VerticalLayout spacing="6" padding="6">
     <Panel id="VPPanel1" color="#1A5FC8E6" outline="#5B8FDECC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
@@ -70,13 +70,13 @@
     </Panel>
     <Panel id="GameStatePanel" color="#1A1A2AE6" outline="#2a2a4aCC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
-        <Panel color="rgba(0,0,0,0)" flexibleWidth="1">
-          <Button id="PhaseWatchBtn" width="380" height="50" color="rgba(0,0,0,0)" onClick="738804/hudNextPhase"/>
-          <Text id="PhaseWatch" text="Pre-Game" fontSize="36" fontStyle="Bold" color="White" shadow="#000000AA" shadowDistance="1 -1" alignment="MiddleLeft"/>
+        <Panel color="rgba(0,0,0,0)" flexibleWidth="2">
+          <Button id="RoundWatchBtn" width="240" height="50" color="rgba(0,0,0,0)" onClick="738804/hudPassTurn"/>
+          <Text id="RoundWatch" text="Round 0" fontSize="36" fontStyle="Bold" color="White" shadow="#000000AA" shadowDistance="1 -1" alignment="MiddleLeft"/>
         </Panel>
-        <Panel color="rgba(0,0,0,0)" preferredWidth="200">
-          <Button id="RoundWatchBtn" width="200" height="50" color="rgba(0,0,0,0)" onClick="738804/hudPassTurn"/>
-          <Text id="RoundWatch" text="Round 0" fontSize="36" fontStyle="Bold" color="White" shadow="#000000AA" shadowDistance="1 -1" alignment="MiddleRight"/>
+        <Panel color="rgba(0,0,0,0)" flexibleWidth="3">
+          <Button id="PhaseWatchBtn" width="360" height="50" color="rgba(0,0,0,0)" onClick="738804/hudNextPhase"/>
+          <Text id="PhaseWatch" text="Pre-Game" fontSize="36" fontStyle="Bold" color="White" shadow="#000000AA" shadowDistance="1 -1" alignment="MiddleRight"/>
         </Panel>
       </HorizontalLayout>
     </Panel>
