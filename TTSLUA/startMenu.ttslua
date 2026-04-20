@@ -110,7 +110,7 @@ end
 
 function makeAnnouncement()
     local features={
-    "1.0.0: Changelog here-> https://hyperboreansaga.bearblog.dev/another-40k-tts-table/",
+    "1.0.0: Changelog here-> https://lcttts.bearblog.dev/another-40k-tts-table/",
     -- "1.7.0: All thanks should go to @gareth3001 for 90% of the fixes below!",
     -- "1.7.0: Another thanks to GabrielL for the Hidden Supplies Fix!",
     -- "1.7.0: Version: bumped due to big changes to desync issues if 2 players were far away",
