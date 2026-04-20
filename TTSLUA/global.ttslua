@@ -354,27 +354,9 @@ function spawnOppositeForGUID(guid)
     })
 end
 
--- function spawnActionTokens()
---     local guids = {"ca12da", "ad19a7", "ab9a21"}
---     for _, guid in ipairs(guids) do
---         spawnOppositeForGUID(guid)
---     end
--- end
-
 function onLoad(saved_data)
     --addHotkey("Tag Selected as Red", tagSelectedAsRed)
     --addHotkey("Tag Selected as Blue", tagSelectedAsBlue)
-    addHotkey("Marker - Battleshock", function(playerColor, target)
-        onToggleButtonHotKey("ca12da", target)
-    end)
-    addHotkey("Marker - Advanced", function(playerColor, target)
-        onToggleButtonHotKey("ab9a21", target)
-    end)
-    addHotkey("Marker - Action-in-progress", function(playerColor, target)
-        onToggleButtonHotKey("a09c4e", target)
-    end)
-
-    -- spawnActionTokens()
     Turns.enable=false
     --- load vars from saved
     if saved_data ~= "" then
@@ -791,22 +773,8 @@ local mediumNames = {
     "be'lakor"
 }
 
-guidMap = {
-    ["ca12da"] = Battleshock_GUID,
-    ["ae9056"] = Battleshock_GUID,
-    ["ab9a21"] = Advance_GUID,
-    ["3b0476"] = Advance_GUID,
-    ["ad19a7"] = ActionInProgress_GUID,
-    ["a09c4e"] = ActionInProgress_GUID,
-}
-tokenHeights = {
-    ["ca12da"] = 0.029,
-    ["ae9056"] = 0.029,
-    ["ab9a21"] = 0.01,
-    ["3b0476"] = 0.006,
-    ["ad19a7"] = 0.0,
-    ["a09c4e"] = 0.007,
-}
+guidMap = {}
+tokenHeights = {}
 
 function getIcons(obj)
     local guid = obj.getGUID()
