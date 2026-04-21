@@ -78,11 +78,16 @@ function spawnLine(linePos, lineRot, lineScale, color, gmNote)
     })
     if lineObj then
         lineObj.setLock(true)
+        lineObj.interactable = false
         lineObj.setGMNotes(gmNote)
         lineObj.setColorTint(color)
         local blockComp = lineObj.getComponent("BoxCollider")
         if blockComp then
             blockComp.set("enabled", false)
+        end
+        local meshComp = lineObj.getComponent("MeshCollider")
+        if meshComp then
+            meshComp.set("enabled", false)
         end
     end
 end

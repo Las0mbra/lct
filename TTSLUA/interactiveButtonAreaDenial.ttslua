@@ -48,6 +48,7 @@ function drawCircle(drawData, type)
     local circleObj = originalCircle.clone({ position = {0, -5, 0}})
     if circleObj then
         circleObj.setLock(true)
+        circleObj.interactable = false
         circleObj.setScale({drawData.fromCenter, deployLineHeight, drawData.fromCenter})
         circleObj.setPosition({0, deployLineYPos, 0})
         circleObj.setColorTint(drawData.color)
@@ -55,5 +56,9 @@ function drawCircle(drawData, type)
         circleObj.setName("")
         local blockComp = circleObj.getComponent("BoxCollider")
         blockComp.set("enabled", false)
+        local meshComp = circleObj.getComponent("MeshCollider")
+        if meshComp then
+            meshComp.set("enabled", false)
+        end
     end
 end
