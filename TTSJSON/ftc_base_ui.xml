@@ -27,7 +27,7 @@
   <Button id="closeBtn" offsetXY="0 -500" color="#2C3E50" textColor="#FFFFFF" width="500" height="100" fontSize="40" fontStyle="Bold" onClick="closeMenu" outline="#34495E" outlineSize="5" roundEdges="true">CLOSE MENU</Button>
 </Panel>
 
-<Panel id="VP Scores" active="true" scale="0.43 0.43 0.43" width="960" height="155" rectAlignment="UpperRight" offsetXY="-270 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="VP Scores" active="true" scale="0.43 0.43 0.43" width="1060" height="155" rectAlignment="UpperRight" offsetXY="-270 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false">
     <Panel id="RoundBadge" flexibleWidth="0" preferredWidth="96" color="#1A1A2AE6" outline="#2a2a4aCC" outlineSize="3" roundEdges="true">
       <Button id="RoundWatchBtn" width="80" height="143" color="rgba(0,0,0,0)" onClick="738804/hudPassTurn"/>
@@ -36,12 +36,13 @@
     <VerticalLayout flexibleWidth="1" spacing="6">
     <Panel id="ChsStpPanel1" color="#1A5FC8E6" outline="#5B8FDECC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
-        <Text id="TVWatch1" text="T:0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <Text id="TVWatch1" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <HorizontalLayout spacing="2">
-          <Button id="PhM1" text="M" fontSize="28" fontStyle="Bold" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseM"/>
-          <Button id="PhS1" text="S" fontSize="28" fontStyle="Bold" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseS"/>
-          <Button id="PhC1" text="C" fontSize="28" fontStyle="Bold" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseC"/>
-          <Button id="PhF1" text="F" fontSize="28" fontStyle="Bold" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseF"/>
+          <Button id="Ph11" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmd"/>
+          <Button id="Ph21" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMov"/>
+          <Button id="Ph31" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseSht"/>
+          <Button id="Ph41" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseChr"/>
+          <Button id="Ph51" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseFgt"/>
         </HorizontalLayout>
         <Text id="VPWatch1" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <Text id="CPWatch1" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
@@ -61,12 +62,13 @@
     </Panel>
     <Panel id="ChsStpPanel2" color="#B52020E6" outline="#D46060CC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
-        <Text id="TVWatch2" text="T:0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <Text id="TVWatch2" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <HorizontalLayout spacing="2">
-          <Button id="PhM2" text="M" fontSize="28" fontStyle="Bold" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseM"/>
-          <Button id="PhS2" text="S" fontSize="28" fontStyle="Bold" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseS"/>
-          <Button id="PhC2" text="C" fontSize="28" fontStyle="Bold" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseC"/>
-          <Button id="PhF2" text="F" fontSize="28" fontStyle="Bold" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseF"/>
+          <Button id="Ph12" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmd"/>
+          <Button id="Ph22" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMov"/>
+          <Button id="Ph32" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseSht"/>
+          <Button id="Ph42" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseChr"/>
+          <Button id="Ph52" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseFgt"/>
         </HorizontalLayout>
         <Text id="VPWatch2" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <Text id="CPWatch2" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>

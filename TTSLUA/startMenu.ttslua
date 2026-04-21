@@ -2644,39 +2644,49 @@ function newRoundStarted()
 end
 
 function updateCpHUD()
-    Global.UI.setAttribute("CPWatch1", "text", "CP: " .. redCpCounter.Counter.getValue())
-    Global.UI.setAttribute("CPWatch2", "text", "CP: " .. blueCpCounter.Counter.getValue())
+    Global.UI.setAttribute("CPWatch1", "text", "CP: " .. blueCpCounter.Counter.getValue())
+    Global.UI.setAttribute("CPWatch2", "text", "CP: " .. redCpCounter.Counter.getValue())
+end
+
+function gameNotStartedGuard()
+    if inGame then return false end
+    broadcastToAll("Game hasn't started!", {1, 0.5, 0})
+    return true
 end
 
 function hudNextPhase()
+    if gameNotStartedGuard() then return end
     nextPhase(self, currentTurn, false)
 end
 
 function hudPassTurn()
+    if gameNotStartedGuard() then return end
     passTurn(self, currentTurn, false)
 end
 
-local _phaseLetters  = { "PhM", "PhS", "PhC", "PhF" }
-local _phaseToLetter = { [2]="PhM", [3]="PhS", [4]="PhC", [5]="PhF" }
+local _phaseIds     = { "Ph1", "Ph2", "Ph3", "Ph4", "Ph5" }
+local _phaseToId    = { [1]="Ph1", [2]="Ph2", [3]="Ph3", [4]="Ph4", [5]="Ph5" }
 
 function updatePhaseHUD()
-    for _, id in ipairs(_phaseLetters) do
+    for _, id in ipairs(_phaseIds) do
         Global.UI.setAttribute(id.."1", "textColor", "#FFFFFF30")
         Global.UI.setAttribute(id.."2", "textColor", "#FFFFFF30")
     end
-    local active = _phaseToLetter[currentPhase]
+    local active = _phaseToId[currentPhase]
     if active then
         Global.UI.setAttribute(active.."1", "textColor", "White")
         Global.UI.setAttribute(active.."2", "textColor", "White")
     end
 end
 
-function hudPhaseM() jumpToPhase(2) end
-function hudPhaseS() jumpToPhase(3) end
-function hudPhaseC() jumpToPhase(4) end
-function hudPhaseF() jumpToPhase(5) end
+function hudPhaseCmd() jumpToPhase(1) end
+function hudPhaseMov() jumpToPhase(2) end
+function hudPhaseSht() jumpToPhase(3) end
+function hudPhaseChr() jumpToPhase(4) end
+function hudPhaseFgt() jumpToPhase(5) end
 
 function jumpToPhase(idx)
+    if gameNotStartedGuard() then return end
     currentPhase = idx
     broadcastToAll(phases[currentPhase], "Yellow")
     writeMenus()
@@ -2755,7 +2765,7 @@ function passTurn(obj, player_color_click, alt_click)
         end
     end
 
-    currentPhase = 2
+    currentPhase = 1
     local orangePCounter = getObjectFromGUID(Global.getVar("orangePCounter_GUID"))
     local purplePCounter = getObjectFromGUID(Global.getVar("purpleCPCounter_GUID"))
 

@@ -7,7 +7,7 @@ local _watchId   = nil
 
 function onLoad()
     _lastValue = self.Counter.getValue()
-    local isP1 = (self.getGUID() == "e446f7")
+    local isP1 = (self.getGUID() == "deb9f2")
     _watchId   = isP1 and "CPWatch1" or "CPWatch2"
     local guid    = self.getGUID()
     local plusId  = isP1 and "CPPlus1"  or "CPPlus2"
