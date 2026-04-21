@@ -2656,13 +2656,38 @@ function hudPassTurn()
     passTurn(self, currentTurn, false)
 end
 
+local _phaseLetters  = { "PhM", "PhS", "PhC", "PhF" }
+local _phaseToLetter = { [2]="PhM", [3]="PhS", [4]="PhC", [5]="PhF" }
+
+function updatePhaseHUD()
+    for _, id in ipairs(_phaseLetters) do
+        Global.UI.setAttribute(id.."1", "textColor", "#FFFFFF30")
+        Global.UI.setAttribute(id.."2", "textColor", "#FFFFFF30")
+    end
+    local active = _phaseToLetter[currentPhase]
+    if active then
+        Global.UI.setAttribute(active.."1", "textColor", "White")
+        Global.UI.setAttribute(active.."2", "textColor", "White")
+    end
+end
+
+function hudPhaseM() jumpToPhase(2) end
+function hudPhaseS() jumpToPhase(3) end
+function hudPhaseC() jumpToPhase(4) end
+function hudPhaseF() jumpToPhase(5) end
+
+function jumpToPhase(idx)
+    currentPhase = idx
+    broadcastToAll(phases[currentPhase], "Yellow")
+    writeMenus()
+    updateGameStateHUD()
+end
+
 function updateGameStateHUD()
     local roundObj = getObjectFromGUID("ee92cf")
     local round = roundObj and roundObj.Counter.getValue() or 0
-    Global.UI.setValue("PhaseWatch", inGame and phases[currentPhase] or "Pre-Game")
-    Global.UI.setValue("RoundWatch", "Round " .. round)
-    local panelColor = inGame and (currentTurn == "Red" and "#B52020E6" or "#1A5FC8E6") or "#1A1A2AE6"
-    Global.UI.setAttribute("GameStatePanel", "color", panelColor)
+    Global.UI.setValue("RoundWatch", tostring(round))
+    updatePhaseHUD()
     if inGame then
         local blueActive = currentTurn ~= "Red"
         Global.UI.setAttribute("ChsStpPanel1", "color", blueActive and "#2472D4F0" or "#1A5FC850")
@@ -2730,7 +2755,7 @@ function passTurn(obj, player_color_click, alt_click)
         end
     end
 
-    currentPhase = 1
+    currentPhase = 2
     local orangePCounter = getObjectFromGUID(Global.getVar("orangePCounter_GUID"))
     local purplePCounter = getObjectFromGUID(Global.getVar("purpleCPCounter_GUID"))
 
@@ -2762,15 +2787,7 @@ function passTurn(obj, player_color_click, alt_click)
     updateCpHUD()
     updateGameStateHUD()
 
-    if simulation then
-        broadcastToAll("It's " .. currentTurn .. " turn", currentTurn)
-    else
-        if Player[currentTurn].steam_name then
-            broadcastToAll("It's " .. Player[currentTurn].steam_name .. " turn", currentTurn)
-        else
-            broadcastToAll("It's " .. currentTurn .. " turn", currentTurn)
-        end
-    end
+    broadcastToAll("It's " .. currentTurn .. " Player's turn", currentTurn)
     writeMenus()
 end
 
