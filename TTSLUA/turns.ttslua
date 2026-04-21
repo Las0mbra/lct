@@ -21,7 +21,7 @@ end
 
 function updateHUD()
     _lastValue = self.Counter.getValue()
-    Global.UI.setAttribute(_watchId, "text", "T:" .. _lastValue)
+    Global.UI.setAttribute(_watchId, "text", "Turn " .. _lastValue)
 end
 
 function increaseSelf()

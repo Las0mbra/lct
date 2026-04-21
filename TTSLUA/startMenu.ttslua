@@ -2433,7 +2433,7 @@ cpEveryTurn = true
 redCpIncrementTracker = false
 blueCpIncrementTracker = false
 
-phases = {"Command", "Movement", "Shooting", "Charge", "Fight"}
+phases = {"Command Phase", "Movement Phase", "Shooting Phase", "Charge Phase", "Fight Phase"}
 currentPhase = 1
 startBtn = {
     index = 1, label = "S T A R T  G A M E", click_function = "startGame", function_owner = self,
@@ -2620,7 +2620,7 @@ function startGame(obj, player, alt)
 
     startCustomTurns()
     destroyDeployZones()
-    broadcastToAll(phases[currentPhase].." phase", "Yellow")
+    broadcastToAll(phases[currentPhase], "Yellow")
     resetActivationTokens()
     Notes.setNotes("")
     writeMenus()
@@ -2663,6 +2663,22 @@ function updateGameStateHUD()
     Global.UI.setValue("RoundWatch", "Round " .. round)
     local panelColor = inGame and (currentTurn == "Red" and "#B52020E6" or "#1A5FC8E6") or "#1A1A2AE6"
     Global.UI.setAttribute("GameStatePanel", "color", panelColor)
+    if inGame then
+        local blueActive = currentTurn ~= "Red"
+        Global.UI.setAttribute("ChsStpPanel1", "color", blueActive and "#2472D4F0" or "#1A5FC850")
+        Global.UI.setAttribute("ChsStpPanel2", "color", blueActive and "#B5202050" or "#CC2828F0")
+        Global.UI.setAttribute("ChsStpPanel1", "outline", blueActive and "#FFFFFF" or "#5B8FDECC")
+        Global.UI.setAttribute("ChsStpPanel1", "outlineSize", blueActive and "4" or "2")
+        Global.UI.setAttribute("ChsStpPanel2", "outline", blueActive and "#D46060CC" or "#FFFFFF")
+        Global.UI.setAttribute("ChsStpPanel2", "outlineSize", blueActive and "2" or "4")
+    else
+        Global.UI.setAttribute("ChsStpPanel1", "color", "#1A5FC8E6")
+        Global.UI.setAttribute("ChsStpPanel2", "color", "#B52020E6")
+        Global.UI.setAttribute("ChsStpPanel1", "outline", "#5B8FDECC")
+        Global.UI.setAttribute("ChsStpPanel1", "outlineSize", "2")
+        Global.UI.setAttribute("ChsStpPanel2", "outline", "#D46060CC")
+        Global.UI.setAttribute("ChsStpPanel2", "outlineSize", "2")
+    end
 end
 
 function incrementRedCp(params)
@@ -2698,7 +2714,7 @@ function nextPhase(obj, player_color_click, alt_click)
         currentPhase = 1
         passTurn(obj, player_color_click, alt_click)
     end
-    broadcastToAll(phases[currentPhase].." phase", "Yellow")
+    broadcastToAll(phases[currentPhase], "Yellow")
     writeMenus()
     updateGameStateHUD()
 end

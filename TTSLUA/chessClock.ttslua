@@ -883,15 +883,6 @@ end
 -- Liyarin's color functions
 
 function ensureChessStopwatchUI()
-	-- The Chess Stopwatch panel is now defined in the base XML (hidden by default). We only need 
-	-- to activate it and wire up the dynamic attributes.
-	-- IMPORTANT: We never call Global.UI.setXml() at runtime because it rebuilds the entire Global
-	-- UI and causes host/guest desync over high-latency links.
-	local isActive = Global.UI.getAttribute("Chess Stopwatch", "active")
-	if isActive == "true" or isActive == "True" then
-		return false
-	end
-
 	local guid = self.getGUID()
 	Global.UI.setAttribute("ChsStpBtn1",   "onClick", guid .. "/Click_1")
 	Global.UI.setAttribute("ChsStpBtn2",   "onClick", guid .. "/Click_2")
@@ -901,8 +892,6 @@ function ensureChessStopwatchUI()
 	Global.UI.setAttribute("ChsStpPlus2",  "onClick", guid .. "/AddTime2")
 	Global.UI.setAttribute("ChsStpPanel1", "color", uiPanelColors.pColor1)
 	Global.UI.setAttribute("ChsStpPanel2", "color", uiPanelColors.pColor2)
-	Global.UI.setAttribute("Chess Stopwatch", "active", "true")
-	return true
 end
 
 -- Changes the color of the UI buttons based on the set colors
@@ -912,15 +901,9 @@ function changeButtonColors()
 	self.UI.setAttribute("pColor2", "color", pColors.pColor2)
 
 	--UI Buttons
-	local waitTime = 0
-	if ensureChessStopwatchUI() then
-		waitTime = 10
-	end
-
-	Wait.frames(function()
-		Global.UI.setAttribute("ChsStpPanel1", "color", uiPanelColors.pColor1)
-		Global.UI.setAttribute("ChsStpPanel2", "color", uiPanelColors.pColor2)
-	end, waitTime)
+	ensureChessStopwatchUI()
+	Global.UI.setAttribute("ChsStpPanel1", "color", uiPanelColors.pColor1)
+	Global.UI.setAttribute("ChsStpPanel2", "color", uiPanelColors.pColor2)
 end
 
 -- Changes the button of one side based on the player that clicked it

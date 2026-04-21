@@ -27,26 +27,9 @@
   <Button id="closeBtn" offsetXY="0 -500" color="#2C3E50" textColor="#FFFFFF" width="500" height="100" fontSize="40" fontStyle="Bold" onClick="closeMenu" outline="#34495E" outlineSize="5" roundEdges="true">CLOSE MENU</Button>
 </Panel>
 
-<Panel id="Chess Stopwatch" active="false" scale="0.48 0.48 0.48" width="240" height="148" rectAlignment="UpperRight" offsetXY="-270 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="VP Scores" active="true" scale="0.43 0.43 0.43" width="860" height="215" rectAlignment="UpperRight" offsetXY="-270 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <VerticalLayout spacing="6" padding="6">
     <Panel id="ChsStpPanel1" color="#1A5FC8E6" outline="#5B8FDECC" outlineSize="2">
-      <Button id="ChsStpBtn1" width="130" height="58" onClick="" color="rgba(0,0,0,0)" roundEdges="true" offsetXY="20 0"/>
-      <Text id="ChsStpWatch1" text="00:00" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1" offsetXY="20 0"/>
-      <Button id="ChsStpPlus1"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" offsetXY="-93 16" onClick=""/>
-      <Button id="ChsStpMinus1" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" offsetXY="-93 -16" onClick=""/>
-    </Panel>
-    <Panel id="ChsStpPanel2" color="#B52020E6" outline="#D46060CC" outlineSize="2">
-      <Button id="ChsStpBtn2" width="130" height="58" onClick="" color="rgba(0,0,0,0)" roundEdges="true" offsetXY="20 0"/>
-      <Text id="ChsStpWatch2" text="00:00" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1" offsetXY="20 0"/>
-      <Button id="ChsStpPlus2"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" offsetXY="-93 16" onClick=""/>
-      <Button id="ChsStpMinus2" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" offsetXY="-93 -16" onClick=""/>
-    </Panel>
-  </VerticalLayout>
-</Panel>
-
-<Panel id="VP Scores" active="true" scale="0.48 0.48 0.48" width="620" height="215" rectAlignment="UpperLeft" offsetXY="270 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
-  <VerticalLayout spacing="6" padding="6">
-    <Panel id="VPPanel1" color="#1A5FC8E6" outline="#5B8FDECC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
         <Text id="TVWatch1" text="T:0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <Text id="VPWatch1" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
@@ -55,9 +38,17 @@
           <Button id="CPPlus1"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
           <Button id="CPMinus1" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
         </VerticalLayout>
+        <Panel color="rgba(0,0,0,0)" minWidth="140">
+          <Button id="ChsStpBtn1" width="140" height="58" onClick="" color="rgba(0,0,0,0)" roundEdges="true"/>
+          <Text id="ChsStpWatch1" text="00:00" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        </Panel>
+        <VerticalLayout spacing="2">
+          <Button id="ChsStpPlus1"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+          <Button id="ChsStpMinus1" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+        </VerticalLayout>
       </HorizontalLayout>
     </Panel>
-    <Panel id="VPPanel2" color="#B52020E6" outline="#D46060CC" outlineSize="2">
+    <Panel id="ChsStpPanel2" color="#B52020E6" outline="#D46060CC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
         <Text id="TVWatch2" text="T:0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <Text id="VPWatch2" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
@@ -65,6 +56,14 @@
         <VerticalLayout spacing="2">
           <Button id="CPPlus2"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
           <Button id="CPMinus2" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+        </VerticalLayout>
+        <Panel color="rgba(0,0,0,0)" minWidth="140">
+          <Button id="ChsStpBtn2" width="140" height="58" onClick="" color="rgba(0,0,0,0)" roundEdges="true"/>
+          <Text id="ChsStpWatch2" text="00:00" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        </Panel>
+        <VerticalLayout spacing="2">
+          <Button id="ChsStpPlus2"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+          <Button id="ChsStpMinus2" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
         </VerticalLayout>
       </HorizontalLayout>
     </Panel>
