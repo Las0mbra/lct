@@ -37,7 +37,10 @@
     <VerticalLayout flexibleWidth="1" spacing="6">
     <Panel id="ChsStpPanel1" color="#1A5FC8E6" outline="#5B8FDECC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
-        <Text id="TVWatch1" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <Panel id="TVWatchPanel1" color="rgba(0,0,0,0)" minWidth="120" minHeight="50">
+          <Button id="TVWatchBtn1" width="120" height="50" color="rgba(0,0,0,0)" onClick="738804/hudTurnWatch1" />
+          <Text id="TVWatch1" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        </Panel>
         <HorizontalLayout spacing="2">
           <Button id="Ph11" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmd"/>
           <Button id="Ph21" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMov"/>
@@ -63,7 +66,10 @@
     </Panel>
     <Panel id="ChsStpPanel2" color="#B52020E6" outline="#D46060CC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
-        <Text id="TVWatch2" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <Panel id="TVWatchPanel2" color="rgba(0,0,0,0)" minWidth="120" minHeight="50">
+          <Button id="TVWatchBtn2" width="120" height="50" color="rgba(0,0,0,0)" onClick="738804/hudTurnWatch2" />
+          <Text id="TVWatch2" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        </Panel>
         <HorizontalLayout spacing="2">
           <Button id="Ph12" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmd"/>
           <Button id="Ph22" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMov"/>

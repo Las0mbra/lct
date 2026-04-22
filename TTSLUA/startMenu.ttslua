@@ -2604,6 +2604,20 @@ function hudPassTurn()
     passTurn(self, currentTurn, false)
 end
 
+local function hudAdvanceIfActive(targetTurn)
+    if gameNotStartedGuard() then return end
+    if currentTurn ~= targetTurn then return end
+    nextPhase(self, currentTurn, false)
+end
+
+function hudTurnWatch1()
+    hudAdvanceIfActive("Blue")
+end
+
+function hudTurnWatch2()
+    hudAdvanceIfActive("Red")
+end
+
 local _phaseIds     = { "Ph1", "Ph2", "Ph3", "Ph4", "Ph5" }
 local _phaseToId    = { [1]="Ph1", [2]="Ph2", [3]="Ph3", [4]="Ph4", [5]="Ph5" }
 
