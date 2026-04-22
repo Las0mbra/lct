@@ -253,6 +253,7 @@ sizeData={
     {id=3, name='I n c u r s i o n - 44" x 60"', scale={0.83*2,1,1.22}, defaultObjectives=0},
     {id=4, name='S t r i k e     F o r c e - 44" x 60"', scale={0.83*2,1,1.22}, defaultObjectives=0},
     {id=5, name='O n s l a u g h t - 44" x 90"', scale={0.83*3,1,1.22}, defaultObjectives=0},
+    {id=6, name='B o a r d i n g     A c t i o n - 28" x 48"', scale={0.83*(28/22),1,1.22*(48/60)}, defaultObjectives=0},
 }
 
 menuSizeX = 0
@@ -824,11 +825,15 @@ DeployZonesDefault = {
     {name = "No Deployment Zone", draw = {type = "none"}},
 }
 
+DeployZonesBoardingAction = {
+    {name = "No Deployment Zone", draw = {type = "none"}},
+}
+
 DeployZonesData = DeployZonesDefault
 deployMode = "strikeForce"
 
 function isValidDeployMode(mode)
-    return mode == "colosseum" or mode == "combatPatrol" or mode == "incursion" or mode == "strikeForce"
+    return mode == "colosseum" or mode == "combatPatrol" or mode == "incursion" or mode == "strikeForce" or mode == "boardingAction"
 end
 
 function setDeployZonesForSize(preserveSelected)
@@ -843,6 +848,8 @@ function setDeployZonesForSize(preserveSelected)
         setDeployZonesMode("incursion", preserveSelected)
     elseif sizeId == 4 or sizeId == 5 then
         setDeployZonesMode("strikeForce", preserveSelected)
+    elseif sizeId == 6 then
+        setDeployZonesMode("boardingAction", preserveSelected)
     else
         -- Default to Strike Force here as well
         setDeployZonesMode("strikeForce", preserveSelected)
@@ -855,6 +862,7 @@ function setDeployZonesMode(mode, preserveSelected)
         combatPatrol = DeployZonesCombatPatrol,
         incursion = DeployZonesIncursion,
         strikeForce = DeployZonesStrikeForce,
+        boardingAction = DeployZonesBoardingAction,
     }
     deployMode = mode
     DeployZonesData = byMode[mode] or DeployZonesDefault
