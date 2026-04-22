@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Run a Lua-side xoshiro128++ harness and validate its output.
 
-This script mirrors the dice roller's xoshiro128++ implementation, runs the
-same logic through a local Lua interpreter, and checks:
+This script runs the dice roller's xoshiro128++ logic through a local Lua
+interpreter and checks:
 
-1. Exact deterministic output for `nextRngU32()` against a Python reference.
-2. Exact deterministic output for bounded d6 rolls against the same reference.
+1. Exact deterministic output for `nextRngU32()` against fixed reference vectors.
+2. Exact deterministic output for bounded d6 rolls against fixed reference vectors.
 3. Range validity for d3/d6/d20 sample rolls.
 4. Basic distribution sanity for d3/d6/d20 using z-score thresholds.
 
@@ -22,58 +22,25 @@ import math
 import os
 import shutil
 import subprocess
-import sys
 import tempfile
 import textwrap
-from dataclasses import dataclass
 from typing import Iterable
 
 
-UINT32 = 2**32
+EXPECTED_U32 = [
+    641, 1573767, 3222811527, 3517856514, 836907274,
+    4247214768, 3867114732, 1355841295, 495546011, 621204420,
+    3221853640, 3734666907, 4230996596, 3165798943, 1466902353,
+    611505594, 3140103040, 1801276770, 1590023109, 3866373424,
+]
 
-
-def u32(value: int) -> int:
-    return value % UINT32
-
-
-def rol32(value: int, shift: int) -> int:
-    shift %= 32
-    return u32(((value << shift) & 0xFFFFFFFF) | (value >> (32 - shift)))
-
-
-@dataclass
-class Xoshiro128PlusPlus:
-    s0: int
-    s1: int
-    s2: int
-    s3: int
-
-    def next_u32(self) -> int:
-        result = u32(rol32(u32(self.s0 + self.s3), 7) + self.s0)
-        t = u32(self.s1 << 9)
-
-        s0, s1, s2, s3 = self.s0, self.s1, self.s2, self.s3
-        s2 ^= s0
-        s3 ^= s1
-        s1 ^= s2
-        s0 ^= s3
-        s2 ^= t
-        s3 = rol32(s3, 11)
-
-        self.s0, self.s1, self.s2, self.s3 = map(u32, (s0, s1, s2, s3))
-        return result
-
-    def bounded(self, bound: int) -> int:
-        if bound <= 0:
-            return 0
-        threshold = (UINT32 - bound) % bound
-        while True:
-            value = self.next_u32()
-            if value >= threshold:
-                return value % bound
-
-    def roll_face(self, faces: int) -> int:
-        return self.bounded(faces) + 1
+EXPECTED_D6 = [
+    6, 4, 4, 1, 5, 1, 1, 2, 6, 1,
+    5, 4, 3, 2, 4, 1, 5, 1, 4, 5,
+    3, 1, 3, 1, 3, 2, 1, 1, 3, 1,
+    5, 3, 4, 1, 4, 1, 3, 1, 2, 1,
+    4, 4, 3, 5, 5, 3, 4, 5, 6, 6,
+]
 
 
 LUA_HARNESS = textwrap.dedent(
@@ -312,13 +279,8 @@ def main() -> int:
     lua_bin = choose_lua_binary()
     lua_results = run_lua_harness(lua_bin)
 
-    ref = Xoshiro128PlusPlus(1, 2, 3, 4)
-    expected_u32 = [ref.next_u32() for _ in range(20)]
-    assert_equal("U32 sequence", lua_results["U32"], expected_u32)
-
-    ref = Xoshiro128PlusPlus(1, 2, 3, 4)
-    expected_d6 = [ref.roll_face(6) for _ in range(50)]
-    assert_equal("D6 sequence", lua_results["D6SEQ"], expected_d6)
+    assert_equal("U32 sequence", lua_results["U32"], EXPECTED_U32)
+    assert_equal("D6 sequence", lua_results["D6SEQ"], EXPECTED_D6)
 
     assert_range("D3 range", lua_results["D3RANGE"], 1, 3)
     assert_range("D6 range", lua_results["D6RANGE"], 1, 6)
