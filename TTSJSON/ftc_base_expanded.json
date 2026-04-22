@@ -40920,6 +40920,108 @@
           "XmlUI": ""
         }
       ]
+    },
+    {
+      "GUID": "8f2be2",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": 73.00958,
+        "posY": 0.961498857,
+        "posZ": 23.21604,
+        "rotX": 2.85785049e-08,
+        "rotY": 269.992462,
+        "rotZ": 5.12160554e-08,
+        "scaleX": 4.241442,
+        "scaleY": 1.0,
+        "scaleZ": 4.241442
+      },
+      "Nickname": "https://discord.gg/2eTs8DTEgt",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.1289176,
+        "g": 0.1289176,
+        "b": 0.1289176
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://i.imgur.com/FWaCQgD.png",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 3,
+          "Thickness": 0.2,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "6f0823",
+      "Name": "go_game_piece_black",
+      "Transform": {
+        "posX": 68.0,
+        "posY": -0.81,
+        "posZ": 23.14704,
+        "rotX": 0.0,
+        "rotY": 90.0,
+        "rotZ": 0.0,
+        "scaleX": 1.19999981,
+        "scaleY": 1.19999981,
+        "scaleZ": 1.19999981
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "function onLoad()\r\n local params = {\r\n        input_function = \"onInput\",\r\n        function_owner = self,\r\n        label = \"URL\",\r\n        position = {0, 1.81, 0},\r\n        rotation = {0, 180, 0},\r\n        width = 5000,\r\n        height = 480,\r\n        font_size = 420,\r\n        value = \"https://discord.gg/2eTs8DTEgt\",\r\n        tooltip = \"Click, then Ctrl+C to copy!\"\r\n    }\r\n    self.createInput(params)\r\nend\r\nfunction onInput(self, ply, text, selected)end",
+      "LuaScriptState": "",
+      "XmlUI": ""
     }
   ]
 }

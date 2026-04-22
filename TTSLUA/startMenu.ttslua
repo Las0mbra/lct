@@ -374,58 +374,9 @@ confirmBtn4 = {
          1},  -- Vibrant Royal Blue
     font_color     = { 1.0, 1.0, 1.0 }  -- Pure White
 }
-measureBoardBtn = {
-    index          = i,
-    label          = "MEASURE BOARD",
-    click_function = "measureBoard",
-    function_owner = self,
-    position       = { 0, menuSizeY, menuSizeZ + 7.5 },
-    rotation       = { 0, 0, 0 },
-    height         = 1000,
-    width          = 4400,
-    scale          = { 1.3, 1.3, 1.3 },
-    font_size      = 420,
-    color          = { 0.25, 0.25, 0.25 },
-    font_color     = { 1.0, 1.0, 1.0 }
-}
 
 function refreshMat()
     mat = getObjectFromGUID(mat_GUID)
-end
-
-function getBoardDimensionsInches()
-    refreshMat()
-    if not mat then
-        return nil
-    end
-
-    local scale = mat.getScale()
-    local longEdge = scale.x * 36
-    local shortEdge = scale.z * 36
-    return longEdge, shortEdge
-end
-
-function measureBoard(_, playerColor)
-    local longEdge, shortEdge = getBoardDimensionsInches()
-    if not longEdge or not shortEdge then
-        if playerColor then
-            printToColor("Could not find the mat to measure.", playerColor, {1, 0.2, 0.2})
-        else
-            printToAll("Could not find the mat to measure.", {1, 0.2, 0.2})
-        end
-        return
-    end
-
-    local message = string.format(
-        "Current board size: %.2f\" x %.2f\" (long edge x short edge)",
-        longEdge,
-        shortEdge
-    )
-    if playerColor then
-        printToColor(message, playerColor, {1, 1, 1})
-    else
-        printToAll(message, {1, 1, 1})
-    end
 end
 
 function writeSizeMenu()
@@ -442,7 +393,6 @@ function writeSizeMenu()
     self.createButton(confirmBtn)
     self.createButton(removeMapsBtn)
     self.createButton(confirmBtn4)
-    self.createButton(measureBoardBtn)
     mat.setScale(sizeData[mapSizeSelected].scale)
     mat.setPosition(positionValue)
 end
