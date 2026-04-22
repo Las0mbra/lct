@@ -119,8 +119,8 @@ function tryDealFixedSecondaries()
     -- Only deal out the cards if our player is seated, we know what mission pack
     -- we're playing, and we haven't already dealt them.
     if Player[playerColor].seated and selectedPack and not cardsDealt then
-        fixedDeck = getObjectFromGUID(missionPackData.fixedSecondaryDeck_GUID)
-        newFixedDeck = fixedDeck.clone({position = fixedDeck.getPosition()})
+        local fixedDeck = getObjectFromGUID(missionPackData.fixedSecondaryDeck_GUID)
+        local newFixedDeck = fixedDeck.clone({position = fixedDeck.getPosition()})
         newFixedDeck.deal(fixedDeck.getQuantity(), playerColor)
         cardsDealt = true
     end

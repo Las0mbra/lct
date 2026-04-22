@@ -55,7 +55,9 @@ function drawCircle(drawData, type)
         circleObj.setGMNotes(type)
         circleObj.setName("")
         local blockComp = circleObj.getComponent("BoxCollider")
-        blockComp.set("enabled", false)
+        if blockComp then
+            blockComp.set("enabled", false)
+        end
         local meshComp = circleObj.getComponent("MeshCollider")
         if meshComp then
             meshComp.set("enabled", false)

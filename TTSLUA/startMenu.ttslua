@@ -24,6 +24,7 @@ end
 
 
 function onLoad(saved_data)
+    math.randomseed(os.time())
     --self.setPosition({40,-4,0})
     --self.setRotation({0,270,0})
     -- load from saved
@@ -1330,7 +1331,9 @@ function drawCircle(drawData, type)
         circleObj.setGMNotes(type)
         circleObj.setName("")
         local blockComp = circleObj.getComponent("BoxCollider")
-        blockComp.set("enabled", false)
+        if blockComp then
+            blockComp.set("enabled", false)
+        end
         local meshComp = circleObj.getComponent("MeshCollider")
         if meshComp then
             meshComp.set("enabled", false)
@@ -1375,7 +1378,9 @@ function drawCircleNotCentered(drawData, type, centerX, centerZ)
         circleObj.setGMNotes(type)
         circleObj.setName("")
         local blockComp = circleObj.getComponent("BoxCollider")
-        blockComp.set("enabled", false)
+        if blockComp then
+            blockComp.set("enabled", false)
+        end
         local meshComp = circleObj.getComponent("MeshCollider")
         if meshComp then
             meshComp.set("enabled", false)
@@ -1462,7 +1467,9 @@ function drawCircleDeployment(drawData)
         circleObj.setGMNotes("deployZone")
         circleObj.setName("")
         local blockComp = circleObj.getComponent("BoxCollider")
-        blockComp.set("enabled", false)
+        if blockComp then
+            blockComp.set("enabled", false)
+        end
         local meshComp = circleObj.getComponent("MeshCollider")
         if meshComp then
             meshComp.set("enabled", false)
@@ -1495,7 +1502,9 @@ function drawCornerQuarterCircles(radius, type)
             circleObj.setGMNotes(type)
             circleObj.setName("")
             local blockComp = circleObj.getComponent("BoxCollider")
-            blockComp.set("enabled", false)
+            if blockComp then
+                blockComp.set("enabled", false)
+            end
             local meshComp = circleObj.getComponent("MeshCollider")
             if meshComp then
                 meshComp.set("enabled", false)
@@ -1663,7 +1672,9 @@ function spawnLine(linePos, lineRot, lineScale, color, type)
         lineObj.setGMNotes(type)
         lineObj.setColorTint(color)
         local blockComp = lineObj.getComponent("BoxCollider")
-        blockComp.set("enabled", false)
+        if blockComp then
+            blockComp.set("enabled", false)
+        end
         local meshComp = lineObj.getComponent("MeshCollider")
         if meshComp then
             meshComp.set("enabled", false)
@@ -1683,7 +1694,9 @@ function disableCollidersDeployZones()
     for i, obj in ipairs(getAllObjects()) do
         if obj.getGMNotes() == "deployZone" or obj.getGMNotes() == "areaDeny" or obj.getGMNotes() == "quarter" then
             local blockComp = obj.getComponent("BoxCollider")
-            blockComp.set("enabled", false)
+            if blockComp then
+                blockComp.set("enabled", false)
+            end
         end
     end
 
@@ -2334,7 +2347,6 @@ end
 
 function randomWTCMission()
     if canChangeMission then
-        math.randomseed(os.time())
         local chars = {"B","F","E","O","P","J"}
         local randomChar = chars[math.random(#chars)]
         local foundIndex
@@ -2354,28 +2366,6 @@ end
 
 function randomUKTCMission()
     if canChangeMission then
-        math.randomseed(os.time())
-        local chars = {"H","F","O","N","C","D","R"}
-        local randomChar = chars[math.random(#chars)]
-        local foundIndex
-        for i, mission in ipairs(missionPackData.tournamentMissions) do
-            if mission and mission.name == randomChar then
-                foundIndex = i
-                break
-            end
-        end
-        if foundIndex then
-            selectedMission = foundIndex
-            updateMission()
-        end
-    end
-end
-
-
-
-function randomUKTCMission()
-    if canChangeMission then
-        math.randomseed(os.time())
         local chars = {"V","W","Y","X","Z"}
         local randomChar = chars[math.random(#chars)]
         local foundIndex
@@ -2403,7 +2393,7 @@ function updateMission()
         Global.call("moveOneFromDeckToZone", {deck = "deployment", zone = "deployment"})
         Global.call("moveOneFromDeckToZone", {deck = "primary", zone = "primary"})
     else
-        mission = missionPackData.tournamentMissions[selectedMission]
+        local mission = missionPackData.tournamentMissions[selectedMission]
         missionSelectionDispBtn.label = mission.name
         Global.call("moveOneFromDeckToZone", {deck = "deployment", zone = "deployment", card = mission.deployment})
         Global.call("moveOneFromDeckToZone", {deck = "primary", zone = "primary", card = mission.primary})
@@ -2941,6 +2931,5 @@ end
 
 function none()
 end
-
 
 
