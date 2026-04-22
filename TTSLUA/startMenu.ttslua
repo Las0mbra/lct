@@ -838,7 +838,7 @@ DeployZonesStrikeForce = {
     {name = "Tipping Point (HS2)", objectivesID = 118, draw = {
         --[[1]]{type = "stepped", color = "Teal", position = "-x", steps = {{fromSide = 12}, {fromSide = 20}}},
         --[[2]]{type = "stepped", color = "Red", position = "x", steps = {{fromSide = 20}, {fromSide = 12}}}}},
-    {name = "None", draw = {type = "none"}},
+    {name = "No Deployment Zone", draw = {type = "none"}},
 }
 
 DeployZonesIncursion = {
@@ -901,7 +901,7 @@ DeployZonesIncursion = {
     {name = "(I) Tipping Point (HS2)", objectivesID = 218, draw = {
         --[[1]]{type = "stepped", color = "Teal", position = "-x", steps = {{fromSide = 12}, {fromSide = 20}}},
         --[[2]]{type = "stepped", color = "Red", position = "x", steps = {{fromSide = 20}, {fromSide = 12}}}}},
-    {name = "None", draw = {type = "none"}},
+    {name = "No Deployment Zone", draw = {type = "none"}},
 }
 
 DeployZonesCombatPatrol = {
@@ -932,18 +932,18 @@ DeployZonesCombatPatrol = {
         --[[1]]{type = "circleDeployment", color = "Blue", position = "z", fromCenter = 13, radius = 9},
         --[[2]]{type = "circleDeployment", color = "Black", position = "-x", fromCenter = 16, fromCenterZ = 13, radius = 9},
         --[[3]]{type = "circleDeployment", color = "Yellow", position = "x", fromCenter = 16, fromCenterZ = 13, radius = 9}}},
-    {name = "None", draw = {type = "none"}},
+    {name = "No Deployment Zone", draw = {type = "none"}},
 }
 
 DeployZonesColosseum = {
     {name = "King of the Colosseum", objectivesID = 301, draw = {
         --[[1]]{type = "line", color = "Teal", position = "-z", fromSide = 9},
         --[[2]]{type = "line", color = "Red", position = "z", fromSide = 9}}},
-    {name = "None", draw = {type = "none"}},
+    {name = "No Deployment Zone", draw = {type = "none"}},
 }
 
 DeployZonesDefault = {
-    {name = "None", draw = {type = "none"}},
+    {name = "No Deployment Zone", draw = {type = "none"}},
 }
 
 DeployZonesData = DeployZonesDefault
@@ -1004,17 +1004,17 @@ deployHeaderBtn = {
 }
 deployBtn = {
     index = i, label = "", click_function = "none", function_owner = self,
-    position = { - menuX, 5, 1}, rotation = {0, 0, 0}, height = 750, width = 6000,
+    position = { 0, 5, 3}, rotation = {0, 0, 0}, height = 750, width = 6000,
     font_size = 400, color = {1, 1, 1}, font_color = {0, 0, 0}
 }
 deployUpBtn = {
     index = 1, label = "->", click_function = "deployUp", function_owner = self,
-    position = { - menuX + arrowOffset, 5, 1}, rotation = {0, 0, 0}, height = 750, width = 800,
+    position = { arrowOffset, 5, 3}, rotation = {0, 0, 0}, height = 750, width = 800,
     font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
 deployDownBtn = {
     index = 1, label = "<-", click_function = "deployDown", function_owner = self,
-    position = { - menuX - arrowOffset, 5, 1}, rotation = {0, 0, 0}, height = 750, width = 800,
+    position = { -arrowOffset, 5, 3}, rotation = {0, 0, 0}, height = 750, width = 800,
     font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
 function drawDeployZone(zone)
@@ -2540,7 +2540,6 @@ function writeDeployMenu()
         deploySelected = #DeployZonesData
     end
     deployBtn.label = DeployZonesData[deploySelected].name
-    self.createButton(deployHeaderBtn)
     self.createButton(deployBtn)
     self.createButton(deployUpBtn)
     self.createButton(deployDownBtn)
