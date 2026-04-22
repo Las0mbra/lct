@@ -356,47 +356,12 @@ confirmBtn = {
     font_color     = { 1.0, 1.0, 1.0 }  -- Pure White
 }
 
-confirmBtn2 = {
-    index          = i,
-    label          = "CRUSADE\n(Coming Soon) ((Maybe))",
-    click_function = "comingSoon",
-    function_owner = self,
-    position       = { -menuSizeX + 6.5, menuSizeY, menuSizeZ + 3  },
-    rotation       = { 0, 0, 0 },
-    height         = 1400,
-    width          = 4400,
-    scale          = { 1.3, 1.3, 1.3 },
-    font_size      = 300,
-    color          = {
-        0.856,
-        0.09999994,
-        0.09399993},  -- Deep Crimson Red
-    font_color     = { 1.0, 1.0, 1.0 }  -- Pure White
-}
-
-confirmBtn3 = {
-    index          = i,
-    label          = "2 Vs 2",
-    click_function = "confirmDoublesGame",
-    function_owner = self,
-    position       = { -menuSizeX - 6.5, menuSizeY, menuSizeZ + 7.5 },
-    rotation       = { 0, 0, 0 },
-    height         = 1400,
-    width          = 4400,
-    scale          = { 1.3, 1.3, 1.3 },
-    font_size      = 500,
-    color          = {
-        0.627,
-        0.124999948,0.941 }, -- Royal Purple
-    font_color     = { 1.0, 1.0, 1.0 }  -- Pure White
-}
-
 confirmBtn4 = {
     index          = i,
-    label          = "SINGLE PLAYER /\nHOTSEAT",
+    label          = "SINGLE PLAYER",
     click_function = "confirmForSingles",
     function_owner = self,
-    position       = { -menuSizeX + 6.5, menuSizeY, menuSizeZ + 7.5 },
+    position       = { -menuSizeX + 6.5, menuSizeY, menuSizeZ + 3 },
     rotation       = { 0, 0, 0 },
     height         = 1400,
     width          = 4400,
@@ -418,15 +383,14 @@ function writeSizeMenu()
     if sizeConfirmed then
         return
     end
+    self.createButton(startBtnDisabled)
     self.createButton(sizeMenuBtn)
     sizeBtn.label=sizeData[mapSizeSelected].name
     self.createButton(sizeBtn)
     self.createButton(sizeUpBtn)
     self.createButton(sizeDownBtn)
     self.createButton(confirmBtn)
-    self.createButton(confirmBtn2)
     self.createButton(removeMapsBtn)
-    self.createButton(confirmBtn3)
     self.createButton(confirmBtn4)
     mat.setScale(sizeData[mapSizeSelected].scale)
     mat.setPosition(positionValue)
@@ -563,61 +527,6 @@ function enableObjects()
 end
 
 
-function confirmDoublesGame()
-    -- inGame = true
-    --mapSizeSelected=3
-    selectPariahNexus()
-    -- Auto-assign teams
-    -- autoAssignTeams()
-    enableObjects()
-
-    -- Place tokens, shuffle team cards, or any other setup
-    placeGameTokens()
-
-    broadcastToAll("2v2 Doubles Game Mode Initialized!", {0.5, 0, 0.5})
-    confirmSizeMat("game")
-    -- Change color of object with GUID "deb9f2" to blue
-    local blueObject = getObjectFromGUID("deb9f2")
-    if blueObject then
-        blueObject.setColorTint({r = 0, g = 0, b = 1})
-    end
-
-    -- Change color of object with GUID "e446f7" to orange
-    local orangeObject = getObjectFromGUID("e446f7")
-    if orangeObject then
-        orangeObject.setColorTint({r = 1, g = 0.5, b = 0})
-    end
-
-    local guidPositions = {
-        ["03286d"] = -4.776464939,
-        ["ca7711"] = -4.776464939,
-        ["cd649d"] = -4.776464939,
-        ["9a7c3c"] = -4.776464939,
-        ["bf09bd"] = -4.776464939,
-        ["3c8a1b"] = -6.19999981,
-        ["8a7c7a"] = -6.19999981,
-        ["8395b2"] = -6.19999981,
-        ["3c1373"] = -6.19999981,
-        ["4bb528"] = -6.19999981,
-        ["7abc5a"] = -6.19999981
-    }
-
-    -- Iterate over each GUID and destroy the object if found
-    for guid, _ in pairs(guidPositions) do
-        local obj = getObjectFromGUID(guid)
-        if obj then
-            destroyObject(obj) -- Destroy the object
-        else
-            print("Object with GUID " .. guid .. " not found.")
-        end
-    end
-    writeMenus()
-end
-
-function comingSoon()
-    broadcastToAll("Not yet! ;) But it is on my list of things to do!")
-end
-
 function createCounter(position, label)
     local counter = spawnObject({
         type = "Counter",
@@ -686,7 +595,7 @@ end
 
 function confirmSizeGame()
     spawnInteractiveObject()
-    confirmSizeMat("game")
+    confirmSizeMat()
     -- Table of GUIDs and their position to show on board
     -- bascially to hide certain objects that are controlled by the control board
     local guidPositions = {
@@ -735,41 +644,17 @@ function confirmSizeGame()
     destroyObject(mfdToken)
 end
 
-function confirmSizeTerrain()
-    local mfdToken = getObjectFromGUID("cda0b3")
-    destroyObject(mfdToken)
-    confirmSizeMat("terrain")
-end
-
-function confirmSizeMat(type)
-    gameMode= type
+function confirmSizeMat()
+    gameMode= "game"
     sizeConfirmed=true
     mat.setScale(sizeData[mapSizeSelected].scale)
     self.setRotation({0,270,0})
     setDeployZonesForSize(false)
     writeMenus()
-    if gameMode == "game" then
-    end
-    if gameMode == "terrain" then
-        switchToTerrainEditor()
-    end
 end
 
 function updateDeployObjectivesSelection()
     deploySelected = #DeployZonesData
-end
-
-function switchToTerrainEditor()
-    printToAll("Deleting unnecessary things.\nPLEASE WAIT..", "Yellow")
-    local pos={}
-    for i, obj in ipairs(getAllObjects()) do
-        pos=obj.getPosition()
-        if ((pos.y > -8 and pos.y < 0.36) or pos.y > 0.71) and not obj.getVar("keepForTerrainEditor") then
-            obj.destroy()
-        end
-    end
-    Global.setVectorLines({})
-    printToAll("DONE!", "Yellow")
 end
 
 -- END size changer
@@ -2500,6 +2385,11 @@ startBtn = {
     position = {0, 5, - 1}, rotation = {0, 0, 0}, height = 750, width = 5000,
     font_size = 500, color = {0, 0.6, 0}, font_color = {1, 1, 1}
 }
+startBtnDisabled = {
+    index = 1, label = "S T A R T  G A M E", click_function = "startGameDisabled", function_owner = self,
+    position = {0, 5, - 1}, rotation = {0, 0, 0}, height = 750, width = 5000,
+    font_size = 500, color = {0.35, 0.35, 0.35}, font_color = {0.85, 0.85, 0.85}
+}
 firstPlayerBtn = {
     index = 1, label = redFirstLbl, click_function = "togglePlyr", function_owner = self,
     position = {0, 5, 1}, rotation = {0, 0, 0}, height = 750, width = 5000,
@@ -2673,6 +2563,10 @@ function startGame(obj, player, alt)
     writeMenus()
     updateGameStateHUD()
     simulation = false
+end
+
+function startGameDisabled()
+    broadcastToAll("Choose game mode first", {1, 0.75, 0})
 end
 
 
