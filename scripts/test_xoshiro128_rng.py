@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Run a Lua-side xoshiro128** harness and validate its output.
+"""Run a Lua-side xoshiro128++ harness and validate its output.
 
-This script mirrors the dice roller's xoshiro128** implementation, runs the
+This script mirrors the dice roller's xoshiro128++ implementation, runs the
 same logic through a local Lua interpreter, and checks:
 
 1. Exact deterministic output for `nextRngU32()` against a Python reference.
@@ -30,21 +30,10 @@ from typing import Iterable
 
 
 UINT32 = 2**32
-UINT16 = 2**16
 
 
 def u32(value: int) -> int:
     return value % UINT32
-
-
-def mul32(a: int, b: int) -> int:
-    a_lo = a % UINT16
-    a_hi = a // UINT16
-    b_lo = b % UINT16
-    b_hi = b // UINT16
-    low = a_lo * b_lo
-    mid = (a_hi * b_lo) + (a_lo * b_hi)
-    return u32(low + ((mid % UINT16) * UINT16))
 
 
 def rol32(value: int, shift: int) -> int:
@@ -53,15 +42,14 @@ def rol32(value: int, shift: int) -> int:
 
 
 @dataclass
-class Xoshiro128StarStar:
+class Xoshiro128PlusPlus:
     s0: int
     s1: int
     s2: int
     s3: int
 
     def next_u32(self) -> int:
-        result = rol32(mul32(self.s1, 5), 7)
-        result = mul32(result, 9)
+        result = u32(rol32(u32(self.s0 + self.s3), 7) + self.s0)
         t = u32(self.s1 << 9)
 
         s0, s1, s2, s3 = self.s0, self.s1, self.s2, self.s3
@@ -73,7 +61,7 @@ class Xoshiro128StarStar:
         s3 = rol32(s3, 11)
 
         self.s0, self.s1, self.s2, self.s3 = map(u32, (s0, s1, s2, s3))
-        return u32(result)
+        return result
 
     def bounded(self, bound: int) -> int:
         if bound <= 0:
@@ -104,17 +92,6 @@ LUA_HARNESS = textwrap.dedent(
     end
 
     local UINT32 = 4294967296
-    local UINT16 = 65536
-
-    local function mul32(a, b)
-        local aLo = a % UINT16
-        local aHi = math.floor(a / UINT16)
-        local bLo = b % UINT16
-        local bHi = math.floor(b / UINT16)
-        local low = aLo * bLo
-        local mid = (aHi * bLo) + (aLo * bHi)
-        return (low + ((mid % UINT16) * UINT16)) % UINT32
-    end
 
     local rngState = {1, 2, 3, 4}
 
@@ -128,14 +105,13 @@ LUA_HARNESS = textwrap.dedent(
     end
 
     local function nextRngU32()
-        local result = lrotate(mul32(rngState[2], 5), 7)
-        result = mul32(result, 9)
-        local t = bit.lshift(rngState[2], 9)
-
         local s0 = rngState[1]
         local s1 = rngState[2]
         local s2 = rngState[3]
         local s3 = rngState[4]
+
+        local result = (lrotate((s0 + s3) % UINT32, 7) + s0) % UINT32
+        local t = bit.lshift(s1, 9)
 
         s2 = bit.bxor(s2, s0)
         s3 = bit.bxor(s3, s1)
@@ -336,11 +312,11 @@ def main() -> int:
     lua_bin = choose_lua_binary()
     lua_results = run_lua_harness(lua_bin)
 
-    ref = Xoshiro128StarStar(1, 2, 3, 4)
+    ref = Xoshiro128PlusPlus(1, 2, 3, 4)
     expected_u32 = [ref.next_u32() for _ in range(20)]
     assert_equal("U32 sequence", lua_results["U32"], expected_u32)
 
-    ref = Xoshiro128StarStar(1, 2, 3, 4)
+    ref = Xoshiro128PlusPlus(1, 2, 3, 4)
     expected_d6 = [ref.roll_face(6) for _ in range(50)]
     assert_equal("D6 sequence", lua_results["D6SEQ"], expected_d6)
 

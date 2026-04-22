@@ -2,7 +2,7 @@
 --Based off: https://steamcommunity.com/sharedfiles/filedetails/?id=726800282
 --Link for this mod: https://steamcommunity.com/sharedfiles/filedetails/?id=959360907
 -- Randomness note:
--- This roller uses a vendored xoshiro128** pseudorandom number generator
+-- This roller uses a vendored xoshiro128++ pseudorandom number generator
 -- instead of Lua 5.2 math.random. TTS is based on Lua 5.2, whose RNG maps
 -- to the host C rand() implementation, so we use an explicit 32-bit PRNG to
 -- get known behavior, better auditability, and saved/restored RNG state.
@@ -259,14 +259,13 @@ local function nextRngU32()
         setRngState(createSeedWords())
     end
 
-    local result = bit.lrotate(mul32(rngState[2], 5), 7)
-    result = mul32(result, 9)
-    local t = bit.lshift(rngState[2], 9)
-
     local s0 = rngState[1]
     local s1 = rngState[2]
     local s2 = rngState[3]
     local s3 = rngState[4]
+
+    local result = (bit.lrotate((s0 + s3) % UINT32, 7) + s0) % UINT32
+    local t = bit.lshift(s1, 9)
 
     s2 = bit.bxor(s2, s0)
     s3 = bit.bxor(s3, s1)
