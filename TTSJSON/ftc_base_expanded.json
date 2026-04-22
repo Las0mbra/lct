@@ -20002,48 +20002,6 @@
       "XmlUI": ""
     },
     {
-      "GUID": "25fc4a",
-      "Name": "Counter",
-      "Transform": {
-        "posX": 51.3211021,
-        "posY": -10.33,
-        "posZ": 37.5,
-        "rotX": 0.0,
-        "rotY": 89.99996,
-        "rotZ": 0.0,
-        "scaleX": 3.59999728,
-        "scaleY": 3.59999728,
-        "scaleZ": 3.59999728
-      },
-      "Nickname": "Command Points",
-      "Description": "",
-      "GMNotes": "",
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 0,
-        "b": 0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "Counter": {
-        "value": 0
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
       "GUID": "8b0541",
       "Name": "Counter",
       "Transform": {
@@ -20982,54 +20940,6 @@
           "b": 1.0
         },
         "fontSize": 68
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "838abc",
-      "Name": "3DText",
-      "Transform": {
-        "posX": 62.50006,
-        "posY": -2.23998809,
-        "posZ": -37.49884,
-        "rotX": 90.0,
-        "rotY": 89.9636841,
-        "rotZ": 0.0,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "",
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "Text": {
-        "Text": "Team 2 Player A CP",
-        "colorstate": {
-          "r": 1.0,
-          "g": 1.0,
-          "b": 1.0
-        },
-        "fontSize": 60
       },
       "LuaScript": "",
       "LuaScriptState": "",
