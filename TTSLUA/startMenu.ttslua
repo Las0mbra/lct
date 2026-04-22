@@ -2493,11 +2493,6 @@ first = "Red"
 currentTurn = "Red"
 cpEveryTurn = true
 
--- track if player has gained CP so far this battle round
--- true if a CP has been gained, else false
-redCpIncrementTracker = false
-blueCpIncrementTracker = false
-
 phases = {"Command Phase", "Movement Phase", "Shooting Phase", "Charge Phase", "Fight Phase"}
 currentPhase = 1
 startBtn = {
@@ -2515,16 +2510,6 @@ nextPhaseBtn = {
     index = 1, label = nextPhaseLbl, tooltip = "Left click - Next phase\nRight click - Skip to next turn", click_function = "nextPhase", function_owner = self,
     position = {0, 5, 0}, rotation = {0, 0, 0}, height = 1500, width = 5000,
     font_size = 600, color = {1, 0, 0}, font_color = {1, 1, 1}
-}
-IncrementRedCpBtn = {
-    index = 1, label = "Gain a CP", tooltip = "Increment Red CP counter\nWill only increment once per Round", click_function = "incrementRedCp", function_owner = self,
-    position = {-46.2, 5, -3.75}, rotation = {0, 0, 0}, height = 1650, width = 3000,
-    font_size = 600, color = {1, 0, 0}, font_color = {1, 1, 1}
-}
-IncrementBlueCpBtn = {
-    index = 1, label = "Gain a CP", tooltip = "Increment Blue CP counter\nWill only increment once per Round", click_function = "incrementBlueCp", function_owner = self,
-    position = {46.2, 5, -3.75}, rotation = {0, 0, 0}, height = 1650, width = 3000,
-    font_size = 600, color = {0, 0, 1}, font_color = {1, 1, 1}
 }
 position = {menuX, 5, menuZ}
 notePadTxt = ""
@@ -2579,8 +2564,6 @@ function writeDeployMenu()
 end
 
 function writeIngameMenu()
-    self.createButton(IncrementRedCpBtn)
-    self.createButton(IncrementBlueCpBtn)
     destroyNineInchDeployLines()
 
     nextPhaseBtn.color = currentTurn
@@ -2703,8 +2686,6 @@ function resetActivationTokens()
 end
 
 function newRoundStarted()
-    redCpIncrementTracker = false
-    blueCpIncrementTracker = false
     updateGameStateHUD()
 end
 
@@ -2778,28 +2759,6 @@ function updateGameStateHUD()
         Global.UI.setAttribute("ChsStpPanel1", "outlineSize", "2")
         Global.UI.setAttribute("ChsStpPanel2", "outline", "#D46060CC")
         Global.UI.setAttribute("ChsStpPanel2", "outlineSize", "2")
-    end
-end
-
-function incrementRedCp(params)
-    if not inGame then return end
-    if not redCpIncrementTracker then
-        redCpIncrementTracker = true
-        redCpCounter.Counter.increment()
-        updateCpHUD()
-    else
-        broadcastToAll("Red has already gained a CP this battle round!", "Yellow")
-    end
-end
-
-function incrementBlueCp(params)
-    if not inGame then return end
-    if not blueCpIncrementTracker then
-        blueCpIncrementTracker = true
-        blueCpCounter.Counter.increment()
-        updateCpHUD()
-    else
-        broadcastToAll("Blue has already gained a CP this battle round!", "Yellow")
     end
 end
 
