@@ -493,36 +493,29 @@ end
 
 
 function enableObjects()
-    local orangePCounter_GUID = Global.getVar("orangePCounter_GUID")
-    local purplePCounter_GUID = Global.getVar("purpleCPCounter_GUID")
+    local redCounterText = getObjectFromGUID("7ab8ca")
+    local blueCounterText = getObjectFromGUID("028baa")
 
-    local orangePCounter = getObjectFromGUID(orangePCounter_GUID)
-    local purplePCounter = getObjectFromGUID(purplePCounter_GUID)
-    local orangePCounterText = getObjectFromGUID("7ab8ca")
-
-    local purplePCounterText = getObjectFromGUID("028baa")
-    local AddNewPlayerBCounterText = getObjectFromGUID("838abc")
-    local RemoveOldPlayerBCounterText = getObjectFromGUID("9a85e3")
-
-    if orangePCounter then
-        orangePCounter.setPosition({51.3211021, -1.33, 37.5})
-        orangePCounterText.setPosition({54.35, 1.23999178, 37.5})
-        orangePCounter.interactable = true
+    if redCpCounter then
+        redCpCounter.setPosition({59.5, -1.32, 27.0})
+        redCpCounter.interactable = true
+        if redCounterText then
+            redCounterText.setValue("Player A Command Points")
+            redCounterText.setPosition({62.50006, 1.23999178, 27.0})
+        end
     else
-        print("Orange CP Counter not found!")
+        print("Red CP Counter not found!")
     end
 
-    if purplePCounter then
-        RemoveOldPlayerBCounterText.setPosition({62.50006, -3.23998809, -37.49884})
-
-        -- setup new counter
-        purplePCounter.setPosition({59.5018, -1.33, -55})
-        purplePCounterText.setPosition({62.50006, 1.23998809, -55.019884})
-
-        AddNewPlayerBCounterText.setPosition({62.50006, 1.23998809, -37.49884})
-        purplePCounter.interactable = true
+    if blueCpCounter then
+        blueCpCounter.setPosition({59.5, -1.32, -27.0})
+        blueCpCounter.interactable = true
+        if blueCounterText then
+            blueCounterText.setValue("Player B Command Points")
+            blueCounterText.setPosition({62.50006, 1.23998809, -27.0})
+        end
     else
-        print("Purple CP Counter not found!")
+        print("Blue CP Counter not found!")
     end
 end
 
@@ -2683,17 +2676,12 @@ function passTurn(obj, player_color_click, alt_click)
     end
 
     currentPhase = 1
-    local orangePCounter = getObjectFromGUID(Global.getVar("orangePCounter_GUID"))
-    local purplePCounter = getObjectFromGUID(Global.getVar("purpleCPCounter_GUID"))
-
     if currentTurn == "Red" then
         currentTurn = "Blue"
         blueTurnCounter.call("increaseSelf")
         blueCpCounter.Counter.increment()
-        orangePCounter.Counter.increment() -- Increment Orange CP
         if cpEveryTurn then
             redCpCounter.Counter.increment()
-            purplePCounter.Counter.increment() -- Increment Purple CP
             Wait.time(function() broadcastToAll("Both CPs incremented!", "White") end, 0.3)
         else
             Wait.time(function() broadcastToAll("Blue CPs incremented!", "Blue") end, 0.3)
@@ -2702,10 +2690,8 @@ function passTurn(obj, player_color_click, alt_click)
         currentTurn = "Red"
         redTurnCounter.call("increaseSelf")
         redCpCounter.Counter.increment()
-        purplePCounter.Counter.increment() -- Increment Purple CP
         if cpEveryTurn then
             blueCpCounter.Counter.increment()
-            orangePCounter.Counter.increment() -- Increment Orange CP
             Wait.time(function() broadcastToAll("Both CPs incremented!", "White") end, 0.3)
         else
             Wait.time(function() broadcastToAll("Red CPs incremented!", "Red") end, 0.3)

@@ -683,22 +683,6 @@ function moveAllFromZoneToDeck(params)
     deckObj.shuffle()
 end
 
-function updatePrimaryCardPosition(cardGUID, isPurgeTheFoe)
-    local obj = getObjectFromGUID(cardGUID)
-    if not obj then
-        print("[updatePrimaryCardPosition] Could not find object:", cardGUID)
-        return
-    end
-
-    local pos = obj.getPosition()
-    if isPurgeTheFoe then
-        pos.y = -0.33
-    else
-        pos.y = -4.33
-    end
-    obj.setPosition(pos)
-end
-
 function moveOneFromDeckToZone(params)
     local zoneObj = getObjectFromGUID(Global.getVar(params.zone .. "CardZone_GUID"))
     local deckObj = getObjectFromGUID(Global.getVar(params.deck .. "Deck_GUID"))
@@ -709,10 +693,6 @@ function moveOneFromDeckToZone(params)
     takeParams.callback_function = function(card)
         Wait.frames(function()
             card.locked = true
-            local name = card.getName()
-            local isPurge = name:find("Purge The Foe")
-            updatePrimaryCardPosition("5d3485", isPurge)
-            updatePrimaryCardPosition("c41f82", isPurge)
         end)
     end
     if params["card"] then
@@ -985,4 +965,3 @@ function onToggleButtonHotKey(type, target)
     clearIconsOfType(target, false)
     toggleFloatingIconGeneric(params)
 end
-
