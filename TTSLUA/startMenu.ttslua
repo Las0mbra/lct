@@ -57,6 +57,7 @@ function onLoad(saved_data)
     else
         deploySelected = #DeployZonesData
     end
+    rebuildOverlayTracking()
 
     mat = getObjectFromGUID(mat_GUID)
     if simulation then ttsDebugLog("THIS IS "..currentTurn.." TURN") end
@@ -992,6 +993,8 @@ arrowOffset = 7.5
 
 defaultDeployHeight=2
 deployOffset = 0
+deploymentOverlayGUIDs = {}
+nineInchOverlayGUIDs = {}
 
 secondRowOffset= 1.2
 deployHeaderBtn = {
@@ -1058,18 +1061,12 @@ function drawDeployZone(zone)
 end
 
 function setDeployHeight()
-    local pos = {0,0,0}
-    local found_GUID = {}
-    for i, obj in ipairs(getAllObjects()) do
-        if obj.getGMNotes() == "deployZone" then
-            table.insert(found_GUID, #found_GUID+1, obj.getGUID())
+    for _, guid in ipairs(deploymentOverlayGUIDs) do
+        local found = getObjectFromGUID(guid)
+        if found then
+            local pos = found.getPosition()
+            found.setPosition({pos[1], defaultDeployHeight + deployOffset, pos[3]})
         end
-    end
-    local found= nil
-    for j, guid in ipairs(found_GUID) do
-        found=getObjectFromGUID(guid)
-        pos = found.getPosition()
-        found.setPosition({pos[1], defaultDeployHeight+ deployOffset, pos[3]})
     end
 end
 
@@ -1327,7 +1324,7 @@ function drawCircle(drawData, type)
         circleObj.interactable = false
         circleObj.setScale({drawData.fromCenter, deployLineHeight, drawData.fromCenter})
         circleObj.setPosition({0, deployLineYPos, 0})
-        circleObj.setColorTint(drawData.color)
+        circleObj.setColorTint(getDeploymentOverlayColor(drawData.color))
         circleObj.setGMNotes(type)
         circleObj.setName("")
         local blockComp = circleObj.getComponent("BoxCollider")
@@ -1338,6 +1335,7 @@ function drawCircle(drawData, type)
         if meshComp then
             meshComp.set("enabled", false)
         end
+        trackOverlayObject(circleObj, type)
     end
 end
 
@@ -1374,7 +1372,7 @@ function drawCircleNotCentered(drawData, type, centerX, centerZ)
         circleObj.interactable = false
         circleObj.setScale({drawData.fromCenter, deployLineHeight, drawData.fromCenter})
         circleObj.setPosition({centerX, deployLineYPos, centerZ})
-        circleObj.setColorTint(drawData.color)
+        circleObj.setColorTint(getDeploymentOverlayColor(drawData.color))
         circleObj.setGMNotes(type)
         circleObj.setName("")
         local blockComp = circleObj.getComponent("BoxCollider")
@@ -1385,6 +1383,7 @@ function drawCircleNotCentered(drawData, type, centerX, centerZ)
         if meshComp then
             meshComp.set("enabled", false)
         end
+        trackOverlayObject(circleObj, type)
     end
 end
 
@@ -1463,7 +1462,7 @@ function drawCircleDeployment(drawData)
         circleObj.interactable = false
         circleObj.setScale({drawData.radius, deployLineHeight, drawData.radius})
         circleObj.setPosition({centerX, deployLineYPos, centerZ})
-        circleObj.setColorTint(drawData.color)
+        circleObj.setColorTint(getDeploymentOverlayColor(drawData.color))
         circleObj.setGMNotes("deployZone")
         circleObj.setName("")
         local blockComp = circleObj.getComponent("BoxCollider")
@@ -1474,6 +1473,7 @@ function drawCircleDeployment(drawData)
         if meshComp then
             meshComp.set("enabled", false)
         end
+        trackOverlayObject(circleObj, "deployZone")
     end
 end
 
@@ -1509,6 +1509,7 @@ function drawCornerQuarterCircles(radius, type)
             if meshComp then
                 meshComp.set("enabled", false)
             end
+            trackOverlayObject(circleObj, type)
         end
     end
 end
@@ -1659,18 +1660,66 @@ function drawArrow(drawData)
     spawnLine(linePos, lineRot, lineScale, drawData.color, "deployZone")
 end
 
+function getDeploymentOverlayColor(color)
+    if color == "Teal" then
+        return {r = 0.35, g = 0.65, b = 1}
+    end
+
+    return color
+end
+
+function getOverlayGuidStore(type)
+    if type == "deployZone9" then
+        return nineInchOverlayGUIDs
+    end
+
+    return deploymentOverlayGUIDs
+end
+
+function trackOverlayObject(obj, type)
+    if not obj then
+        return
+    end
+
+    table.insert(getOverlayGuidStore(type), obj.getGUID())
+end
+
+function destroyTrackedOverlayObjects(store)
+    for _, guid in ipairs(store) do
+        local obj = getObjectFromGUID(guid)
+        if obj then
+            obj.destroy()
+        end
+    end
+end
+
+function rebuildOverlayTracking()
+    deploymentOverlayGUIDs = {}
+    nineInchOverlayGUIDs = {}
+
+    for _, obj in ipairs(getAllObjects()) do
+        local note = obj.getGMNotes()
+        if note == "deployZone" then
+            table.insert(deploymentOverlayGUIDs, obj.getGUID())
+        elseif note == "deployZone9" then
+            table.insert(nineInchOverlayGUIDs, obj.getGUID())
+        end
+    end
+end
+
 function spawnLine(linePos, lineRot, lineScale, color, type)
-    local lineObj = spawnObject({ --Chip_10
+    local lineObj = spawnObject({
         type = "BlockSquare",
         position = linePos,
         rotation = lineRot,
-        scale = lineScale,
+        scale = {x = lineScale.x, y = lineScale.y * 0.5625, z = lineScale.z},
     })
     if lineObj then
         lineObj.setLock(true)
         lineObj.interactable = false
+        lineObj.use_gravity = false
         lineObj.setGMNotes(type)
-        lineObj.setColorTint(color)
+        lineObj.setColorTint(getDeploymentOverlayColor(color))
         local blockComp = lineObj.getComponent("BoxCollider")
         if blockComp then
             blockComp.set("enabled", false)
@@ -1679,20 +1728,21 @@ function spawnLine(linePos, lineRot, lineScale, color, type)
         if meshComp then
             meshComp.set("enabled", false)
         end
+        trackOverlayObject(lineObj, type)
     end
 end
 
 function destroyDeployZones()
-    for i, obj in ipairs(getAllObjects()) do
-        if obj.getGMNotes() == "deployZone" or obj.getGMNotes() == "deployZone9" then
-            obj.destroy()
-        end
-    end
+    destroyTrackedOverlayObjects(deploymentOverlayGUIDs)
+    destroyTrackedOverlayObjects(nineInchOverlayGUIDs)
+    deploymentOverlayGUIDs = {}
+    nineInchOverlayGUIDs = {}
 end
 
 function disableCollidersDeployZones()
-    for i, obj in ipairs(getAllObjects()) do
-        if obj.getGMNotes() == "deployZone" or obj.getGMNotes() == "areaDeny" or obj.getGMNotes() == "quarter" then
+    for _, guid in ipairs(deploymentOverlayGUIDs) do
+        local obj = getObjectFromGUID(guid)
+        if obj then
             local blockComp = obj.getComponent("BoxCollider")
             if blockComp then
                 blockComp.set("enabled", false)
@@ -2869,23 +2919,13 @@ end
 
 -- 9" secondary deployment lines (toggle + helpers)
 function destroyNineInchDeployLines()
-    for i, obj in ipairs(getAllObjects()) do
-        if obj.getGMNotes() == "deployZone9" then
-            obj.destroy()
-        end
-    end
+    destroyTrackedOverlayObjects(nineInchOverlayGUIDs)
+    nineInchOverlayGUIDs = {}
 end
 
 function toggleNineFromDeployment()
     -- Remove if present, else add at 9"
-    local present = false
-    for i, obj in ipairs(getAllObjects()) do
-        if obj.getGMNotes() == "deployZone9" then
-            present = true
-            break
-        end
-    end
-    if present then
+    if #nineInchOverlayGUIDs > 0 then
         destroyNineInchDeployLines()
         return
     end
@@ -2893,8 +2933,9 @@ function toggleNineFromDeployment()
 end
 
 function addNineInchDeployLines(distance)
-    for i, obj in ipairs(getAllObjects()) do
-        if obj.getGMNotes() == "deployZone" then
+    for _, guid in ipairs(deploymentOverlayGUIDs) do
+        local obj = getObjectFromGUID(guid)
+        if obj then
             local sc = obj.getScale()
             -- Only process thin straight lines, skip circles and other shapes
             if sc.z and sc.z <= 0.05 then
@@ -2931,5 +2972,3 @@ end
 
 function none()
 end
-
-
