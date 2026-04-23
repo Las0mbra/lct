@@ -782,70 +782,9 @@ end
 
 
 function autoRoll(obj, player, alt, numDice)
-    numDice = numDice or 1
-    local total = 0
-    local directionMultiplier = (currentMat == "Blue") and 1 or -1
-    local startX = self.getPosition().x + (currentMat == "Blue" and -16 or 16)
-    local startY = self.getPosition().y + 1
-    local startZ = self.getPosition().z
-    if lastSpawnPosition then
-        startX = lastSpawnPosition.x
-        startY = lastSpawnPosition.y
-        startZ = lastSpawnPosition.z
-    end
-    local diceColors = {
-        {0.627, 0.124, 0.941}, -- purple
-        {1, 0.341, 0.2},       -- orange
-        {0.203, 0.674, 0.325}, -- green
-        {0.160, 0.596, 0.965}, -- blue
-        {0.898, 0.223, 0.509}, -- pink
-        {0.254, 0.211, 0.098}, -- brown
-        {1, 0.298, 0.298},     -- red
-        {0.345, 0.184, 0.506}, -- indigo
-        {0.988, 0.761, 0.498}, -- light orange
-        {0.847, 0.647, 0.125}, -- gold
-    }
-
-    local colorIndex = math.random(#diceColors)
-    local rollColor = diceColors[colorIndex]
-    for i = 1, numDice do
-        local result = math.random(6)
-        total = total + result
-        printToAll(player .. " rolled a D6: " .. result, stringColorToRGB(player))
-        local position = {
-            x = startX + directionMultiplier * (i - 1) * 1.5,
-            y = startY,
-            z = startZ
-        }
-        local die = spawnObject({
-            type = "Die_6_Rounded",
-            position = position,
-            rotation = {0, 180, 0}
-        })
-        if die then
-            die.setValue(result)
-            die.setColorTint(rollColor)
-            die.setCustomObject({
-                type = 1,
-                image = customDiceImage,
-                face = 1,
-                font_color = {0, 0, 0}
-            })
-            diceCount = diceCount + 1
-            lastSpawnPosition = {
-                x = position.x + directionMultiplier * 1.5,
-                y = position.y,
-                z = position.z
-            }
-            if diceCount >= 5 then
-                lastSpawnPosition = nil
-                diceCount = 0
-            end
-        else
-            printToColor("Failed to spawn a die for roll " .. i, player, "Red")
-        end
-    end
-    printToAll(player .. " rolled a total of " .. total .. " (" .. numDice .. "D6)", stringColorToRGB(player))
+    -- Route automated button rolls through the shared roller so face values
+    -- always come from the xoshiro-backed rollFace() path.
+    spawnDice(numDice or 1, player, true)
 end
 
 

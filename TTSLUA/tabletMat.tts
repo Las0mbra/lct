@@ -190,7 +190,34 @@ function getSpawnStartPosition()
   return start
 end
 
--- Spawn N D6 dice in a neat row; set random face and tint based on player
+local function getAssignedRoller()
+  local rollerGuid = (currentMat == "Blue")
+    and Global.getVar("blueCustomDiceRoller_GUID")
+    or Global.getVar("redCustomDiceRoller_GUID")
+  if not rollerGuid then
+    return nil
+  end
+  return getObjectFromGUID(rollerGuid)
+end
+
+local function sendDiceToRoller(player, dice)
+  local roller = getAssignedRoller()
+  if not roller then
+    printToColor("Dice roller not found for this mat.", player, "Red")
+    return false
+  end
+
+  roller.call("setPlayerColor", { color = player })
+  for _, die in ipairs(dice) do
+    if die then
+      roller.call("setLastHolder", { obj = die, color = player })
+      roller.putObject(die)
+    end
+  end
+  return true
+end
+
+-- Spawn N D6 dice in a neat row; tint them, then roll through the xoshiro roller.
 function spawnDice(n, player)
   n = n or 1
   local start = getSpawnStartPosition()
@@ -200,16 +227,22 @@ function spawnDice(n, player)
     Red = {1,0.3,0.3}, Blue = {0.3,0.6,1}, White = {1,1,1}, Black = {0.1,0.1,0.1}
   }
   local tint = diceColors[player] or stringColorToRGB(player) or {1,1,1}
+  local spawnedDice = {}
 
   for i=1,n do
     local pos = { x = start.x + dir * (i-1) * spacing, y = start.y, z = start.z }
     local die = spawnObject({ type = "Die_6_Rounded", position = pos, rotation = {0,180,0} })
     if die then
-      local result = math.random(1,6)
-      die.setValue(result)
       die.setColorTint(tint)
       die.setLock(false)
+      table.insert(spawnedDice, die)
     end
+  end
+
+  if #spawnedDice > 0 then
+    Wait.time(function()
+      sendDiceToRoller(player, spawnedDice)
+    end, 0.2)
   end
 end
 
@@ -434,7 +467,6 @@ function onLoad(save_state)
     Yoffset = (b.size.y / 2) + 0.2
   end
   createMenu()
-  math.randomseed(os.time())
   self.setName("Tablet Dice Mat")
   -- Inform where the roller should be placed relative to this mat
   local b = self.getBounds()
