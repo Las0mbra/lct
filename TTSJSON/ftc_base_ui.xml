@@ -27,7 +27,7 @@
   <Button id="closeBtn" offsetXY="0 -500" color="#2C3E50" textColor="#FFFFFF" width="500" height="100" fontSize="40" fontStyle="Bold" onClick="closeMenu" outline="#34495E" outlineSize="5" roundEdges="true">CLOSE MENU</Button>
 </Panel>
 
-<Panel id="VP Scores" active="true" scale="0.43 0.43 0.43" width="1060" height="155" rectAlignment="UpperRight" offsetXY="-270 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="VP Scores" active="true" scale="0.43 0.43 0.43" width="1060" height="155" rectAlignment="UpperCenter" offsetXY="0 -55" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false">
     <Panel id="RoundBadge" flexibleWidth="0" preferredWidth="96" color="#1A1A2AE6" outline="#2a2a4aCC" outlineSize="3" roundEdges="true">
       <Button id="RoundWatchBtn" width="96" height="155" color="rgba(0,0,0,0)" onClick="738804/hudPassTurn"/>
