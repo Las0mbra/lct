@@ -342,7 +342,7 @@ sizeDownBtn = {
 confirmBtn = {
     index          = i,
     label          = "1 Vs 1",
-    click_function = "confirmSizeGame",
+    click_function = "confirmStandardGame",
     function_owner = self,
     position       = { -menuSizeX - 6.5, menuSizeY, menuSizeZ + 3 },
     rotation       = { 0, 0, 0 },
@@ -375,6 +375,24 @@ confirmBtn4 = {
     font_color     = { 1.0, 1.0, 1.0 }  -- Pure White
 }
 
+confirmBtnLegacy = {
+    index          = i,
+    label          = "10E LEGACY",
+    click_function = "confirmForLegacy",
+    function_owner = self,
+    position       = { -menuSizeX - 6.5, menuSizeY, menuSizeZ + 7.5 },
+    rotation       = { 0, 0, 0 },
+    height         = 1400,
+    width          = 4400,
+    scale          = { 1.3, 1.3, 1.3 },
+    font_size      = 500,
+    color          = {
+        0.627,
+        0.124999948,
+        0.941},
+    font_color     = { 1.0, 1.0, 1.0 }
+}
+
 function refreshMat()
     mat = getObjectFromGUID(mat_GUID)
 end
@@ -393,6 +411,7 @@ function writeSizeMenu()
     self.createButton(confirmBtn)
     self.createButton(removeMapsBtn)
     self.createButton(confirmBtn4)
+    self.createButton(confirmBtnLegacy)
     mat.setScale(sizeData[mapSizeSelected].scale)
     mat.setPosition(positionValue)
 end
@@ -584,6 +603,19 @@ end
 
 function confirmForSingles()
     singlesMode = "singles"
+    deployMode = nil
+    confirmSizeGame()
+end
+
+function confirmStandardGame()
+    singlesMode = nil
+    deployMode = nil
+    confirmSizeGame()
+end
+
+function confirmForLegacy()
+    singlesMode = nil
+    deployMode = "legacy10e"
     confirmSizeGame()
 end
 
@@ -627,12 +659,25 @@ function confirmSizeMat()
     sizeConfirmed=true
     mat.setScale(sizeData[mapSizeSelected].scale)
     self.setRotation({0,270,0})
-    setDeployZonesForSize(false)
+    if deployMode and isValidDeployMode(deployMode) then
+        setDeployZonesMode(deployMode, false)
+    else
+        setDeployZonesForSize(false)
+    end
     writeMenus()
 end
 
 function updateDeployObjectivesSelection()
     deploySelected = #DeployZonesData
+end
+
+function selectedDeployment()
+    return DeployZonesData and DeployZonesData[deploySelected] or nil
+end
+
+function selectedDeploymentSpawnsOverlay()
+    local zone = selectedDeployment()
+    return zone ~= nil and zone.draw and zone.draw.type ~= "none"
 end
 
 -- END size changer
@@ -805,6 +850,15 @@ DeployZonesColosseum = {
     {name = "No Deployment Zone", draw = {type = "none"}},
 }
 
+DeployZonesLegacy10e = {
+    {name = "Hammer and Anvil", draw = {
+        --[[1]]{type = "line", color = "Red", position = "x", fromSide = 18},
+        --[[2]]{type = "line", color = "Teal", position = "-x", fromSide = 18}}},
+    {name = "Crucible of Battle", draw = {
+        --[[1]]{type = "triangle", color = "Red", position = "x"},
+        --[[2]]{type = "triangle", color = "Teal", position = "-x"}}},
+}
+
 DeployZonesDefault = {
     {name = "No Deployment Zone", draw = {type = "none"}},
 }
@@ -817,7 +871,7 @@ DeployZonesData = DeployZonesDefault
 deployMode = "strikeForce"
 
 function isValidDeployMode(mode)
-    return mode == "colosseum" or mode == "combatPatrol" or mode == "incursion" or mode == "strikeForce" or mode == "boardingAction"
+    return mode == "colosseum" or mode == "combatPatrol" or mode == "incursion" or mode == "strikeForce" or mode == "boardingAction" or mode == "legacy10e"
 end
 
 function setDeployZonesForSize(preserveSelected)
@@ -847,6 +901,7 @@ function setDeployZonesMode(mode, preserveSelected)
         incursion = DeployZonesIncursion,
         strikeForce = DeployZonesStrikeForce,
         boardingAction = DeployZonesBoardingAction,
+        legacy10e = DeployZonesLegacy10e,
     }
     deployMode = mode
     DeployZonesData = byMode[mode] or DeployZonesDefault
@@ -1976,9 +2031,10 @@ defaultObjectivesHeight=1.0
 
 function spawnObjectives()
     destroyAllObjectives()
-    if deploySelected < #DeployZonesData and DeployZonesData[deploySelected].objectivesID then
+    local zone = selectedDeployment()
+    if zone and zone.objectivesID then
         for id, objectiveSet in ipairs(objectivesData) do
-            if objectiveSet.id == DeployZonesData[deploySelected].objectivesID then
+            if objectiveSet.id == zone.objectivesID then
                 local spawned = nil
                 local pos={}
                 local template = getObjectFromGUID(Global.getVar("templateObjective_GUID"))
@@ -2749,12 +2805,12 @@ function showHideIngameDeployment()
     local state = Global.getVar("interactiveButtonDeploymentZones")
     if state == 1 then -- place
         Global.setVar("interactiveButtonDeploymentZones", 2)
-        if deploySelected < #DeployZonesData then
+        if selectedDeploymentSpawnsOverlay() then
             drawDeployZone(DeployZonesData[deploySelected])
         end
     else -- recall
         Global.setVar("interactiveButtonDeploymentZones", 1)
-        if deploySelected < #DeployZonesData then
+        if selectedDeploymentSpawnsOverlay() then
             destroyDeployZones()
         end
     end
