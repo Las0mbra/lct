@@ -41,6 +41,8 @@ blueLethalHits_GUID = "71ab21"
 
 RedVortexGUID = "be2cdb"
 BlueVortexGUID = "4b1a7b"
+RedTokenCounterGUID = "42c161"
+BlueTokenCounterGUID = "42c164"
 
 
 -- End Hutber IDS
@@ -409,6 +411,18 @@ function onLoad(saved_data)
         if blueVortex then
             local pos = blueVortex.getPosition()
             blueVortex.setPosition({pos.x, 0.6, pos.z})
+        end
+
+        -- Token counters: keep them tucked just inside each side's vortex.
+        local redCounter = getObjectFromGUID(RedTokenCounterGUID)
+        if redCounter and redVortex then
+            local pos = redVortex.getPosition()
+            redCounter.setPosition({pos.x - 4.52, 1.12, pos.z})
+        end
+        local blueCounter = getObjectFromGUID(BlueTokenCounterGUID)
+        if blueCounter and blueVortex then
+            local pos = blueVortex.getPosition()
+            blueCounter.setPosition({pos.x + 4.52, 1.12, pos.z})
         end
     end, 2)
 end
