@@ -480,6 +480,11 @@ function onPlayerChangeColor(player_color)
     promotePlayers()
     --demotePlayers()  -- RIC
     showHideRedBlueBtn()
+
+    local scoresheet = getObjectFromGUID(scoresheet_GUID)
+    if scoresheet then
+        scoresheet.call("syncPlayerTitlesFromSeats")
+    end
 end
 
 function onPlayerConnect(player_id)

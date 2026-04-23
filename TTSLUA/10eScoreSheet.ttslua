@@ -297,6 +297,7 @@ function onload(save_data)
 	self.createButton( draw2Btn )
 	self.createButton( chlDrawBtn )
 	self.createButton( chlDiscardBtn )
+	syncPlayerTitlesFromSeats()
 
 	local b_xpos = 0
 	local b_zpos = 0
@@ -660,6 +661,53 @@ function getParams()
 	return params
 end
 
+function getTrimmedPlayerName(playerName)
+	if not playerName or playerName == "" then
+		return nil
+	end
+
+	if string.len(playerName) > 15 then
+		playerName = string.sub(playerName, 1, 14)
+	end
+
+	return playerName
+end
+
+function setPlayerTitle(playerIndex, playerName)
+	local params = getParams()
+
+	if playerIndex == 1 then
+		playerOneTitle.label = playerName
+		params.P1 = playerName
+	else
+		playerTwoTitle.label = playerName
+		params.P2 = playerName
+	end
+
+	self.editButton(playerOneTitle)
+	self.editButton(playerTwoTitle)
+	self.setDescription(JSON.encode_pretty(params))
+end
+
+function syncPlayerTitlesFromSeats()
+	local redName = nil
+	local blueName = nil
+
+	if Player.Red and Player.Red.seated then
+		redName = getTrimmedPlayerName(Player.Red.steam_name)
+	end
+	if Player.Blue and Player.Blue.seated then
+		blueName = getTrimmedPlayerName(Player.Blue.steam_name)
+	end
+
+	if redName then
+		setPlayerTitle(1, redName)
+	end
+	if blueName then
+		setPlayerTitle(2, blueName)
+	end
+end
+
 function p1(obj, clicker, alt)
 	pName(1, obj, clicker, alt)
 end
@@ -668,35 +716,18 @@ function p2(obj, clicker, alt)
 end
 
 function pName(p, obj, clicker, alt)
-	local params = getParams()
-
 	if alt then
 		if p == 1 then
-			playerOneTitle.label = "Player 1"
-			params.P1 = "Player 1"
+			setPlayerTitle(1, "Player 1")
 		else
-			playerTwoTitle.label = "Player 2"
-			params.P2 = "Player 2"
+			setPlayerTitle(2, "Player 2")
 		end
 	else
-		local playerName = Player[clicker].steam_name
-
-		if string.len( playerName ) > 15 then
-			playerName = string.sub( playerName, 1, 14 )
-		end
-
-		if p == 1 then
-			playerOneTitle.label = playerName
-			params.P1 = playerName
-		else
-			playerTwoTitle.label = playerName
-			params.P2 = playerName
+		local playerName = getTrimmedPlayerName(Player[clicker].steam_name)
+		if playerName then
+			setPlayerTitle(p, playerName)
 		end
 	end
-
-	self.editButton(playerOneTitle)
-	self.editButton(playerTwoTitle)
-	self.setDescription(JSON.encode_pretty(params))
 end
 
 fixedCard2Scale = {1.99723673, 0.913603365, 1.99723673}
@@ -1014,6 +1045,8 @@ function handleInitialSecondary(zone, discardPosition)
 end
 
 function startGame()
+	syncPlayerTitlesFromSeats()
+
 	local redFixedObjective1 = handleInitialSecondary(secondary11ZoneObj, redDiscardPosition)
 	local redFixedObjective2 = handleInitialSecondary(secondary12ZoneObj, redDiscardPosition)
 	local blueFixedObjective1 = handleInitialSecondary(secondary21ZoneObj, blueDiscardPosition)
