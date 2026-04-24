@@ -388,21 +388,6 @@ function restore(playerColor)
   end
 end
 
-local auto1D6 = {
-    label          = "Stats",
-    tooltip        = "Show dice roll statistics",
-    click_function = "showCombinedStats",
-    function_owner = self,
-    position       = {-7.5, Yoffset, 0.52},
-    rotation       = { 0, 0, 0 },
-    width = 1300, height = 300, font_size = 150,
-    color = {0.13, 0.13, 0.13, 1},
-    font_color = {1, 1, 1},
-    hover_color = {0.2, 0.2, 0.2, 1},
-    press_color = {0.27, 0.27, 0.27, 1},
-    scale = {0.5, 0.5, 0.5}
-}
-
 local auto2D6 = {
     label          = "Instant 2D6",
     tooltip="Roll 2D6 Instantly",
@@ -479,6 +464,61 @@ if self.guid == Global.getVar("blueCustomDiceMat_GUID") then
     rollerGUID = Global.getVar("blueCustomDiceRoller_GUID")
 end
 roller = getObjectFromGUID(rollerGUID)
+lastClickTimestamp = 0
+pendingSpawnRoll = {
+    dice = {},
+    scheduled = false,
+    player = nil
+}
+
+local function nowSeconds()
+    if Time and Time.time then
+        return Time.time
+    end
+    return os.clock()
+end
+
+local function queuePendingSpawnRoll(player, dice)
+    if not dice or #dice == 0 then
+        return
+    end
+
+    pendingSpawnRoll.player = player
+    for _, die in ipairs(dice) do
+        if die and die.tag == "Dice" then
+            table.insert(pendingSpawnRoll.dice, die)
+        end
+    end
+
+    if pendingSpawnRoll.scheduled then
+        return
+    end
+
+    pendingSpawnRoll.scheduled = true
+    Wait.time(function()
+        local queuedDice = pendingSpawnRoll.dice
+        local queuedPlayer = pendingSpawnRoll.player
+        pendingSpawnRoll.dice = {}
+        pendingSpawnRoll.scheduled = false
+        pendingSpawnRoll.player = nil
+
+        local diceToRoll = {}
+        local seen = {}
+        for _, die in ipairs(queuedDice) do
+            if die and die.tag == "Dice" then
+                local guid = die.getGUID()
+                if guid ~= nil and not seen[guid] then
+                    seen[guid] = true
+                    table.insert(diceToRoll, die)
+                end
+            end
+        end
+
+        if #diceToRoll > 0 then
+            moveDiceToRoller(queuedPlayer or player, diceToRoll)
+        end
+    end, 0.5)
+end
 
 function importOpposDice(obj, player, alt)
     -- clear existing dice
@@ -675,10 +715,7 @@ function moveDiceToRoller(color, dice)
         roller.putObject(die)
     end
 
-    -- Add this line at the end:
     storeCurrentDiceAsPreviousRoll()
-    -- Infer roll phase and calculate stats
-    inferRollPhase(dice)
 end
 
 -- Evaluate a simple arithmetic expression safely (digits, + - * / and parentheses)
@@ -797,14 +834,6 @@ end
 
 function autoRoll2D6(obj, player, alt)
     autoRoll(obj, player, alt, 2)
-end
-
-function showCombinedStats(obj, player, alt)
-    local r = getObjectFromGUID(rollerGUID)
-    if r then
-        r.call("showStats")
-        r.call("printChances")
-    end
 end
 
 function callLast5Rolls(obj, player, alt)
@@ -1015,15 +1044,6 @@ function SelectDeleteDiceX(action, n, selectOthers, lowUp, color)
     end
 end
 
-function moveDiceToRoller(color, dice)
-    roller.call("setPlayerColor", {color=color})
-
-    for _, die in ipairs(dice) do
-        roller.call("setLastHolder", {obj=die, color=color})
-        roller.putObject(die)
-    end
-end
-
 function clearDiceAll(obj, color, alt)
     if not alt then
         printToColor("Use right click!", color, "Orange")
@@ -1100,13 +1120,13 @@ end
 
 function spawnD3(n, player, alt)
     local playerDiceSpeed = player == "Red" and Global.getVar("redDiceSpawnTime") or Global.getVar("blueDiceSpawnTime")
-    local currentTime = os.time()
+    local currentTime = nowSeconds()
     local disableTime = (playerDiceSpeed == "slow") and 0.6 or 0.2
-    if currentTime - lastClick < disableTime then
+    if currentTime - lastClickTimestamp < disableTime then
         printToColor("Wait a bit!", player, "Yellow")
         return
     end
-    lastClick = currentTime
+    lastClickTimestamp = currentTime
     local offset = #getDice()
     if offset + n > 128 then printToColor("Dice limit reached!", player, "Orange") end
     local grid, row, col = 0, 0, 0
@@ -1122,6 +1142,7 @@ function spawnD3(n, player, alt)
         printToColor("D3 bag not found!", player, "Red")
         return
     end
+    local spawnedDice = {}
     for i = 1, n do
         local pos = self.positionToWorld({4 - grid*1.5 - col*0.25, 0.5, -0.3 + row*0.25})
         d3Bag.takeObject({
@@ -1130,6 +1151,7 @@ function spawnD3(n, player, alt)
             smooth            = false,
             callback_function = function(obj)
                 if selectedColor ~= nil then obj.setColorTint(selectedColor) end
+                table.insert(spawnedDice, obj)
             end
         })
         col = col + 1
@@ -1138,19 +1160,19 @@ function spawnD3(n, player, alt)
         end
     end
     if alt then
-        Wait.time(function() moveDiceToRoller(player, getDice()) end, 0.5)
+        queuePendingSpawnRoll(player, spawnedDice)
     end
 end
 
 function spawnDice(n,player,alt)
     local playerDiceSpeed = player == "Red" and Global.getVar("redDiceSpawnTime") or Global.getVar("blueDiceSpawnTime")
-    local currentTime = os.time()
+    local currentTime = nowSeconds()
     local disableTime = (playerDiceSpeed == "slow") and 0.6 or 0.2
-    if currentTime-lastClick<disableTime then
+    if currentTime-lastClickTimestamp<disableTime then
         printToColor("Wait a bit!", player, "Yellow")
         return
     end
-    lastClick=currentTime
+    lastClickTimestamp=currentTime
     local offset=#getDice()
     if offset+n>128 then printToColor("Dice limit reached!", player, "Orange")  end
     local grid=0
@@ -1169,6 +1191,7 @@ function spawnDice(n,player,alt)
     end
 
     if offset+n>128 then n=128-offset end
+    local spawnedDice = {}
     for i=1, n do
     local die=spawnObject({
         type              = diceType,
@@ -1195,9 +1218,10 @@ function spawnDice(n,player,alt)
         if selectedColor ~= nil then
             die.setColorTint(selectedColor)
         end
+        table.insert(spawnedDice, die)
     end
     if alt then
-        Wait.time(function() moveDiceToRoller(player, getDice()) end, 0.5)
+        queuePendingSpawnRoll(player, spawnedDice)
     end
 end
 
@@ -1482,7 +1506,7 @@ function onload()
     addHotkey("Toggle 12 Inch Measurment Circle", function(playerColor, target)
         changeMeasurementCircle(12.01, target, nil, playerColor)
     end)
-    lastClick=os.time()
+    lastClickTimestamp=nowSeconds()
     defaultFontSize=500
     fontSize=defaultFontSize
     lineCount=0
@@ -1549,7 +1573,6 @@ function onload()
     self.createButton(sustainedHitsBtn)
     self.createButton(sustainedLethalHitsBtn)
     self.createButton(copyOthersDiceBtn)
-    self.createButton(auto1D6)
     self.createButton(auto2D6)
     self.createButton(revertRollBtn)  -- Add this near the end of the button creations
     self.createButton(saveBtn)
