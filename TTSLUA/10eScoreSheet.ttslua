@@ -33,7 +33,7 @@ BTN_IX_DISCARD_2_2 = nil
 BTN_IX_RECYCLE_2_2 = nil
 
 -- Button k-indexes
-BTN_K_IX_CHALLENGER = 1
+BTN_K_IX_TURN_SUM = 1
 BTN_K_IX_SECONDARY_1 = 2
 BTN_K_IX_SECONDARY_2 = 3
 BTN_K_IX_PRIMARY = 4
@@ -44,7 +44,8 @@ BTN_L_IX_PLUS = 2
 BTN_L_IX_MINUS = 3
 
 -- Tooltips[player, k-index]
-tooltips = {{"Challenger", "Secondary 2", "Secondary 1", "Primary"},{"Challenger", "Secondary 1", "Secondary 2", "Primary"}}
+tooltips = {{"Sum", "Secondary 2", "Secondary 1", "Primary"},{"Sum", "Secondary 1", "Secondary 2", "Primary"}}
+TURN_SUM_CENTER_SHIFT = 0.50
 
 -- player, round, k-index
 scores = {
@@ -126,7 +127,7 @@ discard11Btn = {
 	font_size = 200,
 	click_function = 'discardSecondary11',
 	function_owner = self,
-	position = {-1.5, -0.05, -5.95},
+	position = {1.5, -0.05, 58.8},
 	rotation = {0, 90, 180},
 	tooltip = "Discard secondary 1"
 }
@@ -138,7 +139,7 @@ recycle11Btn = {
 	font_size = 200,
 	click_function = 'recycleSecondary11',
 	function_owner = self,
-	position = {0.0, -0.05, -5.95},
+	position = {3.0, -0.05, 58.8},
 	rotation = {0, 90, 180},
 	tooltip = "Recycle secondary 1"
 }
@@ -150,7 +151,7 @@ discard12Btn = {
 	font_size = 200,
 	click_function = 'discardSecondary12',
 	function_owner = self,
-	position = {-1.5, -0.05, -1.75},
+	position = {1.5, -0.05, 60.9},
 	rotation = {0, 90, 180},
 	tooltip = "Discard secondary 2"
 }
@@ -162,7 +163,7 @@ recycle12Btn = {
 	font_size = 200,
 	click_function = 'recycleSecondary12',
 	function_owner = self,
-	position = {0.0, -0.05, -1.75},
+	position = {3.0, -0.05, 60.9},
 	rotation = {0, 90, 180},
 	tooltip = "Recycle secondary 2"
 }
@@ -174,7 +175,7 @@ discard21Btn = {
 	font_size = 200,
 	click_function = 'discardSecondary21',
 	function_owner = self,
-	position = {-1.5, -0.05, -0.3},
+	position = {1.5, -0.05, 63.1},
 	rotation = {0, 90, 180},
 	tooltip = "Discard secondary 1"
 }
@@ -186,7 +187,7 @@ recycle21Btn = {
 	font_size = 200,
 	click_function = 'recycleSecondary21',
 	function_owner = self,
-	position = {0.0, -0.05, -0.3},
+	position = {3.0, -0.05, 63.1},
 	rotation = {0, 90, 180},
 	tooltip = "Recycle secondary 1"
 }
@@ -198,7 +199,7 @@ discard22Btn = {
 	font_size = 200,
 	click_function = 'discardSecondary22',
 	function_owner = self,
-	position = {-1.5, -0.05, 3.9},
+	position = {1.5, -0.05, 65.2},
 	rotation = {0, 90, 180},
 	tooltip = "Discard secondary 2"
 }
@@ -210,7 +211,7 @@ recycle22Btn = {
 	font_size = 200,
 	click_function = 'recycleSecondary22',
 	function_owner = self,
-	position = {0.0, -0.05, 3.9},
+	position = {3.0, -0.05, 65.2},
 	rotation = {0, 90, 180},
 	tooltip = "Recycle secondary 2"
 }
@@ -222,7 +223,7 @@ draw1Btn = {
 	font_size = 200,
 	click_function = 'drawSecondary1',
 	function_owner = self,
-	position = {-0.75, -0.05, -7.0},
+	position = {2.25, -0.05, 57.7},
 	rotation = {0, 90, 180},
 	tooltip = "Draw"
 }
@@ -234,7 +235,7 @@ draw2Btn = {
 	font_size = 200,
 	click_function = 'drawSecondary2',
 	function_owner = self,
-	position = {-0.75, -0.05, 4.95},
+	position = {2.25, -0.05, 66.3},
 	rotation = {0, 90, 180},
 	tooltip = "Draw"
 }
@@ -246,7 +247,7 @@ chlDrawBtn = {
 	font_size = 200,
 	click_function = 'drawChallenger',
 	function_owner = self,
-	position = {-3.25, -0.05, -2.0},
+	position = {4.5, -0.05, 61.7},
 	rotation = {0, 90, 180},
 	tooltip = "Draw"
 }
@@ -258,7 +259,7 @@ chlDiscardBtn = {
 	font_size = 200,
 	click_function = 'discardChallenger',
 	function_owner = self,
-	position = {-3.25, -0.05, 0},
+	position = {4.5, -0.05, 63.8},
 	rotation = {0, 90, 180},
 	tooltip = "Discard"
 }
@@ -316,7 +317,7 @@ function onload(save_data)
 			button[i][j] = {}
 			b_zpos = 1.2
 
-			-- k is index - primary, secondary 1, secondary 2, challenger
+			-- k is index - turn sum, secondary 1, secondary 2, primary
 			for k=1,4 do
 				button[i][j][k] = {}
 
@@ -336,26 +337,32 @@ function onload(save_data)
 				newButton.index = b_index
 				b_index = b_index + 1
 
-				local actual_zpos = b_zpos
-				if i == 1 then
-					actual_zpos = actual_zpos * -1
-				end
-				actual_zpos = actual_zpos + b_zoffset
-				b_zpos = b_zpos + 0.66
+					local actual_zpos = b_zpos
+					if i == 1 then
+						actual_zpos = actual_zpos * -1
+					end
+					actual_zpos = actual_zpos + b_zoffset
+					if k == BTN_K_IX_TURN_SUM then
+						if i == 1 then
+							actual_zpos = actual_zpos + TURN_SUM_CENTER_SHIFT
+						else
+							actual_zpos = actual_zpos - TURN_SUM_CENTER_SHIFT
+						end
+					end
+					b_zpos = b_zpos + 0.66
 
-				b_ypos = -0.05
-				if k == BTN_K_IX_CHALLENGER and j == 1 then
-					-- Challenger button is only for rounds 2 onwards
-					b_ypos = 0.1
-				end
+					newButton.position = {b_xpos, -0.05, actual_zpos}
 
-				newButton.position = {b_xpos, b_ypos, actual_zpos}
+					button[i][j][k][BTN_L_IX_SCORE] = newButton
+					self.createButton(newButton)
 
-				button[i][j][k][BTN_L_IX_SCORE] = newButton
-				self.createButton(newButton)
+					if k == BTN_K_IX_TURN_SUM then
+						b_zpos = b_zpos + 0.8
+						goto continue_score_column
+					end
 
-				for l=BTN_L_IX_PLUS,BTN_L_IX_MINUS do
-					local smallButton = {
+					for l=BTN_L_IX_PLUS,BTN_L_IX_MINUS do
+						local smallButton = {
 						index = 0,
 						width = 150,
 						height = 250,
@@ -377,28 +384,23 @@ function onload(save_data)
 					end
 					actual_zpos = actual_zpos + b_zoffset
 
-					b_ypos = -0.05
-					if k == BTN_K_IX_CHALLENGER and j == 1 then
-						-- Challenger button is only for rounds 2 onwards
-						b_ypos = 0.1
-					end
-
-					if l == BTN_L_IX_PLUS then
-						smallButton.position = {b_xpos - 0.25, b_ypos, actual_zpos}
-						smallButton.label = "+"
-						smallButton.click_function = 'plus_' .. i .. j .. k
-					else
-						smallButton.position = {b_xpos + 0.25, b_ypos, actual_zpos}
-						smallButton.label = "-"
-						smallButton.click_function = 'minus_' .. i .. j .. k
-					end
+						if l == BTN_L_IX_PLUS then
+							smallButton.position = {b_xpos - 0.25, -0.05, actual_zpos}
+							smallButton.label = "+"
+							smallButton.click_function = 'plus_' .. i .. j .. k
+						else
+							smallButton.position = {b_xpos + 0.25, -0.05, actual_zpos}
+							smallButton.label = "-"
+							smallButton.click_function = 'minus_' .. i .. j .. k
+						end
 
 					button[i][j][k][l] = smallButton
 					self.createButton(smallButton)
 				end -- l-loop
 
-				b_zpos = b_zpos + 0.8
-			end	-- k-loop
+					b_zpos = b_zpos + 0.8
+					::continue_score_column::
+				end	-- k-loop
 
 			b_xpos = b_xpos + 1.55
 		end -- j-loop
@@ -531,31 +533,44 @@ function updateScore(i, j, k)
 	-- scoring component K having changed.
 
 	-- Update the button to reflect the new score.
-	button[i][j][k][BTN_L_IX_SCORE].label = tostring( scores[i][j][k] )
+	local displayScore = scores[i][j][k]
+	if k == BTN_K_IX_TURN_SUM then
+		displayScore = roundSum(i, j)
+	end
+	button[i][j][k][BTN_L_IX_SCORE].label = tostring(displayScore)
 	self.editButton(button[i][j][k][BTN_L_IX_SCORE])
+
+	if k ~= BTN_K_IX_TURN_SUM then
+		button[i][j][BTN_K_IX_TURN_SUM][BTN_L_IX_SCORE].label = tostring(roundSum(i, j))
+		self.editButton(button[i][j][BTN_K_IX_TURN_SUM][BTN_L_IX_SCORE])
+	end
 
 	-- Recalculate the player's score and update the corresponding button.
 	playerTotal[i].label = tostring( playerSum(i) )
 	self.editButton(playerTotal[i])
 end
 
+function roundSum(pId, roundId)
+	return
+		safeScoreNumber(scores[pId][roundId][BTN_K_IX_PRIMARY]) +
+		safeScoreNumber(scores[pId][roundId][BTN_K_IX_SECONDARY_1]) +
+		safeScoreNumber(scores[pId][roundId][BTN_K_IX_SECONDARY_2])
+end
+
 function playerSum(pId)
 	local pri_sum = 0
 	local sec_sum = 0
-	local chl_sum = 0
 
 	for j = 1,5 do
 		pri_sum = pri_sum + scores[pId][j][BTN_K_IX_PRIMARY]
 		sec_sum = sec_sum + scores[pId][j][BTN_K_IX_SECONDARY_1]
 		sec_sum = sec_sum + scores[pId][j][BTN_K_IX_SECONDARY_2]
-		chl_sum = chl_sum + scores[pId][j][BTN_K_IX_CHALLENGER]
 	end
-	if pri_sum > 50 then pri_sum = 50 end
-	if sec_sum > 40 then sec_sum = 40 end
-	if chl_sum > 12 then chl_sum = 12 end
+	if pri_sum > 90 then pri_sum = 90 end
+	if sec_sum > 70 then sec_sum = 70 end
 
-	local score = pri_sum + sec_sum + chl_sum + 10
-	if score > 100 then score = 100 end
+	local score = pri_sum + sec_sum + 10
+	if score > 200 then score = 200 end
 	-- painted army gives +10
 
 	Global.UI.setAttribute("VPWatch" .. pId, "text", (pId == 1 and "VP: " or "VP: ") .. score)
@@ -586,13 +601,11 @@ function getRoundSummaryForPlayer(pId)
 		local primary = safeScoreNumber(scores[pId][j][BTN_K_IX_PRIMARY])
 		local secondary1 = safeScoreNumber(scores[pId][j][BTN_K_IX_SECONDARY_1])
 		local secondary2 = safeScoreNumber(scores[pId][j][BTN_K_IX_SECONDARY_2])
-		local challenger = safeScoreNumber(scores[pId][j][BTN_K_IX_CHALLENGER])
 		table.insert(roundSummary, {
 			round = j,
 			primary = primary,
 			secondary = secondary1 + secondary2,
-			challenger = challenger,
-			total = primary + secondary1 + secondary2 + challenger
+			total = primary + secondary1 + secondary2
 		})
 	end
 	return roundSummary
@@ -606,12 +619,10 @@ function getMatchSummary()
 	local redPrimary = sumScoreComponent(1, BTN_K_IX_PRIMARY, 50)
 	local redSecondary = sumScoreComponent(1, BTN_K_IX_SECONDARY_1, nil) + sumScoreComponent(1, BTN_K_IX_SECONDARY_2, nil)
 	if redSecondary > 40 then redSecondary = 40 end
-	local redChallenger = sumScoreComponent(1, BTN_K_IX_CHALLENGER, 12)
 
 	local bluePrimary = sumScoreComponent(2, BTN_K_IX_PRIMARY, 50)
 	local blueSecondary = sumScoreComponent(2, BTN_K_IX_SECONDARY_1, nil) + sumScoreComponent(2, BTN_K_IX_SECONDARY_2, nil)
 	if blueSecondary > 40 then blueSecondary = 40 end
-	local blueChallenger = sumScoreComponent(2, BTN_K_IX_CHALLENGER, 12)
 
 	local redRounds = getRoundSummaryForPlayer(1)
 	local blueRounds = getRoundSummaryForPlayer(2)
@@ -628,7 +639,6 @@ function getMatchSummary()
 			name = redName,
 			primary = redPrimary,
 			secondary = redSecondary,
-			challenger = redChallenger,
 			painted = 10,
 			total = playerSum(1),
 			rounds = redRounds
@@ -637,7 +647,6 @@ function getMatchSummary()
 			name = blueName,
 			primary = bluePrimary,
 			secondary = blueSecondary,
-			challenger = blueChallenger,
 			painted = 10,
 			total = playerSum(2),
 			rounds = blueRounds

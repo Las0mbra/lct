@@ -350,6 +350,16 @@ function spawnOppositeForGUID(guid)
     })
 end
 
+function hideMissionDeckUntilSelected(deckGUID)
+    local deck = getObjectFromGUID(deckGUID)
+    if not deck then return end
+
+    deck.setPosition({85.0, -5.0, 4.75})
+    deck.locked = true
+    deck.tooltip = false
+    deck.interactable = false
+end
+
 function onLoad(saved_data)
     --addHotkey("Tag Selected as Red", tagSelectedAsRed)
     --addHotkey("Tag Selected as Blue", tagSelectedAsBlue)
@@ -367,6 +377,9 @@ function onLoad(saved_data)
         redPlayerID = ""
         bluePlayerID = ""
         packSelected = nil
+    end
+    if not packSelected then
+        hideMissionDeckUntilSelected(redSecondaryDeck_GUID)
     end
     ---- end loading
     if allowMenu then
@@ -430,7 +443,7 @@ end
 function setMissionPack(params)
     packSelected = params.pack
     redSecondaryDeck = getObjectFromGUID(missionPackData[packSelected].redSecondaryDeck_GUID)
-    blueSecondaryDeck = redSecondaryDeck.clone({position = redSecondaryDeck.getPosition()})
+    blueSecondaryDeck = redSecondaryDeck.clone({position = {85.0, 1.0, -4.75}})
     missionPackData[packSelected].blueSecondaryDeck_GUID = blueSecondaryDeck.getGUID()
 end
 

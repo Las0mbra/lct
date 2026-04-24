@@ -2180,11 +2180,11 @@ function selectMissionPack(packIndex)
     deploymentDeck = getObjectFromGUID(missionPackData.deploymentDeck_GUID)
     primaryDeck = getObjectFromGUID(missionPackData.primaryDeck_GUID)
 
-    deploymentDeck.setPosition({79.00, 1.00, 4.76})
+    deploymentDeck.setPosition({84.50, 1.00, 5.20})
     deploymentDeck.locked = false
     deploymentDeck.tooltip = true
     deploymentDeck.interactable = true
-    primaryDeck.setPosition({79.00, 1.00, -4.76})
+    primaryDeck.setPosition({84.50, 1.00, -5.20})
     primaryDeck.locked = false
     primaryDeck.tooltip = true
     primaryDeck.interactable = true
