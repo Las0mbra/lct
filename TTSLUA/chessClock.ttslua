@@ -58,8 +58,8 @@ holdColor_1 ="" holdColor_2 ="" holdColor=""
 holdPlayer_1="" holdPlayer_2=""
 
 data = {
-	start_1  = 0      ,start_2     = 0,
-	seconds_1= 0      ,seconds_2   = 0,
+	start_1  = 5400   ,start_2     = 5400,
+	seconds_1= 5400   ,seconds_2   = 5400,
 	bonus_1  = 0      ,bonus_2     = 0,
 	delay_1  = 0      ,delay_2     = 0,
 	selDigit = 6      ,delayed     = 0,
@@ -932,7 +932,7 @@ function SubTime2() data.seconds_2 = math.max(0, data.seconds_2 - 300); DisplayC
 -- Calculates numbers for UI clock
 function DisplayUIClock(which) -- which 1,2
 	ensureChessStopwatchUI()
-	local clockString = string.format("%02d:%02d", math.floor(hours), math.floor(minutes))
+	local clockString = string.format("%02d:%02d:%02d", math.floor(hours), math.floor(minutes), math.floor(secs))
 
 	Global.UI.setAttribute("ChsStpWatch"..which, "text", clockString)
 end
