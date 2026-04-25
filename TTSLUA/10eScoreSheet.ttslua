@@ -616,13 +616,13 @@ function getMatchSummary()
 	local redName = (params and params.P1) or (Player.Red and Player.Red.steam_name) or "Red"
 	local blueName = (params and params.P2) or (Player.Blue and Player.Blue.steam_name) or "Blue"
 
-	local redPrimary = sumScoreComponent(1, BTN_K_IX_PRIMARY, 50)
+	local redPrimary = sumScoreComponent(1, BTN_K_IX_PRIMARY, 90)
 	local redSecondary = sumScoreComponent(1, BTN_K_IX_SECONDARY_1, nil) + sumScoreComponent(1, BTN_K_IX_SECONDARY_2, nil)
-	if redSecondary > 40 then redSecondary = 40 end
+	if redSecondary > 70 then redSecondary = 70 end
 
-	local bluePrimary = sumScoreComponent(2, BTN_K_IX_PRIMARY, 50)
+	local bluePrimary = sumScoreComponent(2, BTN_K_IX_PRIMARY, 90)
 	local blueSecondary = sumScoreComponent(2, BTN_K_IX_SECONDARY_1, nil) + sumScoreComponent(2, BTN_K_IX_SECONDARY_2, nil)
-	if blueSecondary > 40 then blueSecondary = 40 end
+	if blueSecondary > 70 then blueSecondary = 70 end
 
 	local redRounds = getRoundSummaryForPlayer(1)
 	local blueRounds = getRoundSummaryForPlayer(2)
