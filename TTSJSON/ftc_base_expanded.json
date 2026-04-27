@@ -216,194 +216,7 @@
   "LuaScript": "",
   "LuaScriptState": "{\"svredPlayerID\":\"\"}",
   "XmlUI": "<!-- Xml UI. See documentation: https://api.tabletopsimulator.com/ui/introUI/ -->\r\n<Defaults>\r\n  <Button width=\"550\" height=\"300\" fontSize=\"40\" onClick=\"\" fontStyle=\"Bold\"/>\r\n  <Text fontSize=\"100\" color=\"#000000\" fontStyle=\"Bold\"/>\r\n</Defaults>\r\n\r\n<Panel id=\"redirect\" active=\"false\" position=\"0 0 0\" scale=\"0.6 0.6 0.6\" offsetXY=\"0 0\" color=\"#dbeaf9\" width=\"1200\" height=\"800\" rectAlignment=\"MiddleCenter\">\r\n  <Text offsetXY=\"0 350\" fontSize=\"80\" color=\"#E74C3C\" fontStyle=\"Bold\">WARNING</Text>\r\n\r\n  <Text id=\"coreRedirect\" offsetXY=\"0 0\" fontSize=\"40\" color=\"#ECF0F1\">\r\n      PLEASE WAIT FOR LOADING\r\n  </Text>\r\n\r\n  <Button id=\"closeRedirectBtn\" active=\"true\" offsetXY=\"0 -400\" color=\"#1A1A1A\" textColor=\"#FFFFFF\" width=\"500\" height=\"100\" fontSize=\"40\" fontStyle=\"Bold\" onClick=\"closeRedir\" outline=\"#E74C3C\" outlineSize=\"5\" roundEdges=\"true\">CLOSE</Button>\r\n</Panel>\r\n\r\n<Panel id=\"main\" active=\"false\" position=\"0 0 0\" scale=\"0.5 0.5 0.5\" offsetXY=\"0 0\" color=\"#dbeaf9\" outline=\"#34495E\" outlineSize=\"8\" width=\"1600\" height=\"1000\" rectAlignment=\"MiddleCenter\" visibility=\"Diamonds\">\r\n  <Text offsetXY=\"0 400\" fontSize=\"70\" color=\"#2C3E50\" fontStyle=\"Bold\">CHOOSE YOUR SEAT</Text>\r\n\r\n  <Button id=\"redBtn\" offsetXY=\"-400 150\" color=\"#DA1917\" textColor=\"#FFFFFF\" width=\"500\" height=\"150\" fontSize=\"45\" roundEdges=\"true\" onClick=\"placeToRed\">Red Player</Button>\r\n  <Button id=\"blueBtn\" offsetXY=\"400 150\" color=\"#1E87FF\" textColor=\"#FFFFFF\" width=\"500\" height=\"150\" fontSize=\"45\" roundEdges=\"true\" onClick=\"placeToBlue\">Blue Player</Button>\r\n\r\n  <Text fontSize=\"50\" color=\"#E74C3C\" offsetXY=\"0 -50\" fontStyle=\"Bold\">USE OTHER PLAYER COLORS AT YOUR OWN RISK!</Text>\r\n\r\n  <Button id=\"greyBtn\" offsetXY=\"0 -200\" color=\"#BDC3C7\" textColor=\"#2C3E50\" width=\"1000\" height=\"150\" fontSize=\"45\" roundEdges=\"true\" onClick=\"placeToGray\">Spectator</Button>\r\n\r\n  <Button id=\"closeBtn\" offsetXY=\"0 -500\" color=\"#2C3E50\" textColor=\"#FFFFFF\" width=\"500\" height=\"100\" fontSize=\"40\" fontStyle=\"Bold\" onClick=\"closeMenu\" outline=\"#34495E\" outlineSize=\"5\" roundEdges=\"true\">CLOSE MENU</Button>\r\n</Panel>\r\n\r\n<Panel id=\"passTurn\" active=\"true\" position=\"525 495 0\" scale=\"0.5 0.5 0.5\" offsetXY=\"40 0\" color=\"#00000000\" visibility=\"Black\">\r\n  <Button id=\"passTurnBtn\" offsetXY=\"0 0\" color=\"#C0392B\" textColor=\"#FFFFFF\" width=\"200\" height=\"180\" fontSize=\"40\" fontStyle=\"Bold\" roundEdges=\"true\" onClick=\"nextPhase\"></Button>\r\n  <Text id=\"passTurnTxt\" offsetXY=\"0 0\" color=\"#FFFFFF\" width=\"180\" height=\"180\" fontSize=\"35\" fontStyle=\"Bold\" onClick=\"nextPhase\">NEXT PHASE</Text>\r\n</Panel>",
-  "VectorLines": [
-    {
-      "points3": [
-        {
-          "x": 68.5,
-          "y": 0.9711361,
-          "z": 9.2
-        },
-        {
-          "x": 68.5,
-          "y": 0.9711361,
-          "z": 6.9
-        },
-        {
-          "x": 72.0,
-          "y": 0.9711361,
-          "z": 6.9
-        },
-        {
-          "x": 72.0,
-          "y": 0.9711361,
-          "z": 9.2
-        }
-      ],
-      "color": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "thickness": 0.1,
-      "loop": true
-    },
-    {
-      "points3": [
-        {
-          "x": 76.5,
-          "y": 0.9711361,
-          "z": 9.2
-        },
-        {
-          "x": 76.5,
-          "y": 0.9711361,
-          "z": 6.9
-        },
-        {
-          "x": 73.0,
-          "y": 0.9711361,
-          "z": 6.9
-        },
-        {
-          "x": 73.0,
-          "y": 0.9711361,
-          "z": 9.2
-        }
-      ],
-      "color": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "thickness": 0.1,
-      "loop": true
-    },
-    {
-      "points3": [
-        {
-          "x": 77.5,
-          "y": 0.9711361,
-          "z": 9.2
-        },
-        {
-          "x": 77.5,
-          "y": 0.9711361,
-          "z": 6.9
-        },
-        {
-          "x": 81.0,
-          "y": 0.9711361,
-          "z": 6.9
-        },
-        {
-          "x": 81.0,
-          "y": 0.9711361,
-          "z": 9.2
-        }
-      ],
-      "color": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "thickness": 0.1,
-      "loop": true
-    },
-    {
-      "points3": [
-        {
-          "x": 68.5,
-          "y": 0.9711361,
-          "z": -9.2
-        },
-        {
-          "x": 68.5,
-          "y": 0.9711361,
-          "z": -6.9
-        },
-        {
-          "x": 72.0,
-          "y": 0.9711361,
-          "z": -6.9
-        },
-        {
-          "x": 72.0,
-          "y": 0.9711361,
-          "z": -9.2
-        }
-      ],
-      "color": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "thickness": 0.1,
-      "loop": true
-    },
-    {
-      "points3": [
-        {
-          "x": 76.5,
-          "y": 0.9711361,
-          "z": -9.2
-        },
-        {
-          "x": 76.5,
-          "y": 0.9711361,
-          "z": -6.9
-        },
-        {
-          "x": 73.0,
-          "y": 0.9711361,
-          "z": -6.9
-        },
-        {
-          "x": 73.0,
-          "y": 0.9711361,
-          "z": -9.2
-        }
-      ],
-      "color": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "thickness": 0.1,
-      "loop": true
-    },
-    {
-      "points3": [
-        {
-          "x": 77.5,
-          "y": 0.9711361,
-          "z": -9.2
-        },
-        {
-          "x": 77.5,
-          "y": 0.9711361,
-          "z": -6.9
-        },
-        {
-          "x": 81.0,
-          "y": 0.9711361,
-          "z": -6.9
-        },
-        {
-          "x": 81.0,
-          "y": 0.9711361,
-          "z": -9.2
-        }
-      ],
-      "color": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "thickness": 0.1,
-      "loop": true
-    }
-  ],
+  "VectorLines": [],
   "SnapPoints": [
     {
       "Position": {
@@ -423,9 +236,9 @@
     },
     {
       "Position": {
-        "x": 79.25,
-        "y": 0.9611349,
-        "z": -8.05
+        "x": 75.47,
+        "y": 1.0,
+        "z": -9.5
       },
       "Rotation": {
         "x": 0.0,
@@ -21284,7 +21097,7 @@
       "GUID": "af2ec6",
       "Name": "3DText",
       "Transform": {
-        "posX": 75.5,
+        "posX": 79.02,
         "posY": 0.961133659,
         "posZ": 38.0,
         "rotX": 90.0,
@@ -21322,7 +21135,7 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "Text": {
-        "Text": "Objective\ntokens",
+        "Text": "",
         "colorstate": {
           "r": 1.0,
           "g": 1.0,
@@ -28300,113 +28113,7 @@
       "LuaScript": "",
       "LuaScriptState": "{\"blueUsingFixed\":false,\"redUsingFixed\":false,\"scores\":[[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]],\"scoresheetActive\":true}",
       "XmlUI": "",
-      "AttachedSnapPoints": [
-        {
-          "Position": {
-            "x": 5,
-            "y": 0,
-            "z": -5.75
-          },
-          "Rotation": {
-            "x": 0,
-            "y": 270,
-            "z": 180
-          },
-          "Tags": [
-            "deploymentCard"
-          ]
-        },
-        {
-          "Position": {
-            "x": 5,
-            "y": 0,
-            "z": 3.75
-          },
-          "Rotation": {
-            "x": 0,
-            "y": 270,
-            "z": 180
-          },
-          "Tags": [
-            "primaryCard"
-          ]
-        },
-        {
-          "Position": {
-            "x": 5,
-            "y": 0,
-            "z": -1
-          },
-          "Rotation": {
-            "x": -2.035555e-13,
-            "y": 270.0122,
-            "z": 180
-          },
-          "Tags": [
-            "challengerCard"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.755,
-            "y": -1,
-            "z": -4.7709856
-          },
-          "Rotation": {
-            "x": 0,
-            "y": 270,
-            "z": 0
-          },
-          "Tags": [
-            "secondaryCard"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.755,
-            "y": -1,
-            "z": -2.90118027
-          },
-          "Rotation": {
-            "x": 0,
-            "y": 270,
-            "z": 0
-          },
-          "Tags": [
-            "secondaryCard"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.755,
-            "y": -1,
-            "z": 0.859510839
-          },
-          "Rotation": {
-            "x": 0,
-            "y": 270,
-            "z": 0
-          },
-          "Tags": [
-            "secondaryCard"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.755,
-            "y": -1,
-            "z": 2.72940254
-          },
-          "Rotation": {
-            "x": 0,
-            "y": 270,
-            "z": 0
-          },
-          "Tags": [
-            "secondaryCard"
-          ]
-        }
-      ]
+      "AttachedSnapPoints": []
     },
     {
       "GUID": "d618cb",
@@ -37224,516 +36931,6 @@
       ]
     },
     {
-      "GUID": "d17b70",
-      "Name": "3DText",
-      "Transform": {
-        "posX": 81.7,
-        "posY": 0.961133063,
-        "posZ": 8.05,
-        "rotX": 90.0,
-        "rotY": 90.0,
-        "rotZ": 0.0,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "Text": {
-        "Text": "Discards",
-        "colorstate": {
-          "r": 1.0,
-          "g": 1.0,
-          "b": 1.0
-        },
-        "fontSize": 32
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "a245ad",
-      "Name": "3DText",
-      "Transform": {
-        "posX": 77.2,
-        "posY": 0.96113354,
-        "posZ": 8.05,
-        "rotX": 90.0,
-        "rotY": 90.0,
-        "rotZ": 0.0,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "Text": {
-        "Text": "Deck",
-        "colorstate": {
-          "r": 1.0,
-          "g": 1.0,
-          "b": 1.0
-        },
-        "fontSize": 32
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "d17b71",
-      "Name": "3DText",
-      "Transform": {
-        "posX": 81.7,
-        "posY": 0.961133063,
-        "posZ": -8.05,
-        "rotX": 90.0,
-        "rotY": 90.0,
-        "rotZ": 0.0,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "Text": {
-        "Text": "Discards",
-        "colorstate": {
-          "r": 1.0,
-          "g": 1.0,
-          "b": 1.0
-        },
-        "fontSize": 32
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "a245ae",
-      "Name": "3DText",
-      "Transform": {
-        "posX": 77.2,
-        "posY": 0.96113354,
-        "posZ": -8.05,
-        "rotX": 90.0,
-        "rotY": 90.0,
-        "rotZ": 0.0,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "Text": {
-        "Text": "Deck",
-        "colorstate": {
-          "r": 1.0,
-          "g": 1.0,
-          "b": 1.0
-        },
-        "fontSize": 32
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "dcf95b",
-      "Name": "ScriptingTrigger",
-      "Transform": {
-        "posX": 79.0,
-        "posY": 1.0,
-        "posZ": 4.757527,
-        "rotX": 0.0,
-        "rotY": 89.79741,
-        "rotZ": 0.0,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "",
-      "Description": "Deployment card zone",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0,
-        "a": 0.509803951
-      },
-      "Tags": [
-        "deploymentCard"
-      ],
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "740abc",
-      "Name": "ScriptingTrigger",
-      "Transform": {
-        "posX": 79.0,
-        "posY": 1.0,
-        "posZ": -4.76,
-        "rotX": 0.0,
-        "rotY": 90.0,
-        "rotZ": 0.0,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "",
-      "Description": "Primary card zone",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0,
-        "a": 0.509803951
-      },
-      "Tags": [
-        "primaryCard"
-      ],
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "0ec215",
-      "Name": "ScriptingTrigger",
-      "Transform": {
-        "posX": 74.7,
-        "posY": 1.0,
-        "posZ": 3.82045436,
-        "rotX": 0.0,
-        "rotY": 90.13061,
-        "rotZ": 0.0,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "",
-      "Description": "Secondary card 1-1 zone",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0,
-        "a": 0.509803951
-      },
-      "Tags": [
-        "secondaryCard"
-      ],
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "d865d4",
-      "Name": "ScriptingTrigger",
-      "Transform": {
-        "posX": 74.7,
-        "posY": 1.0,
-        "posZ": 1.85399938,
-        "rotX": 0.0,
-        "rotY": 90.13061,
-        "rotZ": 0.0,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "",
-      "Description": "Secondary card 1-2 zone",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0,
-        "a": 0.509803951
-      },
-      "Tags": [
-        "secondaryCard"
-      ],
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "3c8d71",
-      "Name": "ScriptingTrigger",
-      "Transform": {
-        "posX": 74.7,
-        "posY": 1.0,
-        "posZ": -1.72649407,
-        "rotX": 0.0,
-        "rotY": 90.13061,
-        "rotZ": 0.0,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "",
-      "Description": "Secondary card 2-1 zone",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0,
-        "a": 0.509803951
-      },
-      "Tags": [
-        "secondaryCard"
-      ],
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "88cac4",
-      "Name": "ScriptingTrigger",
-      "Transform": {
-        "posX": 74.7,
-        "posY": 1.0,
-        "posZ": -3.75490713,
-        "rotX": 0.0,
-        "rotY": 90.13061,
-        "rotZ": 0.0,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "",
-      "Description": "Secondary card 2-2 zone",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0,
-        "a": 0.509803951
-      },
-      "Tags": [
-        "secondaryCard"
-      ],
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
       "GUID": "88785f",
       "Name": "Custom_PDF",
       "Transform": {
@@ -40089,55 +39286,6 @@
       ]
     },
     {
-      "GUID": "cdecf2",
-      "Name": "ScriptingTrigger",
-      "Transform": {
-        "posX": 79.0,
-        "posY": 1.0,
-        "posZ": 0.0,
-        "rotX": 0.0,
-        "rotY": 90.13061,
-        "rotZ": 0.0,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "",
-      "Description": "Active challenger card zone",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0,
-        "a": 0.509803951
-      },
-      "Tags": [
-        "challengerCard"
-      ],
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
       "GUID": "ffdf05",
       "Name": "Deck",
       "Transform": {
@@ -40837,7 +39985,7 @@
       "Transform": {
         "posX": 73.00958,
         "posY": 0.961498857,
-        "posZ": 23.21604,
+        "posZ": 50.0,
         "rotX": 2.85785049e-08,
         "rotY": 269.992462,
         "rotZ": 5.12160554e-08,
@@ -40894,7 +40042,7 @@
       "Transform": {
         "posX": 68.0,
         "posY": -0.81,
-        "posZ": 23.14704,
+        "posZ": 50.0,
         "rotX": 0.0,
         "rotY": 90.0,
         "rotZ": 0.0,
@@ -40930,6 +40078,956 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "LuaScript": "function onLoad()\r\n local params = {\r\n        input_function = \"onInput\",\r\n        function_owner = self,\r\n        label = \"URL\",\r\n        position = {0, 1.81, 0},\r\n        rotation = {0, 180, 0},\r\n        width = 5000,\r\n        height = 480,\r\n        font_size = 420,\r\n        value = \"https://discord.gg/2eTs8DTEgt\",\r\n        tooltip = \"Click, then Ctrl+C to copy!\"\r\n    }\r\n    self.createInput(params)\r\nend\r\nfunction onInput(self, ply, text, selected)end",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "81591e",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": 75.47848,
+        "posY": 0.9049984,
+        "posZ": -13.4655,
+        "rotX": 2.05462584e-06,
+        "rotY": 269.992737,
+        "rotZ": -1.0048765e-05,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/15085181024976959748/6CC8ECA6F3EB3656D50EC38EEB8A72256BBE37A4/",
+        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/17013863559524789468/CBC60ACBD5926EAC97689A895CC9395476ECB502/",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 3,
+        "TypeIndex": 0,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 2.0,
+          "FresnelStrength": 0.0
+        },
+        "CastShadows": true
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "bbdb02",
+      "Name": "Deck",
+      "Transform": {
+        "posX": 79.02,
+        "posY": 1.0,
+        "posZ": -9.5,
+        "rotX": 0.000103597573,
+        "rotY": 270.000244,
+        "rotZ": 179.999939,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "Blue secondary mission cards",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.713235259,
+        "g": 0.713235259,
+        "b": 0.713235259
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": true,
+      "Hands": false,
+      "SidewaysCard": false,
+      "DeckIDs": [
+        151500,
+        151600,
+        151700,
+        151800,
+        151900,
+        152000,
+        152100,
+        152200,
+        152300,
+        152400,
+        147500
+      ],
+      "CustomDeck": {
+        "1515": {
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14438391282145051228/5559513E09C9B3BCC097ADED91C11574691D2A32/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+          "NumWidth": 1,
+          "NumHeight": 1,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 0
+        },
+        "1516": {
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9703423743288892679/409BCE0DEFDB480FCCA5BD997DF7766E393EAB13/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+          "NumWidth": 1,
+          "NumHeight": 1,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 0
+        },
+        "1517": {
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12312926078850000352/E8CF00412C0B3F6159578CBCF0605E3D2678F1A6/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+          "NumWidth": 1,
+          "NumHeight": 1,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 0
+        },
+        "1518": {
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13331213711534777578/7DEAFDCA97248D7B2BCAB1014A846D8D1B7A0D9E/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+          "NumWidth": 1,
+          "NumHeight": 1,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 0
+        },
+        "1519": {
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/15804317619141117136/B59713C9805B458E4D2A2DF0275F00EB4ECFE183/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+          "NumWidth": 1,
+          "NumHeight": 1,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 0
+        },
+        "1520": {
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9679163681827068080/1291BB3622EA4A00AFCC41A6602B597F2EE19C18/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+          "NumWidth": 1,
+          "NumHeight": 1,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 0
+        },
+        "1521": {
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9737026381923707981/76EE2F3DB04B37C3DE1484DECE6653E87EAB50BF/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+          "NumWidth": 1,
+          "NumHeight": 1,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 0
+        },
+        "1522": {
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/16854942453015063620/62EE64CF1DBBF9728CAA22EFE396AECA8F4DE58E/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+          "NumWidth": 1,
+          "NumHeight": 1,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 0
+        },
+        "1523": {
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10376215475773939083/0F74B2A87647D7D75DC64B24097E5767D9F31666/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+          "NumWidth": 1,
+          "NumHeight": 1,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 0
+        },
+        "1524": {
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18319401032101152713/463C110F8FF45591DD9CE6418084FC80F8B5E800/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+          "NumWidth": 1,
+          "NumHeight": 1,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 0
+        },
+        "1475": {
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14687090500853111990/2FFC1DA1DD3B000C1E7DB1BB5FEB4FA6F0154057/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+          "NumWidth": 1,
+          "NumHeight": 1,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 0
+        }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "124dbd",
+          "Name": "CardCustom",
+          "Transform": {
+            "posX": -4.53120041,
+            "posY": 1.14887011,
+            "posZ": 7.154613,
+            "rotX": 0.00209191884,
+            "rotY": 180.0469,
+            "rotZ": 177.2802,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Area Denial",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "secondaryCard"
+          ],
+          "LayoutGroupSortIndex": 2,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 151500,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "273": {
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14438391282145051228/5559513E09C9B3BCC097ADED91C11574691D2A32/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "205d90",
+          "Name": "CardCustom",
+          "Transform": {
+            "posX": -5.17530251,
+            "posY": 1.09764,
+            "posZ": 7.265357,
+            "rotX": -1.08471049e-07,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Secure No Man's Land",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "secondaryCard"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 151600,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "272": {
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9703423743288892679/409BCE0DEFDB480FCCA5BD997DF7766E393EAB13/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "1dcc05",
+          "Name": "CardCustom",
+          "Transform": {
+            "posX": -4.61792326,
+            "posY": 1.09384263,
+            "posZ": 7.18739843,
+            "rotX": 7.10398851e-09,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Sabotage",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "secondaryCard"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 151700,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "271": {
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12312926078850000352/E8CF00412C0B3F6159578CBCF0605E3D2678F1A6/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "2cb755",
+          "Name": "CardCustom",
+          "Transform": {
+            "posX": -5.13384676,
+            "posY": 1.07739878,
+            "posZ": 7.2978487,
+            "rotX": 1.78068248e-07,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Marked For Death",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "secondaryCard"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 151800,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "270": {
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13331213711534777578/7DEAFDCA97248D7B2BCAB1014A846D8D1B7A0D9E/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "cccff1",
+          "Name": "CardCustom",
+          "Transform": {
+            "posX": -5.051126,
+            "posY": 1.067861,
+            "posZ": 7.06958961,
+            "rotX": -1.35568357e-07,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Extend Battle Lines",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "secondaryCard"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 151900,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "268": {
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/15804317619141117136/B59713C9805B458E4D2A2DF0275F00EB4ECFE183/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "6ab973",
+          "Name": "CardCustom",
+          "Transform": {
+            "posX": -4.750141,
+            "posY": 1.05910623,
+            "posZ": 7.30969858,
+            "rotX": 1.226096e-07,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Defend Stronghold",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "secondaryCard"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 152000,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "269": {
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9679163681827068080/1291BB3622EA4A00AFCC41A6602B597F2EE19C18/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "453f71",
+          "Name": "CardCustom",
+          "Transform": {
+            "posX": -4.365032,
+            "posY": 1.04947233,
+            "posZ": 7.212378,
+            "rotX": -2.780032e-07,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Overwhelming Force",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "secondaryCard"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 152100,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "267": {
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9737026381923707981/76EE2F3DB04B37C3DE1484DECE6653E87EAB50BF/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "81d031",
+          "Name": "CardCustom",
+          "Transform": {
+            "posX": -4.23348331,
+            "posY": 1.0154475,
+            "posZ": 7.321577,
+            "rotX": -6.81768952e-08,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "No Prisoners",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "secondaryCard"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 152200,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "266": {
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/16854942453015063620/62EE64CF1DBBF9728CAA22EFE396AECA8F4DE58E/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "4a4bae",
+          "Name": "CardCustom",
+          "Transform": {
+            "posX": -4.4735,
+            "posY": 0.9736048,
+            "posZ": 7.13475561,
+            "rotX": -3.117385e-08,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "A Tempting Target",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "secondaryCard"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 152300,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "265": {
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10376215475773939083/0F74B2A87647D7D75DC64B24097E5767D9F31666/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "90873b",
+          "Name": "CardCustom",
+          "Transform": {
+            "posX": -4.47447348,
+            "posY": 0.9736048,
+            "posZ": 3.57049,
+            "rotX": -1.91424718e-07,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Recover Assets",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "secondaryCard"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 152400,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "274": {
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18319401032101152713/463C110F8FF45591DD9CE6418084FC80F8B5E800/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "90873c",
+          "Name": "CardCustom",
+          "Transform": {
+            "posX": -4.47447348,
+            "posY": 0.9736048,
+            "posZ": 3.57049,
+            "rotX": -1.91424718e-07,
+            "rotY": 180.0,
+            "rotZ": 180.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Display Of Might",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.713235259,
+            "g": 0.713235259,
+            "b": 0.713235259
+          },
+          "Tags": [
+            "secondaryCard"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "CardID": 147500,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "276": {
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14687090500853111990/2FFC1DA1DD3B000C1E7DB1BB5FEB4FA6F0154057/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
+              "NumWidth": 1,
+              "NumHeight": 1,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 0
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ]
+    },
+    {
+      "GUID": "88cac4",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 75.47,
+        "posY": 1.0,
+        "posZ": -9.5,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "",
+      "Description": "Secondary card 2-2 zone",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": ""
     }

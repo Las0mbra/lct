@@ -77,8 +77,8 @@ function onLoad(saved_data)
         otherSecondary1Zone = getObjectFromGUID(Global.getVar("secondary11CardZone_GUID"))
         otherSecondary2Zone = getObjectFromGUID(Global.getVar("secondary12CardZone_GUID"))
         gambitPosition = { x = 70.25, y = 1.5, z = -8.05 }
-        discardPosition = { x = 79.25, y = 1.5, z = -8.05 }
-        secondaryDeckPosition = { x = 74.75, y = 0.94, z = -8.05 }
+        discardPosition = { x = 75.47, y = 1.0, z = -9.50 }
+        secondaryDeckPosition = { x = 79.02, y = 1.0, z = -9.50 }
     end
     self.setScale({0.6,1,0.6})
     if selectedPack then
