@@ -36087,13 +36087,34 @@
     {
       "GUID": "b1e001",
       "Name": "ScriptingTrigger",
-      "Transform": {"posX": 79.02, "posY": 0.92, "posZ": -12.15, "rotX": 0.0, "rotY": 90.13061, "rotZ": 0.0, "scaleX": 3.0, "scaleY": 1.0, "scaleZ": 2.0},
+      "Transform": {
+        "posX": 79.02,
+        "posY": 0.92,
+        "posZ": -12.15,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
       "Nickname": "BlueSec1",
       "Description": "BlueSec1",
       "GMNotes": "",
-      "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
-      "ColorDiffuse": {"r": 0.2, "g": 0.45, "b": 1.0, "a": 0.35},
-      "Tags": ["secondaryCard"],
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.2,
+        "g": 0.45,
+        "b": 1.0,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
       "LayoutGroupSortIndex": 0,
       "Value": 0,
       "Locked": true,
@@ -36115,13 +36136,34 @@
     {
       "GUID": "b1e002",
       "Name": "ScriptingTrigger",
-      "Transform": {"posX": 79.02, "posY": 0.92, "posZ": -14.75, "rotX": 0.0, "rotY": 90.13061, "rotZ": 0.0, "scaleX": 3.0, "scaleY": 1.0, "scaleZ": 2.0},
+      "Transform": {
+        "posX": 79.02,
+        "posY": 0.92,
+        "posZ": -14.75,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
       "Nickname": "BlueSec2",
       "Description": "BlueSec2",
       "GMNotes": "",
-      "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
-      "ColorDiffuse": {"r": 0.2, "g": 0.45, "b": 1.0, "a": 0.35},
-      "Tags": ["secondaryCard"],
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.2,
+        "g": 0.45,
+        "b": 1.0,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
       "LayoutGroupSortIndex": 0,
       "Value": 0,
       "Locked": true,
@@ -36143,13 +36185,34 @@
     {
       "GUID": "b1e003",
       "Name": "ScriptingTrigger",
-      "Transform": {"posX": 79.02, "posY": 0.92, "posZ": -17.41, "rotX": 0.0, "rotY": 90.13061, "rotZ": 0.0, "scaleX": 3.0, "scaleY": 1.0, "scaleZ": 2.0},
+      "Transform": {
+        "posX": 79.02,
+        "posY": 0.92,
+        "posZ": -17.41,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
       "Nickname": "BlueSec3",
       "Description": "BlueSec3",
       "GMNotes": "",
-      "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
-      "ColorDiffuse": {"r": 0.2, "g": 0.45, "b": 1.0, "a": 0.35},
-      "Tags": ["secondaryCard"],
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.2,
+        "g": 0.45,
+        "b": 1.0,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
       "LayoutGroupSortIndex": 0,
       "Value": 0,
       "Locked": true,
@@ -36171,13 +36234,34 @@
     {
       "GUID": "b1e004",
       "Name": "ScriptingTrigger",
-      "Transform": {"posX": 75.48, "posY": 0.92, "posZ": -12.15, "rotX": 0.0, "rotY": 90.13061, "rotZ": 0.0, "scaleX": 3.0, "scaleY": 1.0, "scaleZ": 2.0},
+      "Transform": {
+        "posX": 75.48,
+        "posY": 0.92,
+        "posZ": -12.15,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
       "Nickname": "BlueSec4",
       "Description": "BlueSec4",
       "GMNotes": "",
-      "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
-      "ColorDiffuse": {"r": 0.2, "g": 0.45, "b": 1.0, "a": 0.35},
-      "Tags": ["secondaryCard"],
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.2,
+        "g": 0.45,
+        "b": 1.0,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
       "LayoutGroupSortIndex": 0,
       "Value": 0,
       "Locked": true,
@@ -36199,13 +36283,34 @@
     {
       "GUID": "b1e005",
       "Name": "ScriptingTrigger",
-      "Transform": {"posX": 75.48, "posY": 0.92, "posZ": -14.75, "rotX": 0.0, "rotY": 90.13061, "rotZ": 0.0, "scaleX": 3.0, "scaleY": 1.0, "scaleZ": 2.0},
+      "Transform": {
+        "posX": 75.48,
+        "posY": 0.92,
+        "posZ": -14.75,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
       "Nickname": "BlueSec5",
       "Description": "BlueSec5",
       "GMNotes": "",
-      "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
-      "ColorDiffuse": {"r": 0.2, "g": 0.45, "b": 1.0, "a": 0.35},
-      "Tags": ["secondaryCard"],
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.2,
+        "g": 0.45,
+        "b": 1.0,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
       "LayoutGroupSortIndex": 0,
       "Value": 0,
       "Locked": true,
@@ -36227,13 +36332,34 @@
     {
       "GUID": "b1e006",
       "Name": "ScriptingTrigger",
-      "Transform": {"posX": 75.48, "posY": 0.92, "posZ": -17.41, "rotX": 0.0, "rotY": 90.13061, "rotZ": 0.0, "scaleX": 3.0, "scaleY": 1.0, "scaleZ": 2.0},
+      "Transform": {
+        "posX": 75.48,
+        "posY": 0.92,
+        "posZ": -17.41,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
       "Nickname": "BlueSec6",
       "Description": "BlueSec6",
       "GMNotes": "",
-      "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
-      "ColorDiffuse": {"r": 0.2, "g": 0.45, "b": 1.0, "a": 0.35},
-      "Tags": ["secondaryCard"],
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.2,
+        "g": 0.45,
+        "b": 1.0,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
       "LayoutGroupSortIndex": 0,
       "Value": 0,
       "Locked": true,
@@ -36255,13 +36381,34 @@
     {
       "GUID": "b1e007",
       "Name": "ScriptingTrigger",
-      "Transform": {"posX": 71.90, "posY": 0.92, "posZ": -9.53, "rotX": 0.0, "rotY": 90.13061, "rotZ": 0.0, "scaleX": 3.0, "scaleY": 1.0, "scaleZ": 2.0},
+      "Transform": {
+        "posX": 71.9,
+        "posY": 0.92,
+        "posZ": -9.53,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
       "Nickname": "BlueSec7",
       "Description": "BlueSec7",
       "GMNotes": "",
-      "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
-      "ColorDiffuse": {"r": 0.2, "g": 0.45, "b": 1.0, "a": 0.35},
-      "Tags": ["secondaryCard"],
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.2,
+        "g": 0.45,
+        "b": 1.0,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
       "LayoutGroupSortIndex": 0,
       "Value": 0,
       "Locked": true,
@@ -36283,13 +36430,34 @@
     {
       "GUID": "b1e008",
       "Name": "ScriptingTrigger",
-      "Transform": {"posX": 71.90, "posY": 0.92, "posZ": -12.15, "rotX": 0.0, "rotY": 90.13061, "rotZ": 0.0, "scaleX": 3.0, "scaleY": 1.0, "scaleZ": 2.0},
+      "Transform": {
+        "posX": 71.9,
+        "posY": 0.92,
+        "posZ": -12.15,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
       "Nickname": "BlueSec8",
       "Description": "BlueSec8",
       "GMNotes": "",
-      "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
-      "ColorDiffuse": {"r": 0.2, "g": 0.45, "b": 1.0, "a": 0.35},
-      "Tags": ["secondaryCard"],
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.2,
+        "g": 0.45,
+        "b": 1.0,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
       "LayoutGroupSortIndex": 0,
       "Value": 0,
       "Locked": true,
@@ -36311,13 +36479,34 @@
     {
       "GUID": "b1e009",
       "Name": "ScriptingTrigger",
-      "Transform": {"posX": 71.90, "posY": 0.92, "posZ": -14.75, "rotX": 0.0, "rotY": 90.13061, "rotZ": 0.0, "scaleX": 3.0, "scaleY": 1.0, "scaleZ": 2.0},
+      "Transform": {
+        "posX": 71.9,
+        "posY": 0.92,
+        "posZ": -14.75,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
       "Nickname": "BlueSec9",
       "Description": "BlueSec9",
       "GMNotes": "",
-      "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
-      "ColorDiffuse": {"r": 0.2, "g": 0.45, "b": 1.0, "a": 0.35},
-      "Tags": ["secondaryCard"],
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.2,
+        "g": 0.45,
+        "b": 1.0,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
       "LayoutGroupSortIndex": 0,
       "Value": 0,
       "Locked": true,
@@ -36339,13 +36528,34 @@
     {
       "GUID": "b1e010",
       "Name": "ScriptingTrigger",
-      "Transform": {"posX": 71.90, "posY": 0.92, "posZ": -17.41, "rotX": 0.0, "rotY": 90.13061, "rotZ": 0.0, "scaleX": 3.0, "scaleY": 1.0, "scaleZ": 2.0},
+      "Transform": {
+        "posX": 71.9,
+        "posY": 0.92,
+        "posZ": -17.41,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
       "Nickname": "BlueSec10",
       "Description": "BlueSec10",
       "GMNotes": "",
-      "AltLookAngle": {"x": 0.0, "y": 0.0, "z": 0.0},
-      "ColorDiffuse": {"r": 0.2, "g": 0.45, "b": 1.0, "a": 0.35},
-      "Tags": ["secondaryCard"],
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.2,
+        "g": 0.45,
+        "b": 1.0,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
       "LayoutGroupSortIndex": 0,
       "Value": 0,
       "Locked": true,
@@ -36360,6 +36570,281 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "5423a5",
+      "Name": "3DText",
+      "Transform": {
+        "posX": 76.47,
+        "posY": 0.9999996,
+        "posZ": -3.95,
+        "rotX": 90.0,
+        "rotY": 89.71415,
+        "rotZ": 0.0,
+        "scaleX": 0.37,
+        "scaleY": 0.37,
+        "scaleZ": 1.0
+      },
+      "Nickname": "BlueSecName1",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "Text": {
+        "Text": "1.",
+        "OwnerSteamID": 76561198047190655,
+        "colorstate": {
+          "r": 1.0,
+          "g": 1.0,
+          "b": 1.0
+        },
+        "fontSize": 23
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "5423a6",
+      "Name": "3DText",
+      "Transform": {
+        "posX": 75.84,
+        "posY": 0.9999996,
+        "posZ": -3.95,
+        "rotX": 90.0,
+        "rotY": 89.71415,
+        "rotZ": 0.0,
+        "scaleX": 0.37,
+        "scaleY": 0.37,
+        "scaleZ": 1.0
+      },
+      "Nickname": "BlueSecName2",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "Text": {
+        "Text": "2.",
+        "OwnerSteamID": 76561198047190655,
+        "colorstate": {
+          "r": 1.0,
+          "g": 1.0,
+          "b": 1.0
+        },
+        "fontSize": 23
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "5423a7",
+      "Name": "3DText",
+      "Transform": {
+        "posX": 75.21,
+        "posY": 0.9999996,
+        "posZ": -3.95,
+        "rotX": 90.0,
+        "rotY": 89.71415,
+        "rotZ": 0.0,
+        "scaleX": 0.37,
+        "scaleY": 0.37,
+        "scaleZ": 1.0
+      },
+      "Nickname": "BlueSecName3",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "Text": {
+        "Text": "3.",
+        "OwnerSteamID": 76561198047190655,
+        "colorstate": {
+          "r": 1.0,
+          "g": 1.0,
+          "b": 1.0
+        },
+        "fontSize": 23
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "5423a8",
+      "Name": "3DText",
+      "Transform": {
+        "posX": 74.58,
+        "posY": 0.9999996,
+        "posZ": -3.95,
+        "rotX": 90.0,
+        "rotY": 89.71415,
+        "rotZ": 0.0,
+        "scaleX": 0.37,
+        "scaleY": 0.37,
+        "scaleZ": 1.0
+      },
+      "Nickname": "BlueSecName4",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "Text": {
+        "Text": "4.",
+        "OwnerSteamID": 76561198047190655,
+        "colorstate": {
+          "r": 1.0,
+          "g": 1.0,
+          "b": 1.0
+        },
+        "fontSize": 23
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "5423a9",
+      "Name": "3DText",
+      "Transform": {
+        "posX": 73.95,
+        "posY": 0.9999996,
+        "posZ": -3.95,
+        "rotX": 90.0,
+        "rotY": 89.71415,
+        "rotZ": 0.0,
+        "scaleX": 0.37,
+        "scaleY": 0.37,
+        "scaleZ": 1.0
+      },
+      "Nickname": "BlueSecName5",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "Text": {
+        "Text": "5.",
+        "OwnerSteamID": 76561198047190655,
+        "colorstate": {
+          "r": 1.0,
+          "g": 1.0,
+          "b": 1.0
+        },
+        "fontSize": 23
+      },
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": ""

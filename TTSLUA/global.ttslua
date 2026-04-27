@@ -95,6 +95,13 @@ blueSecondaryCardZone_GUIDs = {
     "b1e009",
     "b1e010",
 }
+blueSecondaryName_GUIDs = {
+    "5423a5",
+    "5423a6",
+    "5423a7",
+    "5423a8",
+    "5423a9",
+}
 challengerCardZone_GUID = "cdecf2"
 
 deploymentDeck_GUID = "2dc2e8"
@@ -445,11 +452,12 @@ function onLoad(saved_data)
             redCounter.setPosition({pos.x - 4.52, 1.12, pos.z})
         end
         local blueCounter = getObjectFromGUID(BlueTokenCounterGUID)
-        if blueCounter and blueVortex then
-            local pos = blueVortex.getPosition()
-            blueCounter.setPosition({pos.x + 4.52, 1.12, pos.z})
-        end
-    end, 2)
+	        if blueCounter and blueVortex then
+	            local pos = blueVortex.getPosition()
+	            blueCounter.setPosition({pos.x + 4.52, 1.12, pos.z})
+	        end
+	        refreshBlueSecondaryNames()
+	    end, 2)
 end
 
 function setMissionPack(params)
@@ -786,6 +794,84 @@ function getFirstOpenBlueSecondaryCardZone()
     return nil
 end
 
+function isBlueSecondaryCardZone(zone)
+    if not zone then
+        return false
+    end
+
+    local zoneGuid = zone.getGUID()
+    for _, guid in ipairs(blueSecondaryCardZone_GUIDs) do
+        if zoneGuid == guid then
+            return true
+        end
+    end
+
+    return false
+end
+
+function getBlueSecondaryCardName(zone)
+    if not zone then
+        return nil
+    end
+
+    for _, object in ipairs(zone.getObjects()) do
+        if object.tag == "Card" or object.tag == "Deck" then
+            local name = object.getName()
+            if name and name != "" then
+                return name
+            end
+        end
+    end
+
+    return nil
+end
+
+function setBlueSecondaryName(index, cardName)
+    local labelObj = getObjectFromGUID(blueSecondaryName_GUIDs[index])
+    if not labelObj then
+        return
+    end
+
+    local text = tostring(index) .. "."
+    if cardName and cardName != "" then
+        text = text .. " " .. cardName
+    end
+
+    labelObj.setValue(text)
+end
+
+function refreshBlueSecondaryNames()
+    local displayIndex = 1
+    for _, zoneGuid in ipairs(blueSecondaryCardZone_GUIDs) do
+        local zone = getObjectFromGUID(zoneGuid)
+        local cardName = getBlueSecondaryCardName(zone)
+        if cardName and displayIndex <= #blueSecondaryName_GUIDs then
+            setBlueSecondaryName(displayIndex, cardName)
+            displayIndex = displayIndex + 1
+        end
+    end
+
+    for index = displayIndex, #blueSecondaryName_GUIDs do
+        setBlueSecondaryName(index, nil)
+    end
+end
+
+function refreshBlueSecondaryNamesSoon()
+    Wait.time(refreshBlueSecondaryNames, 0.25)
+end
+
+function onObjectEnterScriptingZone(zone, object)
+    if isBlueSecondaryCardZone(zone) then
+        refreshBlueSecondaryNamesSoon()
+    end
+end
+
+function onObjectLeaveScriptingZone(zone, object)
+    if isBlueSecondaryCardZone(zone) then
+        refreshBlueSecondaryNamesSoon()
+    end
+end
+
 function drawBlueSecondaryToFirstOpenSlot()
     local slot = getFirstOpenBlueSecondaryCardZone()
     if not slot then
@@ -813,6 +899,7 @@ function drawBlueSecondaryToFirstOpenSlot()
         callback_function = function(card)
             Wait.frames(function()
                 card.locked = true
+                refreshBlueSecondaryNames()
             end)
         end
     })
