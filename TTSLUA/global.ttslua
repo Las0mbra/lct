@@ -81,8 +81,20 @@ deploymentCardZone_GUID = "dcf95b"
 primaryCardZone_GUID = "740abc"
 secondary11CardZone_GUID = "0ec215"
 secondary12CardZone_GUID = "d865d4"
-secondary21CardZone_GUID = "3c8d71"
-secondary22CardZone_GUID = "88cac4"
+secondary21CardZone_GUID = "b1e001"
+secondary22CardZone_GUID = "b1e002"
+blueSecondaryCardZone_GUIDs = {
+    "b1e001",
+    "b1e002",
+    "b1e003",
+    "b1e004",
+    "b1e005",
+    "b1e006",
+    "b1e007",
+    "b1e008",
+    "b1e009",
+    "b1e010",
+}
 challengerCardZone_GUID = "cdecf2"
 
 deploymentDeck_GUID = "2dc2e8"
@@ -746,4 +758,62 @@ function moveOneFromDeckToZoneBlue(params)
         deckObj.shuffle()
     end
     deckObj.takeObject(takeParams)
+end
+
+function getBlueSecondaryCardZones()
+    local zones = {}
+    for index, guid in ipairs(blueSecondaryCardZone_GUIDs) do
+        local zone = getObjectFromGUID(guid)
+        if zone then
+            table.insert(zones, {
+                index = index,
+                guid = guid,
+                zone = zone,
+            })
+        end
+    end
+
+    return zones
+end
+
+function getFirstOpenBlueSecondaryCardZone()
+    for _, slot in ipairs(getBlueSecondaryCardZones()) do
+        if #slot.zone.getObjects() == 0 then
+            return slot
+        end
+    end
+
+    return nil
+end
+
+function drawBlueSecondaryToFirstOpenSlot()
+    local slot = getFirstOpenBlueSecondaryCardZone()
+    if not slot then
+        broadcastToColor("Blue already has 10 active secondary cards.", "Blue", "Yellow")
+        return
+    end
+
+    if not packSelected or not missionPackData[packSelected] then
+        broadcastToColor("Select a mission pack before drawing secondary cards.", "Blue", "Yellow")
+        return
+    end
+
+    local deckObj = getObjectFromGUID(missionPackData[packSelected].blueSecondaryDeck_GUID)
+    if not deckObj then
+        broadcastToColor("Blue secondary deck could not be found.", "Blue", "Red")
+        return
+    end
+
+    deckObj.shuffle()
+    deckObj.takeObject({
+        position = slot.zone.getPosition(),
+        rotation = {x = 0, y = 270, z = 180},
+        flip = true,
+        smooth = true,
+        callback_function = function(card)
+            Wait.frames(function()
+                card.locked = true
+            end)
+        end
+    })
 end

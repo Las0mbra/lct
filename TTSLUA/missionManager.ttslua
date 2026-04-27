@@ -18,6 +18,20 @@ lockInSecondariesBtn = {
     tooltip = "With the initial set of secondary missions in your hand, select two of them by flipping them face down with the F key, then press this button. To use Tactical Missions, flip the two Tactical cards. To use Fixed Missions, flip your choice of two other cards."
 }
 
+blueDrawSecondaryBtn = {
+    label = "DRAW",
+    click_function = "drawBlueSecondary",
+    function_owner = self,
+    position = {0, 0.35, -1.55},
+    rotation = {0, 0, 180},
+    height = 420,
+    width = 900,
+    font_size = 180,
+    color = {0, 0, 0},
+    font_color = {1, 1, 1},
+    tooltip = "Draw a blue secondary to the first open BlueSec slot."
+}
+
 -- Same removal of extra spaces
 lockGambitBtnPariahNexusTooltip = "After pressing Prepare Secrets and then selecting one by flipping it face down with the F key, press this button to lock in your choice."
 
@@ -93,6 +107,20 @@ function updateForSelectedPack()
 
     self.clearButtons()
     self.createButton(lockInSecondariesBtn)
+    updateBlueSecondaryDeckButton()
+end
+
+function updateBlueSecondaryDeckButton()
+    if playerColor != "Blue" or not secondaryDeck then
+        return
+    end
+
+    secondaryDeck.clearButtons()
+    secondaryDeck.createButton(blueDrawSecondaryBtn)
+end
+
+function drawBlueSecondary()
+    Global.call("drawBlueSecondaryToFirstOpenSlot")
 end
 
 function packSelected(params)
@@ -104,6 +132,7 @@ function packSelected(params)
     secondaryDeck.locked = false
     secondaryDeck.tooltip = true
     secondaryDeck.interactable = true
+    updateBlueSecondaryDeckButton()
 
     tryDealFixedSecondaries()
 end

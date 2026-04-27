@@ -867,35 +867,9 @@ function drawSecondary1()
 end
 
 
--- For Blue: use zone "secondary21" for index 1 and "secondary22" for index 2.
+-- For Blue: draw into the first open BlueSec scripting area, up to 10 active cards.
 function drawSecondary2()
-    if fixedSecondaryCard1_Blue and fixedSecondaryCard2_Blue then
-        return
-    end
-
-    if not fixedSecondaryCard1_Blue then
-        if #secondary21ZoneObj.getObjects() < 1 then
-            Global.call("moveOneFromDeckToZoneBlue", {deck = "blueSecondary", zone = "secondary21"})
-            Wait.time(function()
-                local objs = secondary21ZoneObj.getObjects()
-                if #objs > 0 then
-                    copySecondaryCardToCenter(objs[1], 1, "Blue")
-                end
-            end, 1)
-        end
-    end
-
-    if not fixedSecondaryCard2_Blue then
-        if #secondary22ZoneObj.getObjects() < 1 then
-            Global.call("moveOneFromDeckToZoneBlue", {deck = "blueSecondary", zone = "secondary22"})
-            Wait.time(function()
-                local objs = secondary22ZoneObj.getObjects()
-                if #objs > 0 then
-                    copySecondaryCardToCenter(objs[1], 2, "Blue")
-                end
-            end, 1)
-        end
-    end
+    Global.call("drawBlueSecondaryToFirstOpenSlot")
 end
 
 function drawChallenger()
