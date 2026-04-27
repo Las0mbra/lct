@@ -158,9 +158,13 @@ end
 function lockInSecondaries()
     local cardsInHand = handZone.getObjects()
     local faceDownCards = 0
+    local selectedFixedCards = 0
     for _,card in ipairs(cardsInHand) do
         if card.is_face_down then
             faceDownCards = faceDownCards + 1
+            if card.getGMNotes() != "TacticalObjectives" then
+                selectedFixedCards = selectedFixedCards + 1
+            end
         end
     end
 
@@ -169,33 +173,21 @@ function lockInSecondaries()
         return
     end
 
-    local cardsMoved = 0
     for _,card in ipairs(cardsInHand) do
-        local cardMoved = false
-        if card.is_face_down then
-            if cardsMoved == 0 then
-                card.setPosition(secondary1Zone.getPosition())
-                card.setRotation(targetRotation)
-                cardMoved = true
-                cardsMoved = 1
-            elseif cardsMoved == 1 then
-                card.setPosition(secondary2Zone.getPosition())
-                card.setRotation(targetRotation)
-                cardMoved = true
-                cardsMoved = 2
-            end
-        end
-
-        if not cardMoved then
-            if card.getGMNotes() == "TacticalObjectives" then
-                card.destruct()
-            else
-                secondaryDeck.putObject(card)
-            end
+        if card.getGMNotes() == "TacticalObjectives" then
+            card.destruct()
+        elseif not card.is_face_down then
+            secondaryDeck.putObject(card)
         end
     end
 
-    Wait.time(shuffleAndMaybeFlipSecondaries, 0.5)
+    if selectedFixedCards == 0 then
+        secondaryDeck.shuffle()
+    end
+
+    local secondariesLockedIn = Global.getVar("LOCKED_IN_SECONDARIES") or 0
+    secondariesLockedIn = secondariesLockedIn + 1
+    Global.setVar("LOCKED_IN_SECONDARIES", secondariesLockedIn)
 end
 
 
