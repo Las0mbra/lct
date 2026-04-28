@@ -1152,15 +1152,15 @@ function spawnD3(n, player, alt)
             callback_function = function(obj)
                 if selectedColor ~= nil then obj.setColorTint(selectedColor) end
                 table.insert(spawnedDice, obj)
+                if alt then
+                    queuePendingSpawnRoll(player, {obj})
+                end
             end
         })
         col = col + 1
         if col > 4 then col = 0; row = row + 1
             if row > 4 then row = 0; grid = grid + 1 end
         end
-    end
-    if alt then
-        queuePendingSpawnRoll(player, spawnedDice)
     end
 end
 

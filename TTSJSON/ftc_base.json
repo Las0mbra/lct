@@ -323,7 +323,7 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "function onLoad()\r\n local params = {\r\n        input_function = \"onInput\",\r\n        function_owner = self,\r\n        label = \"URL\",\r\n        position = {0, 1.81, 0},\r\n        rotation = {0, 180, 0},\r\n        width = 5000,\r\n        height = 480,\r\n        font_size = 420,\r\n        value = \"discord.gg/tts40k\",\r\n        tooltip = \"Click, then Ctrl+C to copy!\"\r\n    }\r\n    self.createInput(params)\r\nend\r\nfunction onInput(self, ply, text, selected)end",
+      "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": ""
     },
@@ -22864,60 +22864,6 @@
       "XmlUI": ""
     },
     {
-      "GUID": "af2ec6",
-      "Name": "3DText",
-      "Transform": {
-        "posX": 79.02,
-        "posY": 0.961133659,
-        "posZ": 38.0,
-        "rotX": 90.0,
-        "rotY": 90.0,
-        "rotZ": 0.0,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "Text": {
-        "Text": "",
-        "colorstate": {
-          "r": 1.0,
-          "g": 1.0,
-          "b": 1.0
-        },
-        "fontSize": 40
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
       "GUID": "f4ee71",
       "Name": "Custom_Model",
       "Transform": {
@@ -26288,7 +26234,7 @@
             "TypeIndex": 0,
             "CastShadows": true
           },
-          "LuaScript": "-- FTC-GUID: 573333,764a2e,6d45cf,33e32b,f32864,a91751\r\nkeepForTerrainEditor = true\r\n",
+          "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": ""
         },
@@ -26555,7 +26501,7 @@
             "TypeIndex": 0,
             "CastShadows": true
           },
-          "LuaScript": "-- FTC-GUID: 573333,764a2e,6d45cf,33e32b,f32864,a91751\r\nkeepForTerrainEditor = true\r\n",
+          "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": ""
         },
@@ -26822,7 +26768,7 @@
             "TypeIndex": 0,
             "CastShadows": true
           },
-          "LuaScript": "-- FTC-GUID: 573333,764a2e,6d45cf,33e32b,f32864,a91751\r\nkeepForTerrainEditor = true\r\n",
+          "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": ""
         },
@@ -27089,7 +27035,7 @@
             "TypeIndex": 0,
             "CastShadows": true
           },
-          "LuaScript": "-- FTC-GUID: 573333,764a2e,6d45cf,33e32b,f32864,a91751\r\nkeepForTerrainEditor = true\r\n",
+          "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": ""
         },
@@ -27356,7 +27302,7 @@
             "TypeIndex": 0,
             "CastShadows": true
           },
-          "LuaScript": "-- FTC-GUID: 573333,764a2e,6d45cf,33e32b,f32864,a91751\r\nkeepForTerrainEditor = true\r\n",
+          "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": ""
         },
@@ -31301,7 +31247,7 @@
       "Bag": {
         "Order": 0
       },
-      "LuaScript": "function onLoad()\r\n    self.createButton({\r\n        click_function=\"click_clopen\", function_owner=self,\r\n        position={0,0.5,0}, height=2000, width=2000, color={0,0,0,0}\r\n    })\r\n    params = {assetbundle=\"https://chry.me/tts/misc/new_blackhole_test.unity3d\",material=2}\r\nend\r\n\r\nfunction click_clopen()\r\n    if self.AssetBundle.getLoopingEffectIndex() == 0 then\r\n        params.type = 6\r\n        self.AssetBundle.playLoopingEffect(1)\r\n    else\r\n        params.type = 0\r\n        self.AssetBundle.playLoopingEffect(0)\r\n    end\r\n    self.setCustomObject(params)\r\n    self.reload()\r\nend\r\n\r\nfunction onCollisionEnter()\r\n    if self.AssetBundle.getLoopingEffectIndex() == 1 then\r\n        self.reset()\r\n    end\r\nend",
+      "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": ""
     },
@@ -31359,7 +31305,7 @@
       "Bag": {
         "Order": 0
       },
-      "LuaScript": "function onLoad()\r\n    self.createButton({\r\n        click_function=\"click_clopen\", function_owner=self,\r\n        position={0,0.5,0}, height=2000, width=2000, color={0,0,0,0}\r\n    })\r\n    params = {assetbundle=\"https://chry.me/tts/misc/new_blackhole_test.unity3d\",material=2}\r\nend\r\n\r\nfunction click_clopen()\r\n    if self.AssetBundle.getLoopingEffectIndex() == 0 then\r\n        params.type = 6\r\n        self.AssetBundle.playLoopingEffect(1)\r\n    else\r\n        params.type = 0\r\n        self.AssetBundle.playLoopingEffect(0)\r\n    end\r\n    self.setCustomObject(params)\r\n    self.reload()\r\nend\r\n\r\nfunction onCollisionEnter()\r\n    if self.AssetBundle.getLoopingEffectIndex() == 1 then\r\n        self.reset()\r\n    end\r\nend",
+      "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": ""
     },
@@ -35179,7 +35125,7 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "function onLoad()\r\n local params = {\r\n        input_function = \"onInput\",\r\n        function_owner = self,\r\n        label = \"URL\",\r\n        position = {0, 1.81, 0},\r\n        rotation = {0, 180, 0},\r\n        width = 5000,\r\n        height = 480,\r\n        font_size = 420,\r\n        value = \"https://discord.gg/2eTs8DTEgt\",\r\n        tooltip = \"Click, then Ctrl+C to copy!\"\r\n    }\r\n    self.createInput(params)\r\nend\r\nfunction onInput(self, ply, text, selected)end",
+      "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": ""
     },
@@ -35212,7 +35158,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,

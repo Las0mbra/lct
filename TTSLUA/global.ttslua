@@ -817,7 +817,7 @@ function getBlueSecondaryCardName(zone)
     for _, object in ipairs(zone.getObjects()) do
         if object.tag == "Card" or object.tag == "Deck" then
             local name = object.getName()
-            if name and name != "" then
+            if name and name ~= "" then
                 return name
             end
         end
@@ -833,7 +833,7 @@ function setBlueSecondaryName(index, cardName)
     end
 
     local text = tostring(index) .. "."
-    if cardName and cardName != "" then
+    if cardName and cardName ~= "" then
         text = text .. " " .. cardName
     end
 
@@ -841,18 +841,11 @@ function setBlueSecondaryName(index, cardName)
 end
 
 function refreshBlueSecondaryNames()
-    local displayIndex = 1
-    for _, zoneGuid in ipairs(blueSecondaryCardZone_GUIDs) do
+    for index = 1, #blueSecondaryName_GUIDs do
+        local zoneGuid = blueSecondaryCardZone_GUIDs[index]
         local zone = getObjectFromGUID(zoneGuid)
         local cardName = getBlueSecondaryCardName(zone)
-        if cardName and displayIndex <= #blueSecondaryName_GUIDs then
-            setBlueSecondaryName(displayIndex, cardName)
-            displayIndex = displayIndex + 1
-        end
-    end
-
-    for index = displayIndex, #blueSecondaryName_GUIDs do
-        setBlueSecondaryName(index, nil)
+        setBlueSecondaryName(index, cardName)
     end
 end
 

@@ -1,6 +1,11 @@
 -- FTC-GUID: 4e0e0b,beae28
 --Based off: https://steamcommunity.com/sharedfiles/filedetails/?id=726800282
 --Link for this mod: https://steamcommunity.com/sharedfiles/filedetails/?id=959360907
+-- Randomness note:
+-- This roller uses a vendored xoshiro128++ pseudorandom number generator
+-- instead of Lua 5.2 math.random. TTS is based on Lua 5.2, whose RNG maps
+-- to the host C rand() implementation, so we use an explicit 32-bit PRNG to
+-- get known behavior, better auditability, and saved/restored RNG state.
 lastRolls={}
 scaleBtn=3
 printLastBtn={
@@ -43,10 +48,139 @@ diceGuidFaces = {}
 sortedKeys = {}
 resultsTable = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 seedCounter = 0
+rngState = nil
+
+local UINT32 = 4294967296
+local UINT16 = 65536
+local bit = bit32
+
+local function mul32(a, b)
+    local aLo = a % UINT16
+    local aHi = math.floor(a / UINT16)
+    local bLo = b % UINT16
+    local bHi = math.floor(b / UINT16)
+    local low = aLo * bLo
+    local mid = (aHi * bLo) + (aLo * bHi)
+
+    return (low + ((mid % UINT16) * UINT16)) % UINT32
+end
+
+local function mix32(x)
+    x = bit.bxor(x, bit.rshift(x, 16))
+    x = mul32(x, 0x85ebca6b)
+    x = bit.bxor(x, bit.rshift(x, 13))
+    x = mul32(x, 0xc2b2ae35)
+    x = bit.bxor(x, bit.rshift(x, 16))
+    return x
+end
+
+local function hashGuid(guid)
+    local h = 0x811c9dc5
+    for i = 1, #guid do
+        h = bit.bxor(h, string.byte(guid, i))
+        h = mul32(h, 0x01000193)
+    end
+    return h
+end
+
+local function createSeedWords()
+    local guidHash = hashGuid(self.getGUID())
+    local baseSeed = os.time() % UINT32
+    local clockSeed = math.floor((os.clock() * 1000000) % UINT32)
+    local boxSeed = thisBoxIsBlue and 0x6a09e667 or 0xbb67ae85
+    local material = {
+        bit.bxor(baseSeed, guidHash),
+        bit.bxor(clockSeed, boxSeed),
+        bit.bxor(guidHash, 0x9e3779b9),
+        bit.bxor(baseSeed, clockSeed, 0x243f6a88),
+    }
+    local state = {}
+
+    for i, value in ipairs(material) do
+        state[i] = mix32((value + ((i - 1) * 0x9e3779b9)) % UINT32)
+    end
+
+    if state[1] == 0 and state[2] == 0 and state[3] == 0 and state[4] == 0 then
+        state[4] = 1
+    end
+
+    return state
+end
+
+local function setRngState(state)
+    if type(state) ~= "table" or #state < 4 then
+        rngState = createSeedWords()
+        return
+    end
+
+    local s1 = tonumber(state[1])
+    local s2 = tonumber(state[2])
+    local s3 = tonumber(state[3])
+    local s4 = tonumber(state[4])
+    if not s1 or not s2 or not s3 or not s4 then
+        rngState = createSeedWords()
+        return
+    end
+
+    rngState = {
+        s1 % UINT32,
+        s2 % UINT32,
+        s3 % UINT32,
+        s4 % UINT32,
+    }
+
+    if rngState[1] == 0 and rngState[2] == 0 and rngState[3] == 0 and rngState[4] == 0 then
+        rngState[4] = 1
+    end
+end
+
+local function nextRngU32()
+    if rngState == nil then
+        setRngState(createSeedWords())
+    end
+
+    local s0 = rngState[1]
+    local s1 = rngState[2]
+    local s2 = rngState[3]
+    local s3 = rngState[4]
+
+    local result = (bit.lrotate((s0 + s3) % UINT32, 7) + s0) % UINT32
+    local t = bit.lshift(s1, 9)
+
+    s2 = bit.bxor(s2, s0)
+    s3 = bit.bxor(s3, s1)
+    s1 = bit.bxor(s1, s2)
+    s0 = bit.bxor(s0, s3)
+    s2 = bit.bxor(s2, t)
+    s3 = bit.lrotate(s3, 11)
+
+    rngState[1] = s0
+    rngState[2] = s1
+    rngState[3] = s2
+    rngState[4] = s3
+
+    return result
+end
+
+local function nextRngBounded(bound)
+    if bound <= 0 then
+        return 0
+    end
+
+    local threshold = (UINT32 - bound) % bound
+    while true do
+        local value = nextRngU32()
+        if value >= threshold then
+            return value % bound
+        end
+    end
+end
+
+local function rollFace(faces)
+    return nextRngBounded(faces) + 1
+end
 
 thisBoxIsBlue = (self.guid == Global.getVar("blueDiceRoller_GUID")) and true or false
-seed = os.time() + (thisBoxIsBlue and 1 or 0)
-math.randomseed(seed)
 
 orderedOnNextRoll = false
 groupSizeOnNextRoll = 1
@@ -86,13 +220,19 @@ function onLoad(save_state)
 	if self.getDescription() == '' then
 		setDefaultState()
 	end
+	local saved = save_state ~= "" and JSON.decode(save_state) or nil
+	if saved and saved.rngState then
+		setRngState(saved.rngState)
+	else
+		setRngState(createSeedWords())
+	end
 	self.createButton(printLastBtn)
 	self.createButton(printLast5Btn)
 end
 
 --Returns description on game save.
 function onSave()
-	return self.getDescription()
+	return JSON.encode({rngState = rngState})
 end
 
 --Reset description on drop if empty.
@@ -202,7 +342,7 @@ function takeDiceOut(tab)
 		if v.name =="BCB-D3" then
 			faces=3
 		end
-		r = math.random(faces)
+		r = rollFace(faces)
 		diceGuids[v.guid] = r
 	end
 

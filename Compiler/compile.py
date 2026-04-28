@@ -26,6 +26,10 @@ REGEX_LUA_GUID       = re.compile(r'([0-9a-f]{6})')
 REGEX_JSON_GUID      = re.compile(r'"GUID": "(.*)"')
 REGEX_JSON_LUASCRIPT = re.compile(r'"LuaScript": ')
 REGEX_JSON_XMLUI     = re.compile(r'"XmlUI":\s+"')
+# Matches a full `"LuaScript": "...<value>..."` field on a single JSON line,
+# tolerating any value content (including escaped quotes/backslashes) so we can
+# replace it cleanly even if the source JSON already had content baked in.
+REGEX_JSON_LUASCRIPT_FIELD = re.compile(r'("LuaScript":\s*)"(?:\\.|[^"\\])*"')
 
 
 def get_tts_saves_path() -> Path:
@@ -62,11 +66,22 @@ def inject_xml(json_lines: list, xml_file: Path):
 
 
 def inject_lua_into_line(json_lines: list, line_idx: int, lua_file: Path):
-    """Replace the empty LuaScript value on a JSON line with the content of a lua file."""
+    """Replace the LuaScript value on a JSON line with the content of a lua file.
+
+    Works whether the existing field is empty (`""`) or already populated — the
+    full `"LuaScript": "..."` field is matched and rewritten in place, so a
+    re-export of the save into ftc_base.json can't double-inject content.
+    """
     lua_content = json.dumps(lua_file.read_text(encoding="utf-8"))
     line = json_lines[line_idx]
-    # Strip trailing `"",` (3 chars) and append the encoded content + ","
-    json_lines[line_idx] = line[:-3] + lua_content + ","
+    new_line, count = REGEX_JSON_LUASCRIPT_FIELD.subn(
+        lambda m: m.group(1) + lua_content, line, count=1
+    )
+    if count != 1:
+        raise RuntimeError(
+            f"Could not locate `\"LuaScript\": \"...\"` field on line {line_idx + 1}: {line!r}"
+        )
+    json_lines[line_idx] = new_line
     print(f"  Writing to line {line_idx + 1}.", end=" ")
 
 
