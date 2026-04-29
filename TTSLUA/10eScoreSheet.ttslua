@@ -5,10 +5,8 @@ secondary11ZoneObj = getObjectFromGUID(Global.getVar("secondary11CardZone_GUID")
 secondary12ZoneObj = getObjectFromGUID(Global.getVar("secondary12CardZone_GUID"))
 secondary21ZoneObj = getObjectFromGUID(Global.getVar("secondary21CardZone_GUID"))
 secondary22ZoneObj = getObjectFromGUID(Global.getVar("secondary22CardZone_GUID"))
-challengerZoneObj = getObjectFromGUID(Global.getVar("challengerCardZone_GUID"))
 redDiscardPosition = { x = 75.46, y = 0.98, z = 9.51 }
 blueDiscardPosition = { x = 75.47, y = 1.0, z = -9.50 }
-challengerDiscardPosition = { x = 79.0, y = 1.5, z = -2.0 }
 redSecondaryBoard_GUID = "ecabdc"
 blueSecondaryBoard_GUID = "81591e"
 secondarySlotButtonSize = 120
@@ -25,18 +23,6 @@ enableBtn = { label="ENABLE\nGT\nSCORESHEET\n\n(click here)\n\nDon't enable if y
 }
 
 scoresheetActive = true
-
--- Button indexes
-BTN_IX_CHL_DRAW = 4
-BTN_IX_CHL_DISCARD = 5
-BTN_IX_DISCARD_1_1 = nil
-BTN_IX_RECYCLE_1_1 = nil
-BTN_IX_DISCARD_1_2 = nil
-BTN_IX_RECYCLE_1_2 = nil
-BTN_IX_DISCARD_2_1 = nil
-BTN_IX_RECYCLE_2_1 = nil
-BTN_IX_DISCARD_2_2 = nil
-BTN_IX_RECYCLE_2_2 = nil
 
 -- Button k-indexes
 BTN_K_IX_TURN_SUM = 1
@@ -125,102 +111,6 @@ playerTotal = {
 	}
 }
 
-discard11Btn = {
-	index = BTN_IX_DISCARD_1_1,
-	width = 250,
-	height = 250,
-	label = "x",
-	font_size = 200,
-	click_function = 'discardSecondary11',
-	function_owner = self,
-	position = {1.5, -0.05, 58.8},
-	rotation = {0, 90, 180},
-	tooltip = "Discard secondary 1"
-}
-recycle11Btn = {
-	index = BTN_IX_RECYCLE_1_1,
-	width = 250,
-	height = 250,
-	label = "<",
-	font_size = 200,
-	click_function = 'recycleSecondary11',
-	function_owner = self,
-	position = {3.0, -0.05, 58.8},
-	rotation = {0, 90, 180},
-	tooltip = "Recycle secondary 1"
-}
-discard12Btn = {
-	index = BTN_IX_DISCARD_1_2,
-	width = 250,
-	height = 250,
-	label = "x",
-	font_size = 200,
-	click_function = 'discardSecondary12',
-	function_owner = self,
-	position = {1.5, -0.05, 60.9},
-	rotation = {0, 90, 180},
-	tooltip = "Discard secondary 2"
-}
-recycle12Btn = {
-	index = BTN_IX_RECYCLE_1_2,
-	width = 250,
-	height = 250,
-	label = "<",
-	font_size = 200,
-	click_function = 'recycleSecondary12',
-	function_owner = self,
-	position = {3.0, -0.05, 60.9},
-	rotation = {0, 90, 180},
-	tooltip = "Recycle secondary 2"
-}
-discard21Btn = {
-	index = BTN_IX_DISCARD_2_1,
-	width = 250,
-	height = 250,
-	label = "x",
-	font_size = 200,
-	click_function = 'discardSecondary21',
-	function_owner = self,
-	position = {1.5, -0.05, 63.1},
-	rotation = {0, 90, 180},
-	tooltip = "Discard secondary 1"
-}
-recycle21Btn = {
-	index = BTN_IX_RECYCLE_2_1,
-	width = 250,
-	height = 250,
-	label = ">",
-	font_size = 200,
-	click_function = 'recycleSecondary21',
-	function_owner = self,
-	position = {3.0, -0.05, 63.1},
-	rotation = {0, 90, 180},
-	tooltip = "Recycle secondary 1"
-}
-discard22Btn = {
-	index = BTN_IX_DISCARD_2_2,
-	width = 250,
-	height = 250,
-	label = "x",
-	font_size = 200,
-	click_function = 'discardSecondary22',
-	function_owner = self,
-	position = {1.5, -0.05, 65.2},
-	rotation = {0, 90, 180},
-	tooltip = "Discard secondary 2"
-}
-recycle22Btn = {
-	index = BTN_IX_RECYCLE_2_2,
-	width = 250,
-	height = 250,
-	label = ">",
-	font_size = 200,
-	click_function = 'recycleSecondary22',
-	function_owner = self,
-	position = {3.0, -0.05, 65.2},
-	rotation = {0, 90, 180},
-	tooltip = "Recycle secondary 2"
-}
 draw1Btn = {
     width = 252,
     height = 132,
@@ -243,31 +133,6 @@ draw2Btn = {
     rotation = {0, 0, 0},
     tooltip = "Draw blue secondary"
 }
-chlDrawBtn = {
-	index = BTN_IX_CHL_DRAW,
-	width = 250,
-	height = 250,
-	label = ">",
-	font_size = 200,
-	click_function = 'drawChallenger',
-	function_owner = self,
-	position = {4.5, -0.05, 61.7},
-	rotation = {0, 90, 180},
-	tooltip = "Draw"
-}
-chlDiscardBtn = {
-	index = BTN_IX_CHL_DISCARD,
-	width = 250,
-	height = 250,
-	label = "x",
-	font_size = 200,
-	click_function = 'discardChallenger',
-	function_owner = self,
-	position = {4.5, -0.05, 63.8},
-	rotation = {0, 90, 180},
-	tooltip = "Discard"
-}
-
 function enableSheet()
 	scoresheetActive=true
 	self.script_state = onSave()
@@ -412,14 +277,12 @@ function onload(save_data)
 	self.createButton( playerTotal[1] )
 	self.createButton( playerTotal[2] )
     createSecondaryDrawButtons()
-	self.createButton( chlDrawBtn )
-	self.createButton( chlDiscardBtn )
 	syncPlayerTitlesFromSeats()
 
 	local b_xpos = 0
 	local b_zpos = 0
 	local b_zoffset = -1
-	local b_index = BTN_IX_CHL_DISCARD + 1
+	local b_index = 4
 
 	-- Scoring buttons
 
@@ -522,49 +385,6 @@ function onload(save_data)
 		end -- j-loop
 
 	end -- i-loop
-
-	if not redUsingFixed then
-		BTN_IX_DISCARD_1_1 = b_index
-		discard11Btn.index = b_index
-		b_index = b_index + 1
-		self.createButton( discard11Btn )
-
-		BTN_IX_RECYCLE_1_1 = b_index
-		recycle11Btn.index = b_index
-		b_index = b_index + 1
-		self.createButton( recycle11Btn )
-
-		BTN_IX_DISCARD_1_2 = b_index
-		discard12Btn.index = b_index
-		b_index = b_index + 1
-		self.createButton( discard12Btn )
-
-		BTN_IX_RECYCLE_1_2 = b_index
-		recycle12Btn.index = b_index
-		b_index = b_index + 1
-		self.createButton( recycle12Btn )
-	end
-	if not blueUsingFixed then
-		BTN_IX_DISCARD_2_1 = b_index
-		discard21Btn.index = b_index
-		b_index = b_index + 1
-		self.createButton( discard21Btn )
-
-		BTN_IX_RECYCLE_2_1 = b_index
-		recycle21Btn.index = b_index
-		b_index = b_index + 1
-		self.createButton( recycle21Btn )
-
-		BTN_IX_DISCARD_2_2 = b_index
-		discard22Btn.index = b_index
-		b_index = b_index + 1
-		self.createButton( discard22Btn )
-
-		BTN_IX_RECYCLE_2_2 = b_index
-		recycle22Btn.index = b_index
-		b_index = b_index + 1
-		self.createButton( recycle22Btn )
-	end
 
 	updateAll(false)
 	Wait.time(slowUpdate, 2)
@@ -959,20 +779,6 @@ function drawSecondary2()
     Global.call("drawBlueSecondaryToFirstOpenSlot")
 end
 
-function drawChallenger()
-	if #challengerZoneObj.getObjects() < 1 then
-		Global.call("moveOneFromDeckToZone", {deck = "challenger", zone = "challenger"})
-	end
-end
-
-function discardChallenger()
-    local cards = challengerZoneObj.getObjects()
-    for _, card in ipairs(cards) do
-        card.locked = false
-        card.setPositionSmooth(challengerDiscardPosition)
-    end
-end
-
 function onObjectDestroyed(destroyed_obj)
     -- Check if a fixed Red secondary clone was deleted
     if fixedSecondaryCard1_Red and fixedSecondaryCard1_Red == destroyed_obj then
@@ -990,116 +796,6 @@ function onObjectDestroyed(destroyed_obj)
         fixedSecondaryCard2_Blue = nil
     end
 end
--- Discard functions:
-function discardSecondary11()
-    if fixedSecondaryCard1_Red then
-        fixedSecondaryCard1_Red.destroy()
-        fixedSecondaryCard1_Red = nil
-    end
-    local cards = secondary11ZoneObj.getObjects()
-    for _, card in ipairs(cards) do
-        card.locked = false
-        card.setPositionSmooth(redDiscardPosition)
-    end
-end
-
-function discardSecondary12()
-    if fixedSecondaryCard2_Red then
-        fixedSecondaryCard2_Red.destroy()
-        fixedSecondaryCard2_Red = nil
-    end
-    local cards = secondary12ZoneObj.getObjects()
-    for _, card in ipairs(cards) do
-        card.locked = false
-        card.setPositionSmooth(redDiscardPosition)
-    end
-end
-
-function discardSecondary21()
-    if fixedSecondaryCard1_Blue then
-        fixedSecondaryCard1_Blue.destroy()
-        fixedSecondaryCard1_Blue = nil
-    end
-    local cards = secondary21ZoneObj.getObjects()
-    for _, card in ipairs(cards) do
-        card.locked = false
-        card.setPositionSmooth(blueDiscardPosition)
-    end
-end
-
-function discardSecondary22()
-    if fixedSecondaryCard2_Blue then
-        fixedSecondaryCard2_Blue.destroy()
-        fixedSecondaryCard2_Blue = nil
-    end
-    local cards = secondary22ZoneObj.getObjects()
-    for _, card in ipairs(cards) do
-        card.locked = false
-        card.setPositionSmooth(blueDiscardPosition)
-    end
-end
-
--- Recycle functions:
-function recycleSecondary11()
-    if fixedSecondaryCard1_Red then
-        fixedSecondaryCard1_Red.destroy()
-        fixedSecondaryCard1_Red = nil
-    end
-    Global.call("moveAllFromZoneToDeck", {zone = "secondary11", deck = "redSecondary"})
-    Global.call("moveOneFromDeckToZone", {deck = "redSecondary", zone = "secondary11"})
-    Wait.time(function()
-        local objs = secondary11ZoneObj.getObjects()
-        if #objs > 0 then
-            copySecondaryCardToCenter(objs[1], 1, "Red")
-        end
-    end, 1)
-end
-
-function recycleSecondary12()
-    if fixedSecondaryCard2_Red then
-        fixedSecondaryCard2_Red.destroy()
-        fixedSecondaryCard2_Red = nil
-    end
-    Global.call("moveAllFromZoneToDeck", {zone = "secondary12", deck = "redSecondary"})
-    Global.call("moveOneFromDeckToZone", {deck = "redSecondary", zone = "secondary12"})
-    Wait.time(function()
-        local objs = secondary12ZoneObj.getObjects()
-        if #objs > 0 then
-            copySecondaryCardToCenter(objs[1], 2, "Red")
-        end
-    end, 1)
-end
-
-function recycleSecondary21()
-    if fixedSecondaryCard1_Blue then
-        fixedSecondaryCard1_Blue.destroy()
-        fixedSecondaryCard1_Blue = nil
-    end
-    Global.call("moveAllFromZoneToDeck", {zone = "secondary21", deck = "blueSecondary"})
-    Global.call("moveOneFromDeckToZoneBlue", {deck = "blueSecondary", zone = "secondary21"})
-    Wait.time(function()
-        local objs = secondary21ZoneObj.getObjects()
-        if #objs > 0 then
-            copySecondaryCardToCenter(objs[1], 1, "Blue")
-        end
-    end, 1)
-end
-
-function recycleSecondary22()
-    if fixedSecondaryCard2_Blue then
-        fixedSecondaryCard2_Blue.destroy()
-        fixedSecondaryCard2_Blue = nil
-    end
-    Global.call("moveAllFromZoneToDeck", {zone = "secondary22", deck = "blueSecondary"})
-    Global.call("moveOneFromDeckToZoneBlue", {deck = "blueSecondary", zone = "secondary22"})
-    Wait.time(function()
-        local objs = secondary22ZoneObj.getObjects()
-        if #objs > 0 then
-            copySecondaryCardToCenter(objs[1], 2, "Blue")
-        end
-    end, 1)
-end
-
 function handleInitialSecondary(zone, discardPosition)
     local fixedObjective = false
     local cards = zone.getObjects()
@@ -1122,34 +818,11 @@ function startGame()
 	local blueFixedObjective1 = handleInitialSecondary(secondary21ZoneObj, blueDiscardPosition)
 	local blueFixedObjective2 = handleInitialSecondary(secondary22ZoneObj, blueDiscardPosition)
 
-	-- If fixed objectives are in use by either player, remember that, and remove their buttons
-	-- to discard objectives.  Note that removing a button changes the indexes of subsequent
-	-- buttons so we need to remove them in reverse index order.
 	if blueFixedObjective1 or blueFixedObjective2 then
 		blueUsingFixed = true
-		self.removeButton(BTN_IX_RECYCLE_2_2)
-		self.removeButton(BTN_IX_DISCARD_2_2)
-		self.removeButton(BTN_IX_RECYCLE_2_1)
-		self.removeButton(BTN_IX_DISCARD_2_1)
 	end
 	if redFixedObjective1 or redFixedObjective2 then
 		redUsingFixed = true
-		self.removeButton(BTN_IX_RECYCLE_1_2)
-		self.removeButton(BTN_IX_DISCARD_1_2)
-		self.removeButton(BTN_IX_RECYCLE_1_1)
-		self.removeButton(BTN_IX_DISCARD_1_1)
-	end
-end
-
-function checkChallenger()
-	if playerSum(2) - playerSum(1) > 5 then
-		-- Blue winning by 6+ - red is the challenger
-		broadcastToAll(Player.Red.steam_name .. " is the challenger!", {1,0,0})
-	elseif playerSum(1) - playerSum(2) > 5 then
-		-- Red winning by 6+ - blue is the challenger
-		broadcastToAll(Player.Blue.steam_name .. " is the challenger!", {0,0,1})
-	elseif getObjectFromGUID("fe7926") ~= nil then
-		broadcastToAll("Gonna credit me this time Jamie? ;-)", {1,1,1})
 	end
 end
 
