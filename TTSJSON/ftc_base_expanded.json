@@ -37293,7 +37293,7 @@
       "GUID": "c0fb49",
       "Name": "Deck",
       "Transform": {
-        "posX": 79.07,
+        "posX": 79.11,
         "posY": 0.98,
         "posZ": 9.48,
         "rotX": -4.320841e-07,
@@ -39235,9 +39235,9 @@
       "GUID": "ffdf05",
       "Name": "Deck",
       "Transform": {
-        "posX": 79.0,
-        "posY": 1.0642575,
-        "posZ": 2.0,
+        "posX": 84.63,
+        "posY": 0.96,
+        "posZ": 0.03,
         "rotX": -5.01604654e-06,
         "rotY": 270.0,
         "rotZ": 180.0,

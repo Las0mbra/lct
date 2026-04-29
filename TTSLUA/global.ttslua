@@ -831,6 +831,41 @@ function getFirstOpenRedSecondaryCardZone()
     return getFirstOpenSecondaryCardZone(redSecondaryCardZone_GUIDs)
 end
 
+function getSecondaryCardZoneByIndex(color, index)
+    local zoneGuids = (color == "Red") and redSecondaryCardZone_GUIDs or blueSecondaryCardZone_GUIDs
+    local zoneGuid = zoneGuids[index]
+    if not zoneGuid then
+        return nil
+    end
+
+    return getObjectFromGUID(zoneGuid)
+end
+
+function getSecondaryDeckByColor(color)
+    if not packSelected or not missionPackData[packSelected] then
+        return nil
+    end
+
+    local deckGuidKey = (color == "Red") and "redSecondaryDeck_GUID" or "blueSecondaryDeck_GUID"
+    return getObjectFromGUID(missionPackData[packSelected][deckGuidKey])
+end
+
+function getSecondaryDiscardPosition(color)
+    if color == "Red" then
+        return {x = 75.46, y = 0.98, z = 9.51}
+    end
+
+    return {x = 75.47, y = 1.0, z = -9.50}
+end
+
+function refreshSecondaryNamesForColor(color)
+    if color == "Red" then
+        refreshRedSecondaryNames()
+    else
+        refreshBlueSecondaryNames()
+    end
+end
+
 function isSecondaryCardZone(zone, zoneGuids)
     if not zone then
         return false
@@ -993,4 +1028,67 @@ function drawRedSecondaryToFirstOpenSlot()
         fullMessage = "Red already has 10 active secondary cards.",
         deckMissingMessage = "Red secondary deck could not be found.",
     })
+end
+
+function discardSecondarySlot(params)
+    local color = params.color
+    local zone = getSecondaryCardZoneByIndex(color, params.index)
+    if not zone then
+        broadcastToColor("Secondary slot could not be found.", color, "Red")
+        return
+    end
+
+    local discardPosition = getSecondaryDiscardPosition(color)
+    for _, object in ipairs(zone.getObjects()) do
+        if object.tag == "Card" or object.tag == "Deck" then
+            object.locked = false
+            object.setPositionSmooth(discardPosition)
+        end
+    end
+
+    Wait.time(function() refreshSecondaryNamesForColor(color) end, 0.25)
+end
+
+function recycleSecondarySlot(params)
+    local color = params.color
+    local zone = getSecondaryCardZoneByIndex(color, params.index)
+    if not zone then
+        broadcastToColor("Secondary slot could not be found.", color, "Red")
+        return
+    end
+
+    local deckObj = getSecondaryDeckByColor(color)
+    if not deckObj then
+        broadcastToColor(color .. " secondary deck could not be found.", color, "Red")
+        return
+    end
+
+    local recycledAny = false
+    for _, object in ipairs(zone.getObjects()) do
+        if object.tag == "Card" or object.tag == "Deck" then
+            object.locked = false
+            deckObj = deckObj.putObject(object) or deckObj
+            recycledAny = true
+        end
+    end
+
+    if not recycledAny then
+        return
+    end
+
+    deckObj.shuffle()
+    Wait.frames(function()
+        deckObj.takeObject({
+            position = zone.getPosition(),
+            rotation = {x = 0, y = 270, z = 180},
+            flip = true,
+            smooth = true,
+            callback_function = function(card)
+                Wait.frames(function()
+                    card.locked = true
+                    refreshSecondaryNamesForColor(color)
+                end)
+            end
+        })
+    end, 2)
 end

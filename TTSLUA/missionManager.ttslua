@@ -18,34 +18,6 @@ lockInSecondariesBtn = {
     tooltip = "With the initial set of secondary missions in your hand, select two of them by flipping them face down with the F key, then press this button. To use Tactical Missions, flip the two Tactical cards. To use Fixed Missions, flip your choice of two other cards."
 }
 
-blueDrawSecondaryBtn = {
-    label = "DRAW",
-    click_function = "drawBlueSecondary",
-    function_owner = self,
-    position = {0, 0.35, -1.55},
-    rotation = {0, 0, 180},
-    height = 420,
-    width = 900,
-    font_size = 180,
-    color = {0, 0, 0},
-    font_color = {1, 1, 1},
-    tooltip = "Draw a blue secondary to the first open BlueSec slot."
-}
-
-redDrawSecondaryBtn = {
-    label = "DRAW",
-    click_function = "drawRedSecondary",
-    function_owner = self,
-    position = {0, 0.35, -1.55},
-    rotation = {0, 0, 180},
-    height = 420,
-    width = 900,
-    font_size = 180,
-    color = {0, 0, 0},
-    font_color = {1, 1, 1},
-    tooltip = "Draw a red secondary to the first open RedSec slot."
-}
-
 -- Same removal of extra spaces
 lockGambitBtnPariahNexusTooltip = "After pressing Prepare Secrets and then selecting one by flipping it face down with the F key, press this button to lock in your choice."
 
@@ -93,7 +65,7 @@ function onLoad(saved_data)
         otherSecondary2Zone = getObjectFromGUID(Global.getVar("secondary22CardZone_GUID"))
         gambitPosition = { x = 70.25, y = 1.5, z = 8.05 }
         discardPosition = { x = 75.46, y = 0.98, z = 9.51 }
-        secondaryDeckPosition = { x = 79.07, y = 0.98, z = 9.48 }
+        secondaryDeckPosition = { x = 79.11, y = 0.98, z = 9.48 }
     else
         self.setName("Mission Manager Blue")
         self.setPosition({-27,-5,-70.5})
@@ -106,7 +78,7 @@ function onLoad(saved_data)
         otherSecondary2Zone = getObjectFromGUID(Global.getVar("secondary12CardZone_GUID"))
         gambitPosition = { x = 70.25, y = 1.5, z = -8.05 }
         discardPosition = { x = 75.47, y = 1.0, z = -9.50 }
-        secondaryDeckPosition = { x = 79.02, y = 1.0, z = -9.50 }
+        secondaryDeckPosition = { x = 79.11, y = 1.0, z = -9.50 }
     end
     self.setScale({0.6,1,0.6})
     if selectedPack then
@@ -130,11 +102,6 @@ function updateSecondaryDeckButton()
     end
 
     secondaryDeck.clearButtons()
-    if playerColor == "Red" then
-        secondaryDeck.createButton(redDrawSecondaryBtn)
-    elseif playerColor == "Blue" then
-        secondaryDeck.createButton(blueDrawSecondaryBtn)
-    end
 end
 
 function drawRedSecondary()

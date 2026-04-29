@@ -9,6 +9,14 @@ challengerZoneObj = getObjectFromGUID(Global.getVar("challengerCardZone_GUID"))
 redDiscardPosition = { x = 75.46, y = 0.98, z = 9.51 }
 blueDiscardPosition = { x = 75.47, y = 1.0, z = -9.50 }
 challengerDiscardPosition = { x = 79.0, y = 1.5, z = -2.0 }
+redSecondaryBoard_GUID = "ecabdc"
+blueSecondaryBoard_GUID = "81591e"
+secondarySlotButtonSize = 120
+secondarySlotButtonFontSize = 80
+secondarySlotButtonY = 0.08
+redSecondarySlotButtonVerticalOffset = -2.15
+blueSecondarySlotButtonVerticalOffset = 2.15
+secondarySlotButtonHorizontalOffset = 0.46
 redUsingFixed = false
 blueUsingFixed = false
 
@@ -19,10 +27,8 @@ enableBtn = { label="ENABLE\nGT\nSCORESHEET\n\n(click here)\n\nDon't enable if y
 scoresheetActive = true
 
 -- Button indexes
-BTN_IX_DRAW_1 = 4
-BTN_IX_DRAW_2 = 5
-BTN_IX_CHL_DRAW = 6
-BTN_IX_CHL_DISCARD = 7
+BTN_IX_CHL_DRAW = 4
+BTN_IX_CHL_DISCARD = 5
 BTN_IX_DISCARD_1_1 = nil
 BTN_IX_RECYCLE_1_1 = nil
 BTN_IX_DISCARD_1_2 = nil
@@ -101,7 +107,7 @@ playerTotal = {
 		click_function = 'nothing',
 		font_size = 500,
 		function_owner = self,
-		position = {10, -0.05, -4},
+		position = {10, -0.05, -2.12},
 		rotation = {0, 90, 180},
 		tooltip = "Player 1"
 	},
@@ -113,7 +119,7 @@ playerTotal = {
 		click_function = 'nothing',
 		font_size = 500,
 		function_owner = self,
-		position = {10, -0.05, 2},
+		position = {10, -0.05, 0.12},
 		rotation = {0, 90, 180},
 		tooltip = "Player 2"
 	}
@@ -216,28 +222,26 @@ recycle22Btn = {
 	tooltip = "Recycle secondary 2"
 }
 draw1Btn = {
-	index = BTN_IX_DRAW_1,
-	width = 250,
-	height = 250,
-	label = ">",
-	font_size = 200,
-	click_function = 'drawSecondary1',
-	function_owner = self,
-	position = {2.25, -0.05, 57.7},
-	rotation = {0, 90, 180},
-	tooltip = "Draw"
+    width = 252,
+    height = 132,
+    label = "DRAW",
+    font_size = 56,
+    click_function = 'drawSecondary1',
+    function_owner = self,
+    position = {3.97, 0.08, -1.90},
+    rotation = {0, 0, 0},
+    tooltip = "Draw red secondary"
 }
 draw2Btn = {
-	index = BTN_IX_DRAW_2,
-	width = 250,
-	height = 250,
-	label = "<",
-	font_size = 200,
-	click_function = 'drawSecondary2',
-	function_owner = self,
-	position = {2.25, -0.05, 66.3},
-	rotation = {0, 90, 180},
-	tooltip = "Draw"
+    width = 252,
+    height = 132,
+    label = "DRAW",
+    font_size = 56,
+    click_function = 'drawSecondary2',
+    function_owner = self,
+    position = {-3.97, 0.08, -1.90},
+    rotation = {0, 0, 0},
+    tooltip = "Draw blue secondary"
 }
 chlDrawBtn = {
 	index = BTN_IX_CHL_DRAW,
@@ -270,6 +274,118 @@ function enableSheet()
 	onload(self.script_state)
 end
 
+function clearSecondaryDrawButtons()
+    local redBoard = getObjectFromGUID(redSecondaryBoard_GUID)
+    if redBoard then
+        redBoard.clearButtons()
+    end
+
+    local blueBoard = getObjectFromGUID(blueSecondaryBoard_GUID)
+    if blueBoard then
+        blueBoard.clearButtons()
+    end
+end
+
+function ensureSecondarySlotButtonHandlers()
+    if secondarySlotButtonHandlersReady then
+        return
+    end
+
+    for index = 1, 10 do
+        local slotIndex = index
+        _G["redDiscardSecondarySlot" .. index] = function()
+            Global.call("discardSecondarySlot", {color = "Red", index = slotIndex})
+        end
+        _G["redRecycleSecondarySlot" .. index] = function()
+            Global.call("recycleSecondarySlot", {color = "Red", index = slotIndex})
+        end
+        _G["blueDiscardSecondarySlot" .. index] = function()
+            Global.call("discardSecondarySlot", {color = "Blue", index = slotIndex})
+        end
+        _G["blueRecycleSecondarySlot" .. index] = function()
+            Global.call("recycleSecondarySlot", {color = "Blue", index = slotIndex})
+        end
+    end
+
+    secondarySlotButtonHandlersReady = true
+end
+
+function createSecondarySlotButton(board, color, index, labelX, labelZ)
+    local prefix = string.lower(color)
+    local verticalOffset = (color == "Red") and redSecondarySlotButtonVerticalOffset or blueSecondarySlotButtonVerticalOffset
+    local buttonX = labelX + verticalOffset
+    local discardZ = labelZ - secondarySlotButtonHorizontalOffset
+    local recycleZ = labelZ + secondarySlotButtonHorizontalOffset
+
+    board.createButton({
+        label = "✘",
+        click_function = prefix .. "DiscardSecondarySlot" .. index,
+        function_owner = self,
+        position = {buttonX, secondarySlotButtonY, discardZ},
+        rotation = {0, 0, 0},
+        width = secondarySlotButtonSize,
+        height = secondarySlotButtonSize,
+        font_size = secondarySlotButtonFontSize,
+        tooltip = "Discard secondary " .. index,
+    })
+    board.createButton({
+        label = "♻",
+        click_function = prefix .. "RecycleSecondarySlot" .. index,
+        function_owner = self,
+        position = {buttonX, secondarySlotButtonY, recycleZ},
+        rotation = {0, 0, 0},
+        width = secondarySlotButtonSize,
+        height = secondarySlotButtonSize,
+        font_size = secondarySlotButtonFontSize,
+        tooltip = "Recycle secondary " .. index,
+    })
+end
+
+function createSecondarySlotButtons(board, color, slotCenters)
+    for _, center in ipairs(slotCenters) do
+        createSecondarySlotButton(board, color, center[1], center[2], center[3])
+    end
+end
+
+function createSecondaryDrawButtons()
+    clearSecondaryDrawButtons()
+    ensureSecondarySlotButtonHandlers()
+
+    local redBoard = getObjectFromGUID(redSecondaryBoard_GUID)
+    if redBoard then
+        redBoard.createButton(draw1Btn)
+        createSecondarySlotButtons(redBoard, "Red", {
+            {1, 2.35, -3.54},
+            {2, -0.25, -3.54},
+            {3, -2.91, -3.54},
+            {4, 2.35, 0.00},
+            {5, -0.25, 0.00},
+            {6, -2.91, 0.00},
+            {7, 4.97, 3.58},
+            {8, 2.35, 3.58},
+            {9, -0.25, 3.58},
+            {10, -2.91, 3.58},
+        })
+    end
+
+    local blueBoard = getObjectFromGUID(blueSecondaryBoard_GUID)
+    if blueBoard then
+        blueBoard.createButton(draw2Btn)
+        createSecondarySlotButtons(blueBoard, "Blue", {
+            {1, -2.35, -3.54},
+            {2, 0.27, -3.54},
+            {3, 2.91, -3.54},
+            {4, -2.35, 0.00},
+            {5, 0.27, 0.00},
+            {6, 2.91, 0.00},
+            {7, -4.97, 3.58},
+            {8, -2.35, 3.58},
+            {9, 0.2, 3.58},
+            {10, 2.91, 3.58},
+        })
+    end
+end
+
 function onload(save_data)
 	if save_data ~= "" then
 		local data = JSON.decode(save_data)
@@ -282,6 +398,7 @@ function onload(save_data)
 	end
 
 	self.clearButtons()
+    clearSecondaryDrawButtons()
 	if not scoresheetActive then
 		self.createButton(enableBtn)
 		return
@@ -294,8 +411,7 @@ function onload(save_data)
 	self.createButton( playerTwoTitle )
 	self.createButton( playerTotal[1] )
 	self.createButton( playerTotal[2] )
-	self.createButton( draw1Btn )
-	self.createButton( draw2Btn )
+    createSecondaryDrawButtons()
 	self.createButton( chlDrawBtn )
 	self.createButton( chlDiscardBtn )
 	syncPlayerTitlesFromSeats()
