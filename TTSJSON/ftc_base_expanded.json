@@ -40097,7 +40097,7 @@
       "Name": "Custom_Model",
       "Transform": {
         "posX": 75.48,
-        "posY": 0.90,
+        "posY": 0.9,
         "posZ": 13.47,
         "rotX": 2.05462584e-06,
         "rotY": 269.992737,
@@ -40994,6 +40994,496 @@
       ]
     },
     {
+      "GUID": "c1e001",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 79.02,
+        "posY": 0.92,
+        "posZ": 12.15,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
+      "Nickname": "RedSec1",
+      "Description": "RedSec1",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.2,
+        "b": 0.2,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "c1e002",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 79.02,
+        "posY": 0.92,
+        "posZ": 14.75,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
+      "Nickname": "RedSec2",
+      "Description": "RedSec2",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.2,
+        "b": 0.2,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "c1e003",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 79.02,
+        "posY": 0.92,
+        "posZ": 17.41,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
+      "Nickname": "RedSec3",
+      "Description": "RedSec3",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.2,
+        "b": 0.2,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "c1e004",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 75.48,
+        "posY": 0.92,
+        "posZ": 12.15,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
+      "Nickname": "RedSec4",
+      "Description": "RedSec4",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.2,
+        "b": 0.2,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "c1e005",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 75.48,
+        "posY": 0.92,
+        "posZ": 14.75,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
+      "Nickname": "RedSec5",
+      "Description": "RedSec5",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.2,
+        "b": 0.2,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "c1e006",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 75.48,
+        "posY": 0.92,
+        "posZ": 17.41,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
+      "Nickname": "RedSec6",
+      "Description": "RedSec6",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.2,
+        "b": 0.2,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "c1e007",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 71.9,
+        "posY": 0.92,
+        "posZ": 9.53,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
+      "Nickname": "RedSec7",
+      "Description": "RedSec7",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.2,
+        "b": 0.2,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "c1e008",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 71.9,
+        "posY": 0.92,
+        "posZ": 12.15,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
+      "Nickname": "RedSec8",
+      "Description": "RedSec8",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.2,
+        "b": 0.2,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "c1e009",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 71.9,
+        "posY": 0.92,
+        "posZ": 14.75,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
+      "Nickname": "RedSec9",
+      "Description": "RedSec9",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.2,
+        "b": 0.2,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "c1e010",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 71.9,
+        "posY": 0.92,
+        "posZ": 17.41,
+        "rotX": 0.0,
+        "rotY": 90.13061,
+        "rotZ": 0.0,
+        "scaleX": 3.0,
+        "scaleY": 1.0,
+        "scaleZ": 2.0
+      },
+      "Nickname": "RedSec10",
+      "Description": "RedSec10",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.2,
+        "b": 0.2,
+        "a": 0.35
+      },
+      "Tags": [
+        "secondaryCard"
+      ],
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
       "GUID": "b1e001",
       "Name": "ScriptingTrigger",
       "Transform": {
@@ -41479,6 +41969,281 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "5423ba",
+      "Name": "3DText",
+      "Transform": {
+        "posX": 76.47,
+        "posY": 0.9999996,
+        "posZ": 3.95,
+        "rotX": 90.0,
+        "rotY": 89.71415,
+        "rotZ": 0.0,
+        "scaleX": 0.37,
+        "scaleY": 0.37,
+        "scaleZ": 1.0
+      },
+      "Nickname": "RedSecName1",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "Text": {
+        "Text": "1.",
+        "OwnerSteamID": 76561198047190655,
+        "colorstate": {
+          "r": 1.0,
+          "g": 1.0,
+          "b": 1.0
+        },
+        "fontSize": 23
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "5423bb",
+      "Name": "3DText",
+      "Transform": {
+        "posX": 75.84,
+        "posY": 0.9999996,
+        "posZ": 3.95,
+        "rotX": 90.0,
+        "rotY": 89.71415,
+        "rotZ": 0.0,
+        "scaleX": 0.37,
+        "scaleY": 0.37,
+        "scaleZ": 1.0
+      },
+      "Nickname": "RedSecName2",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "Text": {
+        "Text": "2.",
+        "OwnerSteamID": 76561198047190655,
+        "colorstate": {
+          "r": 1.0,
+          "g": 1.0,
+          "b": 1.0
+        },
+        "fontSize": 23
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "5423bc",
+      "Name": "3DText",
+      "Transform": {
+        "posX": 75.21,
+        "posY": 0.9999996,
+        "posZ": 3.95,
+        "rotX": 90.0,
+        "rotY": 89.71415,
+        "rotZ": 0.0,
+        "scaleX": 0.37,
+        "scaleY": 0.37,
+        "scaleZ": 1.0
+      },
+      "Nickname": "RedSecName3",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "Text": {
+        "Text": "3.",
+        "OwnerSteamID": 76561198047190655,
+        "colorstate": {
+          "r": 1.0,
+          "g": 1.0,
+          "b": 1.0
+        },
+        "fontSize": 23
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "5423bd",
+      "Name": "3DText",
+      "Transform": {
+        "posX": 74.58,
+        "posY": 0.9999996,
+        "posZ": 3.95,
+        "rotX": 90.0,
+        "rotY": 89.71415,
+        "rotZ": 0.0,
+        "scaleX": 0.37,
+        "scaleY": 0.37,
+        "scaleZ": 1.0
+      },
+      "Nickname": "RedSecName4",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "Text": {
+        "Text": "4.",
+        "OwnerSteamID": 76561198047190655,
+        "colorstate": {
+          "r": 1.0,
+          "g": 1.0,
+          "b": 1.0
+        },
+        "fontSize": 23
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "5423be",
+      "Name": "3DText",
+      "Transform": {
+        "posX": 73.95,
+        "posY": 0.9999996,
+        "posZ": 3.95,
+        "rotX": 90.0,
+        "rotY": 89.71415,
+        "rotZ": 0.0,
+        "scaleX": 0.37,
+        "scaleY": 0.37,
+        "scaleZ": 1.0
+      },
+      "Nickname": "RedSecName5",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "Text": {
+        "Text": "5.",
+        "OwnerSteamID": 76561198047190655,
+        "colorstate": {
+          "r": 1.0,
+          "g": 1.0,
+          "b": 1.0
+        },
+        "fontSize": 23
+      },
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": ""

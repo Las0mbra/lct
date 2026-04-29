@@ -32,6 +32,20 @@ blueDrawSecondaryBtn = {
     tooltip = "Draw a blue secondary to the first open BlueSec slot."
 }
 
+redDrawSecondaryBtn = {
+    label = "DRAW",
+    click_function = "drawRedSecondary",
+    function_owner = self,
+    position = {0, 0.35, -1.55},
+    rotation = {0, 0, 180},
+    height = 420,
+    width = 900,
+    font_size = 180,
+    color = {0, 0, 0},
+    font_color = {1, 1, 1},
+    tooltip = "Draw a red secondary to the first open RedSec slot."
+}
+
 -- Same removal of extra spaces
 lockGambitBtnPariahNexusTooltip = "After pressing Prepare Secrets and then selecting one by flipping it face down with the F key, press this button to lock in your choice."
 
@@ -107,16 +121,24 @@ function updateForSelectedPack()
 
     self.clearButtons()
     self.createButton(lockInSecondariesBtn)
-    updateBlueSecondaryDeckButton()
+    updateSecondaryDeckButton()
 end
 
-function updateBlueSecondaryDeckButton()
-    if playerColor != "Blue" or not secondaryDeck then
+function updateSecondaryDeckButton()
+    if not secondaryDeck then
         return
     end
 
     secondaryDeck.clearButtons()
-    secondaryDeck.createButton(blueDrawSecondaryBtn)
+    if playerColor == "Red" then
+        secondaryDeck.createButton(redDrawSecondaryBtn)
+    elseif playerColor == "Blue" then
+        secondaryDeck.createButton(blueDrawSecondaryBtn)
+    end
+end
+
+function drawRedSecondary()
+    Global.call("drawRedSecondaryToFirstOpenSlot")
 end
 
 function drawBlueSecondary()
@@ -132,7 +154,7 @@ function packSelected(params)
     secondaryDeck.locked = false
     secondaryDeck.tooltip = true
     secondaryDeck.interactable = true
-    updateBlueSecondaryDeckButton()
+    updateSecondaryDeckButton()
 
     tryDealFixedSecondaries()
 end

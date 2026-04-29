@@ -832,38 +832,9 @@ end
 
 
 -- Draw functions:
--- For Red: use zone "secondary11" for index 1 and "secondary12" for index 2.
+-- For Red: draw into the first open RedSec scripting area, up to 10 active cards.
 function drawSecondary1()
-    -- If both fixed clones already exist, nothing to do.
-    if fixedSecondaryCard1_Red and fixedSecondaryCard2_Red then
-        return
-    end
-
-    -- If fixed clone for index 1 is missing, draw from zone "secondary11"
-    if not fixedSecondaryCard1_Red then
-        if #secondary11ZoneObj.getObjects() < 1 then
-            Global.call("moveOneFromDeckToZone", {deck = "redSecondary", zone = "secondary11"})
-            Wait.time(function()
-                local objs = secondary11ZoneObj.getObjects()
-                if #objs > 0 then
-                    copySecondaryCardToCenter(objs[1], 1, "Red")
-                end
-            end, 1)
-        end
-    end
-
-    -- If fixed clone for index 2 is missing, draw from zone "secondary12"
-    if not fixedSecondaryCard2_Red then
-        if #secondary12ZoneObj.getObjects() < 1 then
-            Global.call("moveOneFromDeckToZone", {deck = "redSecondary", zone = "secondary12"})
-            Wait.time(function()
-                local objs = secondary12ZoneObj.getObjects()
-                if #objs > 0 then
-                    copySecondaryCardToCenter(objs[1], 2, "Red")
-                end
-            end, 1)
-        end
-    end
+    Global.call("drawRedSecondaryToFirstOpenSlot")
 end
 
 

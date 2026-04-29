@@ -79,10 +79,29 @@ redHiddenZone_GUID = "28419e"
 blueHiddenZone_GUID = "e1e91a"
 deploymentCardZone_GUID = "dcf95b"
 primaryCardZone_GUID = "740abc"
-secondary11CardZone_GUID = "0ec215"
-secondary12CardZone_GUID = "d865d4"
+secondary11CardZone_GUID = "c1e001"
+secondary12CardZone_GUID = "c1e002"
 secondary21CardZone_GUID = "b1e001"
 secondary22CardZone_GUID = "b1e002"
+redSecondaryCardZone_GUIDs = {
+    "c1e001",
+    "c1e002",
+    "c1e003",
+    "c1e004",
+    "c1e005",
+    "c1e006",
+    "c1e007",
+    "c1e008",
+    "c1e009",
+    "c1e010",
+}
+redSecondaryName_GUIDs = {
+    "5423ba",
+    "5423bb",
+    "5423bc",
+    "5423bd",
+    "5423be",
+}
 blueSecondaryCardZone_GUIDs = {
     "b1e001",
     "b1e002",
@@ -457,6 +476,7 @@ function onLoad(saved_data)
 	            local pos = blueVortex.getPosition()
 	            blueCounter.setPosition({pos.x + 4.52, 1.12, pos.z})
 	        end
+            refreshRedSecondaryNames()
 	        refreshBlueSecondaryNames()
 	    end, 2)
 end
@@ -769,9 +789,9 @@ function moveOneFromDeckToZoneBlue(params)
     deckObj.takeObject(takeParams)
 end
 
-function getBlueSecondaryCardZones()
+function getSecondaryCardZones(zoneGuids)
     local zones = {}
-    for index, guid in ipairs(blueSecondaryCardZone_GUIDs) do
+    for index, guid in ipairs(zoneGuids) do
         local zone = getObjectFromGUID(guid)
         if zone then
             table.insert(zones, {
@@ -785,8 +805,16 @@ function getBlueSecondaryCardZones()
     return zones
 end
 
-function getFirstOpenBlueSecondaryCardZone()
-    for _, slot in ipairs(getBlueSecondaryCardZones()) do
+function getBlueSecondaryCardZones()
+    return getSecondaryCardZones(blueSecondaryCardZone_GUIDs)
+end
+
+function getRedSecondaryCardZones()
+    return getSecondaryCardZones(redSecondaryCardZone_GUIDs)
+end
+
+function getFirstOpenSecondaryCardZone(zoneGuids)
+    for _, slot in ipairs(getSecondaryCardZones(zoneGuids)) do
         if #slot.zone.getObjects() == 0 then
             return slot
         end
@@ -795,13 +823,21 @@ function getFirstOpenBlueSecondaryCardZone()
     return nil
 end
 
-function isBlueSecondaryCardZone(zone)
+function getFirstOpenBlueSecondaryCardZone()
+    return getFirstOpenSecondaryCardZone(blueSecondaryCardZone_GUIDs)
+end
+
+function getFirstOpenRedSecondaryCardZone()
+    return getFirstOpenSecondaryCardZone(redSecondaryCardZone_GUIDs)
+end
+
+function isSecondaryCardZone(zone, zoneGuids)
     if not zone then
         return false
     end
 
     local zoneGuid = zone.getGUID()
-    for _, guid in ipairs(blueSecondaryCardZone_GUIDs) do
+    for _, guid in ipairs(zoneGuids) do
         if zoneGuid == guid then
             return true
         end
@@ -810,7 +846,15 @@ function isBlueSecondaryCardZone(zone)
     return false
 end
 
-function getBlueSecondaryCardName(zone)
+function isBlueSecondaryCardZone(zone)
+    return isSecondaryCardZone(zone, blueSecondaryCardZone_GUIDs)
+end
+
+function isRedSecondaryCardZone(zone)
+    return isSecondaryCardZone(zone, redSecondaryCardZone_GUIDs)
+end
+
+function getSecondaryCardName(zone)
     if not zone then
         return nil
     end
@@ -827,8 +871,12 @@ function getBlueSecondaryCardName(zone)
     return nil
 end
 
-function setBlueSecondaryName(index, cardName)
-    local labelObj = getObjectFromGUID(blueSecondaryName_GUIDs[index])
+function getBlueSecondaryCardName(zone)
+    return getSecondaryCardName(zone)
+end
+
+function setSecondaryName(nameGuids, index, cardName)
+    local labelObj = getObjectFromGUID(nameGuids[index])
     if not labelObj then
         return
     end
@@ -841,46 +889,72 @@ function setBlueSecondaryName(index, cardName)
     labelObj.setValue(text)
 end
 
-function refreshBlueSecondaryNames()
-    for index = 1, #blueSecondaryName_GUIDs do
-        local zoneGuid = blueSecondaryCardZone_GUIDs[index]
+function setBlueSecondaryName(index, cardName)
+    setSecondaryName(blueSecondaryName_GUIDs, index, cardName)
+end
+
+function setRedSecondaryName(index, cardName)
+    setSecondaryName(redSecondaryName_GUIDs, index, cardName)
+end
+
+function refreshSecondaryNames(zoneGuids, nameGuids, setter)
+    for index = 1, #nameGuids do
+        local zoneGuid = zoneGuids[index]
         local zone = getObjectFromGUID(zoneGuid)
-        local cardName = getBlueSecondaryCardName(zone)
-        setBlueSecondaryName(index, cardName)
+        local cardName = getSecondaryCardName(zone)
+        setter(index, cardName)
     end
+end
+
+function refreshBlueSecondaryNames()
+    refreshSecondaryNames(blueSecondaryCardZone_GUIDs, blueSecondaryName_GUIDs, setBlueSecondaryName)
+end
+
+function refreshRedSecondaryNames()
+    refreshSecondaryNames(redSecondaryCardZone_GUIDs, redSecondaryName_GUIDs, setRedSecondaryName)
 end
 
 function refreshBlueSecondaryNamesSoon()
     Wait.time(refreshBlueSecondaryNames, 0.25)
 end
 
+function refreshRedSecondaryNamesSoon()
+    Wait.time(refreshRedSecondaryNames, 0.25)
+end
+
 function onObjectEnterScriptingZone(zone, object)
+    if isRedSecondaryCardZone(zone) then
+        refreshRedSecondaryNamesSoon()
+    end
     if isBlueSecondaryCardZone(zone) then
         refreshBlueSecondaryNamesSoon()
     end
 end
 
 function onObjectLeaveScriptingZone(zone, object)
+    if isRedSecondaryCardZone(zone) then
+        refreshRedSecondaryNamesSoon()
+    end
     if isBlueSecondaryCardZone(zone) then
         refreshBlueSecondaryNamesSoon()
     end
 end
 
-function drawBlueSecondaryToFirstOpenSlot()
-    local slot = getFirstOpenBlueSecondaryCardZone()
+function drawSecondaryToFirstOpenSlot(params)
+    local slot = params.getFirstOpenSlot()
     if not slot then
-        broadcastToColor("Blue already has 10 active secondary cards.", "Blue", "Yellow")
+        broadcastToColor(params.fullMessage, params.color, "Yellow")
         return
     end
 
     if not packSelected or not missionPackData[packSelected] then
-        broadcastToColor("Select a mission pack before drawing secondary cards.", "Blue", "Yellow")
+        broadcastToColor("Select a mission pack before drawing secondary cards.", params.color, "Yellow")
         return
     end
 
-    local deckObj = getObjectFromGUID(missionPackData[packSelected].blueSecondaryDeck_GUID)
+    local deckObj = getObjectFromGUID(missionPackData[packSelected][params.deckGuidKey])
     if not deckObj then
-        broadcastToColor("Blue secondary deck could not be found.", "Blue", "Red")
+        broadcastToColor(params.deckMissingMessage, params.color, "Red")
         return
     end
 
@@ -893,8 +967,30 @@ function drawBlueSecondaryToFirstOpenSlot()
         callback_function = function(card)
             Wait.frames(function()
                 card.locked = true
-                refreshBlueSecondaryNames()
+                params.refreshNames()
             end)
         end
+    })
+end
+
+function drawBlueSecondaryToFirstOpenSlot()
+    drawSecondaryToFirstOpenSlot({
+        color = "Blue",
+        getFirstOpenSlot = getFirstOpenBlueSecondaryCardZone,
+        deckGuidKey = "blueSecondaryDeck_GUID",
+        refreshNames = refreshBlueSecondaryNames,
+        fullMessage = "Blue already has 10 active secondary cards.",
+        deckMissingMessage = "Blue secondary deck could not be found.",
+    })
+end
+
+function drawRedSecondaryToFirstOpenSlot()
+    drawSecondaryToFirstOpenSlot({
+        color = "Red",
+        getFirstOpenSlot = getFirstOpenRedSecondaryCardZone,
+        deckGuidKey = "redSecondaryDeck_GUID",
+        refreshNames = refreshRedSecondaryNames,
+        fullMessage = "Red already has 10 active secondary cards.",
+        deckMissingMessage = "Red secondary deck could not be found.",
     })
 end
