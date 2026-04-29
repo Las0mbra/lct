@@ -341,56 +341,79 @@ sizeDownBtn = {
 
 confirmBtn = {
     index          = i,
-    label          = "1 Vs 1",
+    label          = "1v1",
     click_function = "confirmStandardGame",
     function_owner = self,
-    position       = { -menuSizeX - 6.5, menuSizeY, menuSizeZ + 3 },
+    position       = { -menuSizeX - 6.0, menuSizeY, menuSizeZ + 2.65 },
     rotation       = { 0, 0, 0 },
-    height         = 1400,
-    width          = 4400,
-    scale          = { 1.3, 1.3, 1.3 },
-    font_size      = 500,
+    height         = 810,
+    width          = 4500,
+    scale          = { 1, 1, 1 },
+    font_size      = 375,
     color          = {
          0.191999942,
         0.701,
         0.167999923},  -- Rich Forest Green
-    font_color     = { 1.0, 1.0, 1.0 }  -- Pure White
+    font_color     = { 1.0, 1.0, 1.0 },  -- Pure White
+    hover_color    = { 0.25, 0.78, 0.22, 1 },
+    press_color    = { 0.13, 0.55, 0.12, 1 }
+}
+
+confirmBtn2v2 = {
+    index          = i,
+    label          = "2v2",
+    click_function = "none",
+    function_owner = self,
+    position       = { -menuSizeX + 6.0, menuSizeY, menuSizeZ + 2.65 },
+    rotation       = { 0, 0, 0 },
+    height         = 810,
+    width          = 4500,
+    scale          = { 1, 1, 1 },
+    font_size      = 375,
+    color          = { 0.856, 0.09998388, 0.09398384 },
+    font_color     = { 1.0, 1.0, 1.0 },
+    hover_color    = { 1.0, 0.18, 0.16, 1 },
+    press_color    = { 0.65, 0.06, 0.05, 1 }
 }
 
 confirmBtn4 = {
     index          = i,
-    label          = "SINGLE PLAYER",
+    label          = "Solo",
     click_function = "confirmForSingles",
     function_owner = self,
-    position       = { -menuSizeX + 6.5, menuSizeY, menuSizeZ + 3 },
+    position       = { -menuSizeX - 6.0, menuSizeY, menuSizeZ + 4.65 },
     rotation       = { 0, 0, 0 },
-    height         = 1400,
-    width          = 4400,
-    scale          = { 1.3, 1.3, 1.3 },
-    font_size      = 500,
+    height         = 810,
+    width          = 4500,
+    scale          = { 1, 1, 1 },
+    font_size      = 375,
     color          = {
         0.117999949,
         0.53,
          1},  -- Vibrant Royal Blue
-    font_color     = { 1.0, 1.0, 1.0 }  -- Pure White
+    font_color     = { 1.0, 1.0, 1.0 },  -- Pure White
+    hover_color    = { 0.18, 0.6, 1, 1 },
+    press_color    = { 0.08, 0.4, 0.82, 1 }
 }
 
 confirmBtnLegacy = {
     index          = i,
-    label          = "10E LEGACY",
+    label          = "10th Edition",
     click_function = "confirmForLegacy",
     function_owner = self,
-    position       = { -menuSizeX - 6.5, menuSizeY, menuSizeZ + 7.5 },
+    position       = { -menuSizeX + 6.0, menuSizeY, menuSizeZ + 4.65 },
     rotation       = { 0, 0, 0 },
-    height         = 1400,
-    width          = 4400,
-    scale          = { 1.3, 1.3, 1.3 },
-    font_size      = 500,
+    height         = 810,
+    width          = 4500,
+    scale          = { 1, 1, 1 },
+    font_size      = 375,
     color          = {
         0.627,
         0.124999948,
         0.941},
-    font_color     = { 1.0, 1.0, 1.0 }
+    font_color     = { 1.0, 1.0, 1.0 },
+    hover_color    = { 0.72, 0.2, 1, 1 },
+    press_color    = { 0.47, 0.08, 0.74, 1 }
 }
 
 function refreshMat()
@@ -409,6 +432,7 @@ function writeSizeMenu()
     self.createButton(sizeUpBtn)
     self.createButton(sizeDownBtn)
     self.createButton(confirmBtn)
+    self.createButton(confirmBtn2v2)
     self.createButton(removeMapsBtn)
     self.createButton(confirmBtn4)
     self.createButton(confirmBtnLegacy)

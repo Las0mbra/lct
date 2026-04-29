@@ -239,8 +239,8 @@ local hasObjectSaved = false
 savePositionLabel = "Save"
 saveBtn={
     label=savePositionLabel, tooltip=savePositionTip, click_function="save", function_owner=self,
-    position={-7.70, Yoffset ,-1.69}, rotation={0,0,0},
-    width = 550, height = 300, font_size = 150,
+    position={-7.5, Yoffset ,-0.84}, rotation={0,0,0},
+    width = 1300, height = 300, font_size = 150,
     color = {0.13, 0.13, 0.13, 1}, -- Black button (not pure black for smoother look)
     font_color = {1, 1, 1}, -- White text for high contrast
     hover_color = {0.2, 0.2, 0.2, 1}, -- Dark gray when hovered
@@ -250,8 +250,8 @@ saveBtn={
 restorePositionLabel = "Restore Position"
 restoreBtn={
     label=restorePositionLabel, click_function="restore", function_owner=self,
-    position={-6.76, Yoffset ,-1.69}, rotation={0,0,0},
-    width = 1250, height = 300, font_size = 150,
+    position={-7.5, Yoffset ,-0.50}, rotation={0,0,0},
+    width = 1300, height = 300, font_size = 150,
     color = {0.13, 0.13, 0.13, 1}, -- Black button (not pure black for smoother look)
     font_color = {1, 1, 1}, -- White text for high contrast
     hover_color = {0.2, 0.2, 0.2, 1}, -- Dark gray when hovered
@@ -393,7 +393,7 @@ local auto2D6 = {
     tooltip="Roll 2D6 Instantly",
     click_function = "autoRoll2D6",
     function_owner = self,
-    position       = {-7.5, Yoffset, 0.18},
+    position       = {-7.5, Yoffset, 0.52},
     rotation       = { 0, 0, 0 },
     width = 1300, height = 300, font_size = 150,
     color = {0.13, 0.13, 0.13, 1}, -- Black button (not pure black for smoother look)
@@ -409,7 +409,7 @@ local revertRollBtn = {
     tooltip="It takes 1 second after rolling to 'lock in'",
     click_function = "revertRoll",
     function_owner = self,
-    position       = {-7.5, Yoffset, -0.16},
+    position       = {-7.5, Yoffset, 0.18},
     rotation       = { 0, 0, 0 },
     width = 1300, height = 300, font_size = 150,
     color = {0.13, 0.13, 0.13, 1}, -- Black button (not pure black for smoother look)
@@ -437,7 +437,7 @@ local redoRollBtn = {
 -- Modern Black "Last 5 Rolls" Button
 local customDiceSpawnButton = {
     label = "Last 5 Rolls", click_function = "callLast5Rolls", function_owner = self,
-    position = {-7.5, Yoffset, -0.50}, rotation = {0, 0, 0},
+    position = {-7.5, Yoffset, -0.16}, rotation = {0, 0, 0},
     width = 1300, height = 300, font_size = 150,
     color = {0.13, 0.13, 0.13, 1},
     font_color = {1, 1, 1},
