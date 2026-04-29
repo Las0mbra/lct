@@ -459,60 +459,6 @@ end
     end
 end
 
-
-
-
-function printLast5Innovative(pointless, player_color)
-    if #lastRolls == 0 then
-        printToAll("NO LAST ROLLS", {1,1,0})
-        return
-    end
-
-    local faceNames = {"One", "Two", "Three", "Four", "Five", "Six"}
-    local faceIndex = {Ones=1, Twos=2, Threes=3, Fours=4, Fives=5, Sixes=6}
-
-    printToAll("–––––––––––––––––––––––––––––––––––––––––", {1,1,1})
-
-    for i = #lastRolls, 1, -1 do
-        local rollData = lastRolls[i]
-        local rollColor = rollData.color or {1,1,1}
-
-        local tally = {0,0,0,0,0,0}
-        for numStr, faceStr in rollData.msg:gmatch("(%d+) (%a+)") do
-            local idx = faceIndex[faceStr]
-            if idx then
-                tally[idx] = tally[idx] + tonumber(numStr)
-            end
-        end
-
-        local totalDice = 0
-        for face = 1, 6 do
-            totalDice = totalDice + tally[face]
-        end
-
-        -- Decide the prefix
-        local prefix
-        if i == #lastRolls then
-            prefix = "Latest =>"
-        elseif i == 1 then
-            prefix = "Oldest =>"
-        else
-            prefix = string.format("Roll #%d =>", i)
-        end
-
-        -- Build a single-line string
-        local rollLine = prefix
-        for face = 1, 6 do
-            rollLine = rollLine .. string.format(" %s:%d", faceNames[face], tally[face])
-        end
-        rollLine = rollLine .. string.format(" [Total:%d]", totalDice)
-
-        printToAll(rollLine, rollColor)
-    end
-end
-
-
-
 function printResults(n)
     if #lastRolls == 0 then
         printToAll("NO LAST ROLLS\n", "Yellow")
@@ -598,7 +544,7 @@ function printLast5Innovative(pointless, player_color)
         return
     end
 
-    local faceNames = {"One", "Two", "Three", "Four", "Five", "Six"}
+    local faceNames = {"⚀", "⚁", "⚂", "⚃", "⚄", "⚅"}
     local faceIndex = {Ones=1, Twos=2, Threes=3, Fours=4, Fives=5, Sixes=6}
 
     printToAll("–––––––––––––––––––––––––––––––––––––––––", {1,1,1})
@@ -631,7 +577,7 @@ function printLast5Innovative(pointless, player_color)
 
         local rollLine = prefix
         for face = 1, 6 do
-            rollLine = rollLine .. string.format(" %s:%d", faceNames[face], tally[face])
+            rollLine = rollLine .. string.format(" %s : %d", faceNames[face], tally[face])
         end
         rollLine = rollLine .. string.format(" [Total:%d]", totalDice)
 
