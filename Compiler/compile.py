@@ -32,6 +32,17 @@ REGEX_JSON_XMLUI     = re.compile(r'"XmlUI":\s+"')
 REGEX_JSON_LUASCRIPT_FIELD = re.compile(r'("LuaScript":\s*)"(?:\\.|[^"\\])*"')
 
 
+def validate_json_text(json_text: str, label: str):
+    try:
+        json.loads(json_text)
+    except json.JSONDecodeError as exc:
+        print(
+            f"ERROR: {label} is not valid JSON: "
+            f"{exc.msg} at line {exc.lineno}, column {exc.colno}."
+        )
+        sys.exit(1)
+
+
 def get_tts_saves_path() -> Path:
     system = platform.system()
     home = Path.home()
@@ -133,7 +144,9 @@ def main():
 
     # --- Load JSON as lines and index GUID / LuaScript positions ---
     print(f"\nLoading {json_file.name}... ", end="")
-    json_lines = json_file.read_text(encoding="utf-8").splitlines()
+    json_text = json_file.read_text(encoding="utf-8")
+    validate_json_text(json_text, json_file.name)
+    json_lines = json_text.splitlines()
 
     json_guid_entries  = []  # [(line_idx, guid_value), ...]
     json_lua_line_idxs = []  # [line_idx, ...]
@@ -192,7 +205,9 @@ def main():
     # --- Write output ---
     out_name = f"{JSON_NAME}_{version}_compiled.json" if version else f"{JSON_NAME}_compiled.json"
     out_file = SCRIPT_DIR / out_name
-    out_file.write_text("\n".join(json_lines), encoding="utf-8")
+    compiled_json = "\n".join(json_lines)
+    validate_json_text(compiled_json, out_name)
+    out_file.write_text(compiled_json, encoding="utf-8")
     print(f"\nOutput: {out_file}")
 
     # --- Copy to TTS saves if --test ---

@@ -40070,7 +40070,72 @@
       "Hands": false,
       "CustomMesh": {
         "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/15085181024976959748/6CC8ECA6F3EB3656D50EC38EEB8A72256BBE37A4/",
-        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/17013863559524789468/CBC60ACBD5926EAC97689A895CC9395476ECB502/",
+        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/16584826839357966506/0ACFF6A176B4132BE5D05E50B22D232533D57B75/",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 3,
+        "TypeIndex": 0,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 2.0,
+          "FresnelStrength": 0.0
+        },
+        "CastShadows": true
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "ecabdc",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": 75.48,
+        "posY": 0.90,
+        "posZ": 13.47,
+        "rotX": 2.05462584e-06,
+        "rotY": 269.992737,
+        "rotZ": -1.0048765e-05,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/15085181024976959748/6CC8ECA6F3EB3656D50EC38EEB8A72256BBE37A4/",
+        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/13804987021569313141/85EC1F0C3C7F25A0439E18F9A364291483A4A382/",
         "NormalURL": "",
         "ColliderURL": "",
         "Convex": true,
