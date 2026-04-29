@@ -42,11 +42,11 @@
           <Text id="TVWatch1" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         </Panel>
         <HorizontalLayout spacing="2">
-          <Button id="Ph11" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmd"/>
-          <Button id="Ph21" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMov"/>
-          <Button id="Ph31" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseSht"/>
-          <Button id="Ph41" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseChr"/>
-          <Button id="Ph51" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseFgt"/>
+          <Button id="Ph11" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmdBlue"/>
+          <Button id="Ph21" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMovBlue"/>
+          <Button id="Ph31" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseShtBlue"/>
+          <Button id="Ph41" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseChrBlue"/>
+          <Button id="Ph51" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseFgtBlue"/>
         </HorizontalLayout>
         <Text id="VPWatch1" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <Text id="CPWatch1" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
@@ -71,11 +71,11 @@
           <Text id="TVWatch2" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         </Panel>
         <HorizontalLayout spacing="2">
-          <Button id="Ph12" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmd"/>
-          <Button id="Ph22" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMov"/>
-          <Button id="Ph32" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseSht"/>
-          <Button id="Ph42" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseChr"/>
-          <Button id="Ph52" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseFgt"/>
+          <Button id="Ph12" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmdRed"/>
+          <Button id="Ph22" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMovRed"/>
+          <Button id="Ph32" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseShtRed"/>
+          <Button id="Ph42" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseChrRed"/>
+          <Button id="Ph52" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseFgtRed"/>
         </HorizontalLayout>
         <Text id="VPWatch2" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <Text id="CPWatch2" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>

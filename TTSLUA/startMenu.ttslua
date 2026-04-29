@@ -2485,28 +2485,48 @@ function gameNotStartedGuard()
     return true
 end
 
-function hudNextPhase()
+local function getHudPlayerColor(player)
+    if type(player) == "string" then
+        return player
+    end
+    if type(player) == "table" and player.color then
+        return player.color
+    end
+    return nil
+end
+
+function hudNextPhase(player)
     if gameNotStartedGuard() then return end
+    local playerColor = getHudPlayerColor(player)
+    if playerColor and playerColor ~= currentTurn and singlesMode ~= "singles" then return end
     nextPhase(self, currentTurn, false)
 end
 
-function hudPassTurn()
+function hudPassTurn(player)
     if gameNotStartedGuard() then return end
-    passTurn(self, currentTurn, false)
+    local playerColor = getHudPlayerColor(player)
+    passTurn(self, playerColor or currentTurn, false)
 end
 
-local function hudAdvanceIfActive(targetTurn)
+local function hudCanControlTurn(player, targetTurn)
     if gameNotStartedGuard() then return end
+    local playerColor = getHudPlayerColor(player)
+    if singlesMode ~= "singles" and playerColor and playerColor ~= targetTurn then return false end
     if currentTurn ~= targetTurn then return end
+    return true
+end
+
+local function hudAdvanceIfActive(player, targetTurn)
+    if not hudCanControlTurn(player, targetTurn) then return end
     nextPhase(self, currentTurn, false)
 end
 
-function hudTurnWatch1()
-    hudAdvanceIfActive("Blue")
+function hudTurnWatch1(player)
+    hudAdvanceIfActive(player, "Blue")
 end
 
-function hudTurnWatch2()
-    hudAdvanceIfActive("Red")
+function hudTurnWatch2(player)
+    hudAdvanceIfActive(player, "Red")
 end
 
 local _phaseIds     = { "Ph1", "Ph2", "Ph3", "Ph4", "Ph5" }
@@ -2519,16 +2539,27 @@ function updatePhaseHUD()
     end
     local active = _phaseToId[currentPhase]
     if active then
-        Global.UI.setAttribute(active.."1", "textColor", "White")
-        Global.UI.setAttribute(active.."2", "textColor", "White")
+        local activeRow = (currentTurn == "Blue") and "1" or "2"
+        Global.UI.setAttribute(active..activeRow, "textColor", "White")
     end
 end
 
-function hudPhaseCmd() jumpToPhase(1) end
-function hudPhaseMov() jumpToPhase(2) end
-function hudPhaseSht() jumpToPhase(3) end
-function hudPhaseChr() jumpToPhase(4) end
-function hudPhaseFgt() jumpToPhase(5) end
+local function hudJumpToPhaseForTurn(player, targetTurn, idx)
+    if not hudCanControlTurn(player, targetTurn) then return end
+    jumpToPhase(idx)
+end
+
+function hudPhaseCmdBlue(player) hudJumpToPhaseForTurn(player, "Blue", 1) end
+function hudPhaseMovBlue(player) hudJumpToPhaseForTurn(player, "Blue", 2) end
+function hudPhaseShtBlue(player) hudJumpToPhaseForTurn(player, "Blue", 3) end
+function hudPhaseChrBlue(player) hudJumpToPhaseForTurn(player, "Blue", 4) end
+function hudPhaseFgtBlue(player) hudJumpToPhaseForTurn(player, "Blue", 5) end
+
+function hudPhaseCmdRed(player) hudJumpToPhaseForTurn(player, "Red", 1) end
+function hudPhaseMovRed(player) hudJumpToPhaseForTurn(player, "Red", 2) end
+function hudPhaseShtRed(player) hudJumpToPhaseForTurn(player, "Red", 3) end
+function hudPhaseChrRed(player) hudJumpToPhaseForTurn(player, "Red", 4) end
+function hudPhaseFgtRed(player) hudJumpToPhaseForTurn(player, "Red", 5) end
 
 function jumpToPhase(idx)
     if gameNotStartedGuard() then return end
