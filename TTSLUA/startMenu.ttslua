@@ -2330,29 +2330,70 @@ function getRoundNumber()
     return tonumber(round)
 end
 
+function getMissionManagerForColor(color)
+    local guidVar = (color == "Red") and "redMissionManager_GUID" or "blueMissionManager_GUID"
+    return getObjectFromGUID(Global.getVar(guidVar))
+end
+
+function selectedPlayersForSecondarySetup()
+    local colors = {}
+    if Player.Red and Player.Red.seated then
+        table.insert(colors, "Red")
+    end
+    if Player.Blue and Player.Blue.seated then
+        table.insert(colors, "Blue")
+    end
+    return colors
+end
+
+function prepareSecondariesForStart()
+    local colors = selectedPlayersForSecondarySetup()
+    local summaries = {}
+
+    for _, color in ipairs(colors) do
+        local manager = getMissionManagerForColor(color)
+        if manager and not manager.call("validateSecondaries") then
+            return false
+        end
+    end
+
+    Global.setVar("LOCKED_IN_SECONDARIES", 0)
+    for _, color in ipairs(colors) do
+        local manager = getMissionManagerForColor(color)
+        if manager then
+            local summaryJson = manager.call("lockInSecondaries")
+            if not summaryJson then
+                return false
+            end
+            local summary = JSON.decode(summaryJson)
+            table.insert(summaries, summary)
+        end
+    end
+
+    return summaries
+end
+
+function formatSecondarySummary(summary)
+    local cardText = ""
+    if summary.cards and #summary.cards > 0 then
+        cardText = " (" .. table.concat(summary.cards, ", ") .. ")"
+    end
+
+    return summary.color .. " chose " .. summary.mode .. " Secondary Objectives" .. cardText .. "."
+end
+
+function announceSecondarySelections(summaries)
+    for _, summary in ipairs(summaries) do
+        local message = formatSecondarySummary(summary)
+        broadcastToAll(message, summary.color)
+    end
+end
+
 function startGame(obj, player, alt)
     if alt then
         simulation = true
     end
     if singlesMode ~= "singles" then
-        local count = Global.getVar("LOCKED_IN_SECONDARIES")
-        forceStartCounter = forceStartCounter or 0
-
-        if count ~= 2 then
-            if forceStartCounter < 2 then
-            forceStartCounter = forceStartCounter + 1
-            local remaining = 3 - forceStartCounter
-            if remaining > 0 then
-                broadcastToAll("Please Lock in your Secondaries. Click "..remaining.." more times to force start the game", {1,0,0})
-                return
-            else
-                broadcastToAll("Force starting the game!", {1,0,0})
-            end
-            end
-        else
-            forceStartCounter = 0
-        end
-
         -- Count the number of players (if needed later)
         local playerList = Player.getPlayers()
         local numberOfPlayers = 0
@@ -2369,6 +2410,12 @@ function startGame(obj, player, alt)
         end
     end
 
+    local secondarySummaries = prepareSecondariesForStart()
+    if not secondarySummaries then
+        broadcastToAll("Cannot start: one or more players need to select Tactical or exactly two Fixed secondaries.", {1, 0.75, 0})
+        return
+    end
+
     Global.call("recordPlayers")
     inGame = true
 
@@ -2378,6 +2425,7 @@ function startGame(obj, player, alt)
     startCustomTurns()
     destroyDeployZones()
     broadcastToAll(phases[currentPhase], "Yellow")
+    announceSecondarySelections(secondarySummaries)
     resetActivationTokens()
     Notes.setNotes("")
     writeMenus()
