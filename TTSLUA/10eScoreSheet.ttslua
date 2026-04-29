@@ -6,7 +6,7 @@ secondary12ZoneObj = getObjectFromGUID(Global.getVar("secondary12CardZone_GUID")
 secondary21ZoneObj = getObjectFromGUID(Global.getVar("secondary21CardZone_GUID"))
 secondary22ZoneObj = getObjectFromGUID(Global.getVar("secondary22CardZone_GUID"))
 challengerZoneObj = getObjectFromGUID(Global.getVar("challengerCardZone_GUID"))
-redDiscardPosition = { x = 79.25, y = 1.5, z = 8.05 }
+redDiscardPosition = { x = 75.46, y = 0.98, z = 9.51 }
 blueDiscardPosition = { x = 75.47, y = 1.0, z = -9.50 }
 challengerDiscardPosition = { x = 79.0, y = 1.5, z = -2.0 }
 redUsingFixed = false

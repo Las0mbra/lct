@@ -220,9 +220,9 @@
   "SnapPoints": [
     {
       "Position": {
-        "x": 79.25,
-        "y": 0.9611349,
-        "z": 8.05
+        "x": 75.46,
+        "y": 0.98,
+        "z": 9.51
       },
       "Rotation": {
         "x": 0.0,
@@ -37293,9 +37293,9 @@
       "GUID": "c0fb49",
       "Name": "Deck",
       "Transform": {
-        "posX": 74.75,
-        "posY": 0.973883569,
-        "posZ": 8.05,
+        "posX": 79.07,
+        "posY": 0.98,
+        "posZ": 9.48,
         "rotX": -4.320841e-07,
         "rotY": 270,
         "rotZ": 180,
@@ -40161,9 +40161,9 @@
       "GUID": "bbdb02",
       "Name": "Deck",
       "Transform": {
-        "posX": 79.02,
-        "posY": 1.0,
-        "posZ": -9.5,
+        "posX": 85.0,
+        "posY": -5.0,
+        "posZ": 4.75,
         "rotX": 0.000103597573,
         "rotY": 270.000244,
         "rotZ": 179.999939,
@@ -40189,7 +40189,7 @@
       ],
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -40197,7 +40197,7 @@
       "DragSelectable": true,
       "Autoraise": true,
       "Sticky": true,
-      "Tooltip": true,
+      "Tooltip": false,
       "GridProjection": false,
       "HideWhenFaceDown": true,
       "Hands": false,

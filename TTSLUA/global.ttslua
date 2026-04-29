@@ -399,6 +399,7 @@ function onLoad(saved_data)
     end
     if not packSelected then
         hideMissionDeckUntilSelected(redSecondaryDeck_GUID)
+        hideMissionDeckUntilSelected(blueSecondaryDeck_GUID)
     end
     ---- end loading
     if allowMenu then
