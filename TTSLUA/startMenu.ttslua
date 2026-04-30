@@ -15,7 +15,7 @@ keepForTerrainEditor = true
 
 mat_GUID = Global.getVar("mat_GUID")
 ttsDebugEnabled = false
-dispositionValues = {"Disp 1", "Disp 2", "Disp 3"}
+dispositionValues = {"Disruption", "Priority Assets", "Purge the Foe", "Reconnaissance", "Take and Hold"}
 blueDispositionSelected = 1
 redDispositionSelected = 1
 
