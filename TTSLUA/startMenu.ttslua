@@ -1127,7 +1127,7 @@ function writeGenerateMissionButton()
         label = "Generate Mission", click_function = "generateMission", function_owner = self,
         position = {center.x, center.y, center.z}, rotation = {0, 0, 0},
         height = 600, width = 4000, font_size = 320,
-        color = {0.85, 0.85, 0.85}, font_color = {0, 0, 0},
+        color = {0, 0, 0}, font_color = {1, 1, 1},
         tooltip = "Spawn cards for the current dispositions",
     })
 end
