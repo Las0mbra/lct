@@ -116,6 +116,11 @@ def main():
         print(f"ERROR: {json_file} not found. Ending compilation.")
         sys.exit(1)
 
+    print(f"Validating {json_file.name}... ", end="")
+    json_text = json_file.read_text(encoding="utf-8")
+    validate_json_text(json_text, json_file.name)
+    print("Done.")
+
     if args.test:
         version = "test"
     else:
@@ -144,8 +149,6 @@ def main():
 
     # --- Load JSON as lines and index GUID / LuaScript positions ---
     print(f"\nLoading {json_file.name}... ", end="")
-    json_text = json_file.read_text(encoding="utf-8")
-    validate_json_text(json_text, json_file.name)
     json_lines = json_text.splitlines()
 
     json_guid_entries  = []  # [(line_idx, guid_value), ...]
