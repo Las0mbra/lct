@@ -129,6 +129,16 @@ primaryDeck_GUID = "d26e9c"
 redSecondaryDeck_GUID = "c0fb49"
 blueSecondaryDeck_GUID = "bbdb02"
 
+bluePrimaryDeck_GUID = "25c0d8"
+redPrimaryDeck_GUID = "e64441"
+
+missionCardZone_BluePrimary1_GUID = "d1e001"
+missionCardZone_BluePrimary2_GUID = "d1e002"
+missionCardZone_RedPrimary1_GUID  = "d1e003"
+missionCardZone_RedPrimary2_GUID  = "d1e004"
+missionCardZone_Deployment_GUID   = "d1e005"
+missionCardZone_Twist_GUID        = "d1e006"
+
 interactiveButtonTableQuarters_State = 1
 interactiveButtonAreaDenial = 1
 interactiveButtonStratReserves = 1

@@ -1080,6 +1080,7 @@ function writeDispositionMenu()
     redDispositionSelected = normalizeDispositionIndex(redDispositionSelected)
     createDispositionSelector("Blue Disposition", blueDispositionSelected, blueDispositionControlWorldZ, "blueDispositionDown", "blueDispositionUp")
     createDispositionSelector("Red Disposition", redDispositionSelected, redDispositionControlWorldZ, "redDispositionDown", "redDispositionUp")
+    writeGenerateMissionButton()
 end
 
 function updateDispositionSelection(color, add)
@@ -1105,6 +1106,105 @@ end
 
 function redDispositionDown()
     updateDispositionSelection("Red", -1)
+end
+
+generateMissionWorldX = 84.0
+generateMissionWorldY = 1.0
+generateMissionWorldZ = 0.0
+
+missionSlots = {
+    {zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {79.04, 1.01,  5.20}},
+    {zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {79.04, 1.01,  3.15}},
+    {zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {79.04, 1.01, -3.05}},
+    {zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {79.04, 1.01, -5.10}},
+    {zoneVar = "missionCardZone_Deployment_GUID",   deckVar = "deploymentDeck_GUID",   position = {79.04, 1.01,  0.04}},
+    {zoneVar = "missionCardZone_Twist_GUID",        deckVar = "challengerDeck_GUID",   position = {75.11, 1.01,  0.04}},
+}
+
+function writeGenerateMissionButton()
+    local center = self.positionToLocal({generateMissionWorldX, generateMissionWorldY, generateMissionWorldZ})
+    self.createButton({
+        label = "Generate Mission", click_function = "generateMission", function_owner = self,
+        position = {center.x, center.y, center.z}, rotation = {0, 0, 0},
+        height = 600, width = 4000, font_size = 320,
+        color = {0.85, 0.85, 0.85}, font_color = {0, 0, 0},
+        tooltip = "Spawn cards for the current dispositions",
+    })
+end
+
+function isMissionCardObject(obj)
+    return obj and (obj.tag == "Card" or obj.tag == "Deck")
+end
+
+function addMissionSlotObject(objectsByGuid, obj)
+    if isMissionCardObject(obj) then
+        objectsByGuid[obj.getGUID()] = obj
+    end
+end
+
+function getObjectsInMissionSlot(slot, zone)
+    local objectsByGuid = {}
+    if zone then
+        for _, obj in ipairs(zone.getObjects()) do
+            addMissionSlotObject(objectsByGuid, obj)
+        end
+    end
+
+    for _, obj in ipairs(getAllObjects()) do
+        if isMissionCardObject(obj) then
+            local pos = obj.getPosition()
+            if math.abs(pos.x - slot.position[1]) < 1.6 and
+               math.abs(pos.z - slot.position[3]) < 1.2 and
+               pos.y > 0.5 and pos.y < 3.0 then
+                addMissionSlotObject(objectsByGuid, obj)
+            end
+        end
+    end
+
+    local objects = {}
+    for _, obj in pairs(objectsByGuid) do
+        table.insert(objects, obj)
+    end
+    return objects
+end
+
+function generateMission()
+    local decksByVar = {}
+    for _, slot in ipairs(missionSlots) do
+        local zone = getObjectFromGUID(Global.getVar(slot.zoneVar))
+        local deck = decksByVar[slot.deckVar] or getObjectFromGUID(Global.getVar(slot.deckVar))
+        if deck then
+            for _, obj in ipairs(getObjectsInMissionSlot(slot, zone)) do
+                if obj ~= deck then
+                    obj.locked = false
+                    deck = deck.putObject(obj) or deck
+                end
+            end
+            decksByVar[slot.deckVar] = deck
+        end
+    end
+
+    Wait.frames(function()
+        for _, deck in pairs(decksByVar) do
+            deck.shuffle()
+        end
+
+        for _, slot in ipairs(missionSlots) do
+            local deck = decksByVar[slot.deckVar] or getObjectFromGUID(Global.getVar(slot.deckVar))
+            if deck then
+                deck.takeObject({
+                    position = slot.position,
+                    flip = true,
+                    smooth = true,
+                    callback_function = function(card)
+                        Wait.frames(function()
+                            card.locked = true
+                        end)
+                    end
+                })
+            end
+        end
+    end, 2)
 end
 
 function drawDeployZone(zone)
@@ -2345,11 +2445,9 @@ function selectMissionPack(packIndex)
     deploymentDeck = getObjectFromGUID(missionPackData.deploymentDeck_GUID)
     primaryDeck = getObjectFromGUID(missionPackData.primaryDeck_GUID)
 
-    deploymentDeck.setPosition({84.50, 1.00, 5.20})
     deploymentDeck.locked = false
     deploymentDeck.tooltip = true
     deploymentDeck.interactable = true
-    primaryDeck.setPosition({84.50, 1.00, -5.20})
     primaryDeck.locked = false
     primaryDeck.tooltip = true
     primaryDeck.interactable = true
