@@ -15,6 +15,9 @@ keepForTerrainEditor = true
 
 mat_GUID = Global.getVar("mat_GUID")
 ttsDebugEnabled = false
+dispositionValues = {"Disp 1", "Disp 2", "Disp 3"}
+blueDispositionSelected = 1
+redDispositionSelected = 1
 
 function ttsDebugLog(message)
     if ttsDebugEnabled then
@@ -43,6 +46,8 @@ function onLoad(saved_data)
         deploySelected = loaded_data.svdeploySelected
         deployMode = loaded_data.svdeployMode
         packSelected = loaded_data.svPackSelected
+        blueDispositionSelected = loaded_data.svblueDispositionSelected or blueDispositionSelected
+        redDispositionSelected = loaded_data.svredDispositionSelected or redDispositionSelected
     end
 
     if sizeConfirmed then
@@ -105,6 +110,8 @@ function onSave()
         svdeploySelected = deploySelected,
         svdeployMode = deployMode,
         svPackSelected = packSelected,
+        svblueDispositionSelected = blueDispositionSelected,
+        svredDispositionSelected = redDispositionSelected,
     })
 
     return saved_data
@@ -1024,6 +1031,82 @@ deployDownBtn = {
     position = { -arrowOffset, 5, 3}, rotation = {0, 0, 0}, height = 750, width = 800,
     font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
+
+dispositionControlWorldX = 82.5
+blueDispositionControlWorldZ = 13.5
+redDispositionControlWorldZ = -13.5
+dispositionControlWorldY = 1.0
+
+function normalizeDispositionIndex(index)
+    if index > #dispositionValues then
+        return 1
+    end
+    if index < 1 then
+        return #dispositionValues
+    end
+    return index
+end
+
+dispositionScale = 0.56
+dispositionArrowOffset = arrowOffset * dispositionScale
+
+function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunction, upFunction)
+    local selectedValue = dispositionValues[selectedIndex] or dispositionValues[1]
+    local center = self.positionToLocal({dispositionControlWorldX, dispositionControlWorldY, centerWorldZ})
+    local cx, cy, cz = center.x, center.y, center.z
+
+    self.createButton({
+        label = selectedValue, click_function = "none", function_owner = self,
+        position = {cx, cy, cz}, rotation = {0, 0, 0},
+        height = 750 * dispositionScale, width = 6000 * dispositionScale, font_size = 400 * dispositionScale,
+        color = {1, 1, 1}, font_color = {0, 0, 0}, tooltip = label,
+    })
+    self.createButton({
+        label = "->", click_function = upFunction, function_owner = self,
+        position = {cx + dispositionArrowOffset, cy, cz}, rotation = {0, 0, 0},
+        height = 750 * dispositionScale, width = 800 * dispositionScale, font_size = 300 * dispositionScale,
+        color = {0, 0, 0}, font_color = {1, 1, 1}, tooltip = "Next " .. label,
+    })
+    self.createButton({
+        label = "<-", click_function = downFunction, function_owner = self,
+        position = {cx - dispositionArrowOffset, cy, cz}, rotation = {0, 0, 0},
+        height = 750 * dispositionScale, width = 800 * dispositionScale, font_size = 300 * dispositionScale,
+        color = {0, 0, 0}, font_color = {1, 1, 1}, tooltip = "Previous " .. label,
+    })
+end
+
+function writeDispositionMenu()
+    blueDispositionSelected = normalizeDispositionIndex(blueDispositionSelected)
+    redDispositionSelected = normalizeDispositionIndex(redDispositionSelected)
+    createDispositionSelector("Blue Disposition", blueDispositionSelected, blueDispositionControlWorldZ, "blueDispositionDown", "blueDispositionUp")
+    createDispositionSelector("Red Disposition", redDispositionSelected, redDispositionControlWorldZ, "redDispositionDown", "redDispositionUp")
+end
+
+function updateDispositionSelection(color, add)
+    if color == "Blue" then
+        blueDispositionSelected = normalizeDispositionIndex(blueDispositionSelected + add)
+    elseif color == "Red" then
+        redDispositionSelected = normalizeDispositionIndex(redDispositionSelected + add)
+    end
+    writeMenus()
+end
+
+function blueDispositionUp()
+    updateDispositionSelection("Blue", 1)
+end
+
+function blueDispositionDown()
+    updateDispositionSelection("Blue", -1)
+end
+
+function redDispositionUp()
+    updateDispositionSelection("Red", 1)
+end
+
+function redDispositionDown()
+    updateDispositionSelection("Red", -1)
+end
+
 function drawDeployZone(zone)
     local drawDataZone = zone.draw
     for i, drawData in ipairs(drawDataZone) do
@@ -2345,6 +2428,7 @@ function writeDeployMenu()
     self.createButton(deployBtn)
     self.createButton(deployUpBtn)
     self.createButton(deployDownBtn)
+    writeDispositionMenu()
     -- self.createButton(nineFromDeployBtn)
 
     if gameMode == "game" then
