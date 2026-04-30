@@ -54,7 +54,6 @@ redTurnCounter_GUID = "055302"
 blueTurnCounter_GUID = "7e4111"
 gameTurnCounter_GUID = "ee92cf"
 scoresheet_GUID = "06d627"
-blankObjCard_GUID = "d618cb"
 activation_GUID = "229946"
 wounds_GUID = "ad63ba"
 
