@@ -646,7 +646,6 @@ end
 
 function loadGameWithoutMapContainers()
     destroyMapContainers()
-    destroyObjectByGUID("653fd7")
     placeStartupMapCards()
     confirmSizeMat()
 end
