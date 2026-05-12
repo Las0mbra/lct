@@ -1,4 +1,6 @@
 -- FTC-GUID: ee92cf
+local _lastValue = nil
+
 titleBtn={
     index=1, label="Game rounds", click_function="none", function_owner=self,
     position={0,0.3,0.23}, rotation={0,180,0}, height=0, width=00,
@@ -25,6 +27,25 @@ continueBtn={
 function onLoad()
     startObject=getObjectFromGUID(Global.getVar("startMenu_GUID"))
     scoreSheet=getObjectFromGUID(Global.getVar("scoreSheet_GUID"))
+    _lastValue = self.Counter.getValue()
+    updateHUD()
+    Wait.time(checkValue, 0.5, -1)
+end
+
+function checkValue()
+    local current = self.Counter.getValue()
+    if current ~= _lastValue then
+        _lastValue = current
+        updateHUD()
+        if startObject then
+            startObject.call("newRoundStarted")
+        end
+    end
+end
+
+function updateHUD()
+    _lastValue = self.Counter.getValue()
+    Global.UI.setValue("RoundWatch", tostring(_lastValue))
 end
 
 function writeButtons()
