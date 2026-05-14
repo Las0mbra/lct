@@ -568,18 +568,19 @@ function printLast5Innovative(pointless, player_color)
 
         local prefix
         if i == #lastRolls then
-            prefix = "Latest =>"
+            prefix = "Latest   =>"
         elseif i == 1 then
-            prefix = "Oldest =>"
+            prefix = "Oldest  =>"
         else
             prefix = string.format("Roll #%d =>", i)
         end
 
         local rollLine = prefix
+        local faceParts = {}
         for face = 1, 6 do
-            rollLine = rollLine .. string.format(" %s : %d", faceNames[face], tally[face])
+            table.insert(faceParts, string.format("%d x %s", tally[face], faceNames[face]))
         end
-        rollLine = rollLine .. string.format(" [Total:%d]", totalDice)
+        rollLine = rollLine .. " " .. table.concat(faceParts, ", ") .. string.format(" [Total:%d]", totalDice)
 
         printToAll(rollLine, rollColor)
     end

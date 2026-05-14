@@ -34,6 +34,7 @@ function onLoad(saved_data)
     --getData()
     deploySelected = nil
     deployMode = nil
+    legacyPrimaryDeckEnabled = false
     if saved_data ~= "" then
         local loaded_data = JSON.decode(saved_data)
         gameMode = loaded_data.svgameMode
@@ -45,6 +46,7 @@ function onLoad(saved_data)
         sizeConfirmed = loaded_data.svsizeConfirmed
         deploySelected = loaded_data.svdeploySelected
         deployMode = loaded_data.svdeployMode
+        legacyPrimaryDeckEnabled = loaded_data.svLegacyPrimaryDeckEnabled or false
         packSelected = loaded_data.svPackSelected
         blueDispositionSelected = loaded_data.svblueDispositionSelected or blueDispositionSelected
         redDispositionSelected = loaded_data.svredDispositionSelected or redDispositionSelected
@@ -109,6 +111,7 @@ function onSave()
         svsizeConfirmed = sizeConfirmed,
         svdeploySelected = deploySelected,
         svdeployMode = deployMode,
+        svLegacyPrimaryDeckEnabled = legacyPrimaryDeckEnabled,
         svPackSelected = packSelected,
         svblueDispositionSelected = blueDispositionSelected,
         svredDispositionSelected = redDispositionSelected,
@@ -635,18 +638,21 @@ end
 function confirmForSingles()
     singlesMode = "singles"
     deployMode = "edition11"
+    legacyPrimaryDeckEnabled = false
     loadGameWithoutMapContainers()
 end
 
 function confirmStandardGame()
     singlesMode = nil
     deployMode = "edition11"
+    legacyPrimaryDeckEnabled = false
     loadGameWithoutMapContainers()
 end
 
 function confirmForLegacy()
     singlesMode = "singles"
     deployMode = nil
+    legacyPrimaryDeckEnabled = true
     destroyStartupMapCards()
     showLegacyPrimaryDeck()
     confirmSizeGame()
@@ -654,13 +660,13 @@ end
 
 function loadGameWithoutMapContainers()
     destroyMapContainers()
-    hideLegacyPrimaryDeck()
+    destroyLegacyPrimaryDeck()
     placeStartupMapCards()
     confirmSizeMat()
 end
 
 legacyPrimaryDeck_GUID = "d26e9c"
-legacyPrimaryDeckPosition = {89.238, 1.039, -6.352}
+legacyPrimaryDeckPosition = {85.25, 0.95, -7.65}
 legacyPrimaryDeckHiddenPosition = {89.238, -5.0, -6.352}
 
 function setLegacyPrimaryDeckVisibility(visible)
@@ -670,14 +676,14 @@ function setLegacyPrimaryDeckVisibility(visible)
     end
 
     if visible then
+        deck.setLock(false)
         deck.setPosition(legacyPrimaryDeckPosition)
         deck.setRotation({0, 270, 180})
-        deck.locked = false
         deck.tooltip = true
         deck.interactable = true
     else
         deck.setPosition(legacyPrimaryDeckHiddenPosition)
-        deck.locked = true
+        deck.setLock(true)
         deck.tooltip = false
         deck.interactable = false
     end
@@ -689,6 +695,10 @@ end
 
 function hideLegacyPrimaryDeck()
     setLegacyPrimaryDeckVisibility(false)
+end
+
+function destroyLegacyPrimaryDeck()
+    destroyObjectByGUID(legacyPrimaryDeck_GUID)
 end
 
 function placeStartupMapCards()
@@ -2482,10 +2492,10 @@ function selectMissionPack(packIndex)
     deploymentDeck.locked = false
     deploymentDeck.tooltip = true
     deploymentDeck.interactable = true
-    if deployMode == nil then
+    if legacyPrimaryDeckEnabled then
         showLegacyPrimaryDeck()
     else
-        hideLegacyPrimaryDeck()
+        destroyLegacyPrimaryDeck()
     end
 
     writeMenus()
