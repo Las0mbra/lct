@@ -2888,12 +2888,12 @@ function updateGameStateHUD()
     updatePhaseHUD()
     if inGame then
         local blueActive = currentTurn ~= "Red"
-        Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "color", value = blueActive and "#2472D4F0" or "#1A5FC850"})
-        Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "color", value = blueActive and "#B5202050" or "#CC2828F0"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "color", value = blueActive and "#2E86FFF8" or "#0B255C28"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "color", value = blueActive and "#4A101028" or "#FF3737F8"})
         Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "outline", value = blueActive and "#FFFFFF" or "#5B8FDECC"})
-        Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "outlineSize", value = blueActive and "4" or "2"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "outlineSize", value = blueActive and "6" or "1"})
         Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "outline", value = blueActive and "#D46060CC" or "#FFFFFF"})
-        Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "outlineSize", value = blueActive and "2" or "4"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "outlineSize", value = blueActive and "1" or "6"})
     else
         Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "color", value = "#1A5FC8E6"})
         Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "color", value = "#B52020E6"})
