@@ -1089,9 +1089,9 @@ deployDownBtn = {
     font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
 
-dispositionControlWorldX = 82.5
-blueDispositionControlWorldZ = 13.5
-redDispositionControlWorldZ = -13.5
+dispositionControlWorldX = 82.0
+blueDispositionControlWorldZ = 11.1
+redDispositionControlWorldZ = -11.1
 dispositionControlWorldY = 1.0
 
 function normalizeDispositionIndex(index)
@@ -1104,10 +1104,10 @@ function normalizeDispositionIndex(index)
     return index
 end
 
-dispositionScale = 0.56
+dispositionScale = 0.4125
 dispositionArrowOffset = arrowOffset * dispositionScale
 
-function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunction, upFunction)
+function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunction, upFunction, locked)
     local selectedValue = dispositionValues[selectedIndex] or dispositionValues[1]
     local center = self.positionToLocal({dispositionControlWorldX, dispositionControlWorldY, centerWorldZ})
     local cx, cy, cz = center.x, center.y, center.z
@@ -1118,6 +1118,11 @@ function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunct
         height = 750 * dispositionScale, width = 6000 * dispositionScale, font_size = 400 * dispositionScale,
         color = {1, 1, 1}, font_color = {0, 0, 0}, tooltip = label,
     })
+
+    if locked then
+        return
+    end
+
     self.createButton({
         label = "->", click_function = upFunction, function_owner = self,
         position = {cx + dispositionArrowOffset, cy, cz}, rotation = {0, 0, 0},
@@ -1132,12 +1137,15 @@ function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunct
     })
 end
 
-function writeDispositionMenu()
+function writeDispositionMenu(locked)
     blueDispositionSelected = normalizeDispositionIndex(blueDispositionSelected)
     redDispositionSelected = normalizeDispositionIndex(redDispositionSelected)
-    createDispositionSelector("Blue Disposition", blueDispositionSelected, blueDispositionControlWorldZ, "blueDispositionDown", "blueDispositionUp")
-    createDispositionSelector("Red Disposition", redDispositionSelected, redDispositionControlWorldZ, "redDispositionDown", "redDispositionUp")
-    writeGenerateMissionButton()
+    createDispositionSelector("Blue Disposition", blueDispositionSelected, blueDispositionControlWorldZ, "blueDispositionDown", "blueDispositionUp", locked)
+    createDispositionSelector("Red Disposition", redDispositionSelected, redDispositionControlWorldZ, "redDispositionDown", "redDispositionUp", locked)
+
+    if not locked then
+        writeGenerateMissionButton()
+    end
 end
 
 function updateDispositionSelection(color, add)
@@ -2604,6 +2612,7 @@ function writeIngameMenu()
         nextPhaseBtn.label = phases[currentPhase].."\nPASS TURN"
     end
     self.createButton(nextPhaseBtn)
+    writeDispositionMenu(true)
 end
 
 function getContainedItems(container)
