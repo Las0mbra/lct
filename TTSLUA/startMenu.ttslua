@@ -2585,7 +2585,7 @@ function writeStartMenu()
     self.createButton(firstPlayerBtn)
 end
 
-function writeDeployMenu()
+function writeDeployPickerMenu()
     if not deploySelected or not DeployZonesData[deploySelected] then
         deploySelected = #DeployZonesData
     end
@@ -2593,6 +2593,10 @@ function writeDeployMenu()
     self.createButton(deployBtn)
     self.createButton(deployUpBtn)
     self.createButton(deployDownBtn)
+end
+
+function writeDeployMenu()
+    writeDeployPickerMenu()
     writeDispositionMenu()
     -- self.createButton(nineFromDeployBtn)
 
@@ -2612,6 +2616,7 @@ function writeIngameMenu()
         nextPhaseBtn.label = phases[currentPhase].."\nPASS TURN"
     end
     self.createButton(nextPhaseBtn)
+    writeDeployPickerMenu()
     writeDispositionMenu(true)
 end
 
@@ -2755,7 +2760,6 @@ function startGame(obj, player, alt)
     scoresheet.call("startGame")
 
     startCustomTurns()
-    destroyDeployZones()
     broadcastToAll(phases[currentPhase], "Yellow")
     announceSecondarySelections(secondarySummaries)
     resetActivationTokens()

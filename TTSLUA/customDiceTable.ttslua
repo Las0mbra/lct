@@ -389,9 +389,9 @@ function restore(playerColor)
 end
 
 local auto2D6 = {
-    label          = "Instant 2D6",
-    tooltip="Roll 2D6 Instantly",
-    click_function = "autoRoll2D6",
+    label          = "Show/Hide UI",
+    tooltip="Show or hide your VP overlay",
+    click_function = "toggleHudOverlay",
     function_owner = self,
     position       = {-7.5, Yoffset, 0.52},
     rotation       = { 0, 0, 0 },
@@ -1095,6 +1095,25 @@ end
 function spawnDice1(obj, player, alt)
     spawnDice(1,player,alt)
 end
+function getHudOverlayColorForThisMat()
+    if self.guid == Global.getVar("redCustomDiceMat_GUID") then
+        return "Red"
+    end
+    if self.guid == Global.getVar("blueCustomDiceMat_GUID") then
+        return "Blue"
+    end
+    return nil
+end
+
+function toggleHudOverlay(obj, player, alt)
+    local color = getHudOverlayColorForThisMat()
+    if not color then
+        printToColor("Could not determine overlay owner for this dice tray.", player, "Orange")
+        return
+    end
+    Global.call("toggleHudOverlayForColor", {color = color})
+end
+
 function spawnDice2(obj, player, alt)
     spawnDice(2,player,alt)
 end

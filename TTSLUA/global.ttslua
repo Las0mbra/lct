@@ -50,6 +50,138 @@ function setHudValue(params)
     end
 end
 
+playerHudSettings = {
+    Red = {settingsOpen = false, locked = false, clockHidden = false, hudVisible = true, scale = "Medium"},
+    Blue = {settingsOpen = false, locked = false, clockHidden = false, hudVisible = true, scale = "Medium"},
+}
+
+function getDefaultHudSettings()
+    return {settingsOpen = false, locked = false, clockHidden = false, hudVisible = true, scale = "Medium"}
+end
+
+function ensureHudSettings(color)
+    if color ~= "Red" and color ~= "Blue" then
+        color = "Blue"
+    end
+    if not playerHudSettings then
+        playerHudSettings = {}
+    end
+    if not playerHudSettings[color] then
+        playerHudSettings[color] = getDefaultHudSettings()
+    end
+    local defaults = getDefaultHudSettings()
+    for key, value in pairs(defaults) do
+        if playerHudSettings[color][key] == nil then
+            playerHudSettings[color][key] = value
+        end
+    end
+    return playerHudSettings[color]
+end
+
+function getHudColorFromCallback(player, id)
+    if id then
+        local fromId = string.match(id, "^(Red)Hud_") or string.match(id, "^(Blue)Hud_")
+        if fromId then
+            return fromId
+        end
+    end
+    if type(player) == "table" and player.color then
+        if player.color == "Red" or player.color == "Blue" then
+            return player.color
+        end
+    elseif player == "Red" or player == "Blue" then
+        return player
+    end
+    return "Blue"
+end
+
+function setHudAttributeForColor(color, params)
+    if not params or not params.id or not params.attr then return end
+    local prefix = color .. "Hud_"
+    pcall(function()
+        Global.UI.setAttribute(prefix .. params.id, params.attr, params.value)
+    end)
+end
+
+function setHudValueForColor(color, params)
+    if not params or not params.id then return end
+    local prefix = color .. "Hud_"
+    pcall(function()
+        Global.UI.setValue(prefix .. params.id, params.value)
+    end)
+end
+
+function applyHudPreferencesForColor(color)
+    local settings = ensureHudSettings(color)
+    local settingsActive = settings.settingsOpen and "true" or "false"
+    local overlayActive = settings.hudVisible and "true" or "false"
+    local unlocked = not settings.locked
+    local clockActive = not settings.clockHidden
+
+    setHudAttributeForColor(color, {id = "Settings", attr = "active", value = settingsActive})
+    setHudAttributeForColor(color, {id = "VPScores", attr = "active", value = overlayActive})
+    setHudAttributeForColor(color, {id = "VPScores", attr = "allowDragging", value = unlocked and "true" or "false"})
+    setHudAttributeForColor(color, {id = "Settings", attr = "allowDragging", value = unlocked and "true" or "false"})
+    setHudAttributeForColor(color, {id = "LockBtn", attr = "text", value = "L"})
+    setHudAttributeForColor(color, {id = "LockBtn", attr = "color", value = "#FFFFFF"})
+    setHudAttributeForColor(color, {id = "ClockBtn", attr = "color", value = "#FFFFFF"})
+
+    for _, id in ipairs({"ClockSubPanel1", "ClockSubPanel2", "ChsStpPlus1", "ChsStpMinus1", "ChsStpPlus2", "ChsStpMinus2"}) do
+        setHudAttributeForColor(color, {id = id, attr = "active", value = clockActive and "true" or "false"})
+    end
+end
+
+function applyHudPreferences()
+    applyHudPreferencesForColor("Red")
+    applyHudPreferencesForColor("Blue")
+end
+
+function hudToggleSettings(player, value, id)
+    local color = getHudColorFromCallback(player, id)
+    local settings = ensureHudSettings(color)
+    settings.settingsOpen = false
+    applyHudPreferencesForColor(color)
+    if type(player) == "table" and player.color then
+        printToColor("Settings Panel is coming soon :)", player.color, {1, 1, 1})
+    else
+        broadcastToAll("Settings Panel is coming soon :)", {1, 1, 1})
+    end
+end
+
+function hudCloseSettings(player, value, id)
+    local color = getHudColorFromCallback(player, id)
+    local settings = ensureHudSettings(color)
+    settings.settingsOpen = false
+    applyHudPreferencesForColor(color)
+end
+
+function hudToggleLock(player, value, id)
+    local color = getHudColorFromCallback(player, id)
+    local settings = ensureHudSettings(color)
+    settings.locked = not settings.locked
+    applyHudPreferencesForColor(color)
+end
+
+function hudToggleClock(player, value, id)
+    local color = getHudColorFromCallback(player, id)
+    local settings = ensureHudSettings(color)
+    settings.clockHidden = not settings.clockHidden
+    applyHudPreferencesForColor(color)
+end
+
+function toggleHudOverlayForColor(params)
+    local color = params and params.color or "Blue"
+    if color ~= "Red" and color ~= "Blue" then
+        color = "Blue"
+    end
+    local settings = ensureHudSettings(color)
+    settings.hudVisible = not settings.hudVisible
+    if not settings.hudVisible then
+        settings.settingsOpen = false
+    end
+    applyHudPreferencesForColor(color)
+end
+
 redCustomDiceMat_GUID = "acae21" -- diceTable
 blueCustomDiceMat_GUID = "839fcc" -- diceTable
 
@@ -361,7 +493,8 @@ function onSave()
         svredPlayerID = redPlayerID,
         svbluePlayerID = bluePlayerID,
         svPackSelected = packSelected,
-        svBlueSecondaryDeckGUID = blueSecondaryDeckGUID
+        svBlueSecondaryDeckGUID = blueSecondaryDeckGUID,
+        svPlayerHudSettings = playerHudSettings
     })
     --saved_data = ""
     return saved_data
@@ -433,6 +566,9 @@ function onLoad(saved_data)
          redPlayerID = loaded_data.svredPlayerID
         bluePlayerID = loaded_data.svbluePlayerID
         packSelected = loaded_data.svPackSelected
+        playerHudSettings = loaded_data.svPlayerHudSettings or playerHudSettings
+        ensureHudSettings("Red")
+        ensureHudSettings("Blue")
         if packSelected then
             missionPackData[packSelected].blueSecondaryDeck_GUID = loaded_data.svBlueSecondaryDeckGUID or blueSecondaryDeck_GUID
         end
@@ -440,6 +576,8 @@ function onLoad(saved_data)
         redPlayerID = ""
         bluePlayerID = ""
         packSelected = nil
+        ensureHudSettings("Red")
+        ensureHudSettings("Blue")
     end
     if not packSelected then
         hideMissionDeckUntilSelected(redSecondaryDeck_GUID)
@@ -464,6 +602,7 @@ function onLoad(saved_data)
     else
         Global.UI.setAttribute("main", "active", "false")
     end
+    applyHudPreferences()
     --startPolling()
     Wait.time(function()
         -- Selection Highlight
