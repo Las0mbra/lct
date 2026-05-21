@@ -91,8 +91,6 @@ redSecondaryCardZone_GUIDs = {
     "c1e006",
     "c1e007",
     "c1e008",
-    "c1e009",
-    "c1e010",
 }
 redSecondaryName_GUIDs = {
     "5423ba",
@@ -859,7 +857,7 @@ end
 
 function getSecondaryDiscardPosition(color)
     if color == "Red" then
-        return {x = 75.46, y = 0.98, z = 9.51}
+        return {x = 79.04, y = 0.98, z = 16.60}
     end
 
     return {x = 79.04, y = 0.98, z = -16.60}
@@ -1032,7 +1030,7 @@ function drawRedSecondaryToFirstOpenSlot()
         getFirstOpenSlot = getFirstOpenRedSecondaryCardZone,
         deckGuidKey = "redSecondaryDeck_GUID",
         refreshNames = refreshRedSecondaryNames,
-        fullMessage = "Red already has 10 active secondary cards.",
+        fullMessage = "Red already has 8 active secondary cards.",
         deckMissingMessage = "Red secondary deck could not be found.",
     })
 end

@@ -52,8 +52,8 @@ function onLoad(saved_data)
         otherSecondary1Zone = getObjectFromGUID(Global.getVar("secondary21CardZone_GUID"))
         otherSecondary2Zone = getObjectFromGUID(Global.getVar("secondary22CardZone_GUID"))
         gambitPosition = { x = 70.25, y = 1.5, z = 8.05 }
-        discardPosition = { x = 75.46, y = 0.98, z = 9.51 }
-        secondaryDeckPosition = { x = 79.11, y = 0.98, z = 9.48 }
+        discardPosition = { x = 79.04, y = 0.98, z = 16.60 }
+        secondaryDeckPosition = { x = 79.04, y = 0.98, z = 8.45 }
     else
         self.setName("Mission Manager Blue")
         self.setPosition({-27,-5,-70.5})
