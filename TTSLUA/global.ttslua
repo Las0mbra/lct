@@ -110,8 +110,6 @@ blueSecondaryCardZone_GUIDs = {
     "b1e006",
     "b1e007",
     "b1e008",
-    "b1e009",
-    "b1e010",
 }
 blueSecondaryName_GUIDs = {
     "5423a5",
@@ -864,7 +862,7 @@ function getSecondaryDiscardPosition(color)
         return {x = 75.46, y = 0.98, z = 9.51}
     end
 
-    return {x = 75.47, y = 1.0, z = -9.50}
+    return {x = 79.04, y = 0.98, z = -16.60}
 end
 
 function refreshSecondaryNamesForColor(color)
@@ -1023,7 +1021,7 @@ function drawBlueSecondaryToFirstOpenSlot()
         getFirstOpenSlot = getFirstOpenBlueSecondaryCardZone,
         deckGuidKey = "blueSecondaryDeck_GUID",
         refreshNames = refreshBlueSecondaryNames,
-        fullMessage = "Blue already has 10 active secondary cards.",
+        fullMessage = "Blue already has 8 active secondary cards.",
         deckMissingMessage = "Blue secondary deck could not be found.",
     })
 end

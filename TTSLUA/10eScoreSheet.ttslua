@@ -6,9 +6,9 @@ secondary12ZoneObj = getObjectFromGUID(Global.getVar("secondary12CardZone_GUID")
 secondary21ZoneObj = getObjectFromGUID(Global.getVar("secondary21CardZone_GUID"))
 secondary22ZoneObj = getObjectFromGUID(Global.getVar("secondary22CardZone_GUID"))
 redDiscardPosition = { x = 75.46, y = 0.98, z = 9.51 }
-blueDiscardPosition = { x = 75.47, y = 1.0, z = -9.50 }
+blueDiscardPosition = { x = 79.04, y = 0.98, z = -16.60 }
 redSecondaryBoard_GUID = "ecabdc"
-blueSecondaryBoard_GUID = "81591e"
+blueSecondaryBoard_GUID = "76200a"
 secondarySlotButtonSize = 120
 secondarySlotButtonFontSize = 80
 secondarySlotButtonY = 0.08
@@ -123,13 +123,13 @@ draw1Btn = {
     tooltip = "Draw red secondary"
 }
 draw2Btn = {
-    width = 252,
-    height = 132,
-    label = "DRAW",
-    font_size = 56,
+    width = 120,
+    height = 120,
+    label = "➔",
+    font_size = 100,
     click_function = 'drawSecondary2',
     function_owner = self,
-    position = {-3.97, 0.08, -1.90},
+    position = {-1.53, 0.08, -3.54},
     rotation = {0, 0, 0},
     tooltip = "Draw blue secondary"
 }
@@ -164,6 +164,10 @@ function ensureSecondarySlotButtonHandlers()
         _G["redRecycleSecondarySlot" .. index] = function()
             Global.call("recycleSecondarySlot", {color = "Red", index = slotIndex})
         end
+    end
+
+    for index = 1, 8 do
+        local slotIndex = index
         _G["blueDiscardSecondarySlot" .. index] = function()
             Global.call("discardSecondarySlot", {color = "Blue", index = slotIndex})
         end
@@ -237,16 +241,14 @@ function createSecondaryDrawButtons()
     if blueBoard then
         blueBoard.createButton(draw2Btn)
         createSecondarySlotButtons(blueBoard, "Blue", {
-            {1, -2.35, -3.54},
-            {2, 0.27, -3.54},
-            {3, 2.91, -3.54},
-            {4, -2.35, 0.00},
-            {5, 0.27, 0.00},
-            {6, 2.91, 0.00},
-            {7, -4.97, 3.58},
-            {8, -2.35, 3.58},
-            {9, 0.2, 3.58},
-            {10, 2.91, 3.58},
+            {1, -1.03, -3.54},
+            {2, 1.60, -3.54},
+            {3, -3.69, 0.00},
+            {4, -1.03, 0.00},
+            {5, 1.60, 0.00},
+            {6, -3.69, 3.58},
+            {7, -1.03, 3.58},
+            {8, 1.60, 3.58},
         })
     end
 end
