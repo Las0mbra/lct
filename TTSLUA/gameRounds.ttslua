@@ -45,7 +45,7 @@ end
 
 function updateHUD()
     _lastValue = self.Counter.getValue()
-    Global.UI.setValue("RoundWatch", tostring(_lastValue))
+    Global.call("setHudValue", {id = "RoundWatch", value = tostring(_lastValue)})
 end
 
 function writeButtons()

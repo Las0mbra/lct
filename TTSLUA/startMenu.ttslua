@@ -2783,8 +2783,8 @@ function newRoundStarted()
 end
 
 function updateCpHUD()
-    Global.UI.setAttribute("CPWatch1", "text", "CP: " .. blueCpCounter.Counter.getValue())
-    Global.UI.setAttribute("CPWatch2", "text", "CP: " .. redCpCounter.Counter.getValue())
+    Global.call("setHudAttribute", {id = "CPWatch1", attr = "text", value = "CP: " .. blueCpCounter.Counter.getValue()})
+    Global.call("setHudAttribute", {id = "CPWatch2", attr = "text", value = "CP: " .. redCpCounter.Counter.getValue()})
 end
 
 function gameNotStartedGuard()
@@ -2842,13 +2842,13 @@ local _phaseToId    = { [1]="Ph1", [2]="Ph2", [3]="Ph3", [4]="Ph4", [5]="Ph5" }
 
 function updatePhaseHUD()
     for _, id in ipairs(_phaseIds) do
-        Global.UI.setAttribute(id.."1", "textColor", "#FFFFFF30")
-        Global.UI.setAttribute(id.."2", "textColor", "#FFFFFF30")
+        Global.call("setHudAttribute", {id = id.."1", attr = "textColor", value = "#FFFFFF30"})
+        Global.call("setHudAttribute", {id = id.."2", attr = "textColor", value = "#FFFFFF30"})
     end
     local active = _phaseToId[currentPhase]
     if active then
         local activeRow = (currentTurn == "Blue") and "1" or "2"
-        Global.UI.setAttribute(active..activeRow, "textColor", "White")
+        Global.call("setHudAttribute", {id = active..activeRow, attr = "textColor", value = "White"})
     end
 end
 
@@ -2880,23 +2880,23 @@ end
 function updateGameStateHUD()
     local roundObj = getObjectFromGUID("ee92cf")
     local round = roundObj and roundObj.Counter.getValue() or 0
-    Global.UI.setValue("RoundWatch", tostring(round))
+    Global.call("setHudValue", {id = "RoundWatch", value = tostring(round)})
     updatePhaseHUD()
     if inGame then
         local blueActive = currentTurn ~= "Red"
-        Global.UI.setAttribute("ChsStpPanel1", "color", blueActive and "#2472D4F0" or "#1A5FC850")
-        Global.UI.setAttribute("ChsStpPanel2", "color", blueActive and "#B5202050" or "#CC2828F0")
-        Global.UI.setAttribute("ChsStpPanel1", "outline", blueActive and "#FFFFFF" or "#5B8FDECC")
-        Global.UI.setAttribute("ChsStpPanel1", "outlineSize", blueActive and "4" or "2")
-        Global.UI.setAttribute("ChsStpPanel2", "outline", blueActive and "#D46060CC" or "#FFFFFF")
-        Global.UI.setAttribute("ChsStpPanel2", "outlineSize", blueActive and "2" or "4")
+        Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "color", value = blueActive and "#2472D4F0" or "#1A5FC850"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "color", value = blueActive and "#B5202050" or "#CC2828F0"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "outline", value = blueActive and "#FFFFFF" or "#5B8FDECC"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "outlineSize", value = blueActive and "4" or "2"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "outline", value = blueActive and "#D46060CC" or "#FFFFFF"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "outlineSize", value = blueActive and "2" or "4"})
     else
-        Global.UI.setAttribute("ChsStpPanel1", "color", "#1A5FC8E6")
-        Global.UI.setAttribute("ChsStpPanel2", "color", "#B52020E6")
-        Global.UI.setAttribute("ChsStpPanel1", "outline", "#5B8FDECC")
-        Global.UI.setAttribute("ChsStpPanel1", "outlineSize", "2")
-        Global.UI.setAttribute("ChsStpPanel2", "outline", "#D46060CC")
-        Global.UI.setAttribute("ChsStpPanel2", "outlineSize", "2")
+        Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "color", value = "#1A5FC8E6"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "color", value = "#B52020E6"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "outline", value = "#5B8FDECC"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "outlineSize", value = "2"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "outline", value = "#D46060CC"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "outlineSize", value = "2"})
     end
 end
 

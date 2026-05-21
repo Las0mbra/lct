@@ -28,69 +28,138 @@
   <Button id="blueBtn" color="#1A5FC8" textColor="#FFFFFF" width="460" height="150" fontSize="52" fontStyle="Bold" roundEdges="true" onClick="placeToBlue" outline="#6DA8FF" outlineSize="4" offsetXY="280 -350">Blue</Button>
 </Panel>
 
-<Panel id="VP Scores" active="true" scale="0.43 0.43 0.43" width="1160" height="155" rectAlignment="UpperRight" offsetXY="-270 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="RedHud_VPScores" visibility="Red" active="true" scale="0.43 0.43 0.43" width="1160" height="155" rectAlignment="UpperRight" offsetXY="-270 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false">
-    <Panel id="RoundBadge" flexibleWidth="0" preferredWidth="96" color="#1A1A2AE6" outline="#2a2a4aCC" outlineSize="3" roundEdges="true">
-      <Button id="RoundWatchBtn" width="96" height="155" color="rgba(0,0,0,0)" onClick="738804/hudPassTurn"/>
+    <Panel id="RedHud_RoundBadge" flexibleWidth="0" preferredWidth="96" color="#1A1A2AE6" outline="#2a2a4aCC" outlineSize="3" roundEdges="true">
+      <Button id="RedHud_RoundWatchBtn" width="96" height="155" color="rgba(0,0,0,0)" onClick="738804/hudPassTurn"/>
       <Text text="ROUND" fontSize="18" fontStyle="Bold" color="#FFFFFFAA" offsetXY="0 48" alignment="MiddleCenter"/>
-      <Text id="RoundWatch" text="0" fontSize="80" fontStyle="Bold" color="White" shadow="#000000AA" shadowDistance="2 -2" offsetXY="0 -8" alignment="MiddleCenter"/>
+      <Text id="RedHud_RoundWatch" text="0" fontSize="80" fontStyle="Bold" color="White" shadow="#000000AA" shadowDistance="2 -2" offsetXY="0 -8" alignment="MiddleCenter"/>
     </Panel>
     <VerticalLayout flexibleWidth="1" spacing="6">
-    <Panel id="ChsStpPanel1" color="#1A5FC8E6" outline="#5B8FDECC" outlineSize="2">
+    <Panel id="RedHud_ChsStpPanel1" color="#1A5FC8E6" outline="#5B8FDECC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
-        <Panel id="TVWatchPanel1" color="rgba(0,0,0,0)" minWidth="120" minHeight="50">
-          <Button id="TVWatchBtn1" width="120" height="50" color="rgba(0,0,0,0)" onClick="738804/hudTurnWatch1" />
-          <Text id="TVWatch1" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <Panel id="RedHud_TVWatchPanel1" color="rgba(0,0,0,0)" minWidth="120" minHeight="50">
+          <Button id="RedHud_TVWatchBtn1" width="120" height="50" color="rgba(0,0,0,0)" onClick="738804/hudTurnWatch1" />
+          <Text id="RedHud_TVWatch1" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         </Panel>
         <HorizontalLayout spacing="2">
-          <Button id="Ph11" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmdBlue"/>
-          <Button id="Ph21" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMovBlue"/>
-          <Button id="Ph31" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseShtBlue"/>
-          <Button id="Ph41" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseChrBlue"/>
-          <Button id="Ph51" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseFgtBlue"/>
+          <Button id="RedHud_Ph11" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmdBlue"/>
+          <Button id="RedHud_Ph21" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMovBlue"/>
+          <Button id="RedHud_Ph31" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseShtBlue"/>
+          <Button id="RedHud_Ph41" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseChrBlue"/>
+          <Button id="RedHud_Ph51" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseFgtBlue"/>
         </HorizontalLayout>
-        <Text id="VPWatch1" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
-        <Text id="CPWatch1" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <Text id="RedHud_VPWatch1" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <Text id="RedHud_CPWatch1" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <VerticalLayout spacing="2">
-          <Button id="CPPlus1"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
-          <Button id="CPMinus1" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+          <Button id="RedHud_CPPlus1"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+          <Button id="RedHud_CPMinus1" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
         </VerticalLayout>
-        <Panel id="ClockSubPanel1" color="#1A1A1ACC" outline="rgba(0,0,0,0)" outlineSize="4" roundEdges="true" minWidth="190" minHeight="1" margin="12 0 0 0">
-          <Button id="ChsStpBtn1" width="190" height="58" onClick="" color="rgba(0,0,0,0)" roundEdges="true"/>
-          <Text id="ChsStpWatch1" text="01:30:00" fontSize="40" color="#FFFFFF40" shadow="#000000AA" shadowDistance="1 -1"/>
+        <Panel id="RedHud_ClockSubPanel1" color="#1A1A1ACC" outline="rgba(0,0,0,0)" outlineSize="4" roundEdges="true" minWidth="190" minHeight="1" margin="12 0 0 0">
+          <Button id="RedHud_ChsStpBtn1" width="190" height="58" onClick="" color="rgba(0,0,0,0)" roundEdges="true"/>
+          <Text id="RedHud_ChsStpWatch1" text="01:30:00" fontSize="40" color="#FFFFFF40" shadow="#000000AA" shadowDistance="1 -1"/>
         </Panel>
         <VerticalLayout spacing="2">
-          <Button id="ChsStpPlus1"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
-          <Button id="ChsStpMinus1" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+          <Button id="RedHud_ChsStpPlus1"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+          <Button id="RedHud_ChsStpMinus1" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
         </VerticalLayout>
       </HorizontalLayout>
     </Panel>
-    <Panel id="ChsStpPanel2" color="#B52020E6" outline="#D46060CC" outlineSize="2">
+    <Panel id="RedHud_ChsStpPanel2" color="#B52020E6" outline="#D46060CC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
-        <Panel id="TVWatchPanel2" color="rgba(0,0,0,0)" minWidth="120" minHeight="50">
-          <Button id="TVWatchBtn2" width="120" height="50" color="rgba(0,0,0,0)" onClick="738804/hudTurnWatch2" />
-          <Text id="TVWatch2" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <Panel id="RedHud_TVWatchPanel2" color="rgba(0,0,0,0)" minWidth="120" minHeight="50">
+          <Button id="RedHud_TVWatchBtn2" width="120" height="50" color="rgba(0,0,0,0)" onClick="738804/hudTurnWatch2" />
+          <Text id="RedHud_TVWatch2" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         </Panel>
         <HorizontalLayout spacing="2">
-          <Button id="Ph12" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmdRed"/>
-          <Button id="Ph22" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMovRed"/>
-          <Button id="Ph32" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseShtRed"/>
-          <Button id="Ph42" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseChrRed"/>
-          <Button id="Ph52" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseFgtRed"/>
+          <Button id="RedHud_Ph12" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmdRed"/>
+          <Button id="RedHud_Ph22" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMovRed"/>
+          <Button id="RedHud_Ph32" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseShtRed"/>
+          <Button id="RedHud_Ph42" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseChrRed"/>
+          <Button id="RedHud_Ph52" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseFgtRed"/>
         </HorizontalLayout>
-        <Text id="VPWatch2" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
-        <Text id="CPWatch2" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <Text id="RedHud_VPWatch2" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <Text id="RedHud_CPWatch2" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <VerticalLayout spacing="2">
-          <Button id="CPPlus2"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
-          <Button id="CPMinus2" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+          <Button id="RedHud_CPPlus2"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+          <Button id="RedHud_CPMinus2" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
         </VerticalLayout>
-        <Panel id="ClockSubPanel2" color="#1A1A1ACC" outline="rgba(0,0,0,0)" outlineSize="4" roundEdges="true" minWidth="190" minHeight="1" margin="12 0 0 0">
-          <Button id="ChsStpBtn2" width="190" height="58" onClick="" color="rgba(0,0,0,0)" roundEdges="true"/>
-          <Text id="ChsStpWatch2" text="01:30:00" fontSize="40" color="#FFFFFF40" shadow="#000000AA" shadowDistance="1 -1"/>
+        <Panel id="RedHud_ClockSubPanel2" color="#1A1A1ACC" outline="rgba(0,0,0,0)" outlineSize="4" roundEdges="true" minWidth="190" minHeight="1" margin="12 0 0 0">
+          <Button id="RedHud_ChsStpBtn2" width="190" height="58" onClick="" color="rgba(0,0,0,0)" roundEdges="true"/>
+          <Text id="RedHud_ChsStpWatch2" text="01:30:00" fontSize="40" color="#FFFFFF40" shadow="#000000AA" shadowDistance="1 -1"/>
         </Panel>
         <VerticalLayout spacing="2">
-          <Button id="ChsStpPlus2"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
-          <Button id="ChsStpMinus2" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+          <Button id="RedHud_ChsStpPlus2"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+          <Button id="RedHud_ChsStpMinus2" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+        </VerticalLayout>
+      </HorizontalLayout>
+    </Panel>
+  </VerticalLayout>
+  </HorizontalLayout>
+</Panel>
+<Panel id="BlueHud_VPScores" visibility="Blue" active="true" scale="0.43 0.43 0.43" width="1160" height="155" rectAlignment="UpperRight" offsetXY="-270 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+  <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false">
+    <Panel id="BlueHud_RoundBadge" flexibleWidth="0" preferredWidth="96" color="#1A1A2AE6" outline="#2a2a4aCC" outlineSize="3" roundEdges="true">
+      <Button id="BlueHud_RoundWatchBtn" width="96" height="155" color="rgba(0,0,0,0)" onClick="738804/hudPassTurn"/>
+      <Text text="ROUND" fontSize="18" fontStyle="Bold" color="#FFFFFFAA" offsetXY="0 48" alignment="MiddleCenter"/>
+      <Text id="BlueHud_RoundWatch" text="0" fontSize="80" fontStyle="Bold" color="White" shadow="#000000AA" shadowDistance="2 -2" offsetXY="0 -8" alignment="MiddleCenter"/>
+    </Panel>
+    <VerticalLayout flexibleWidth="1" spacing="6">
+    <Panel id="BlueHud_ChsStpPanel1" color="#1A5FC8E6" outline="#5B8FDECC" outlineSize="2">
+      <HorizontalLayout spacing="4" padding="4">
+        <Panel id="BlueHud_TVWatchPanel1" color="rgba(0,0,0,0)" minWidth="120" minHeight="50">
+          <Button id="BlueHud_TVWatchBtn1" width="120" height="50" color="rgba(0,0,0,0)" onClick="738804/hudTurnWatch1" />
+          <Text id="BlueHud_TVWatch1" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        </Panel>
+        <HorizontalLayout spacing="2">
+          <Button id="BlueHud_Ph11" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmdBlue"/>
+          <Button id="BlueHud_Ph21" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMovBlue"/>
+          <Button id="BlueHud_Ph31" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseShtBlue"/>
+          <Button id="BlueHud_Ph41" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseChrBlue"/>
+          <Button id="BlueHud_Ph51" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseFgtBlue"/>
+        </HorizontalLayout>
+        <Text id="BlueHud_VPWatch1" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <Text id="BlueHud_CPWatch1" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <VerticalLayout spacing="2">
+          <Button id="BlueHud_CPPlus1"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+          <Button id="BlueHud_CPMinus1" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+        </VerticalLayout>
+        <Panel id="BlueHud_ClockSubPanel1" color="#1A1A1ACC" outline="rgba(0,0,0,0)" outlineSize="4" roundEdges="true" minWidth="190" minHeight="1" margin="12 0 0 0">
+          <Button id="BlueHud_ChsStpBtn1" width="190" height="58" onClick="" color="rgba(0,0,0,0)" roundEdges="true"/>
+          <Text id="BlueHud_ChsStpWatch1" text="01:30:00" fontSize="40" color="#FFFFFF40" shadow="#000000AA" shadowDistance="1 -1"/>
+        </Panel>
+        <VerticalLayout spacing="2">
+          <Button id="BlueHud_ChsStpPlus1"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+          <Button id="BlueHud_ChsStpMinus1" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+        </VerticalLayout>
+      </HorizontalLayout>
+    </Panel>
+    <Panel id="BlueHud_ChsStpPanel2" color="#B52020E6" outline="#D46060CC" outlineSize="2">
+      <HorizontalLayout spacing="4" padding="4">
+        <Panel id="BlueHud_TVWatchPanel2" color="rgba(0,0,0,0)" minWidth="120" minHeight="50">
+          <Button id="BlueHud_TVWatchBtn2" width="120" height="50" color="rgba(0,0,0,0)" onClick="738804/hudTurnWatch2" />
+          <Text id="BlueHud_TVWatch2" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        </Panel>
+        <HorizontalLayout spacing="2">
+          <Button id="BlueHud_Ph12" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmdRed"/>
+          <Button id="BlueHud_Ph22" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMovRed"/>
+          <Button id="BlueHud_Ph32" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseShtRed"/>
+          <Button id="BlueHud_Ph42" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseChrRed"/>
+          <Button id="BlueHud_Ph52" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseFgtRed"/>
+        </HorizontalLayout>
+        <Text id="BlueHud_VPWatch2" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <Text id="BlueHud_CPWatch2" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <VerticalLayout spacing="2">
+          <Button id="BlueHud_CPPlus2"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+          <Button id="BlueHud_CPMinus2" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+        </VerticalLayout>
+        <Panel id="BlueHud_ClockSubPanel2" color="#1A1A1ACC" outline="rgba(0,0,0,0)" outlineSize="4" roundEdges="true" minWidth="190" minHeight="1" margin="12 0 0 0">
+          <Button id="BlueHud_ChsStpBtn2" width="190" height="58" onClick="" color="rgba(0,0,0,0)" roundEdges="true"/>
+          <Text id="BlueHud_ChsStpWatch2" text="01:30:00" fontSize="40" color="#FFFFFF40" shadow="#000000AA" shadowDistance="1 -1"/>
+        </Panel>
+        <VerticalLayout spacing="2">
+          <Button id="BlueHud_ChsStpPlus2"  text="+" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
+          <Button id="BlueHud_ChsStpMinus2" text="−" fontSize="22" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick=""/>
         </VerticalLayout>
       </HorizontalLayout>
     </Panel>
