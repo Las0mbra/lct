@@ -272,7 +272,7 @@ gap1Btn={
 }
 
 clearMeasureAllBtn={
-    label='Clear Bubbles', tooltip='Clear all measuring bubbles on the table', click_function='clearMeasuringCircles', function_owner=self,
+    label='Clear Bubbles', tooltip='LEFT CLICK: Clear all measuring bubbles from the table\nRIGHT CLICK: Clear all measuring bubbles from highlighted objects only', click_function='clearMeasuringCircles', function_owner=self,
     position={-7.34, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=5200, scale={0.1,0.1,0.1},
     font_size=700, color='White', font_color={0,0,0}
 }
@@ -2358,18 +2358,38 @@ function changeMeasurementCircle(newRequestedRadius, target, presetBase, ownerCo
     target.setTable("ym-measuring-circles", measuringRings)
 end
 
--- Clear measuring circles helper
+-- Clear measuring circles helper.
+-- LMB (alt=false): clear bubbles on every object on the table.
+-- RMB (alt=true):  clear bubbles only on the player's currently selected objects.
 function clearMeasuringCircles(obj, playerColor, alt)
-    local clearedAll = 0
-    for _, o in ipairs(getAllObjects()) do
+    local targets
+    if alt then
+        local playerObj = Player[playerColor]
+        if not playerObj then return end
+        targets = playerObj.getSelectedObjects()
+        if #targets == 0 then
+            printToColor("No objects selected. Right-click clears bubbles on selected objects only.", playerColor, "Yellow")
+            return
+        end
+    else
+        targets = getAllObjects()
+    end
+
+    local cleared = 0
+    for _, o in ipairs(targets) do
         local bubbles = o.getTable("ym-measuring-circles")
         if bubbles ~= nil then
             o.setVectorLines({})
             o.setTable("ym-measuring-circles", nil)
-            clearedAll = clearedAll + 1
+            cleared = cleared + 1
         end
     end
-    printToAll("Cleared measuring bubbles on "..clearedAll.." objects.", {1,1,1})
+
+    if alt then
+        printToColor("Cleared measuring bubbles on "..cleared.." selected object(s).", playerColor, {1,1,1})
+    else
+        printToAll("Cleared measuring bubbles on "..cleared.." objects.", {1,1,1})
+    end
 end
 
 function clearHandDrawnLines(obj, playerColor, alt)
