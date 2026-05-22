@@ -89,9 +89,7 @@ function onLoad(saved_data)
             ttsDebugLog("missionPackData not available during onLoad; clearing packSelected")
         end
     end
-    if gameTurnCounter then
-        gameTurnCounter.call("checkGameEnd")
-    else
+    if not gameTurnCounter then
         ttsDebugLog("gameTurnCounter not found during onLoad")
     end
     writeMenus()

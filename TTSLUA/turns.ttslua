@@ -41,7 +41,6 @@ function gameUpdate()
     else
         if self.Counter.getValue() > gameTurn.Counter.getValue() then
             gameTurn.Counter.setValue(self.Counter.getValue())
-            gameTurn.call("checkGameEnd")
             startMenu.call("newRoundStarted")
         end
     end

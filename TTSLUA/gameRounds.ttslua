@@ -40,6 +40,9 @@ function checkValue()
         if startObject then
             startObject.call("newRoundStarted")
         end
+        if current == 6 then
+            broadcastToAll("GAME OVER - feel free to continue playing!", "Yellow")
+        end
     end
 end
 
@@ -52,28 +55,6 @@ function writeButtons()
     self.clearButtons()
     self.createButton(continueBtn)
     self.createButton(endBtn)
-end
-
-function checkGameEnd()
-    if self.Counter.getValue() > 5 then
-        --[[startObject.setVar("checkEnd", true)
-        startObject.call("writeMenus")
-    end
-    if self.Counter.getValue() == 6 then
-        broadcastToAll("Check if game ends now", "Yellow")
-        continueBtn.label="Continue\n3+"
-        writeButtons()
-    end
-    if self.Counter.getValue() == 7 then
-        broadcastToAll("Check if game ends now", "Yellow")
-        continueBtn.label="Continue\n4+"
-        writeButtons()
-    end
-    if self.Counter.getValue() > 7 then--]]
-        broadcastToAll("GAME OVER", "Red")
-        gameOver()
-
-    end
 end
 
 function gameOver()
