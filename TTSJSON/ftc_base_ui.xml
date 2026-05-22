@@ -19,9 +19,9 @@
   <Text text="⚔ LCT 40K TABLE ⚔" fontSize="72" color="#F3F6FA" fontStyle="Bold" offsetXY="0 370" alignment="MiddleCenter"/>
   <Text text="Patch 1.02" fontSize="42" color="#AFC1D8" fontStyle="Bold" offsetXY="0 300" alignment="MiddleCenter"/>
 
-  <Panel id="SplashChangelog" width="1360" height="420" offsetXY="0 40" color="#182233CC" outline="#31415F99" outlineSize="3">
-    <Text text="Features" fontSize="34" color="#F3F6FA" fontStyle="Bold" offsetXY="0 155" alignment="MiddleCenter"/>
-    <Text text="- 11th edition compatible!&#10;- Multiple performance fixes &amp; improved dice rolling algorithm.&#10;- Multiple new buttons, Clear lines, D3, instant roll dice spawn buttons (right click)&#10;- Check site for full changelog" fontSize="30" color="#D8E1EA" offsetXY="0 -20" width="1120" height="260" alignment="UpperLeft"/>
+  <Panel id="SplashChangelog" width="1360" height="500" offsetXY="0 0" color="#182233CC" outline="#31415F99" outlineSize="3">
+    <Text text="Hints &amp; Tips" fontSize="34" color="#F3F6FA" fontStyle="Bold" offsetXY="0 220" alignment="MiddleCenter"/>
+    <Text text="* Secondaries lock when you start the game.&#10;* You can drag and drop the overlays! You can pass turns/phases by clicking Round/Turn.&#10;* Open scoreboard by pressing the button next to the overlay to see more info!&#10;* You can add time and pass clock by clicking it&#10;* Go to Options -&gt; Game Keys to add shortcut buttons!&#10;* Now if you right-click dice spawn buttons (+2d6, +3d6 etc) you automatically roll them&#10;* New rolling algorithm!&#10;* Lots of performance and UI fixes!&#10;* Join Discord for more info :)" fontSize="26" color="#D8E1EA" offsetXY="0 -40" width="1280" height="400" alignment="UpperLeft"/>
   </Panel>
 
   <Button id="redBtn" color="#B52020" textColor="#FFFFFF" width="460" height="150" fontSize="52" fontStyle="Bold" roundEdges="true" onClick="placeToRed" outline="#F06A6A" outlineSize="4" offsetXY="-540 -350">Red</Button>
@@ -29,7 +29,7 @@
   <Button id="blueBtn" color="#1A5FC8" textColor="#FFFFFF" width="460" height="150" fontSize="52" fontStyle="Bold" roundEdges="true" onClick="placeToBlue" outline="#6DA8FF" outlineSize="4" offsetXY="540 -350">Blue</Button>
 </Panel>
 
-<Panel id="RedHud_VPScores" visibility="Red" active="true" scale="0.43 0.43 0.43" width="1160" height="155" rectAlignment="UpperCenter" offsetXY="0 -72" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="RedHud_VPScores" visibility="Red" active="true" scale="0.43 0.43 0.43" width="1160" height="155" rectAlignment="UpperRight" offsetXY="-290 -72" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false">
     <VerticalLayout id="RedHudControls" flexibleWidth="0" preferredWidth="54" spacing="4">
       <Button id="RedHud_SettingsBtn" text="⚙" fontSize="36" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleSettings" tooltip="Settings"/>
@@ -104,7 +104,7 @@
   </HorizontalLayout>
 </Panel>
 <Panel id="BlueHud_VPScores" visibility="Blue" active="true" scale="0.43 0.43 0.43" width="1160" height="155" 
-rectAlignment="UpperCenter" offsetXY="-200 0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+rectAlignment="UpperRight" offsetXY="-290 -72" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false">
     <VerticalLayout id="BlueHudControls" flexibleWidth="0" preferredWidth="54" spacing="4">
       <Button id="BlueHud_SettingsBtn" text="⚙" fontSize="36" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleSettings" tooltip="Settings"/>
@@ -179,7 +179,7 @@ rectAlignment="UpperCenter" offsetXY="-200 0" color="#0D0D1AE6" outline="#2a2a4a
   </HorizontalLayout>
 </Panel>
 
-<Panel id="GreyHud_VPScores" visibility="Grey" active="true" scale="0.43 0.43 0.43" width="1160" height="155" rectAlignment="UpperCenter" offsetXY="0 -72" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="GreyHud_VPScores" visibility="Grey" active="true" scale="0.43 0.43 0.43" width="1160" height="155" rectAlignment="UpperRight" offsetXY="-290 -72" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false">
     <VerticalLayout id="GreyHudControls" flexibleWidth="0" preferredWidth="54" spacing="4">
       <Button id="GreyHud_SettingsBtn" text="⚙" fontSize="36" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleSettings" tooltip="Settings"/>
