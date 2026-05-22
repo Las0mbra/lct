@@ -700,16 +700,16 @@ function destroyLegacyPrimaryDeck()
 end
 
 function placeStartupMapCards()
-    placeObjectAtPosition("625f96", {15.00, 0.98, 5.5})
-    placeObjectAtPosition("e05419", {15.10, 0.98, -1.98})
+    placeObjectAtPosition("41f60e", {20.3099422, 0.9751034, -0.8521245}, {0, 270, 0})
+    placeObjectAtPosition("86bf6f", {20.3099422, 0.9751034, 4.510522}, {0, 270, 0})
 end
 
 function destroyStartupMapCards()
-    destroyObjectByGUID("625f96")
-    destroyObjectByGUID("e05419")
+    destroyObjectByGUID("41f60e")
+    destroyObjectByGUID("86bf6f")
 end
 
-function placeObjectAtPosition(guid, position)
+function placeObjectAtPosition(guid, position, rotation)
     local obj = getObjectFromGUID(guid)
     if not obj then
         broadcastToAll("Object with GUID " .. guid .. " not found.", {1, 0, 0})
@@ -717,7 +717,7 @@ function placeObjectAtPosition(guid, position)
     end
 
     obj.setPosition(position)
-    obj.setRotation({0, 180, 0})
+    obj.setRotation(rotation or {0, 180, 0})
     obj.setLock(false)
     obj.tooltip = true
     obj.interactable = true

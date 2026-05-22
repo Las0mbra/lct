@@ -33,7 +33,7 @@
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false">
     <VerticalLayout id="RedHudControls" flexibleWidth="0" preferredWidth="54" spacing="4">
       <Button id="RedHud_SettingsBtn" text="⚙" fontSize="36" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleSettings" tooltip="Settings"/>
-      <Button id="RedHud_LockBtn" text="L" fontSize="32" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleLock" tooltip="Show scoring"/>
+      <Button id="RedHud_LockBtn" text="★" fontSize="36" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleLock" tooltip="Show scoring"/>
       <Button id="RedHud_ClockBtn" text="◴" fontSize="36" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleClock" tooltip="Toggle clock"/>
     </VerticalLayout>
     <Panel id="RedHud_RoundBadge" flexibleWidth="0" preferredWidth="96" color="#1A1A2AE6" outline="#2a2a4aCC" outlineSize="3" roundEdges="true">
@@ -108,7 +108,7 @@ rectAlignment="UpperCenter" offsetXY="-200 0" color="#0D0D1AE6" outline="#2a2a4a
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false">
     <VerticalLayout id="BlueHudControls" flexibleWidth="0" preferredWidth="54" spacing="4">
       <Button id="BlueHud_SettingsBtn" text="⚙" fontSize="36" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleSettings" tooltip="Settings"/>
-      <Button id="BlueHud_LockBtn" text="L" fontSize="32" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleLock" tooltip="Show scoring"/>
+      <Button id="BlueHud_LockBtn" text="★" fontSize="36" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleLock" tooltip="Show scoring"/>
       <Button id="BlueHud_ClockBtn" text="◴" fontSize="36" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleClock" tooltip="Toggle clock"/>
     </VerticalLayout>
     <Panel id="BlueHud_RoundBadge" flexibleWidth="0" preferredWidth="96" color="#1A1A2AE6" outline="#2a2a4aCC" outlineSize="3" roundEdges="true">
@@ -183,7 +183,7 @@ rectAlignment="UpperCenter" offsetXY="-200 0" color="#0D0D1AE6" outline="#2a2a4a
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false">
     <VerticalLayout id="GreyHudControls" flexibleWidth="0" preferredWidth="54" spacing="4">
       <Button id="GreyHud_SettingsBtn" text="⚙" fontSize="36" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleSettings" tooltip="Settings"/>
-      <Button id="GreyHud_LockBtn" text="L" fontSize="32" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleLock" tooltip="Show scoring"/>
+      <Button id="GreyHud_LockBtn" text="★" fontSize="36" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleLock" tooltip="Show scoring"/>
       <Button id="GreyHud_ClockBtn" text="◴" fontSize="36" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleClock" tooltip="Toggle clock"/>
     </VerticalLayout>
     <Panel id="GreyHud_RoundBadge" flexibleWidth="0" preferredWidth="96" color="#1A1A2AE6" outline="#2a2a4aCC" outlineSize="3" roundEdges="true">
@@ -294,7 +294,7 @@ rectAlignment="UpperCenter" offsetXY="-200 0" color="#0D0D1AE6" outline="#2a2a4a
     <Panel color="#B5202080" outline="#D46060CC" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="8" padding="12 12 12 12" childForceExpandWidth="true">
         <Text id="RedHud_ScoringOverlay_RedName" text="Red Player" fontSize="42" fontStyle="Bold" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="50"/>
-        <Text id="RedHud_ScoringOverlay_RedRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160"/>
+        <Text id="RedHud_ScoringOverlay_RedRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160" richText="true"/>
         <Text text="ACTIVE SECONDARIES" fontSize="22" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="28"/>
         <Panel id="RedHud_ScoringOverlay_RedActive" color="rgba(0,0,0,0)" preferredHeight="200">
           <HorizontalLayout spacing="18" childForceExpandWidth="true" childForceExpandHeight="true">
@@ -321,7 +321,7 @@ rectAlignment="UpperCenter" offsetXY="-200 0" color="#0D0D1AE6" outline="#2a2a4a
     <Panel color="#1A5FC880" outline="#6DA8FFCC" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="8" padding="12 12 12 12" childForceExpandWidth="true">
         <Text id="RedHud_ScoringOverlay_BlueName" text="Blue Player" fontSize="42" fontStyle="Bold" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="50"/>
-        <Text id="RedHud_ScoringOverlay_BlueRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160"/>
+        <Text id="RedHud_ScoringOverlay_BlueRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160" richText="true"/>
         <Text text="ACTIVE SECONDARIES" fontSize="22" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="28"/>
         <Panel id="RedHud_ScoringOverlay_BlueActive" color="rgba(0,0,0,0)" preferredHeight="200">
           <HorizontalLayout spacing="18" childForceExpandWidth="true" childForceExpandHeight="true">
@@ -355,7 +355,7 @@ rectAlignment="UpperCenter" offsetXY="-200 0" color="#0D0D1AE6" outline="#2a2a4a
     <Panel color="#B5202080" outline="#D46060CC" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="8" padding="12 12 12 12" childForceExpandWidth="true">
         <Text id="BlueHud_ScoringOverlay_RedName" text="Red Player" fontSize="42" fontStyle="Bold" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="50"/>
-        <Text id="BlueHud_ScoringOverlay_RedRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160"/>
+        <Text id="BlueHud_ScoringOverlay_RedRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160" richText="true"/>
         <Text text="ACTIVE SECONDARIES" fontSize="22" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="28"/>
         <Panel id="BlueHud_ScoringOverlay_RedActive" color="rgba(0,0,0,0)" preferredHeight="200">
           <HorizontalLayout spacing="18" childForceExpandWidth="true" childForceExpandHeight="true">
@@ -382,7 +382,7 @@ rectAlignment="UpperCenter" offsetXY="-200 0" color="#0D0D1AE6" outline="#2a2a4a
     <Panel color="#1A5FC880" outline="#6DA8FFCC" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="8" padding="12 12 12 12" childForceExpandWidth="true">
         <Text id="BlueHud_ScoringOverlay_BlueName" text="Blue Player" fontSize="42" fontStyle="Bold" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="50"/>
-        <Text id="BlueHud_ScoringOverlay_BlueRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160"/>
+        <Text id="BlueHud_ScoringOverlay_BlueRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160" richText="true"/>
         <Text text="ACTIVE SECONDARIES" fontSize="22" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="28"/>
         <Panel id="BlueHud_ScoringOverlay_BlueActive" color="rgba(0,0,0,0)" preferredHeight="200">
           <HorizontalLayout spacing="18" childForceExpandWidth="true" childForceExpandHeight="true">
@@ -416,7 +416,7 @@ rectAlignment="UpperCenter" offsetXY="-200 0" color="#0D0D1AE6" outline="#2a2a4a
     <Panel color="#B5202080" outline="#D46060CC" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="8" padding="12 12 12 12" childForceExpandWidth="true">
         <Text id="GreyHud_ScoringOverlay_RedName" text="Red Player" fontSize="42" fontStyle="Bold" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="50"/>
-        <Text id="GreyHud_ScoringOverlay_RedRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160"/>
+        <Text id="GreyHud_ScoringOverlay_RedRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160" richText="true"/>
         <Text text="ACTIVE SECONDARIES" fontSize="22" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="28"/>
         <Panel id="GreyHud_ScoringOverlay_RedActive" color="rgba(0,0,0,0)" preferredHeight="200">
           <HorizontalLayout spacing="18" childForceExpandWidth="true" childForceExpandHeight="true">
@@ -443,7 +443,7 @@ rectAlignment="UpperCenter" offsetXY="-200 0" color="#0D0D1AE6" outline="#2a2a4a
     <Panel color="#1A5FC880" outline="#6DA8FFCC" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="8" padding="12 12 12 12" childForceExpandWidth="true">
         <Text id="GreyHud_ScoringOverlay_BlueName" text="Blue Player" fontSize="42" fontStyle="Bold" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="50"/>
-        <Text id="GreyHud_ScoringOverlay_BlueRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160"/>
+        <Text id="GreyHud_ScoringOverlay_BlueRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160" richText="true"/>
         <Text text="ACTIVE SECONDARIES" fontSize="22" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="28"/>
         <Panel id="GreyHud_ScoringOverlay_BlueActive" color="rgba(0,0,0,0)" preferredHeight="200">
           <HorizontalLayout spacing="18" childForceExpandWidth="true" childForceExpandHeight="true">

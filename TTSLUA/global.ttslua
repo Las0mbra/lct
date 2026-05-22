@@ -309,10 +309,10 @@ function refreshScoringOverlay()
     for j = 1, 5 do
         local r = summary.red.rounds and summary.red.rounds[j] or {}
         local b = summary.blue.rounds and summary.blue.rounds[j] or {}
-        redRoundsText = redRoundsText .. string.format("Round %d:  %d (%d+%d+%d)\n",
-            j, r.total or 0, r.primary or 0, r.secondary1 or 0, r.secondary2 or 0)
-        blueRoundsText = blueRoundsText .. string.format("Round %d:  %d (%d+%d+%d)\n",
-            j, b.total or 0, b.primary or 0, b.secondary1 or 0, b.secondary2 or 0)
+        redRoundsText = redRoundsText .. string.format("<b>Round %d</b> | PRI: %d - SEC: %d - XTR: %d |\n",
+            j, r.primary or 0, r.secondary1 or 0, r.secondary2 or 0)
+        blueRoundsText = blueRoundsText .. string.format("<b>Round %d</b> | PRI: %d - SEC: %d - XTR: %d |\n",
+            j, b.primary or 0, b.secondary1 or 0, b.secondary2 or 0)
     end
     setHudValue({id = "ScoringOverlay_RedRounds", value = redRoundsText})
     setHudValue({id = "ScoringOverlay_BlueRounds", value = blueRoundsText})
