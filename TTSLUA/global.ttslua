@@ -30,7 +30,7 @@ blueControlBoard_GUID = "32ed4c"
 RedSelectionHighlighter = "27de4f"
 BlueSelectionHighlighter = "84c3a4"
 
-HUD_PANEL_PREFIXES = {"RedHud_", "BlueHud_"}
+HUD_PANEL_PREFIXES = {"RedHud_", "BlueHud_", "GreyHud_"}
 
 function setHudAttribute(params)
     if not params or not params.id or not params.attr then return end
@@ -53,6 +53,7 @@ end
 playerHudSettings = {
     Red = {settingsOpen = false, locked = false, clockHidden = false, hudVisible = true, scale = "Medium"},
     Blue = {settingsOpen = false, locked = false, clockHidden = false, hudVisible = true, scale = "Medium"},
+    Grey = {settingsOpen = false, locked = false, clockHidden = false, hudVisible = true, scale = "Medium"},
 }
 
 function getDefaultHudSettings()
@@ -60,7 +61,7 @@ function getDefaultHudSettings()
 end
 
 function ensureHudSettings(color)
-    if color ~= "Red" and color ~= "Blue" then
+    if color ~= "Red" and color ~= "Blue" and color ~= "Grey" then
         color = "Blue"
     end
     if not playerHudSettings then
@@ -80,16 +81,16 @@ end
 
 function getHudColorFromCallback(player, id)
     if id then
-        local fromId = string.match(id, "^(Red)Hud_") or string.match(id, "^(Blue)Hud_")
+        local fromId = string.match(id, "^(Red)Hud_") or string.match(id, "^(Blue)Hud_") or string.match(id, "^(Grey)Hud_")
         if fromId then
             return fromId
         end
     end
     if type(player) == "table" and player.color then
-        if player.color == "Red" or player.color == "Blue" then
+        if player.color == "Red" or player.color == "Blue" or player.color == "Grey" then
             return player.color
         end
-    elseif player == "Red" or player == "Blue" then
+    elseif player == "Red" or player == "Blue" or player == "Grey" then
         return player
     end
     return "Blue"
@@ -134,6 +135,7 @@ end
 function applyHudPreferences()
     applyHudPreferencesForColor("Red")
     applyHudPreferencesForColor("Blue")
+    applyHudPreferencesForColor("Grey")
 end
 
 function hudToggleSettings(player, value, id)
@@ -813,6 +815,10 @@ function placeToGray(player, value, id)
     else
         print("Error: selectPariahNexus function not found!")
     end
+end
+
+function placeToSpectator(player, value, id)
+    placeToColor(player, "Grey")
 end
 
 function closeMenu(player, value, id)
