@@ -540,6 +540,8 @@ function getRoundSummaryForPlayer(pId)
 		table.insert(roundSummary, {
 			round = j,
 			primary = primary,
+			secondary1 = secondary1,
+			secondary2 = secondary2,
 			secondary = secondary1 + secondary2,
 			total = primary + secondary1 + secondary2
 		})

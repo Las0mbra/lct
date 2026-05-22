@@ -51,13 +51,13 @@ function setHudValue(params)
 end
 
 playerHudSettings = {
-    Red = {settingsOpen = false, locked = false, clockHidden = false, hudVisible = true, scale = "Medium"},
-    Blue = {settingsOpen = false, locked = false, clockHidden = false, hudVisible = true, scale = "Medium"},
-    Grey = {settingsOpen = false, locked = false, clockHidden = false, hudVisible = true, scale = "Medium"},
+    Red = {settingsOpen = false, scoringOverlayOpen = false, clockHidden = false, hudVisible = true, scale = "Medium"},
+    Blue = {settingsOpen = false, scoringOverlayOpen = false, clockHidden = false, hudVisible = true, scale = "Medium"},
+    Grey = {settingsOpen = false, scoringOverlayOpen = false, clockHidden = false, hudVisible = true, scale = "Medium"},
 }
 
 function getDefaultHudSettings()
-    return {settingsOpen = false, locked = false, clockHidden = false, hudVisible = true, scale = "Medium"}
+    return {settingsOpen = false, scoringOverlayOpen = false, clockHidden = false, hudVisible = true, scale = "Medium"}
 end
 
 function ensureHudSettings(color)
@@ -116,14 +116,12 @@ function applyHudPreferencesForColor(color)
     local settings = ensureHudSettings(color)
     local settingsActive = settings.settingsOpen and "true" or "false"
     local overlayActive = settings.hudVisible and "true" or "false"
-    local unlocked = not settings.locked
+    local scoringOverlayActive = settings.scoringOverlayOpen and "true" or "false"
     local clockActive = not settings.clockHidden
 
     setHudAttributeForColor(color, {id = "Settings", attr = "active", value = settingsActive})
     setHudAttributeForColor(color, {id = "VPScores", attr = "active", value = overlayActive})
-    setHudAttributeForColor(color, {id = "VPScores", attr = "allowDragging", value = unlocked and "true" or "false"})
-    setHudAttributeForColor(color, {id = "Settings", attr = "allowDragging", value = unlocked and "true" or "false"})
-    setHudAttributeForColor(color, {id = "LockBtn", attr = "text", value = "L"})
+    setHudAttributeForColor(color, {id = "ScoringOverlay", attr = "active", value = scoringOverlayActive})
     setHudAttributeForColor(color, {id = "LockBtn", attr = "color", value = "#FFFFFF"})
     setHudAttributeForColor(color, {id = "ClockBtn", attr = "color", value = "#FFFFFF"})
 
@@ -160,8 +158,211 @@ end
 function hudToggleLock(player, value, id)
     local color = getHudColorFromCallback(player, id)
     local settings = ensureHudSettings(color)
-    settings.locked = not settings.locked
+    settings.scoringOverlayOpen = not settings.scoringOverlayOpen
+    if settings.scoringOverlayOpen then
+        refreshScoringOverlay()
+        scheduleScoringOverlayRefreshLoop()
+    end
     applyHudPreferencesForColor(color)
+end
+
+function hudCloseScoringOverlay(player, value, id)
+    local color = getHudColorFromCallback(player, id)
+    local settings = ensureHudSettings(color)
+    settings.scoringOverlayOpen = false
+    applyHudPreferencesForColor(color)
+end
+
+function formatSecondaryListColumns(names, cap, numbered)
+    if not names or #names == 0 then return "—", "" end
+    local count = #names
+    if cap and count > cap then count = cap end
+    local splitAt = math.ceil(count / 2)
+    local left = {}
+    local right = {}
+    for i = 1, count do
+        local line
+        if numbered then
+            line = i .. ". " .. names[i]
+        else
+            line = "• " .. names[i]
+        end
+        if i <= splitAt then
+            left[#left + 1] = line
+        else
+            right[#right + 1] = line
+        end
+    end
+    return table.concat(left, "\n"), table.concat(right, "\n")
+end
+
+function setHudListColumns(id, names, cap, numbered)
+    local left, right = formatSecondaryListColumns(names, cap, numbered)
+    setHudValue({id = id .. "L", value = left})
+    setHudValue({id = id .. "R", value = right})
+end
+
+function isAnyScoringOverlayOpen()
+    for _, color in ipairs({"Red", "Blue", "Grey"}) do
+        local settings = ensureHudSettings(color)
+        if settings.scoringOverlayOpen then
+            return true
+        end
+    end
+    return false
+end
+
+function scheduleScoringOverlayRefreshLoop()
+    if scoringOverlayRefreshScheduled then
+        return
+    end
+    scoringOverlayRefreshScheduled = true
+    Wait.time(function()
+        scoringOverlayRefreshScheduled = false
+        if not isAnyScoringOverlayOpen() then
+            return
+        end
+        refreshScoringOverlay()
+        scheduleScoringOverlayRefreshLoop()
+    end, 2)
+end
+
+function getActiveSecondaryNames(color)
+    local zoneGuids = (color == "Red") and redSecondaryCardZone_GUIDs or blueSecondaryCardZone_GUIDs
+    local names = {}
+    for _, guid in ipairs(zoneGuids) do
+        local zone = getObjectFromGUID(guid)
+        local name = getSecondaryCardName(zone)
+        if name then
+            names[#names + 1] = name
+        end
+    end
+    return names
+end
+
+function getRemainingDeckSecondaryNames(color)
+    local deckGuid = (color == "Red") and redSecondaryDeck_GUID or blueSecondaryDeck_GUID
+    local deck = getObjectFromGUID(deckGuid)
+    if not deck then return {} end
+    local names = {}
+    local contents = deck.getObjects()
+    if contents then
+        for _, descriptor in ipairs(contents) do
+            if descriptor.name and descriptor.name ~= "" then
+                names[#names + 1] = descriptor.name
+            end
+        end
+    end
+    table.sort(names)
+    return names
+end
+
+function getDiscardedSecondaryNames(color)
+    local pos = getSecondaryDiscardPosition(color)
+    if not pos then return {} end
+    local names = {}
+    for _, obj in ipairs(getAllObjects()) do
+        local tag = obj.tag
+        if tag == "Card" or tag == "Deck" then
+            local objPos = obj.getPosition()
+            if math.abs(objPos.x - pos.x) < 2.5 and math.abs(objPos.z - pos.z) < 2.5 then
+                if tag == "Card" then
+                    local n = obj.getName()
+                    if n and n ~= "" then
+                        names[#names + 1] = n
+                    end
+                else
+                    local contents = obj.getObjects()
+                    if contents then
+                        for _, descriptor in ipairs(contents) do
+                            if descriptor.name and descriptor.name ~= "" then
+                                names[#names + 1] = descriptor.name
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return names
+end
+
+function refreshScoringOverlay()
+    local sheet = getObjectFromGUID(scoresheet_GUID)
+    if not sheet then return end
+    local summary = sheet.call("getMatchSummary")
+    if not summary then return end
+
+    local roundCounter = getObjectFromGUID(gameTurnCounter_GUID)
+    local roundNum = (roundCounter and roundCounter.Counter and roundCounter.Counter.getValue()) or 0
+    setHudValue({id = "ScoringOverlay_Title", value = "⚔ Round " .. roundNum .. " ⚔"})
+
+    local redName = summary.red.name or "Red"
+    local blueName = summary.blue.name or "Blue"
+    local redTotal = summary.red.total or 0
+    local blueTotal = summary.blue.total or 0
+    setHudValue({id = "ScoringOverlay_RedName", value = redName .. " (" .. redTotal .. ")"})
+    setHudValue({id = "ScoringOverlay_BlueName", value = blueName .. " (" .. blueTotal .. ")"})
+
+    local redRoundsText = ""
+    local blueRoundsText = ""
+    for j = 1, 5 do
+        local r = summary.red.rounds and summary.red.rounds[j] or {}
+        local b = summary.blue.rounds and summary.blue.rounds[j] or {}
+        redRoundsText = redRoundsText .. string.format("Round %d:  %d (%d+%d+%d)\n",
+            j, r.total or 0, r.primary or 0, r.secondary1 or 0, r.secondary2 or 0)
+        blueRoundsText = blueRoundsText .. string.format("Round %d:  %d (%d+%d+%d)\n",
+            j, b.total or 0, b.primary or 0, b.secondary1 or 0, b.secondary2 or 0)
+    end
+    setHudValue({id = "ScoringOverlay_RedRounds", value = redRoundsText})
+    setHudValue({id = "ScoringOverlay_BlueRounds", value = blueRoundsText})
+
+    local redActive = getActiveSecondaryNames("Red")
+    local blueActive = getActiveSecondaryNames("Blue")
+    local redDiscard = getDiscardedSecondaryNames("Red")
+    local blueDiscard = getDiscardedSecondaryNames("Blue")
+    local redDeck = getRemainingDeckSecondaryNames("Red")
+    local blueDeck = getRemainingDeckSecondaryNames("Blue")
+
+    setHudListColumns("ScoringOverlay_RedActive", redActive, 8, true)
+    setHudListColumns("ScoringOverlay_BlueActive", blueActive, 8, true)
+    setHudListColumns("ScoringOverlay_RedDiscard", redDiscard, nil, false)
+    setHudListColumns("ScoringOverlay_BlueDiscard", blueDiscard, nil, false)
+    setHudListColumns("ScoringOverlay_RedDeck", redDeck, nil, false)
+    setHudListColumns("ScoringOverlay_BlueDeck", blueDeck, nil, false)
+
+    -- Dynamic, symmetric section heights based on content count.
+    -- Both sides get the same height per section (max of red/blue) so columns line up.
+    local lineHeight = 22
+    local minSection = 26  -- room for "—" placeholder
+    local function sectionH(count)
+        if count <= 0 then return minSection end
+        return math.ceil(count / 2) * lineHeight + 4
+    end
+    local activeCount = math.max(math.min(#redActive, 8), math.min(#blueActive, 8))
+    local discardCount = math.max(#redDiscard, #blueDiscard)
+    local deckCount = math.max(#redDeck, #blueDeck)
+
+    local activeH = sectionH(activeCount)
+    local discardH = sectionH(discardCount)
+    local deckH = sectionH(deckCount)
+
+    -- If total exceeds the panel's content budget, scale all sections down proportionally.
+    local contentBudget = 770
+    local needed = activeH + discardH + deckH
+    if needed > contentBudget then
+        local scale = contentBudget / needed
+        activeH = math.floor(activeH * scale)
+        discardH = math.floor(discardH * scale)
+        deckH = math.floor(deckH * scale)
+    end
+
+    setHudAttribute({id = "ScoringOverlay_RedActive", attr = "preferredHeight", value = tostring(activeH)})
+    setHudAttribute({id = "ScoringOverlay_BlueActive", attr = "preferredHeight", value = tostring(activeH)})
+    setHudAttribute({id = "ScoringOverlay_RedDiscard", attr = "preferredHeight", value = tostring(discardH)})
+    setHudAttribute({id = "ScoringOverlay_BlueDiscard", attr = "preferredHeight", value = tostring(discardH)})
+    setHudAttribute({id = "ScoringOverlay_RedDeck", attr = "preferredHeight", value = tostring(deckH)})
+    setHudAttribute({id = "ScoringOverlay_BlueDeck", attr = "preferredHeight", value = tostring(deckH)})
 end
 
 function hudToggleClock(player, value, id)
