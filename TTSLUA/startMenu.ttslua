@@ -15,6 +15,9 @@ keepForTerrainEditor = true
 
 mat_GUID = Global.getVar("mat_GUID")
 ttsDebugEnabled = false
+dispositionValues = {"Disruption", "Priority Assets", "Purge the Foe", "Reconnaissance", "Take and Hold"}
+blueDispositionSelected = 1
+redDispositionSelected = 1
 
 function ttsDebugLog(message)
     if ttsDebugEnabled then
@@ -24,12 +27,14 @@ end
 
 
 function onLoad(saved_data)
+    math.randomseed(os.time())
     --self.setPosition({40,-4,0})
     --self.setRotation({0,270,0})
     -- load from saved
     --getData()
     deploySelected = nil
     deployMode = nil
+    legacyPrimaryDeckEnabled = false
     if saved_data ~= "" then
         local loaded_data = JSON.decode(saved_data)
         gameMode = loaded_data.svgameMode
@@ -41,7 +46,10 @@ function onLoad(saved_data)
         sizeConfirmed = loaded_data.svsizeConfirmed
         deploySelected = loaded_data.svdeploySelected
         deployMode = loaded_data.svdeployMode
+        legacyPrimaryDeckEnabled = loaded_data.svLegacyPrimaryDeckEnabled or false
         packSelected = loaded_data.svPackSelected
+        blueDispositionSelected = loaded_data.svblueDispositionSelected or blueDispositionSelected
+        redDispositionSelected = loaded_data.svredDispositionSelected or redDispositionSelected
     end
 
     if sizeConfirmed then
@@ -56,6 +64,7 @@ function onLoad(saved_data)
     else
         deploySelected = #DeployZonesData
     end
+    rebuildOverlayTracking()
 
     mat = getObjectFromGUID(mat_GUID)
     if simulation then ttsDebugLog("THIS IS "..currentTurn.." TURN") end
@@ -80,9 +89,7 @@ function onLoad(saved_data)
             ttsDebugLog("missionPackData not available during onLoad; clearing packSelected")
         end
     end
-    if gameTurnCounter then
-        gameTurnCounter.call("checkGameEnd")
-    else
+    if not gameTurnCounter then
         ttsDebugLog("gameTurnCounter not found during onLoad")
     end
     writeMenus()
@@ -102,7 +109,10 @@ function onSave()
         svsizeConfirmed = sizeConfirmed,
         svdeploySelected = deploySelected,
         svdeployMode = deployMode,
+        svLegacyPrimaryDeckEnabled = legacyPrimaryDeckEnabled,
         svPackSelected = packSelected,
+        svblueDispositionSelected = blueDispositionSelected,
+        svredDispositionSelected = redDispositionSelected,
     })
 
     return saved_data
@@ -251,6 +261,7 @@ sizeData={
     {id=3, name='I n c u r s i o n - 44" x 60"', scale={0.83*2,1,1.22}, defaultObjectives=0},
     {id=4, name='S t r i k e     F o r c e - 44" x 60"', scale={0.83*2,1,1.22}, defaultObjectives=0},
     {id=5, name='O n s l a u g h t - 44" x 90"', scale={0.83*3,1,1.22}, defaultObjectives=0},
+    {id=6, name='B o a r d i n g     A c t i o n - 28" x 48"', scale={1.33,1,0.77}, defaultObjectives=0},
 }
 
 menuSizeX = 0
@@ -338,73 +349,79 @@ sizeDownBtn = {
 
 confirmBtn = {
     index          = i,
-    label          = "1 Vs 1",
-    click_function = "confirmSizeGame",
+    label          = "1v1",
+    click_function = "confirmStandardGame",
     function_owner = self,
-    position       = { -menuSizeX - 6.5, menuSizeY, menuSizeZ + 3 },
+    position       = { -menuSizeX - 6.0, menuSizeY, menuSizeZ + 2.65 },
     rotation       = { 0, 0, 0 },
-    height         = 1400,
-    width          = 4400,
-    scale          = { 1.3, 1.3, 1.3 },
-    font_size      = 500,
+    height         = 810,
+    width          = 4500,
+    scale          = { 1, 1, 1 },
+    font_size      = 375,
     color          = {
          0.191999942,
         0.701,
         0.167999923},  -- Rich Forest Green
-    font_color     = { 1.0, 1.0, 1.0 }  -- Pure White
+    font_color     = { 1.0, 1.0, 1.0 },  -- Pure White
+    hover_color    = { 0.25, 0.78, 0.22, 1 },
+    press_color    = { 0.13, 0.55, 0.12, 1 }
 }
 
-confirmBtn2 = {
+confirmBtn2v2 = {
     index          = i,
-    label          = "CRUSADE\n(Coming Soon) ((Maybe))",
-    click_function = "comingSoon",
+    label          = "2v2",
+    click_function = "none",
     function_owner = self,
-    position       = { -menuSizeX + 6.5, menuSizeY, menuSizeZ + 3  },
+    position       = { -menuSizeX + 6.0, menuSizeY, menuSizeZ + 2.65 },
     rotation       = { 0, 0, 0 },
-    height         = 1400,
-    width          = 4400,
-    scale          = { 1.3, 1.3, 1.3 },
-    font_size      = 300,
-    color          = {
-        0.856,
-        0.09999994,
-        0.09399993},  -- Deep Crimson Red
-    font_color     = { 1.0, 1.0, 1.0 }  -- Pure White
-}
-
-confirmBtn3 = {
-    index          = i,
-    label          = "2 Vs 2",
-    click_function = "confirmDoublesGame",
-    function_owner = self,
-    position       = { -menuSizeX - 6.5, menuSizeY, menuSizeZ + 7.5 },
-    rotation       = { 0, 0, 0 },
-    height         = 1400,
-    width          = 4400,
-    scale          = { 1.3, 1.3, 1.3 },
-    font_size      = 500,
-    color          = {
-        0.627,
-        0.124999948,0.941 }, -- Royal Purple
-    font_color     = { 1.0, 1.0, 1.0 }  -- Pure White
+    height         = 810,
+    width          = 4500,
+    scale          = { 1, 1, 1 },
+    font_size      = 375,
+    color          = { 0.856, 0.09998388, 0.09398384 },
+    font_color     = { 1.0, 1.0, 1.0 },
+    hover_color    = { 1.0, 0.18, 0.16, 1 },
+    press_color    = { 0.65, 0.06, 0.05, 1 }
 }
 
 confirmBtn4 = {
     index          = i,
-    label          = "SINGLE PLAYER /\nHOTSEAT",
+    label          = "Solo",
     click_function = "confirmForSingles",
     function_owner = self,
-    position       = { -menuSizeX + 6.5, menuSizeY, menuSizeZ + 7.5 },
+    position       = { -menuSizeX - 6.0, menuSizeY, menuSizeZ + 4.65 },
     rotation       = { 0, 0, 0 },
-    height         = 1400,
-    width          = 4400,
-    scale          = { 1.3, 1.3, 1.3 },
-    font_size      = 500,
+    height         = 810,
+    width          = 4500,
+    scale          = { 1, 1, 1 },
+    font_size      = 375,
     color          = {
         0.117999949,
         0.53,
          1},  -- Vibrant Royal Blue
-    font_color     = { 1.0, 1.0, 1.0 }  -- Pure White
+    font_color     = { 1.0, 1.0, 1.0 },  -- Pure White
+    hover_color    = { 0.18, 0.6, 1, 1 },
+    press_color    = { 0.08, 0.4, 0.82, 1 }
+}
+
+confirmBtnLegacy = {
+    index          = i,
+    label          = "10th Edition",
+    click_function = "confirmForLegacy",
+    function_owner = self,
+    position       = { -menuSizeX + 6.0, menuSizeY, menuSizeZ + 4.65 },
+    rotation       = { 0, 0, 0 },
+    height         = 810,
+    width          = 4500,
+    scale          = { 1, 1, 1 },
+    font_size      = 375,
+    color          = {
+        0.627,
+        0.124999948,
+        0.941},
+    font_color     = { 1.0, 1.0, 1.0 },
+    hover_color    = { 0.72, 0.2, 1, 1 },
+    press_color    = { 0.47, 0.08, 0.74, 1 }
 }
 
 function refreshMat()
@@ -416,16 +433,17 @@ function writeSizeMenu()
     if sizeConfirmed then
         return
     end
+    self.createButton(startBtnDisabled)
     self.createButton(sizeMenuBtn)
     sizeBtn.label=sizeData[mapSizeSelected].name
     self.createButton(sizeBtn)
     self.createButton(sizeUpBtn)
     self.createButton(sizeDownBtn)
     self.createButton(confirmBtn)
-    self.createButton(confirmBtn2)
+    self.createButton(confirmBtn2v2)
     self.createButton(removeMapsBtn)
-    self.createButton(confirmBtn3)
     self.createButton(confirmBtn4)
+    self.createButton(confirmBtnLegacy)
     mat.setScale(sizeData[mapSizeSelected].scale)
     mat.setPosition(positionValue)
 end
@@ -527,94 +545,32 @@ end
 
 
 function enableObjects()
-    local orangePCounter_GUID = Global.getVar("orangePCounter_GUID")
-    local purplePCounter_GUID = Global.getVar("purpleCPCounter_GUID")
+    local redCounterText = getObjectFromGUID("7ab8ca")
+    local blueCounterText = getObjectFromGUID("028baa")
 
-    local orangePCounter = getObjectFromGUID(orangePCounter_GUID)
-    local purplePCounter = getObjectFromGUID(purplePCounter_GUID)
-    local orangePCounterText = getObjectFromGUID("7ab8ca")
-
-    local purplePCounterText = getObjectFromGUID("028baa")
-    local AddNewPlayerBCounterText = getObjectFromGUID("838abc")
-    local RemoveOldPlayerBCounterText = getObjectFromGUID("9a85e3")
-
-    if orangePCounter then
-        orangePCounter.setPosition({51.3211021, -1.33, 37.5})
-        orangePCounterText.setPosition({54.35, 1.23999178, 37.5})
-        orangePCounter.interactable = true
-    else
-        print("Orange CP Counter not found!")
-    end
-
-    if purplePCounter then
-        RemoveOldPlayerBCounterText.setPosition({62.50006, -3.23998809, -37.49884})
-
-        -- setup new counter
-        purplePCounter.setPosition({59.5018, -1.33, -55})
-        purplePCounterText.setPosition({62.50006, 1.23998809, -55.019884})
-
-        AddNewPlayerBCounterText.setPosition({62.50006, 1.23998809, -37.49884})
-        purplePCounter.interactable = true
-    else
-        print("Purple CP Counter not found!")
-    end
-end
-
-
-function confirmDoublesGame()
-    -- inGame = true
-    --mapSizeSelected=3
-    selectPariahNexus()
-    -- Auto-assign teams
-    -- autoAssignTeams()
-    enableObjects()
-
-    -- Place tokens, shuffle team cards, or any other setup
-    placeGameTokens()
-
-    broadcastToAll("2v2 Doubles Game Mode Initialized!", {0.5, 0, 0.5})
-    confirmSizeMat("game")
-    -- Change color of object with GUID "deb9f2" to blue
-    local blueObject = getObjectFromGUID("deb9f2")
-    if blueObject then
-        blueObject.setColorTint({r = 0, g = 0, b = 1})
-    end
-
-    -- Change color of object with GUID "e446f7" to orange
-    local orangeObject = getObjectFromGUID("e446f7")
-    if orangeObject then
-        orangeObject.setColorTint({r = 1, g = 0.5, b = 0})
-    end
-
-    local guidPositions = {
-        ["03286d"] = -4.776464939,
-        ["ca7711"] = -4.776464939,
-        ["cd649d"] = -4.776464939,
-        ["9a7c3c"] = -4.776464939,
-        ["bf09bd"] = -4.776464939,
-        ["3c8a1b"] = -6.19999981,
-        ["8a7c7a"] = -6.19999981,
-        ["8395b2"] = -6.19999981,
-        ["3c1373"] = -6.19999981,
-        ["4bb528"] = -6.19999981,
-        ["7abc5a"] = -6.19999981
-    }
-
-    -- Iterate over each GUID and destroy the object if found
-    for guid, _ in pairs(guidPositions) do
-        local obj = getObjectFromGUID(guid)
-        if obj then
-            destroyObject(obj) -- Destroy the object
-        else
-            print("Object with GUID " .. guid .. " not found.")
+    if redCpCounter then
+        redCpCounter.setPosition({59.5, -1.32, 27.0})
+        redCpCounter.interactable = true
+        if redCounterText then
+            redCounterText.setValue("Player A Command Points")
+            redCounterText.setPosition({62.50006, 1.23999178, 27.0})
         end
+    else
+        print("Red CP Counter not found!")
     end
-    writeMenus()
+
+    if blueCpCounter then
+        blueCpCounter.setPosition({59.5, -1.32, -27.0})
+        blueCpCounter.interactable = true
+        if blueCounterText then
+            blueCounterText.setValue("Player B Command Points")
+            blueCounterText.setPosition({62.50006, 1.23998809, -27.0})
+        end
+    else
+        print("Blue CP Counter not found!")
+    end
 end
 
-function comingSoon()
-    broadcastToAll("Not yet! ;) But it is on my list of things to do!")
-end
 
 function createCounter(position, label)
     local counter = spawnObject({
@@ -679,12 +635,123 @@ end
 
 function confirmForSingles()
     singlesMode = "singles"
+    deployMode = "edition11"
+    legacyPrimaryDeckEnabled = false
+    loadGameWithoutMapContainers()
+end
+
+function confirmStandardGame()
+    singlesMode = nil
+    deployMode = "edition11"
+    legacyPrimaryDeckEnabled = false
+    loadGameWithoutMapContainers()
+end
+
+function confirmForLegacy()
+    singlesMode = "singles"
+    deployMode = nil
+    legacyPrimaryDeckEnabled = true
+    destroyStartupMapCards()
+    showLegacyPrimaryDeck()
     confirmSizeGame()
+end
+
+function loadGameWithoutMapContainers()
+    destroyMapContainers()
+    destroyLegacyPrimaryDeck()
+    placeStartupMapCards()
+    confirmSizeMat()
+end
+
+legacyPrimaryDeck_GUID = "d26e9c"
+legacyPrimaryDeckPosition = {85.25, 0.95, -7.65}
+legacyPrimaryDeckHiddenPosition = {89.238, -5.0, -6.352}
+
+function setLegacyPrimaryDeckVisibility(visible)
+    local deck = getObjectFromGUID(legacyPrimaryDeck_GUID)
+    if not deck then
+        return
+    end
+
+    if visible then
+        deck.setLock(false)
+        deck.setPosition(legacyPrimaryDeckPosition)
+        deck.setRotation({0, 270, 180})
+        deck.tooltip = true
+        deck.interactable = true
+    else
+        deck.setPosition(legacyPrimaryDeckHiddenPosition)
+        deck.setLock(true)
+        deck.tooltip = false
+        deck.interactable = false
+    end
+end
+
+function showLegacyPrimaryDeck()
+    setLegacyPrimaryDeckVisibility(true)
+end
+
+function hideLegacyPrimaryDeck()
+    setLegacyPrimaryDeckVisibility(false)
+end
+
+function destroyLegacyPrimaryDeck()
+    destroyObjectByGUID(legacyPrimaryDeck_GUID)
+end
+
+function placeStartupMapCards()
+    placeObjectAtPosition("41f60e", {20.3099422, 0.9751034, -0.8521245}, {0, 270, 0})
+    placeObjectAtPosition("86bf6f", {20.3099422, 0.9751034, 4.510522}, {0, 270, 0})
+end
+
+function destroyStartupMapCards()
+    destroyObjectByGUID("41f60e")
+    destroyObjectByGUID("86bf6f")
+end
+
+function placeObjectAtPosition(guid, position, rotation)
+    local obj = getObjectFromGUID(guid)
+    if not obj then
+        broadcastToAll("Object with GUID " .. guid .. " not found.", {1, 0, 0})
+        return
+    end
+
+    obj.setPosition(position)
+    obj.setRotation(rotation or {0, 180, 0})
+    obj.setLock(false)
+    obj.tooltip = true
+    obj.interactable = true
+end
+
+function destroyMapContainers()
+    local mapContainerGUIDs = {
+        "03286d",
+        "ca7711",
+        "cd649d",
+        "bf09bd",
+        "9a7c3c",
+        "3c8a1b",
+        "3c1373",
+        "8395b2",
+        "8a7c7a",
+        "4bb528",
+    }
+
+    for _, guid in ipairs(mapContainerGUIDs) do
+        destroyObjectByGUID(guid)
+    end
+end
+
+function destroyObjectByGUID(guid)
+    local obj = getObjectFromGUID(guid)
+    if obj then
+        destroyObject(obj)
+    end
 end
 
 function confirmSizeGame()
     spawnInteractiveObject()
-    confirmSizeMat("game")
+    confirmSizeMat()
     -- Table of GUIDs and their position to show on board
     -- bascially to hide certain objects that are controlled by the control board
     local guidPositions = {
@@ -699,22 +766,6 @@ function confirmSizeGame()
         ["8395b2"] = 1.19999981,
         ["4bb528"] = 1.19999981
     }
-
-
-    local destoryObjects = {
-        ["138b06"] = -6.19999981,
-        ["d8d6da"] = -6.19999981
-    }
-
-    -- Iterate over each GUID and destroy the object if found
-    for guid, _ in pairs(destoryObjects) do
-        local obj = getObjectFromGUID(guid)
-        if obj then
-            destroyObject(obj) -- Destroy the object
-        else
-            print("Object with GUID " .. guid .. " not found.")
-        end
-    end
     self.createButton(clearAllDiceBtn)
 
     -- Iterate over each GUID and set the new height
@@ -733,41 +784,30 @@ function confirmSizeGame()
     destroyObject(mfdToken)
 end
 
-function confirmSizeTerrain()
-    local mfdToken = getObjectFromGUID("cda0b3")
-    destroyObject(mfdToken)
-    confirmSizeMat("terrain")
-end
-
-function confirmSizeMat(type)
-    gameMode= type
+function confirmSizeMat()
+    gameMode= "game"
     sizeConfirmed=true
     mat.setScale(sizeData[mapSizeSelected].scale)
     self.setRotation({0,270,0})
-    setDeployZonesForSize(false)
+    if deployMode and isValidDeployMode(deployMode) then
+        setDeployZonesMode(deployMode, false)
+    else
+        setDeployZonesForSize(false)
+    end
     writeMenus()
-    if gameMode == "game" then
-    end
-    if gameMode == "terrain" then
-        switchToTerrainEditor()
-    end
 end
 
 function updateDeployObjectivesSelection()
     deploySelected = #DeployZonesData
 end
 
-function switchToTerrainEditor()
-    printToAll("Deleting unnecessary things.\nPLEASE WAIT..", "Yellow")
-    local pos={}
-    for i, obj in ipairs(getAllObjects()) do
-        pos=obj.getPosition()
-        if ((pos.y > -8 and pos.y < 0.36) or pos.y > 0.71) and not obj.getVar("keepForTerrainEditor") then
-            obj.destroy()
-        end
-    end
-    Global.setVectorLines({})
-    printToAll("DONE!", "Yellow")
+function selectedDeployment()
+    return DeployZonesData and DeployZonesData[deploySelected] or nil
+end
+
+function selectedDeploymentSpawnsOverlay()
+    local zone = selectedDeployment()
+    return zone ~= nil and zone.draw and zone.draw.type ~= "none"
 end
 
 -- END size changer
@@ -836,7 +876,7 @@ DeployZonesStrikeForce = {
     {name = "Tipping Point (HS2)", objectivesID = 118, draw = {
         --[[1]]{type = "stepped", color = "Teal", position = "-x", steps = {{fromSide = 12}, {fromSide = 20}}},
         --[[2]]{type = "stepped", color = "Red", position = "x", steps = {{fromSide = 20}, {fromSide = 12}}}}},
-    {name = "None", draw = {type = "none"}},
+    {name = "No Deployment Zone", draw = {type = "none"}},
 }
 
 DeployZonesIncursion = {
@@ -899,7 +939,7 @@ DeployZonesIncursion = {
     {name = "(I) Tipping Point (HS2)", objectivesID = 218, draw = {
         --[[1]]{type = "stepped", color = "Teal", position = "-x", steps = {{fromSide = 12}, {fromSide = 20}}},
         --[[2]]{type = "stepped", color = "Red", position = "x", steps = {{fromSide = 20}, {fromSide = 12}}}}},
-    {name = "None", draw = {type = "none"}},
+    {name = "No Deployment Zone", draw = {type = "none"}},
 }
 
 DeployZonesCombatPatrol = {
@@ -930,25 +970,52 @@ DeployZonesCombatPatrol = {
         --[[1]]{type = "circleDeployment", color = "Blue", position = "z", fromCenter = 13, radius = 9},
         --[[2]]{type = "circleDeployment", color = "Black", position = "-x", fromCenter = 16, fromCenterZ = 13, radius = 9},
         --[[3]]{type = "circleDeployment", color = "Yellow", position = "x", fromCenter = 16, fromCenterZ = 13, radius = 9}}},
-    {name = "None", draw = {type = "none"}},
+    {name = "No Deployment Zone", draw = {type = "none"}},
 }
 
 DeployZonesColosseum = {
     {name = "King of the Colosseum", objectivesID = 301, draw = {
         --[[1]]{type = "line", color = "Teal", position = "-z", fromSide = 9},
         --[[2]]{type = "line", color = "Red", position = "z", fromSide = 9}}},
-    {name = "None", draw = {type = "none"}},
+    {name = "No Deployment Zone", draw = {type = "none"}},
+}
+
+DeployZonesEdition11 = {
+    {name = "Hammer and Anvil", draw = {
+        --[[1]]{type = "line", color = "Red", position = "x", fromSide = 18},
+        --[[2]]{type = "line", color = "Teal", position = "-x", fromSide = 18}}},
+    {name = "Dawn of War", draw = {
+        --[[1]]{type = "line", color = "Teal", position = "-z", fromSide = 12},
+        --[[2]]{type = "line", color = "Red", position = "z", fromSide = 12}}},
+    {name = "Sweeping Engagement", draw = {
+        --[[1]]{type = "stepped", color = "Teal", position = "-z", steps = {{fromSide = 8}, {fromSide = 14}}},
+        --[[2]]{type = "stepped", color = "Red", position = "z", steps = {{fromSide = 14}, {fromSide = 8}}}}},
+    {name = "Search and Destroy", draw = {
+        --[[1]]{type = "quarter", color = "Teal", position = "-x-z", fromCenter = 9},
+        --[[2]]{type = "quarter", color = "Red", position = "xz", fromCenter = 9},
+        --[[3]]{type = "circle", color = "White", fromCenter = 9}}},
+    {name = "Crucible of Battle", draw = {
+        --[[1]]{type = "triangle", color = "Red", position = "x"},
+        --[[2]]{type = "triangle", color = "Teal", position = "-x"}}},
+    {name = "Tipping Point", draw = {
+        --[[1]]{type = "stepped", color = "Teal", position = "-x", steps = {{fromSide = 12}, {fromSide = 20}}},
+        --[[2]]{type = "stepped", color = "Red", position = "x", steps = {{fromSide = 20}, {fromSide = 12}}}}},
+    {name = "No Deployment Zone", draw = {type = "none"}},
 }
 
 DeployZonesDefault = {
-    {name = "None", draw = {type = "none"}},
+    {name = "No Deployment Zone", draw = {type = "none"}},
+}
+
+DeployZonesBoardingAction = {
+    {name = "No Deployment Zone", draw = {type = "none"}},
 }
 
 DeployZonesData = DeployZonesDefault
 deployMode = "strikeForce"
 
 function isValidDeployMode(mode)
-    return mode == "colosseum" or mode == "combatPatrol" or mode == "incursion" or mode == "strikeForce"
+    return mode == "colosseum" or mode == "combatPatrol" or mode == "incursion" or mode == "strikeForce" or mode == "boardingAction" or mode == "edition11"
 end
 
 function setDeployZonesForSize(preserveSelected)
@@ -963,6 +1030,8 @@ function setDeployZonesForSize(preserveSelected)
         setDeployZonesMode("incursion", preserveSelected)
     elseif sizeId == 4 or sizeId == 5 then
         setDeployZonesMode("strikeForce", preserveSelected)
+    elseif sizeId == 6 then
+        setDeployZonesMode("boardingAction", preserveSelected)
     else
         -- Default to Strike Force here as well
         setDeployZonesMode("strikeForce", preserveSelected)
@@ -975,6 +1044,8 @@ function setDeployZonesMode(mode, preserveSelected)
         combatPatrol = DeployZonesCombatPatrol,
         incursion = DeployZonesIncursion,
         strikeForce = DeployZonesStrikeForce,
+        boardingAction = DeployZonesBoardingAction,
+        edition11 = DeployZonesEdition11,
     }
     deployMode = mode
     DeployZonesData = byMode[mode] or DeployZonesDefault
@@ -991,6 +1062,8 @@ arrowOffset = 7.5
 
 defaultDeployHeight=2
 deployOffset = 0
+deploymentOverlayGUIDs = {}
+nineInchOverlayGUIDs = {}
 
 secondRowOffset= 1.2
 deployHeaderBtn = {
@@ -1000,19 +1073,203 @@ deployHeaderBtn = {
 }
 deployBtn = {
     index = i, label = "", click_function = "none", function_owner = self,
-    position = { - menuX, 5, 1}, rotation = {0, 0, 0}, height = 750, width = 6000,
+    position = { 0, 5, 3}, rotation = {0, 0, 0}, height = 750, width = 6000,
     font_size = 400, color = {1, 1, 1}, font_color = {0, 0, 0}
 }
 deployUpBtn = {
     index = 1, label = "->", click_function = "deployUp", function_owner = self,
-    position = { - menuX + arrowOffset, 5, 1}, rotation = {0, 0, 0}, height = 750, width = 800,
+    position = { arrowOffset, 5, 3}, rotation = {0, 0, 0}, height = 750, width = 800,
     font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
 deployDownBtn = {
     index = 1, label = "<-", click_function = "deployDown", function_owner = self,
-    position = { - menuX - arrowOffset, 5, 1}, rotation = {0, 0, 0}, height = 750, width = 800,
+    position = { -arrowOffset, 5, 3}, rotation = {0, 0, 0}, height = 750, width = 800,
     font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
+
+dispositionControlWorldX = 82.0
+blueDispositionControlWorldZ = 11.1
+redDispositionControlWorldZ = -11.1
+dispositionControlWorldY = 1.0
+
+function normalizeDispositionIndex(index)
+    if index > #dispositionValues then
+        return 1
+    end
+    if index < 1 then
+        return #dispositionValues
+    end
+    return index
+end
+
+dispositionScale = 0.4125
+dispositionArrowOffset = arrowOffset * dispositionScale
+
+function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunction, upFunction, locked)
+    local selectedValue = dispositionValues[selectedIndex] or dispositionValues[1]
+    local center = self.positionToLocal({dispositionControlWorldX, dispositionControlWorldY, centerWorldZ})
+    local cx, cy, cz = center.x, center.y, center.z
+
+    self.createButton({
+        label = selectedValue, click_function = "none", function_owner = self,
+        position = {cx, cy, cz}, rotation = {0, 0, 0},
+        height = 750 * dispositionScale, width = 6000 * dispositionScale, font_size = 400 * dispositionScale,
+        color = {1, 1, 1}, font_color = {0, 0, 0}, tooltip = label,
+    })
+
+    if locked then
+        return
+    end
+
+    self.createButton({
+        label = "->", click_function = upFunction, function_owner = self,
+        position = {cx + dispositionArrowOffset, cy, cz}, rotation = {0, 0, 0},
+        height = 750 * dispositionScale, width = 800 * dispositionScale, font_size = 300 * dispositionScale,
+        color = {0, 0, 0}, font_color = {1, 1, 1}, tooltip = "Next " .. label,
+    })
+    self.createButton({
+        label = "<-", click_function = downFunction, function_owner = self,
+        position = {cx - dispositionArrowOffset, cy, cz}, rotation = {0, 0, 0},
+        height = 750 * dispositionScale, width = 800 * dispositionScale, font_size = 300 * dispositionScale,
+        color = {0, 0, 0}, font_color = {1, 1, 1}, tooltip = "Previous " .. label,
+    })
+end
+
+function writeDispositionMenu(locked)
+    blueDispositionSelected = normalizeDispositionIndex(blueDispositionSelected)
+    redDispositionSelected = normalizeDispositionIndex(redDispositionSelected)
+    createDispositionSelector("Blue Disposition", blueDispositionSelected, blueDispositionControlWorldZ, "blueDispositionDown", "blueDispositionUp", locked)
+    createDispositionSelector("Red Disposition", redDispositionSelected, redDispositionControlWorldZ, "redDispositionDown", "redDispositionUp", locked)
+
+    if not locked then
+        writeGenerateMissionButton()
+    end
+end
+
+function updateDispositionSelection(color, add)
+    if color == "Blue" then
+        blueDispositionSelected = normalizeDispositionIndex(blueDispositionSelected + add)
+    elseif color == "Red" then
+        redDispositionSelected = normalizeDispositionIndex(redDispositionSelected + add)
+    end
+    writeMenus()
+end
+
+function blueDispositionUp()
+    updateDispositionSelection("Blue", 1)
+end
+
+function blueDispositionDown()
+    updateDispositionSelection("Blue", -1)
+end
+
+function redDispositionUp()
+    updateDispositionSelection("Red", 1)
+end
+
+function redDispositionDown()
+    updateDispositionSelection("Red", -1)
+end
+
+generateMissionWorldX = 84.0
+generateMissionWorldY = 1.0
+generateMissionWorldZ = 0.0
+
+missionSlots = {
+    {zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {79.04, 1.01,  5.20}},
+    {zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {79.04, 1.01,  3.15}},
+    {zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {79.04, 1.01, -3.05}},
+    {zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {79.04, 1.01, -5.10}},
+    {zoneVar = "missionCardZone_Deployment_GUID",   deckVar = "deploymentDeck_GUID",   position = {79.04, 1.01,  0.04}},
+    {zoneVar = "missionCardZone_Twist_GUID",        deckVar = "challengerDeck_GUID",   position = {75.11, 1.01,  0.04}},
+}
+
+function writeGenerateMissionButton()
+    local center = self.positionToLocal({generateMissionWorldX, generateMissionWorldY, generateMissionWorldZ})
+    self.createButton({
+        label = "Generate Mission", click_function = "generateMission", function_owner = self,
+        position = {center.x, center.y, center.z}, rotation = {0, 0, 0},
+        height = 600, width = 4000, font_size = 320,
+        color = {0, 0, 0}, font_color = {1, 1, 1},
+        tooltip = "Spawn cards for the current dispositions",
+    })
+end
+
+function isMissionCardObject(obj)
+    return obj and (obj.tag == "Card" or obj.tag == "Deck")
+end
+
+function addMissionSlotObject(objectsByGuid, obj)
+    if isMissionCardObject(obj) then
+        objectsByGuid[obj.getGUID()] = obj
+    end
+end
+
+function getObjectsInMissionSlot(slot, zone)
+    local objectsByGuid = {}
+    if zone then
+        for _, obj in ipairs(zone.getObjects()) do
+            addMissionSlotObject(objectsByGuid, obj)
+        end
+    end
+
+    for _, obj in ipairs(getAllObjects()) do
+        if isMissionCardObject(obj) then
+            local pos = obj.getPosition()
+            if math.abs(pos.x - slot.position[1]) < 1.6 and
+               math.abs(pos.z - slot.position[3]) < 1.2 and
+               pos.y > 0.5 and pos.y < 3.0 then
+                addMissionSlotObject(objectsByGuid, obj)
+            end
+        end
+    end
+
+    local objects = {}
+    for _, obj in pairs(objectsByGuid) do
+        table.insert(objects, obj)
+    end
+    return objects
+end
+
+function generateMission()
+    local decksByVar = {}
+    for _, slot in ipairs(missionSlots) do
+        local zone = getObjectFromGUID(Global.getVar(slot.zoneVar))
+        local deck = decksByVar[slot.deckVar] or getObjectFromGUID(Global.getVar(slot.deckVar))
+        if deck then
+            for _, obj in ipairs(getObjectsInMissionSlot(slot, zone)) do
+                if obj ~= deck then
+                    obj.locked = false
+                    deck = deck.putObject(obj) or deck
+                end
+            end
+            decksByVar[slot.deckVar] = deck
+        end
+    end
+
+    Wait.frames(function()
+        for _, deck in pairs(decksByVar) do
+            deck.shuffle()
+        end
+
+        for _, slot in ipairs(missionSlots) do
+            local deck = decksByVar[slot.deckVar] or getObjectFromGUID(Global.getVar(slot.deckVar))
+            if deck then
+                deck.takeObject({
+                    position = slot.position,
+                    flip = true,
+                    smooth = true,
+                    callback_function = function(card)
+                        Wait.frames(function()
+                            card.locked = true
+                        end)
+                    end
+                })
+            end
+        end
+    end, 2)
+end
+
 function drawDeployZone(zone)
     local drawDataZone = zone.draw
     for i, drawData in ipairs(drawDataZone) do
@@ -1057,18 +1314,12 @@ function drawDeployZone(zone)
 end
 
 function setDeployHeight()
-    local pos = {0,0,0}
-    local found_GUID = {}
-    for i, obj in ipairs(getAllObjects()) do
-        if obj.getGMNotes() == "deployZone" then
-            table.insert(found_GUID, #found_GUID+1, obj.getGUID())
+    for _, guid in ipairs(deploymentOverlayGUIDs) do
+        local found = getObjectFromGUID(guid)
+        if found then
+            local pos = found.getPosition()
+            found.setPosition({pos[1], defaultDeployHeight + deployOffset, pos[3]})
         end
-    end
-    local found= nil
-    for j, guid in ipairs(found_GUID) do
-        found=getObjectFromGUID(guid)
-        pos = found.getPosition()
-        found.setPosition({pos[1], defaultDeployHeight+ deployOffset, pos[3]})
     end
 end
 
@@ -1323,13 +1574,21 @@ function drawCircle(drawData, type)
     local circleObj = originalCircle.clone({ position = {0, -5, 0}})
     if circleObj then
         circleObj.setLock(true)
+        circleObj.interactable = false
         circleObj.setScale({drawData.fromCenter, deployLineHeight, drawData.fromCenter})
         circleObj.setPosition({0, deployLineYPos, 0})
-        circleObj.setColorTint(drawData.color)
+        circleObj.setColorTint(getDeploymentOverlayColor(drawData.color))
         circleObj.setGMNotes(type)
         circleObj.setName("")
         local blockComp = circleObj.getComponent("BoxCollider")
-        blockComp.set("enabled", false)
+        if blockComp then
+            blockComp.set("enabled", false)
+        end
+        local meshComp = circleObj.getComponent("MeshCollider")
+        if meshComp then
+            meshComp.set("enabled", false)
+        end
+        trackOverlayObject(circleObj, type)
     end
 end
 
@@ -1363,13 +1622,21 @@ function drawCircleNotCentered(drawData, type, centerX, centerZ)
     local circleObj = originalCircle.clone({ position = {0, -5, 0}})
     if circleObj then
         circleObj.setLock(true)
+        circleObj.interactable = false
         circleObj.setScale({drawData.fromCenter, deployLineHeight, drawData.fromCenter})
         circleObj.setPosition({centerX, deployLineYPos, centerZ})
-        circleObj.setColorTint(drawData.color)
+        circleObj.setColorTint(getDeploymentOverlayColor(drawData.color))
         circleObj.setGMNotes(type)
         circleObj.setName("")
         local blockComp = circleObj.getComponent("BoxCollider")
-        blockComp.set("enabled", false)
+        if blockComp then
+            blockComp.set("enabled", false)
+        end
+        local meshComp = circleObj.getComponent("MeshCollider")
+        if meshComp then
+            meshComp.set("enabled", false)
+        end
+        trackOverlayObject(circleObj, type)
     end
 end
 
@@ -1445,13 +1712,21 @@ function drawCircleDeployment(drawData)
     local circleObj = originalCircle.clone({ position = {0, -5, 0}})
     if circleObj then
         circleObj.setLock(true)
+        circleObj.interactable = false
         circleObj.setScale({drawData.radius, deployLineHeight, drawData.radius})
         circleObj.setPosition({centerX, deployLineYPos, centerZ})
-        circleObj.setColorTint(drawData.color)
+        circleObj.setColorTint(getDeploymentOverlayColor(drawData.color))
         circleObj.setGMNotes("deployZone")
         circleObj.setName("")
         local blockComp = circleObj.getComponent("BoxCollider")
-        blockComp.set("enabled", false)
+        if blockComp then
+            blockComp.set("enabled", false)
+        end
+        local meshComp = circleObj.getComponent("MeshCollider")
+        if meshComp then
+            meshComp.set("enabled", false)
+        end
+        trackOverlayObject(circleObj, "deployZone")
     end
 end
 
@@ -1472,6 +1747,7 @@ function drawCornerQuarterCircles(radius, type)
         local circleObj = originalCircle.clone()
         if circleObj then
             circleObj.setLock(true)
+            circleObj.interactable = false
             circleObj.setScale({radius, deployLineHeight, radius})
             circleObj.setPosition(location.position)
             circleObj.setRotation(location.rotation)
@@ -1479,7 +1755,14 @@ function drawCornerQuarterCircles(radius, type)
             circleObj.setGMNotes(type)
             circleObj.setName("")
             local blockComp = circleObj.getComponent("BoxCollider")
-            blockComp.set("enabled", false)
+            if blockComp then
+                blockComp.set("enabled", false)
+            end
+            local meshComp = circleObj.getComponent("MeshCollider")
+            if meshComp then
+                meshComp.set("enabled", false)
+            end
+            trackOverlayObject(circleObj, type)
         end
     end
 end
@@ -1630,35 +1913,93 @@ function drawArrow(drawData)
     spawnLine(linePos, lineRot, lineScale, drawData.color, "deployZone")
 end
 
-function spawnLine(linePos, lineRot, lineScale, color, type)
-    local lineObj = spawnObject({ --Chip_10
-        type = "BlockSquare",
-        position = linePos,
-        rotation = lineRot,
-        scale = lineScale,
-    })
-    if lineObj then
-        lineObj.setLock(true)
-        lineObj.setGMNotes(type)
-        lineObj.setColorTint(color)
-        local blockComp = lineObj.getComponent("BoxCollider")
-        blockComp.set("enabled", false)
+function getDeploymentOverlayColor(color)
+    if color == "Teal" then
+        return {r = 0.35, g = 0.65, b = 1}
     end
+
+    return color
 end
 
-function destroyDeployZones()
-    for i, obj in ipairs(getAllObjects()) do
-        if obj.getGMNotes() == "deployZone" or obj.getGMNotes() == "deployZone9" then
+function getOverlayGuidStore(type)
+    if type == "deployZone9" then
+        return nineInchOverlayGUIDs
+    end
+
+    return deploymentOverlayGUIDs
+end
+
+function trackOverlayObject(obj, type)
+    if not obj then
+        return
+    end
+
+    table.insert(getOverlayGuidStore(type), obj.getGUID())
+end
+
+function destroyTrackedOverlayObjects(store)
+    for _, guid in ipairs(store) do
+        local obj = getObjectFromGUID(guid)
+        if obj then
             obj.destroy()
         end
     end
 end
 
-function disableCollidersDeployZones()
-    for i, obj in ipairs(getAllObjects()) do
-        if obj.getGMNotes() == "deployZone" or obj.getGMNotes() == "areaDeny" or obj.getGMNotes() == "quarter" then
-            local blockComp = obj.getComponent("BoxCollider")
+function rebuildOverlayTracking()
+    deploymentOverlayGUIDs = {}
+    nineInchOverlayGUIDs = {}
+
+    for _, obj in ipairs(getAllObjects()) do
+        local note = obj.getGMNotes()
+        if note == "deployZone" then
+            table.insert(deploymentOverlayGUIDs, obj.getGUID())
+        elseif note == "deployZone9" then
+            table.insert(nineInchOverlayGUIDs, obj.getGUID())
+        end
+    end
+end
+
+function spawnLine(linePos, lineRot, lineScale, color, type)
+    local lineObj = spawnObject({
+        type = "BlockSquare",
+        position = linePos,
+        rotation = lineRot,
+        scale = {x = lineScale.x, y = lineScale.y * 0.5625, z = lineScale.z},
+    })
+    if lineObj then
+        lineObj.setLock(true)
+        lineObj.interactable = false
+        lineObj.use_gravity = false
+        lineObj.setGMNotes(type)
+        lineObj.setColorTint(getDeploymentOverlayColor(color))
+        local blockComp = lineObj.getComponent("BoxCollider")
+        if blockComp then
             blockComp.set("enabled", false)
+        end
+        local meshComp = lineObj.getComponent("MeshCollider")
+        if meshComp then
+            meshComp.set("enabled", false)
+        end
+        trackOverlayObject(lineObj, type)
+    end
+end
+
+function destroyDeployZones()
+    destroyTrackedOverlayObjects(deploymentOverlayGUIDs)
+    destroyTrackedOverlayObjects(nineInchOverlayGUIDs)
+    deploymentOverlayGUIDs = {}
+    nineInchOverlayGUIDs = {}
+end
+
+function disableCollidersDeployZones()
+    for _, guid in ipairs(deploymentOverlayGUIDs) do
+        local obj = getObjectFromGUID(guid)
+        if obj then
+            local blockComp = obj.getComponent("BoxCollider")
+            if blockComp then
+                blockComp.set("enabled", false)
+            end
         end
     end
 
@@ -2018,9 +2359,10 @@ defaultObjectivesHeight=1.0
 
 function spawnObjectives()
     destroyAllObjectives()
-    if deploySelected < #DeployZonesData and DeployZonesData[deploySelected].objectivesID then
+    local zone = selectedDeployment()
+    if zone and zone.objectivesID then
         for id, objectiveSet in ipairs(objectivesData) do
-            if objectiveSet.id == DeployZonesData[deploySelected].objectivesID then
+            if objectiveSet.id == zone.objectivesID then
                 local spawned = nil
                 local pos={}
                 local template = getObjectFromGUID(Global.getVar("templateObjective_GUID"))
@@ -2149,105 +2491,6 @@ selectPariahNexusBtn = {
     font_color = {0, 0, 0},
 }
 
-selectedMission = 0
-canChangeMission = true
-missionHeaderBtn = {
-    label = "M I S S I O N   S E L E C T I O N",
-    click_function = "none",
-    function_owner = self,
-    position = {2.20, 5, -17.1},
-    rotation = {0, 0, 0},
-    height = 250,
-    width = 5550,
-    font_size = 200,
-    color = {1, 1, 1},
-    font_color = {0, 0, 0},
-}
-randomiseMissionBtn = {
-    label = "Fully\nRandom",
-    click_function = "randomiseMission",
-    function_owner = self,
-    position = {-3.00, 5, -16.2},
-    rotation = {0, 0, 0},
-    height = 550,
-    width = 750,
-    font_size = 160,
-    color = {1, 1, 1},
-    font_color = {0, 0, 0}
-}
-missionSelectionDownBtn = {
-    label = "<-",
-    click_function = "missionSelectionDown",
-    function_owner = self,
-    position = {-1.30, 5, -16.2},
-    rotation = {0, 0, 0},
-    height = 550,
-    width = 750,
-    font_size = 320,
-    color = {1, 1, 1},
-    font_color = {0, 0, 0}
-}
-missionSelectionDispBtn = {
-    label = "?",
-    click_function = "none",
-    function_owner = self,
-    position = {0.35, 5, -16.2},
-    rotation = {0, 0, 0},
-    height = 550,
-    width = 750,
-    font_size = 320,
-    color = {1, 1, 1},
-    font_color = {0, 0, 0}
-}
-missionSelectionUpBtn = {
-    label = "->",
-    click_function = "missionSelectionUp",
-    function_owner = self,
-    position = {2.00, 5, -16.2},
-    rotation = {0, 0, 0},
-    height = 550,
-    width = 750,
-    font_size = 320,
-    color = {1, 1, 1},
-    font_color = {0, 0, 0}
-}
-randomTournamentMissionBtn = {
-    label = "Random\nGW",
-    click_function = "randomTournamentMission",
-    function_owner = self,
-    position = {3.70, 5, -16.2},
-    rotation = {0, 0, 0},
-    height = 550,
-    width = 750,
-    font_size = 160,
-    color = {1, 1, 0},
-    font_color = {1, 0, 0}
-}
-randomWTCMissionBtn = {
-    label = "Random\nWTC",
-    click_function = "randomWTCMission",
-    function_owner = self,
-    position = {5.35, 5, -16.2},
-    rotation = {0, 0, 0},
-    height = 550,
-    width = 750,
-    font_size = 160,
-    color = {0, 0, 1},
-    font_color = {1, 1, 1}
-}
-randomUKTCMissionBtn = {
-    label = "Random\nUKTC",
-    click_function = "randomUKTCMission",
-    function_owner = self,
-    position = {7, 5, -16.2},
-    rotation = {0, 0, 0},
-    height = 550,
-    width = 750,
-    font_size = 160,
-    color = {0, 0, 0},
-    font_color = {1, 1, 1}
-}
-
 function selectPariahNexus()
     selectMissionPack(MISSION_PACK_PARIAH_NEXUS)
 end
@@ -2265,152 +2508,17 @@ function selectMissionPack(packIndex)
     deploymentDeck = getObjectFromGUID(missionPackData.deploymentDeck_GUID)
     primaryDeck = getObjectFromGUID(missionPackData.primaryDeck_GUID)
 
-    deploymentDeck.setPosition({85, 0.94, 11})
     deploymentDeck.locked = false
     deploymentDeck.tooltip = true
     deploymentDeck.interactable = true
-    primaryDeck.setPosition({85, 0.94, 5.6})
-    primaryDeck.locked = false
-    primaryDeck.tooltip = true
-    primaryDeck.interactable = true
-
-    writeMenus()
-end
-
-function missionSelectionDown()
-    if canChangeMission then
-        selectedMission = selectedMission - 1
-        if selectedMission <= 0 then selectedMission = #missionPackData.tournamentMissions end
-        updateMission()
-    end
-end
-
-function missionSelectionUp()
-    if canChangeMission then
-        selectedMission = selectedMission + 1
-        if selectedMission > #missionPackData.tournamentMissions then selectedMission = 1 end
-        updateMission()
-    end
-end
-
-function randomiseMission()
-    if canChangeMission then
-        selectedMission = 0
-        updateMission()
-    end
-end
-
-function randomTournamentMission()
-    if canChangeMission then
-        selectedMission = math.random(#missionPackData.tournamentMissions)
-        updateMission()
-    end
-end
-
-function randomWTCMission()
-    if canChangeMission then
-        math.randomseed(os.time())
-        local chars = {"B","F","E","O","P","J"}
-        local randomChar = chars[math.random(#chars)]
-        local foundIndex
-        for i, mission in ipairs(missionPackData.tournamentMissions) do
-            if mission and mission.name == randomChar then
-                foundIndex = i
-                break
-            end
-        end
-        if foundIndex then
-            selectedMission = foundIndex
-            updateMission()
-        end
-    end
-end
-
-
-function randomUKTCMission()
-    if canChangeMission then
-        math.randomseed(os.time())
-        local chars = {"H","F","O","N","C","D","R"}
-        local randomChar = chars[math.random(#chars)]
-        local foundIndex
-        for i, mission in ipairs(missionPackData.tournamentMissions) do
-            if mission and mission.name == randomChar then
-                foundIndex = i
-                break
-            end
-        end
-        if foundIndex then
-            selectedMission = foundIndex
-            updateMission()
-        end
-    end
-end
-
-
-
-function randomUKTCMission()
-    if canChangeMission then
-        math.randomseed(os.time())
-        local chars = {"V","W","Y","X","Z"}
-        local randomChar = chars[math.random(#chars)]
-        local foundIndex
-        for i, mission in ipairs(missionPackData.tournamentMissions) do
-            if mission and mission.name == randomChar then
-                foundIndex = i
-                break
-            end
-        end
-        if foundIndex then
-            selectedMission = foundIndex
-            updateMission()
-        end
-    end
-end
-
-
-
-function updateMission()
-    canChangeMission = false
-    Global.call("moveAllFromZoneToDeck", {zone = "deployment", deck = "deployment"})
-    Global.call("moveAllFromZoneToDeck", {zone = "primary", deck = "primary"})
-    if selectedMission == 0 then
-        missionSelectionDispBtn.label = "?"
-        Global.call("moveOneFromDeckToZone", {deck = "deployment", zone = "deployment"})
-        Global.call("moveOneFromDeckToZone", {deck = "primary", zone = "primary"})
+    if legacyPrimaryDeckEnabled then
+        showLegacyPrimaryDeck()
     else
-        mission = missionPackData.tournamentMissions[selectedMission]
-        missionSelectionDispBtn.label = mission.name
-        Global.call("moveOneFromDeckToZone", {deck = "deployment", zone = "deployment", card = mission.deployment})
-        Global.call("moveOneFromDeckToZone", {deck = "primary", zone = "primary", card = mission.primary})
+        destroyLegacyPrimaryDeck()
     end
+
     writeMenus()
-
-    Wait.time(function() canChangeMission = true end, 0.3)
 end
-
-
--- function updateMission()
---     canChangeMission = false
---     Global.call("moveAllFromZoneToDeck", {zone = "deployment", deck = "deployment"})
---     Global.call("moveAllFromZoneToDeck", {zone = "mission", deck = "mission"})
---     Global.call("moveAllFromZoneToDeck", {zone = "primary", deck = "primary"})
-
---     if selectedMission == 0 then
---         missionSelectionDispBtn.label = "?"
---         Global.call("moveOneFromDeckToZone", {deck = "deployment", zone = "deployment"})
---         Global.call("moveOneFromDeckToZone", {deck = "mission", zone = "mission"})
---         Global.call("moveOneFromDeckToZone", {deck = "primary", zone = "primary"})
---     else
---         mission = missionPackData.tournamentMissions[selectedMission]
---         missionSelectionDispBtn.label = mission.name
---         Global.call("moveOneFromDeckToZone", {deck = "deployment", zone = "deployment", card = mission.deployment})
---         Global.call("moveOneFromDeckToZone", {deck = "mission", zone = "mission", card = mission.mission})
---         Global.call("moveOneFromDeckToZone", {deck = "primary", zone = "primary", card = mission.primary})
---     end
---     writeMenus()
-
---     Wait.time(function() canChangeMission = true end, 0.3)
--- end
 
 -- END MISSION MANAGER
 
@@ -2428,17 +2536,17 @@ first = "Red"
 currentTurn = "Red"
 cpEveryTurn = true
 
--- track if player has gained CP so far this battle round
--- true if a CP has been gained, else false
-redCpIncrementTracker = false
-blueCpIncrementTracker = false
-
 phases = {"Command Phase", "Movement Phase", "Shooting Phase", "Charge Phase", "Fight Phase"}
 currentPhase = 1
 startBtn = {
     index = 1, label = "S T A R T  G A M E", click_function = "startGame", function_owner = self,
     position = {0, 5, - 1}, rotation = {0, 0, 0}, height = 750, width = 5000,
     font_size = 500, color = {0, 0.6, 0}, font_color = {1, 1, 1}
+}
+startBtnDisabled = {
+    index = 1, label = "S T A R T  G A M E", click_function = "startGameDisabled", function_owner = self,
+    position = {0, 5, - 1}, rotation = {0, 0, 0}, height = 750, width = 5000,
+    font_size = 500, color = {0.35, 0.35, 0.35}, font_color = {0.85, 0.85, 0.85}
 }
 firstPlayerBtn = {
     index = 1, label = redFirstLbl, click_function = "togglePlyr", function_owner = self,
@@ -2450,16 +2558,6 @@ nextPhaseBtn = {
     index = 1, label = nextPhaseLbl, tooltip = "Left click - Next phase\nRight click - Skip to next turn", click_function = "nextPhase", function_owner = self,
     position = {0, 5, 0}, rotation = {0, 0, 0}, height = 1500, width = 5000,
     font_size = 600, color = {1, 0, 0}, font_color = {1, 1, 1}
-}
-IncrementRedCpBtn = {
-    index = 1, label = "Gain a CP", tooltip = "Increment Red CP counter\nWill only increment once per Round", click_function = "incrementRedCp", function_owner = self,
-    position = {-46.2, 5, -3.75}, rotation = {0, 0, 0}, height = 1650, width = 3000,
-    font_size = 600, color = {1, 0, 0}, font_color = {1, 1, 1}
-}
-IncrementBlueCpBtn = {
-    index = 1, label = "Gain a CP", tooltip = "Increment Blue CP counter\nWill only increment once per Round", click_function = "incrementBlueCp", function_owner = self,
-    position = {46.2, 5, -3.75}, rotation = {0, 0, 0}, height = 1650, width = 3000,
-    font_size = 600, color = {0, 0, 1}, font_color = {1, 1, 1}
 }
 position = {menuX, 5, menuZ}
 notePadTxt = ""
@@ -2485,37 +2583,29 @@ function writeStartMenu()
     self.createButton(firstPlayerBtn)
 end
 
-function writeDeployMenu()
+function writeDeployPickerMenu()
     if not deploySelected or not DeployZonesData[deploySelected] then
         deploySelected = #DeployZonesData
     end
     deployBtn.label = DeployZonesData[deploySelected].name
-    self.createButton(deployHeaderBtn)
     self.createButton(deployBtn)
     self.createButton(deployUpBtn)
     self.createButton(deployDownBtn)
+end
+
+function writeDeployMenu()
+    writeDeployPickerMenu()
+    writeDispositionMenu()
     -- self.createButton(nineFromDeployBtn)
 
     if gameMode == "game" then
         if not packSelected then
-            -- change to skip mission selecting
             selectPariahNexus()
-        else
-            self.createButton(missionHeaderBtn)
-            self.createButton(randomiseMissionBtn)
-            self.createButton(randomTournamentMissionBtn)
-            self.createButton(randomWTCMissionBtn)
-            self.createButton(randomUKTCMissionBtn)
-            self.createButton(missionSelectionDownBtn)
-            self.createButton(missionSelectionUpBtn)
-            self.createButton(missionSelectionDispBtn)
         end
     end
 end
 
 function writeIngameMenu()
-    self.createButton(IncrementRedCpBtn)
-    self.createButton(IncrementBlueCpBtn)
     destroyNineInchDeployLines()
 
     nextPhaseBtn.color = currentTurn
@@ -2524,6 +2614,8 @@ function writeIngameMenu()
         nextPhaseBtn.label = phases[currentPhase].."\nPASS TURN"
     end
     self.createButton(nextPhaseBtn)
+    writeDeployPickerMenu()
+    writeDispositionMenu(true)
 end
 
 function getContainedItems(container)
@@ -2573,29 +2665,70 @@ function getRoundNumber()
     return tonumber(round)
 end
 
+function getMissionManagerForColor(color)
+    local guidVar = (color == "Red") and "redMissionManager_GUID" or "blueMissionManager_GUID"
+    return getObjectFromGUID(Global.getVar(guidVar))
+end
+
+function selectedPlayersForSecondarySetup()
+    local colors = {}
+    if Player.Red and Player.Red.seated then
+        table.insert(colors, "Red")
+    end
+    if Player.Blue and Player.Blue.seated then
+        table.insert(colors, "Blue")
+    end
+    return colors
+end
+
+function prepareSecondariesForStart()
+    local colors = selectedPlayersForSecondarySetup()
+    local summaries = {}
+
+    for _, color in ipairs(colors) do
+        local manager = getMissionManagerForColor(color)
+        if manager and not manager.call("validateSecondaries") then
+            return false
+        end
+    end
+
+    Global.setVar("LOCKED_IN_SECONDARIES", 0)
+    for _, color in ipairs(colors) do
+        local manager = getMissionManagerForColor(color)
+        if manager then
+            local summaryJson = manager.call("lockInSecondaries")
+            if not summaryJson then
+                return false
+            end
+            local summary = JSON.decode(summaryJson)
+            table.insert(summaries, summary)
+        end
+    end
+
+    return summaries
+end
+
+function formatSecondarySummary(summary)
+    local cardText = ""
+    if summary.cards and #summary.cards > 0 then
+        cardText = " (" .. table.concat(summary.cards, ", ") .. ")"
+    end
+
+    return summary.color .. " chose " .. summary.mode .. " Secondary Objectives" .. cardText .. "."
+end
+
+function announceSecondarySelections(summaries)
+    for _, summary in ipairs(summaries) do
+        local message = formatSecondarySummary(summary)
+        broadcastToAll(message, summary.color)
+    end
+end
+
 function startGame(obj, player, alt)
     if alt then
         simulation = true
     end
     if singlesMode ~= "singles" then
-        local count = Global.getVar("LOCKED_IN_SECONDARIES")
-        forceStartCounter = forceStartCounter or 0
-
-        if count ~= 2 then
-            if forceStartCounter < 2 then
-            forceStartCounter = forceStartCounter + 1
-            local remaining = 3 - forceStartCounter
-            if remaining > 0 then
-                broadcastToAll("Please Lock in your Secondaries. Click "..remaining.." more times to force start the game", {1,0,0})
-                return
-            else
-                broadcastToAll("Force starting the game!", {1,0,0})
-            end
-            end
-        else
-            forceStartCounter = 0
-        end
-
         -- Count the number of players (if needed later)
         local playerList = Player.getPlayers()
         local numberOfPlayers = 0
@@ -2612,6 +2745,12 @@ function startGame(obj, player, alt)
         end
     end
 
+    local secondarySummaries = prepareSecondariesForStart()
+    if not secondarySummaries then
+        broadcastToAll("Cannot start: one or more players need to select Tactical or exactly two Fixed secondaries.", {1, 0.75, 0})
+        return
+    end
+
     Global.call("recordPlayers")
     inGame = true
 
@@ -2619,13 +2758,17 @@ function startGame(obj, player, alt)
     scoresheet.call("startGame")
 
     startCustomTurns()
-    destroyDeployZones()
     broadcastToAll(phases[currentPhase], "Yellow")
+    announceSecondarySelections(secondarySummaries)
     resetActivationTokens()
     Notes.setNotes("")
     writeMenus()
     updateGameStateHUD()
     simulation = false
+end
+
+function startGameDisabled()
+    broadcastToAll("Choose game mode first", {1, 0.75, 0})
 end
 
 
@@ -2638,14 +2781,12 @@ function resetActivationTokens()
 end
 
 function newRoundStarted()
-    redCpIncrementTracker = false
-    blueCpIncrementTracker = false
     updateGameStateHUD()
 end
 
 function updateCpHUD()
-    Global.UI.setAttribute("CPWatch1", "text", "CP: " .. blueCpCounter.Counter.getValue())
-    Global.UI.setAttribute("CPWatch2", "text", "CP: " .. redCpCounter.Counter.getValue())
+    Global.call("setHudAttribute", {id = "CPWatch1", attr = "text", value = "CP: " .. blueCpCounter.Counter.getValue()})
+    Global.call("setHudAttribute", {id = "CPWatch2", attr = "text", value = "CP: " .. redCpCounter.Counter.getValue()})
 end
 
 function gameNotStartedGuard()
@@ -2654,14 +2795,48 @@ function gameNotStartedGuard()
     return true
 end
 
-function hudNextPhase()
+local function getHudPlayerColor(player)
+    if type(player) == "string" then
+        return player
+    end
+    if type(player) == "table" and player.color then
+        return player.color
+    end
+    return nil
+end
+
+function hudNextPhase(player)
     if gameNotStartedGuard() then return end
+    local playerColor = getHudPlayerColor(player)
+    if playerColor and playerColor ~= currentTurn and singlesMode ~= "singles" then return end
     nextPhase(self, currentTurn, false)
 end
 
-function hudPassTurn()
+function hudPassTurn(player)
     if gameNotStartedGuard() then return end
-    passTurn(self, currentTurn, false)
+    local playerColor = getHudPlayerColor(player)
+    passTurn(self, playerColor or currentTurn, false)
+end
+
+local function hudCanControlTurn(player, targetTurn)
+    if gameNotStartedGuard() then return end
+    local playerColor = getHudPlayerColor(player)
+    if singlesMode ~= "singles" and playerColor and playerColor ~= targetTurn then return false end
+    if currentTurn ~= targetTurn then return end
+    return true
+end
+
+local function hudAdvanceIfActive(player, targetTurn)
+    if not hudCanControlTurn(player, targetTurn) then return end
+    nextPhase(self, currentTurn, false)
+end
+
+function hudTurnWatch1(player)
+    hudAdvanceIfActive(player, "Blue")
+end
+
+function hudTurnWatch2(player)
+    hudAdvanceIfActive(player, "Red")
 end
 
 local _phaseIds     = { "Ph1", "Ph2", "Ph3", "Ph4", "Ph5" }
@@ -2669,21 +2844,32 @@ local _phaseToId    = { [1]="Ph1", [2]="Ph2", [3]="Ph3", [4]="Ph4", [5]="Ph5" }
 
 function updatePhaseHUD()
     for _, id in ipairs(_phaseIds) do
-        Global.UI.setAttribute(id.."1", "textColor", "#FFFFFF30")
-        Global.UI.setAttribute(id.."2", "textColor", "#FFFFFF30")
+        Global.call("setHudAttribute", {id = id.."1", attr = "textColor", value = "#FFFFFF30"})
+        Global.call("setHudAttribute", {id = id.."2", attr = "textColor", value = "#FFFFFF30"})
     end
     local active = _phaseToId[currentPhase]
     if active then
-        Global.UI.setAttribute(active.."1", "textColor", "White")
-        Global.UI.setAttribute(active.."2", "textColor", "White")
+        local activeRow = (currentTurn == "Blue") and "1" or "2"
+        Global.call("setHudAttribute", {id = active..activeRow, attr = "textColor", value = "White"})
     end
 end
 
-function hudPhaseCmd() jumpToPhase(1) end
-function hudPhaseMov() jumpToPhase(2) end
-function hudPhaseSht() jumpToPhase(3) end
-function hudPhaseChr() jumpToPhase(4) end
-function hudPhaseFgt() jumpToPhase(5) end
+local function hudJumpToPhaseForTurn(player, targetTurn, idx)
+    if not hudCanControlTurn(player, targetTurn) then return end
+    jumpToPhase(idx)
+end
+
+function hudPhaseCmdBlue(player) hudJumpToPhaseForTurn(player, "Blue", 1) end
+function hudPhaseMovBlue(player) hudJumpToPhaseForTurn(player, "Blue", 2) end
+function hudPhaseShtBlue(player) hudJumpToPhaseForTurn(player, "Blue", 3) end
+function hudPhaseChrBlue(player) hudJumpToPhaseForTurn(player, "Blue", 4) end
+function hudPhaseFgtBlue(player) hudJumpToPhaseForTurn(player, "Blue", 5) end
+
+function hudPhaseCmdRed(player) hudJumpToPhaseForTurn(player, "Red", 1) end
+function hudPhaseMovRed(player) hudJumpToPhaseForTurn(player, "Red", 2) end
+function hudPhaseShtRed(player) hudJumpToPhaseForTurn(player, "Red", 3) end
+function hudPhaseChrRed(player) hudJumpToPhaseForTurn(player, "Red", 4) end
+function hudPhaseFgtRed(player) hudJumpToPhaseForTurn(player, "Red", 5) end
 
 function jumpToPhase(idx)
     if gameNotStartedGuard() then return end
@@ -2696,45 +2882,23 @@ end
 function updateGameStateHUD()
     local roundObj = getObjectFromGUID("ee92cf")
     local round = roundObj and roundObj.Counter.getValue() or 0
-    Global.UI.setValue("RoundWatch", tostring(round))
+    Global.call("setHudValue", {id = "RoundWatch", value = tostring(round)})
     updatePhaseHUD()
     if inGame then
         local blueActive = currentTurn ~= "Red"
-        Global.UI.setAttribute("ChsStpPanel1", "color", blueActive and "#2472D4F0" or "#1A5FC850")
-        Global.UI.setAttribute("ChsStpPanel2", "color", blueActive and "#B5202050" or "#CC2828F0")
-        Global.UI.setAttribute("ChsStpPanel1", "outline", blueActive and "#FFFFFF" or "#5B8FDECC")
-        Global.UI.setAttribute("ChsStpPanel1", "outlineSize", blueActive and "4" or "2")
-        Global.UI.setAttribute("ChsStpPanel2", "outline", blueActive and "#D46060CC" or "#FFFFFF")
-        Global.UI.setAttribute("ChsStpPanel2", "outlineSize", blueActive and "2" or "4")
+        Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "color", value = blueActive and "#2E86FFF8" or "#0B255C28"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "color", value = blueActive and "#4A101028" or "#FF3737F8"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "outline", value = blueActive and "#FFFFFF" or "#5B8FDECC"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "outlineSize", value = blueActive and "6" or "1"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "outline", value = blueActive and "#D46060CC" or "#FFFFFF"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "outlineSize", value = blueActive and "1" or "6"})
     else
-        Global.UI.setAttribute("ChsStpPanel1", "color", "#1A5FC8E6")
-        Global.UI.setAttribute("ChsStpPanel2", "color", "#B52020E6")
-        Global.UI.setAttribute("ChsStpPanel1", "outline", "#5B8FDECC")
-        Global.UI.setAttribute("ChsStpPanel1", "outlineSize", "2")
-        Global.UI.setAttribute("ChsStpPanel2", "outline", "#D46060CC")
-        Global.UI.setAttribute("ChsStpPanel2", "outlineSize", "2")
-    end
-end
-
-function incrementRedCp(params)
-    if not inGame then return end
-    if not redCpIncrementTracker then
-        redCpIncrementTracker = true
-        redCpCounter.Counter.increment()
-        updateCpHUD()
-    else
-        broadcastToAll("Red has already gained a CP this battle round!", "Yellow")
-    end
-end
-
-function incrementBlueCp(params)
-    if not inGame then return end
-    if not blueCpIncrementTracker then
-        blueCpIncrementTracker = true
-        blueCpCounter.Counter.increment()
-        updateCpHUD()
-    else
-        broadcastToAll("Blue has already gained a CP this battle round!", "Yellow")
+        Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "color", value = "#1A5FC8E6"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "color", value = "#B52020E6"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "outline", value = "#5B8FDECC"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "outlineSize", value = "2"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "outline", value = "#D46060CC"})
+        Global.call("setHudAttribute", {id = "ChsStpPanel2", attr = "outlineSize", value = "2"})
     end
 end
 
@@ -2766,17 +2930,12 @@ function passTurn(obj, player_color_click, alt_click)
     end
 
     currentPhase = 1
-    local orangePCounter = getObjectFromGUID(Global.getVar("orangePCounter_GUID"))
-    local purplePCounter = getObjectFromGUID(Global.getVar("purpleCPCounter_GUID"))
-
     if currentTurn == "Red" then
         currentTurn = "Blue"
         blueTurnCounter.call("increaseSelf")
         blueCpCounter.Counter.increment()
-        orangePCounter.Counter.increment() -- Increment Orange CP
         if cpEveryTurn then
             redCpCounter.Counter.increment()
-            purplePCounter.Counter.increment() -- Increment Purple CP
             Wait.time(function() broadcastToAll("Both CPs incremented!", "White") end, 0.3)
         else
             Wait.time(function() broadcastToAll("Blue CPs incremented!", "Blue") end, 0.3)
@@ -2785,10 +2944,8 @@ function passTurn(obj, player_color_click, alt_click)
         currentTurn = "Red"
         redTurnCounter.call("increaseSelf")
         redCpCounter.Counter.increment()
-        purplePCounter.Counter.increment() -- Increment Purple CP
         if cpEveryTurn then
             blueCpCounter.Counter.increment()
-            orangePCounter.Counter.increment() -- Increment Orange CP
             Wait.time(function() broadcastToAll("Both CPs incremented!", "White") end, 0.3)
         else
             Wait.time(function() broadcastToAll("Red CPs incremented!", "Red") end, 0.3)
@@ -2840,12 +2997,12 @@ function showHideIngameDeployment()
     local state = Global.getVar("interactiveButtonDeploymentZones")
     if state == 1 then -- place
         Global.setVar("interactiveButtonDeploymentZones", 2)
-        if deploySelected < #DeployZonesData then
+        if selectedDeploymentSpawnsOverlay() then
             drawDeployZone(DeployZonesData[deploySelected])
         end
     else -- recall
         Global.setVar("interactiveButtonDeploymentZones", 1)
-        if deploySelected < #DeployZonesData then
+        if selectedDeploymentSpawnsOverlay() then
             destroyDeployZones()
         end
     end
@@ -2854,23 +3011,13 @@ end
 
 -- 9" secondary deployment lines (toggle + helpers)
 function destroyNineInchDeployLines()
-    for i, obj in ipairs(getAllObjects()) do
-        if obj.getGMNotes() == "deployZone9" then
-            obj.destroy()
-        end
-    end
+    destroyTrackedOverlayObjects(nineInchOverlayGUIDs)
+    nineInchOverlayGUIDs = {}
 end
 
 function toggleNineFromDeployment()
     -- Remove if present, else add at 9"
-    local present = false
-    for i, obj in ipairs(getAllObjects()) do
-        if obj.getGMNotes() == "deployZone9" then
-            present = true
-            break
-        end
-    end
-    if present then
+    if #nineInchOverlayGUIDs > 0 then
         destroyNineInchDeployLines()
         return
     end
@@ -2878,8 +3025,9 @@ function toggleNineFromDeployment()
 end
 
 function addNineInchDeployLines(distance)
-    for i, obj in ipairs(getAllObjects()) do
-        if obj.getGMNotes() == "deployZone" then
+    for _, guid in ipairs(deploymentOverlayGUIDs) do
+        local obj = getObjectFromGUID(guid)
+        if obj then
             local sc = obj.getScale()
             -- Only process thin straight lines, skip circles and other shapes
             if sc.z and sc.z <= 0.05 then
@@ -2916,7 +3064,3 @@ end
 
 function none()
 end
-
-
-
-

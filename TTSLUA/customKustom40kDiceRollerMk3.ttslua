@@ -1,139 +1,14 @@
 -- FTC-GUID: 17ca2b,927ca1
 --Based off: https://steamcommunity.com/sharedfiles/filedetails/?id=726800282
 --Link for this mod: https://steamcommunity.com/sharedfiles/filedetails/?id=959360907
+-- Randomness note:
+-- This roller uses a vendored xoshiro128++ pseudorandom number generator
+-- instead of Lua 5.2 math.random. TTS is based on Lua 5.2, whose RNG maps
+-- to the host C rand() implementation, so we use an explicit 32-bit PRNG to
+-- get known behavior, better auditability, and saved/restored RNG state.
 lastRolls={}
 scaleBtn=3
 rolledFaces = {}
--- Globals to track rolls and phases
-currentPhase = "none" -- Tracks the current phase: "none", "hit", "wound", "special"
-previousRoll = {}      -- Stores dice rolled in the last phase
-currentRoll = {}       -- Stores dice rolled in the current phase
-specialRollDice = {}   -- Tracks dice moved for special rolls (e.g., Lethal/Sustained Hits)
-
--- Track stats
-totalHits = 0          -- Total successful hits
-missedHits = 0         -- Total missed hits
-totalWounds = 0        -- Total successful wounds
-
-function trackRoll(dice)
-    currentRoll = {}
-    for _, die in ipairs(dice) do
-        table.insert(currentRoll, die.getValue())
-    end
-end
-
-function inferRollPhase(dice)
-    if #previousRoll == 0 then
-        -- If no previous roll, assume this is the Hit Roll
-        currentPhase = "hit"
-        trackRoll(dice)
-        calculateHits(dice)
-    elseif currentPhase == "hit" then
-        -- If we were in the Hit Roll phase, the next roll is likely Wound Rolls
-        currentPhase = "wound"
-        calculateWounds(dice)
-    elseif currentPhase == "special" then
-        -- Handle special rolls like lethal or sustained hits
-        calculateSpecialRoll(dice)
-    end
-
-    -- Save the current roll as the previous for the next phase
-    previousRoll = currentRoll
-end
-
-function calculateHits(dice)
-    totalHits = 0
-    missedHits = 0
-    for _, die in ipairs(dice) do
-        if die.getValue() >= 4 then -- Assume 4+ is a hit
-            totalHits = totalHits + 1
-        else
-            missedHits = missedHits + 1
-        end
-    end
-    printToAll("Hit Roll: " .. totalHits .. " hits, " .. missedHits .. " misses.", "Green")
-end
-
-function calculateWounds(dice)
-    totalWounds = 0
-    for _, die in ipairs(dice) do
-        if die.getValue() >= 3 then -- Assume 3+ is a wound
-            totalWounds = totalWounds + 1
-        end
-    end
-    printToAll("Wound Roll: " .. totalWounds .. " wounds.", "Red")
-end
-
-function calculateSpecialRoll(dice)
-    local lethalHits = 0
-    for _, die in ipairs(dice) do
-        if die.getValue() == 6 then
-            lethalHits = lethalHits + 1
-        end
-    end
-    printToAll("Special Roll: " .. lethalHits .. " lethal hits.", "Blue")
-end
-
--- (2) Implement showStats() function to calculate min, max, average, etc.
--- Replace your existing showStats() with this:
-function showStats()
-    local totalRolls = #rolledFaces
-    if totalRolls == 0 then
-        printToAll("No dice have been rolled yet!", "Yellow")
-        return
-    end
-
-    local sumOfAll = 0
-    local totalBadRolls = 0
-    local currentBadStreak = 0
-    local maxBadStreak = 0
-
-    -- Loop through every face rolled in chronological order
-    for i, face in ipairs(rolledFaces) do
-        sumOfAll = sumOfAll + face
-
-        -- Check if it’s a “bad” roll (i.e. face <= 3)
-        if face <= 3 then
-            totalBadRolls = totalBadRolls + 1
-            currentBadStreak = currentBadStreak + 1
-            if currentBadStreak > maxBadStreak then
-                maxBadStreak = currentBadStreak
-            end
-        else
-            currentBadStreak = 0
-        end
-    end
-
-    local average = sumOfAll / totalRolls
-    local percentBad = (totalBadRolls / totalRolls) * 100
-
-    local msg = string.format(
-        "Dice Stats:\n" ..
-        "- Total rolled: %d\n" ..
-        "- Average roll: %.2f\n" ..
-        "- Bad rolls (3 or lower): %d (%.1f%%)\n" ..
-        "- Longest consecutive bad-roll streak: %d",
-        totalRolls, average, totalBadRolls, percentBad, maxBadStreak
-    )
-    printToAll(msg, "White")
-end
-
-function printChances()
-    local i=0
-    for k,v in ipairs(resultsTotal) do
-        i = i + resultsTotal[k]
-    end
-    if i==0 then
-        printToAll("NO LAST ROLLS", "Yellow")
-    else
-        printToAll("CHANCES: "..i)
-        for k,v in ipairs(resultsTotal) do
-            if(resultsTotal[k]>0) then
-                printToAll(k..": "..tonumber(string.format("%.1f", (100*resultsTotal[k]/i))).."% - "..resultsTotal[k])
-            end
-        end
-    end
-end
 
 function printLast()
 	printResults(1)
@@ -163,13 +38,148 @@ sortedKeys = {}
 resultsTable = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 resultsTotal = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 seedCounter = 0
+rngState = nil
+
+local UINT32 = 4294967296
+local UINT16 = 65536
+local bit = bit32
+
+local function mul32(a, b)
+    local aLo = a % UINT16
+    local aHi = math.floor(a / UINT16)
+    local bLo = b % UINT16
+    local bHi = math.floor(b / UINT16)
+    local low = aLo * bLo
+    local mid = (aHi * bLo) + (aLo * bHi)
+
+    return (low + ((mid % UINT16) * UINT16)) % UINT32
+end
+
+local function mix32(x)
+    x = bit.bxor(x, bit.rshift(x, 16))
+    x = mul32(x, 0x85ebca6b)
+    x = bit.bxor(x, bit.rshift(x, 13))
+    x = mul32(x, 0xc2b2ae35)
+    x = bit.bxor(x, bit.rshift(x, 16))
+    return x
+end
+
+local function hashGuid(guid)
+    local h = 0x811c9dc5
+    for i = 1, #guid do
+        h = bit.bxor(h, string.byte(guid, i))
+        h = mul32(h, 0x01000193)
+    end
+    return h
+end
+
+local function createSeedWords()
+    local guidHash = hashGuid(self.getGUID())
+    local baseSeed = os.time() % UINT32
+    local clockSeed = math.floor((os.clock() * 1000000) % UINT32)
+    local boxSeed = thisBoxIsBlue and 0x6a09e667 or 0xbb67ae85
+    local material = {
+        bit.bxor(baseSeed, guidHash),
+        bit.bxor(clockSeed, boxSeed),
+        bit.bxor(guidHash, 0x9e3779b9),
+        bit.bxor(baseSeed, clockSeed, 0x243f6a88),
+    }
+    local state = {}
+
+    for i, value in ipairs(material) do
+        state[i] = mix32((value + ((i - 1) * 0x9e3779b9)) % UINT32)
+    end
+
+    if state[1] == 0 and state[2] == 0 and state[3] == 0 and state[4] == 0 then
+        state[4] = 1
+    end
+
+    return state
+end
+
+local function setRngState(state)
+    if type(state) ~= "table" or #state < 4 then
+        rngState = createSeedWords()
+        return
+    end
+
+    local s1 = tonumber(state[1])
+    local s2 = tonumber(state[2])
+    local s3 = tonumber(state[3])
+    local s4 = tonumber(state[4])
+    if not s1 or not s2 or not s3 or not s4 then
+        rngState = createSeedWords()
+        return
+    end
+
+    rngState = {
+        s1 % UINT32,
+        s2 % UINT32,
+        s3 % UINT32,
+        s4 % UINT32,
+    }
+
+    if rngState[1] == 0 and rngState[2] == 0 and rngState[3] == 0 and rngState[4] == 0 then
+        rngState[4] = 1
+    end
+end
+
+local function nextRngU32()
+    if rngState == nil then
+        setRngState(createSeedWords())
+    end
+
+    local s0 = rngState[1]
+    local s1 = rngState[2]
+    local s2 = rngState[3]
+    local s3 = rngState[4]
+
+    local result = (bit.lrotate((s0 + s3) % UINT32, 7) + s0) % UINT32
+    local t = bit.lshift(s1, 9)
+
+    s2 = bit.bxor(s2, s0)
+    s3 = bit.bxor(s3, s1)
+    s1 = bit.bxor(s1, s2)
+    s0 = bit.bxor(s0, s3)
+    s2 = bit.bxor(s2, t)
+    s3 = bit.lrotate(s3, 11)
+
+    rngState[1] = s0
+    rngState[2] = s1
+    rngState[3] = s2
+    rngState[4] = s3
+
+    return result
+end
+
+local function nextRngBounded(bound)
+    if bound <= 0 then
+        return 0
+    end
+
+    local threshold = (UINT32 - bound) % bound
+    while true do
+        local value = nextRngU32()
+        if value >= threshold then
+            return value % bound
+        end
+    end
+end
+
+local function rollFace(faces)
+    return nextRngBounded(faces) + 1
+end
 
 thisBoxIsBlue = (self.guid == Global.getVar("blueCustomDiceRoller_GUID")) and true or false
-seed = os.time() + (thisBoxIsBlue and 1 or 0)
-math.randomseed(seed)
 
 orderedOnNextRoll = false
 groupSizeOnNextRoll = 1
+
+-- Coalesces takeDiceOut across many dice arrivals (e.g. "Roll all dice" with
+-- 50+ dice). Each arrival resets the timer; the drain fires once,
+-- takeDiceOutDelay seconds after the last die enters the container.
+local takeDiceOutPendingId = nil
+local takeDiceOutDelay = 0.1
 
 objectToPlaceDiceOnGUID = thisBoxIsBlue and Global.getVar("blueCustomDiceMat_GUID") or Global.getVar("redCustomDiceMat_GUID")
 objectToPlaceDiceOn = getObjectFromGUID(objectToPlaceDiceOnGUID)
@@ -198,10 +208,17 @@ function onLoad(save_state)
     if self.getDescription() == '' then
 		setDefaultState()
 	end
+
+    local saved = save_state ~= "" and JSON.decode(save_state) or nil
+    if saved and saved.rngState then
+        setRngState(saved.rngState)
+    else
+        setRngState(createSeedWords())
+    end
 end
 
 function onSave()
-	return self.getDescription()
+	return JSON.encode({rngState = rngState})
 end
 
 function onDropped(player_color)
@@ -239,7 +256,13 @@ function onObjectEnterContainer(container, obj)
         if obj.tag == "Dice" then
             collision_info = {collision_object = obj}
             onCollisionEnter(collision_info)
-            Wait.time(|| takeDiceOut(), 0.1)
+            if takeDiceOutPendingId then
+                Wait.stop(takeDiceOutPendingId)
+            end
+            takeDiceOutPendingId = Wait.time(function()
+                takeDiceOutPendingId = nil
+                takeDiceOut()
+            end, takeDiceOutDelay)
         else
             local pos = self.getPosition()
             local f = self.getTransformRight()
@@ -293,7 +316,7 @@ function takeDiceOut(tab)
 		if v.name =="BCB-D3" then
 			faces=3
 		end
-		r = math.random(faces)
+		r = rollFace(faces)
 		diceGuids[v.guid] = r
 	end
 
@@ -448,60 +471,6 @@ end
     end
 end
 
-
-
-
-function printLast5Innovative(pointless, player_color)
-    if #lastRolls == 0 then
-        printToAll("NO LAST ROLLS", {1,1,0})
-        return
-    end
-
-    local faceNames = {"One", "Two", "Three", "Four", "Five", "Six"}
-    local faceIndex = {Ones=1, Twos=2, Threes=3, Fours=4, Fives=5, Sixes=6}
-
-    printToAll("–––––––––––––––––––––––––––––––––––––––––", {1,1,1})
-
-    for i = #lastRolls, 1, -1 do
-        local rollData = lastRolls[i]
-        local rollColor = rollData.color or {1,1,1}
-
-        local tally = {0,0,0,0,0,0}
-        for numStr, faceStr in rollData.msg:gmatch("(%d+) (%a+)") do
-            local idx = faceIndex[faceStr]
-            if idx then
-                tally[idx] = tally[idx] + tonumber(numStr)
-            end
-        end
-
-        local totalDice = 0
-        for face = 1, 6 do
-            totalDice = totalDice + tally[face]
-        end
-
-        -- Decide the prefix
-        local prefix
-        if i == #lastRolls then
-            prefix = "Latest =>"
-        elseif i == 1 then
-            prefix = "Oldest =>"
-        else
-            prefix = string.format("Roll #%d =>", i)
-        end
-
-        -- Build a single-line string
-        local rollLine = prefix
-        for face = 1, 6 do
-            rollLine = rollLine .. string.format(" %s:%d", faceNames[face], tally[face])
-        end
-        rollLine = rollLine .. string.format(" [Total:%d]", totalDice)
-
-        printToAll(rollLine, rollColor)
-    end
-end
-
-
-
 function printResults(n)
     if #lastRolls == 0 then
         printToAll("NO LAST ROLLS\n", "Yellow")
@@ -587,7 +556,7 @@ function printLast5Innovative(pointless, player_color)
         return
     end
 
-    local faceNames = {"One", "Two", "Three", "Four", "Five", "Six"}
+    local faceNames = {"⚀", "⚁", "⚂", "⚃", "⚄", "⚅"}
     local faceIndex = {Ones=1, Twos=2, Threes=3, Fours=4, Fives=5, Sixes=6}
 
     printToAll("–––––––––––––––––––––––––––––––––––––––––", {1,1,1})
@@ -611,18 +580,19 @@ function printLast5Innovative(pointless, player_color)
 
         local prefix
         if i == #lastRolls then
-            prefix = "Latest =>"
+            prefix = "Latest   =>"
         elseif i == 1 then
-            prefix = "Oldest =>"
+            prefix = "Oldest  =>"
         else
             prefix = string.format("Roll #%d =>", i)
         end
 
         local rollLine = prefix
+        local faceParts = {}
         for face = 1, 6 do
-            rollLine = rollLine .. string.format(" %s:%d", faceNames[face], tally[face])
+            table.insert(faceParts, string.format("%d x %s", tally[face], faceNames[face]))
         end
-        rollLine = rollLine .. string.format(" [Total:%d]", totalDice)
+        rollLine = rollLine .. " " .. table.concat(faceParts, ", ") .. string.format(" [Total:%d]", totalDice)
 
         printToAll(rollLine, rollColor)
     end

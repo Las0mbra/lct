@@ -26,6 +26,21 @@ REGEX_LUA_GUID       = re.compile(r'([0-9a-f]{6})')
 REGEX_JSON_GUID      = re.compile(r'"GUID": "(.*)"')
 REGEX_JSON_LUASCRIPT = re.compile(r'"LuaScript": ')
 REGEX_JSON_XMLUI     = re.compile(r'"XmlUI":\s+"')
+# Matches a full `"LuaScript": "...<value>..."` field on a single JSON line,
+# tolerating any value content (including escaped quotes/backslashes) so we can
+# replace it cleanly even if the source JSON already had content baked in.
+REGEX_JSON_LUASCRIPT_FIELD = re.compile(r'("LuaScript":\s*)"(?:\\.|[^"\\])*"')
+
+
+def validate_json_text(json_text: str, label: str):
+    try:
+        json.loads(json_text)
+    except json.JSONDecodeError as exc:
+        print(
+            f"ERROR: {label} is not valid JSON: "
+            f"{exc.msg} at line {exc.lineno}, column {exc.colno}."
+        )
+        sys.exit(1)
 
 
 def get_tts_saves_path() -> Path:
@@ -62,11 +77,22 @@ def inject_xml(json_lines: list, xml_file: Path):
 
 
 def inject_lua_into_line(json_lines: list, line_idx: int, lua_file: Path):
-    """Replace the empty LuaScript value on a JSON line with the content of a lua file."""
+    """Replace the LuaScript value on a JSON line with the content of a lua file.
+
+    Works whether the existing field is empty (`""`) or already populated — the
+    full `"LuaScript": "..."` field is matched and rewritten in place, so a
+    re-export of the save into ftc_base.json can't double-inject content.
+    """
     lua_content = json.dumps(lua_file.read_text(encoding="utf-8"))
     line = json_lines[line_idx]
-    # Strip trailing `"",` (3 chars) and append the encoded content + ","
-    json_lines[line_idx] = line[:-3] + lua_content + ","
+    new_line, count = REGEX_JSON_LUASCRIPT_FIELD.subn(
+        lambda m: m.group(1) + lua_content, line, count=1
+    )
+    if count != 1:
+        raise RuntimeError(
+            f"Could not locate `\"LuaScript\": \"...\"` field on line {line_idx + 1}: {line!r}"
+        )
+    json_lines[line_idx] = new_line
     print(f"  Writing to line {line_idx + 1}.", end=" ")
 
 
@@ -89,6 +115,11 @@ def main():
     if not json_file.exists():
         print(f"ERROR: {json_file} not found. Ending compilation.")
         sys.exit(1)
+
+    print(f"Validating {json_file.name}... ", end="")
+    json_text = json_file.read_text(encoding="utf-8")
+    validate_json_text(json_text, json_file.name)
+    print("Done.")
 
     if args.test:
         version = "test"
@@ -118,7 +149,7 @@ def main():
 
     # --- Load JSON as lines and index GUID / LuaScript positions ---
     print(f"\nLoading {json_file.name}... ", end="")
-    json_lines = json_file.read_text(encoding="utf-8").splitlines()
+    json_lines = json_text.splitlines()
 
     json_guid_entries  = []  # [(line_idx, guid_value), ...]
     json_lua_line_idxs = []  # [line_idx, ...]
@@ -177,7 +208,9 @@ def main():
     # --- Write output ---
     out_name = f"{JSON_NAME}_{version}_compiled.json" if version else f"{JSON_NAME}_compiled.json"
     out_file = SCRIPT_DIR / out_name
-    out_file.write_text("\n".join(json_lines), encoding="utf-8")
+    compiled_json = "\n".join(json_lines)
+    validate_json_text(compiled_json, out_name)
+    out_file.write_text(compiled_json, encoding="utf-8")
     print(f"\nOutput: {out_file}")
 
     # --- Copy to TTS saves if --test ---

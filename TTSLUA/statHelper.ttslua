@@ -141,35 +141,9 @@ function onCountClicked(player)
   end
 end
 
-function onShowRangeEditEnd(player, value, id)
-  cleanCurrentVectorLines()
-  if setCurrentSelection(player) then
-    drawFiguresRange(currentSelection, tonumber(value))
-  end
-end
-
-function onCleanClicked(player)
-  if (#player.getSelectedObjects() != 0) then
-    currentSelection = player.getSelectedObjects()
-  end
-  cleanCurrentVectorLines()
-end
-
 function cleanUpWeaponsData()
   drawWeaponData({})
   spawnedDiceCount = 0
-end
-
-function drawFiguresRange(figures, range)
-  for i,v in ipairs(figures) do
-    drawFigureRange(range, v)
-  end
-end
-
-function cleanCurrentVectorLines()
-  for i,v in ipairs(currentSelection) do
-    v.setVectorLines({})
-  end
 end
 
 function drawWeaponData(figures)
@@ -447,48 +421,6 @@ function getWeaponColor(name)
 end
 
 function onRangeClicked(player, _, id)
-end
-
-function drawRangeForWeapon(name, figures)
-  local figuresData = createFiguresData(figures)
-  for i,v in ipairs(figuresData) do
-    local weapon = getFigureWeaponByName(v, name)
-    if weapon != nil then
-      drawFigureRange(weapon.range, figures[i])
-    end
-  end
-end
-
-function getFigureWeaponByName(figureData, weaponName)
-  for i,v in ipairs(figureData.ranged) do
-    if v.name == weaponName then
-      return v
-    end
-  end
-end
-
-function drawFigureRange(range, figure)
-  range = range / figure.getScale()[1]
-  local width = (figure.getBounds().size[1] / 2) / figure.getScale()[1]
-  figure.setVectorLines({getCircleVectorPoints(range + width, 30, 0.5, 0.1 / figure.getScale()[1])})
-end
-
-function getCircleVectorPoints(radius, steps, y, thickness)
-    local points = {}
-    local angle = 360 / steps
-
-    for i = 0,steps do
-        table.insert(points, {
-            math.cos(math.rad(angle * i)) * radius,
-            y,
-            math.sin(math.rad(angle * i)) * radius
-        })
-    end
-
-    return {
-      points = points,
-      thickness = thickness
-    }
 end
 
 function getRangeText(range)

@@ -21,7 +21,7 @@ end
 
 function updateHUD()
     _lastValue = self.Counter.getValue()
-    Global.UI.setAttribute(_watchId, "text", "Turn " .. _lastValue)
+    Global.call("setHudAttribute", {id = _watchId, attr = "text", value = "Turn " .. _lastValue})
 end
 
 function increaseSelf()
@@ -41,7 +41,6 @@ function gameUpdate()
     else
         if self.Counter.getValue() > gameTurn.Counter.getValue() then
             gameTurn.Counter.setValue(self.Counter.getValue())
-            gameTurn.call("checkGameEnd")
             startMenu.call("newRoundStarted")
         end
     end

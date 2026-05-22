@@ -12,8 +12,8 @@ function onLoad()
     local guid    = self.getGUID()
     local plusId  = isP1 and "CPPlus1"  or "CPPlus2"
     local minusId = isP1 and "CPMinus1" or "CPMinus2"
-    Global.UI.setAttribute(plusId,  "onClick", guid .. "/increment")
-    Global.UI.setAttribute(minusId, "onClick", guid .. "/decrement")
+    Global.call("setHudAttribute", {id = plusId, attr = "onClick", value = guid .. "/increment"})
+    Global.call("setHudAttribute", {id = minusId, attr = "onClick", value = guid .. "/decrement"})
     Wait.time(checkValue, 0.5, -1)
 end
 
@@ -21,7 +21,7 @@ function checkValue()
     local current = self.Counter.getValue()
     if current ~= _lastValue then
         _lastValue = current
-        Global.UI.setAttribute(_watchId, "text", "CP: " .. current)
+        Global.call("setHudAttribute", {id = _watchId, attr = "text", value = "CP: " .. current})
     end
 end
 

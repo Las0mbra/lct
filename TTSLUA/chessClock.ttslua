@@ -58,8 +58,8 @@ holdColor_1 ="" holdColor_2 ="" holdColor=""
 holdPlayer_1="" holdPlayer_2=""
 
 data = {
-	start_1  = 0      ,start_2     = 0,
-	seconds_1= 0      ,seconds_2   = 0,
+	start_1  = 5400   ,start_2     = 5400,
+	seconds_1= 5400   ,seconds_2   = 5400,
 	bonus_1  = 0      ,bonus_2     = 0,
 	delay_1  = 0      ,delay_2     = 0,
 	selDigit = 6      ,delayed     = 0,
@@ -176,21 +176,21 @@ end
 	        -- Blue clock already running → pause and turn panel Beige
 	        if data.state==1 or data.state==3 or data.state==9 then
 	            Pause()
-	            Global.UI.setAttribute("ClockSubPanel1", "outline", CLOCK_PILL_PASSIVE_OUTLINE)
-	            Global.UI.setAttribute("ClockSubPanel1", "outlineSize", CLOCK_PILL_PASSIVE_SIZE)
-	            Global.UI.setAttribute("ClockSubPanel1", "color", CLOCK_PILL_PASSIVE_BG)
-	            Global.UI.setAttribute("ChsStpWatch1", "color", CLOCK_PILL_PASSIVE_TEXT)
+	            Global.call("setHudAttribute", {id = "ClockSubPanel1", attr = "outline", value = CLOCK_PILL_PASSIVE_OUTLINE})
+	            Global.call("setHudAttribute", {id = "ClockSubPanel1", attr = "outlineSize", value = CLOCK_PILL_PASSIVE_SIZE})
+	            Global.call("setHudAttribute", {id = "ClockSubPanel1", attr = "color", value = CLOCK_PILL_PASSIVE_BG})
+	            Global.call("setHudAttribute", {id = "ChsStpWatch1", attr = "color", value = CLOCK_PILL_PASSIVE_TEXT})
 	        elseif data.state==11 or data.state==1 or data.state==3 or data.state==9 or data.state==2 or data.state==4 or data.state==10 then
 	            -- Start player 1 (Blue) clock
 	            self.setColorTint(pColors.pColor1)
-	            Global.UI.setAttribute("ClockSubPanel1", "outline", CLOCK_PILL_ACTIVE_OUTLINE)
-	            Global.UI.setAttribute("ClockSubPanel1", "outlineSize", CLOCK_PILL_ACTIVE_OUTLINE_SIZE)
-	            Global.UI.setAttribute("ClockSubPanel1", "color", CLOCK_PILL_ACTIVE_BG)
-	            Global.UI.setAttribute("ClockSubPanel2", "outline", CLOCK_PILL_PASSIVE_OUTLINE)
-	            Global.UI.setAttribute("ClockSubPanel2", "outlineSize", CLOCK_PILL_PASSIVE_SIZE)
-	            Global.UI.setAttribute("ClockSubPanel2", "color", CLOCK_PILL_PASSIVE_BG)
-	            Global.UI.setAttribute("ChsStpWatch1", "color", CLOCK_PILL_ACTIVE_TEXT)
-	            Global.UI.setAttribute("ChsStpWatch2", "color", CLOCK_PILL_PASSIVE_TEXT)
+	            Global.call("setHudAttribute", {id = "ClockSubPanel1", attr = "outline", value = CLOCK_PILL_ACTIVE_OUTLINE})
+	            Global.call("setHudAttribute", {id = "ClockSubPanel1", attr = "outlineSize", value = CLOCK_PILL_ACTIVE_OUTLINE_SIZE})
+	            Global.call("setHudAttribute", {id = "ClockSubPanel1", attr = "color", value = CLOCK_PILL_ACTIVE_BG})
+	            Global.call("setHudAttribute", {id = "ClockSubPanel2", attr = "outline", value = CLOCK_PILL_PASSIVE_OUTLINE})
+	            Global.call("setHudAttribute", {id = "ClockSubPanel2", attr = "outlineSize", value = CLOCK_PILL_PASSIVE_SIZE})
+	            Global.call("setHudAttribute", {id = "ClockSubPanel2", attr = "color", value = CLOCK_PILL_PASSIVE_BG})
+	            Global.call("setHudAttribute", {id = "ChsStpWatch1", attr = "color", value = CLOCK_PILL_ACTIVE_TEXT})
+	            Global.call("setHudAttribute", {id = "ChsStpWatch2", attr = "color", value = CLOCK_PILL_PASSIVE_TEXT})
 	            Resume()
 	            if data.start_1==0 then
 	                data.seconds_1 = data.seconds_1-data.bonus_1
@@ -255,21 +255,21 @@ end
 	        -- Red clock already running → pause and turn panel Beige
 	        if data.state==2 or data.state==4 or data.state==10 then
 	            Pause()
-	            Global.UI.setAttribute("ClockSubPanel2", "outline", CLOCK_PILL_PASSIVE_OUTLINE)
-	            Global.UI.setAttribute("ClockSubPanel2", "outlineSize", CLOCK_PILL_PASSIVE_SIZE)
-	            Global.UI.setAttribute("ClockSubPanel2", "color", CLOCK_PILL_PASSIVE_BG)
-	            Global.UI.setAttribute("ChsStpWatch2", "color", CLOCK_PILL_PASSIVE_TEXT)
+	            Global.call("setHudAttribute", {id = "ClockSubPanel2", attr = "outline", value = CLOCK_PILL_PASSIVE_OUTLINE})
+	            Global.call("setHudAttribute", {id = "ClockSubPanel2", attr = "outlineSize", value = CLOCK_PILL_PASSIVE_SIZE})
+	            Global.call("setHudAttribute", {id = "ClockSubPanel2", attr = "color", value = CLOCK_PILL_PASSIVE_BG})
+	            Global.call("setHudAttribute", {id = "ChsStpWatch2", attr = "color", value = CLOCK_PILL_PASSIVE_TEXT})
 	        elseif data.state==11 or data.state==1 or data.state==3 or data.state==9 or data.state==2 or data.state==4 or data.state==10 then
 	            -- Start player 2 (Red) clock
 	            self.setColorTint(pColors.pColor2)
-	            Global.UI.setAttribute("ClockSubPanel2", "outline", CLOCK_PILL_ACTIVE_OUTLINE)
-	            Global.UI.setAttribute("ClockSubPanel2", "outlineSize", CLOCK_PILL_ACTIVE_OUTLINE_SIZE)
-	            Global.UI.setAttribute("ClockSubPanel2", "color", CLOCK_PILL_ACTIVE_BG)
-	            Global.UI.setAttribute("ClockSubPanel1", "outline", CLOCK_PILL_PASSIVE_OUTLINE)
-	            Global.UI.setAttribute("ClockSubPanel1", "outlineSize", CLOCK_PILL_PASSIVE_SIZE)
-	            Global.UI.setAttribute("ClockSubPanel1", "color", CLOCK_PILL_PASSIVE_BG)
-	            Global.UI.setAttribute("ChsStpWatch2", "color", CLOCK_PILL_ACTIVE_TEXT)
-	            Global.UI.setAttribute("ChsStpWatch1", "color", CLOCK_PILL_PASSIVE_TEXT)
+	            Global.call("setHudAttribute", {id = "ClockSubPanel2", attr = "outline", value = CLOCK_PILL_ACTIVE_OUTLINE})
+	            Global.call("setHudAttribute", {id = "ClockSubPanel2", attr = "outlineSize", value = CLOCK_PILL_ACTIVE_OUTLINE_SIZE})
+	            Global.call("setHudAttribute", {id = "ClockSubPanel2", attr = "color", value = CLOCK_PILL_ACTIVE_BG})
+	            Global.call("setHudAttribute", {id = "ClockSubPanel1", attr = "outline", value = CLOCK_PILL_PASSIVE_OUTLINE})
+	            Global.call("setHudAttribute", {id = "ClockSubPanel1", attr = "outlineSize", value = CLOCK_PILL_PASSIVE_SIZE})
+	            Global.call("setHudAttribute", {id = "ClockSubPanel1", attr = "color", value = CLOCK_PILL_PASSIVE_BG})
+	            Global.call("setHudAttribute", {id = "ChsStpWatch2", attr = "color", value = CLOCK_PILL_ACTIVE_TEXT})
+	            Global.call("setHudAttribute", {id = "ChsStpWatch1", attr = "color", value = CLOCK_PILL_PASSIVE_TEXT})
 	            Resume()
 	            if data.start_2==0 then
 	                data.seconds_2 = data.seconds_2-data.bonus_2
@@ -896,12 +896,12 @@ end
 
 function ensureChessStopwatchUI()
 	local guid = self.getGUID()
-	Global.UI.setAttribute("ChsStpBtn1",   "onClick", guid .. "/Click_1")
-	Global.UI.setAttribute("ChsStpBtn2",   "onClick", guid .. "/Click_2")
-	Global.UI.setAttribute("ChsStpMinus1", "onClick", guid .. "/SubTime1")
-	Global.UI.setAttribute("ChsStpPlus1",  "onClick", guid .. "/AddTime1")
-	Global.UI.setAttribute("ChsStpMinus2", "onClick", guid .. "/SubTime2")
-	Global.UI.setAttribute("ChsStpPlus2",  "onClick", guid .. "/AddTime2")
+	Global.call("setHudAttribute", {id = "ChsStpBtn1", attr = "onClick", value = guid .. "/Click_1"})
+	Global.call("setHudAttribute", {id = "ChsStpBtn2", attr = "onClick", value = guid .. "/Click_2"})
+	Global.call("setHudAttribute", {id = "ChsStpMinus1", attr = "onClick", value = guid .. "/SubTime1"})
+	Global.call("setHudAttribute", {id = "ChsStpPlus1", attr = "onClick", value = guid .. "/AddTime1"})
+	Global.call("setHudAttribute", {id = "ChsStpMinus2", attr = "onClick", value = guid .. "/SubTime2"})
+	Global.call("setHudAttribute", {id = "ChsStpPlus2", attr = "onClick", value = guid .. "/AddTime2"})
 end
 
 -- Changes the color of the UI buttons based on the set colors
@@ -932,7 +932,7 @@ function SubTime2() data.seconds_2 = math.max(0, data.seconds_2 - 300); DisplayC
 -- Calculates numbers for UI clock
 function DisplayUIClock(which) -- which 1,2
 	ensureChessStopwatchUI()
-	local clockString = string.format("%02d:%02d", math.floor(hours), math.floor(minutes))
+	local clockString = string.format("%02d:%02d:%02d", math.floor(hours), math.floor(minutes), math.floor(secs))
 
-	Global.UI.setAttribute("ChsStpWatch"..which, "text", clockString)
+	Global.call("setHudAttribute", {id = "ChsStpWatch"..which, attr = "text", value = clockString})
 end
