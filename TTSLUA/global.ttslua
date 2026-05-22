@@ -1346,10 +1346,11 @@ function onObjectLeaveScriptingZone(zone, object)
     end
 end
 
+secondaryDrawBusy = {Red = false, Blue = false}
+
 function drawSecondaryToFirstOpenSlot(params)
-    local slot = params.getFirstOpenSlot()
-    if not slot then
-        broadcastToColor(params.fullMessage, params.color, "Yellow")
+    if secondaryDrawBusy[params.color] then
+        broadcastToColor("Hold on - previous draw still in progress.", params.color, "Yellow")
         return
     end
 
@@ -1364,25 +1365,51 @@ function drawSecondaryToFirstOpenSlot(params)
         return
     end
 
-    deckObj.shuffle()
-    deckObj.takeObject({
-        position = slot.zone.getPosition(),
-        rotation = {x = 0, y = 270, z = 180},
-        flip = true,
-        smooth = true,
-        callback_function = function(card)
-            Wait.frames(function()
-                card.locked = true
-                params.refreshNames()
-            end)
+    -- Collect up to 2 open slots upfront. Smooth takeObject means the first card
+    -- hasn't physically landed when the second draw fires, so re-querying for
+    -- "first open" would return the same slot twice.
+    local openSlots = {}
+    for _, slot in ipairs(getSecondaryCardZones(params.zoneGuids)) do
+        if #slot.zone.getObjects() == 0 then
+            openSlots[#openSlots + 1] = slot
+            if #openSlots >= 2 then break end
         end
-    })
+    end
+
+    if #openSlots == 0 then
+        broadcastToColor(params.fullMessage, params.color, "Yellow")
+        return
+    end
+
+    secondaryDrawBusy[params.color] = true
+    deckObj.shuffle()
+
+    for i, slot in ipairs(openSlots) do
+        Wait.time(function()
+            deckObj.takeObject({
+                position = slot.zone.getPosition(),
+                rotation = {x = 0, y = 270, z = 180},
+                flip = true,
+                smooth = true,
+                callback_function = function(card)
+                    Wait.frames(function()
+                        card.locked = true
+                        params.refreshNames()
+                    end)
+                end
+            })
+        end, (i - 1) * 0.4)
+    end
+
+    Wait.time(function()
+        secondaryDrawBusy[params.color] = false
+    end, 1.5)
 end
 
 function drawBlueSecondaryToFirstOpenSlot()
     drawSecondaryToFirstOpenSlot({
         color = "Blue",
-        getFirstOpenSlot = getFirstOpenBlueSecondaryCardZone,
+        zoneGuids = blueSecondaryCardZone_GUIDs,
         deckGuidKey = "blueSecondaryDeck_GUID",
         refreshNames = refreshBlueSecondaryNames,
         fullMessage = "Blue already has 8 active secondary cards.",
@@ -1393,7 +1420,7 @@ end
 function drawRedSecondaryToFirstOpenSlot()
     drawSecondaryToFirstOpenSlot({
         color = "Red",
-        getFirstOpenSlot = getFirstOpenRedSecondaryCardZone,
+        zoneGuids = redSecondaryCardZone_GUIDs,
         deckGuidKey = "redSecondaryDeck_GUID",
         refreshNames = refreshRedSecondaryNames,
         fullMessage = "Red already has 8 active secondary cards.",
