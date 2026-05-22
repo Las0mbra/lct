@@ -1384,21 +1384,19 @@ function drawSecondaryToFirstOpenSlot(params)
     secondaryDrawBusy[params.color] = true
     deckObj.shuffle()
 
-    for i, slot in ipairs(openSlots) do
-        Wait.time(function()
-            deckObj.takeObject({
-                position = slot.zone.getPosition(),
-                rotation = {x = 0, y = 270, z = 180},
-                flip = true,
-                smooth = true,
-                callback_function = function(card)
-                    Wait.frames(function()
-                        card.locked = true
-                        params.refreshNames()
-                    end)
-                end
-            })
-        end, (i - 1) * 0.4)
+    for _, slot in ipairs(openSlots) do
+        deckObj.takeObject({
+            position = slot.zone.getPosition(),
+            rotation = {x = 0, y = 270, z = 180},
+            flip = true,
+            smooth = true,
+            callback_function = function(card)
+                Wait.frames(function()
+                    card.locked = true
+                    params.refreshNames()
+                end)
+            end
+        })
     end
 
     Wait.time(function()
