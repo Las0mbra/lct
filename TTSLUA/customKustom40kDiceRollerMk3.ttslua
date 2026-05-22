@@ -175,6 +175,12 @@ thisBoxIsBlue = (self.guid == Global.getVar("blueCustomDiceRoller_GUID")) and tr
 orderedOnNextRoll = false
 groupSizeOnNextRoll = 1
 
+-- Coalesces takeDiceOut across many dice arrivals (e.g. "Roll all dice" with
+-- 50+ dice). Each arrival resets the timer; the drain fires once,
+-- takeDiceOutDelay seconds after the last die enters the container.
+local takeDiceOutPendingId = nil
+local takeDiceOutDelay = 0.1
+
 objectToPlaceDiceOnGUID = thisBoxIsBlue and Global.getVar("blueCustomDiceMat_GUID") or Global.getVar("redCustomDiceMat_GUID")
 objectToPlaceDiceOn = getObjectFromGUID(objectToPlaceDiceOnGUID)
 if objectToPlaceDiceOn == nil then
@@ -250,7 +256,13 @@ function onObjectEnterContainer(container, obj)
         if obj.tag == "Dice" then
             collision_info = {collision_object = obj}
             onCollisionEnter(collision_info)
-            Wait.time(|| takeDiceOut(), 0.1)
+            if takeDiceOutPendingId then
+                Wait.stop(takeDiceOutPendingId)
+            end
+            takeDiceOutPendingId = Wait.time(function()
+                takeDiceOutPendingId = nil
+                takeDiceOut()
+            end, takeDiceOutDelay)
         else
             local pos = self.getPosition()
             local f = self.getTransformRight()
