@@ -63,6 +63,8 @@ function onLoad(saved_data)
         end
     else
         deploySelected = #DeployZonesData
+        hideStartupMapCards()
+        hideForceDispositionToken()
     end
     rebuildOverlayTracking()
 
@@ -93,9 +95,6 @@ function onLoad(saved_data)
         ttsDebugLog("gameTurnCounter not found during onLoad")
     end
     writeMenus()
-    if not inGame then
-        makeAnnouncement()
-    end
 end
 
 function onSave()
@@ -652,6 +651,7 @@ function confirmForLegacy()
     deployMode = nil
     legacyPrimaryDeckEnabled = true
     destroyStartupMapCards()
+    destroyForceDispositionToken()
     showLegacyPrimaryDeck()
     confirmSizeGame()
 end
@@ -660,6 +660,7 @@ function loadGameWithoutMapContainers()
     destroyMapContainers()
     destroyLegacyPrimaryDeck()
     placeStartupMapCards()
+    placeForceDispositionToken()
     confirmSizeMat()
 end
 
@@ -699,14 +700,60 @@ function destroyLegacyPrimaryDeck()
     destroyObjectByGUID(legacyPrimaryDeck_GUID)
 end
 
+STARTUP_MAP_CARDS = {
+    {guid = "3f7065", pos = {15.5210524, 0.9751034, 6.65913773}, rot = {0, 180, 0}},
+    {guid = "d356f7", pos = {19.5138283, 0.9751034, 1.26623619}, rot = {0, 180, 0}},
+    {guid = "781fba", pos = {19.6172543, 0.9751034, 6.70149326}, rot = {0, 180, 0}},
+    {guid = "738f14", pos = {23.7306767, 0.9751034, 1.25096226}, rot = {0, 180, 0}},
+    {guid = "1612ad", pos = {23.7471962, 0.9751034, 6.678107},   rot = {0, 180, 0}},
+}
+
+function hideStartupMapCards()
+    for _, card in ipairs(STARTUP_MAP_CARDS) do
+        local obj = getObjectFromGUID(card.guid)
+        if obj then
+            obj.setPosition({card.pos[1], -5.0, card.pos[3]})
+            obj.setLock(true)
+            obj.tooltip = false
+            obj.interactable = false
+        end
+    end
+end
+
 function placeStartupMapCards()
-    placeObjectAtPosition("41f60e", {20.3099422, 0.9751034, -0.8521245}, {0, 270, 0})
-    placeObjectAtPosition("86bf6f", {20.3099422, 0.9751034, 4.510522}, {0, 270, 0})
+    for _, card in ipairs(STARTUP_MAP_CARDS) do
+        placeObjectAtPosition(card.guid, card.pos, card.rot)
+    end
 end
 
 function destroyStartupMapCards()
-    destroyObjectByGUID("41f60e")
-    destroyObjectByGUID("86bf6f")
+    for _, card in ipairs(STARTUP_MAP_CARDS) do
+        destroyObjectByGUID(card.guid)
+    end
+end
+
+-- "Force dispositions" reference token. Shown only for the 1v1/Solo (11th ed.)
+-- modes; hidden while the size menu is up and destroyed for 10th Edition.
+forceDispositionToken_GUID = "1f38a1"
+forceDispositionTokenPosition = {-15.7271786, 1.06149852, -0.134739235}
+forceDispositionTokenRotation = {0, 270.020081, 0}
+
+function placeForceDispositionToken()
+    placeObjectAtPosition(forceDispositionToken_GUID, forceDispositionTokenPosition, forceDispositionTokenRotation)
+end
+
+function hideForceDispositionToken()
+    local obj = getObjectFromGUID(forceDispositionToken_GUID)
+    if obj then
+        obj.setPosition({forceDispositionTokenPosition[1], -5.0, forceDispositionTokenPosition[3]})
+        obj.setLock(true)
+        obj.tooltip = false
+        obj.interactable = false
+    end
+end
+
+function destroyForceDispositionToken()
+    destroyObjectByGUID(forceDispositionToken_GUID)
 end
 
 function placeObjectAtPosition(guid, position, rotation)
@@ -1175,13 +1222,17 @@ generateMissionWorldX = 84.0
 generateMissionWorldY = 1.0
 generateMissionWorldZ = 0.0
 
+-- "primary" slots are filled deterministically from the disposition matchup
+-- (player + index decide which mission card lands here). "deployment" and
+-- "twist" keep the original random shuffle-and-draw. Red is the +Z pair,
+-- blue the -Z pair (see the deck/zone notes in global.ttslua).
 missionSlots = {
-    {zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {79.04, 1.01,  5.20}},
-    {zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {79.04, 1.01,  3.15}},
-    {zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {79.04, 1.01, -3.05}},
-    {zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {79.04, 1.01, -5.10}},
-    {zoneVar = "missionCardZone_Deployment_GUID",   deckVar = "deploymentDeck_GUID",   position = {79.04, 1.01,  0.04}},
-    {zoneVar = "missionCardZone_Twist_GUID",        deckVar = "challengerDeck_GUID",   position = {75.11, 1.01,  0.04}},
+    {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {79.04, 1.01,  5.20}},
+    {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {79.04, 1.01,  3.15}},
+    {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {79.04, 1.01, -3.05}},
+    {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {79.04, 1.01, -5.10}},
+    {role = "deployment",                          zoneVar = "missionCardZone_Deployment_GUID",   deckVar = "deploymentDeck_GUID",   position = {79.04, 1.01,  0.04}},
+    {role = "twist",                               zoneVar = "missionCardZone_Twist_GUID",        deckVar = "challengerDeck_GUID",   position = {75.11, 1.01,  0.04}},
 }
 
 function writeGenerateMissionButton()
@@ -1191,7 +1242,7 @@ function writeGenerateMissionButton()
         position = {center.x, center.y, center.z}, rotation = {0, 0, 0},
         height = 600, width = 4000, font_size = 320,
         color = {0, 0, 0}, font_color = {1, 1, 1},
-        tooltip = "Spawn cards for the current dispositions",
+        tooltip = "Deal each player's primary mission for the current dispositions",
     })
 end
 
@@ -1231,7 +1282,116 @@ function getObjectsInMissionSlot(slot, zone)
     return objects
 end
 
+-- lower-cased, trimmed copy for tolerant name comparisons. Curly single quotes
+-- (U+2018/U+2019) are folded to a straight ' so "Destroyer's Wrath" matches
+-- regardless of which apostrophe the card or the table uses.
+function normalizeMissionName(s)
+    s = tostring(s or "")
+    s = s:gsub("\226\128\152", "'"):gsub("\226\128\153", "'")
+    return (s:lower():gsub("^%s+", ""):gsub("%s+$", ""))
+end
+
+-- "Death Trap 2" -> "Death Trap"; a card with no trailing 1/2 is unchanged.
+function missionBaseName(nick)
+    return (tostring(nick or ""):gsub("%s+[12]%s*$", ""))
+end
+
+-- Resolve a mission's two card slots inside a deck, by card nickname.
+-- Returns { {guid, name, source}, {guid, name, source} } for slot 1 and 2.
+-- source is "mission" (real card found, placed by its own 1/2 suffix), "blank"
+-- ("Blank Primary 1/2" padding an empty slot), or "missing" (no card at all).
+function resolvePrimaryCardGuids(deck, missionName)
+    local found = {}           -- found[1], found[2] = {guid, name}
+    local blank = {}           -- blank[1], blank[2] = {guid, name}
+    local target = normalizeMissionName(missionName)
+    if deck and deck.getObjects then
+        for _, entry in ipairs(deck.getObjects()) do
+            local nick = entry.nickname or entry.name or ""
+            local low = normalizeMissionName(nick)
+            local num = tonumber(string.match(nick, "(%d)%s*$"))
+            if string.find(low, "^blank primary") then
+                if num == 1 or num == 2 then blank[num] = {guid = entry.guid, name = nick} end
+            elseif target ~= "" and normalizeMissionName(missionBaseName(nick)) == target then
+                local idx = (num == 2) and 2 or 1
+                if not found[idx] then
+                    found[idx] = {guid = entry.guid, name = nick}
+                elseif not found[3 - idx] then
+                    found[3 - idx] = {guid = entry.guid, name = nick}
+                end
+            end
+        end
+    end
+    local result = {}
+    for i = 1, 2 do
+        if found[i] then
+            result[i] = {guid = found[i].guid, name = found[i].name, source = "mission"}
+        elseif blank[i] then
+            result[i] = {guid = blank[i].guid, name = blank[i].name, source = "blank"}
+        else
+            result[i] = {guid = nil, name = nil, source = "missing"}
+        end
+    end
+    return result
+end
+
+-- One-line, chat-friendly summary of what a mission resolved to.
+function describePrimaryResolution(missionName, slots)
+    local parts = {}
+    for i = 1, 2 do
+        local s = slots[i]
+        if s.source == "mission" then
+            table.insert(parts, "[" .. (s.name or "?") .. "]")
+        elseif s.source == "blank" then
+            table.insert(parts, "[" .. (s.name or "blank") .. " (blank)]")
+        else
+            table.insert(parts, "[none]")
+        end
+    end
+    return missionName .. " -> " .. table.concat(parts, " ")
+end
+
+-- Look up the configured matchup for the current dispositions.
+-- Key convention: "<redIndex>_<blueIndex>" (see global.ttslua missionMatchups).
+function getCurrentMatchup()
+    local matchups = Global.getTable("missionMatchups") or {}
+    local redIdx = normalizeDispositionIndex(redDispositionSelected)
+    local blueIdx = normalizeDispositionIndex(blueDispositionSelected)
+    local key = redIdx .. "_" .. blueIdx
+    return matchups[key], key
+end
+
+-- Deal one card per frame so repeated takeObject calls on the same deck don't
+-- collide within a single frame. guid == nil means "draw the top card".
+function dealMissionCards(placements, i)
+    if i > #placements then return end
+    local p = placements[i]
+    if p.deck then
+        local params = {
+            position = p.position,
+            flip = true,
+            smooth = true,
+            callback_function = function(card)
+                Wait.frames(function()
+                    if card then card.locked = true end
+                end, 1)
+            end,
+        }
+        if p.guid then params.guid = p.guid end
+        pcall(function() p.deck.takeObject(params) end)
+    end
+    Wait.frames(function() dealMissionCards(placements, i + 1) end, 1)
+end
+
 function generateMission()
+    local placeholder = Global.getVar("PLACEHOLDER_MISSION") or "Blank Primary"
+    local matchup, key = getCurrentMatchup()
+    if not matchup then
+        broadcastToAll("No mission matchup configured for " .. key .. " - dealing blanks.", {1, 0.6, 0.2})
+    end
+    local redMission = (matchup and matchup.red) or placeholder
+    local blueMission = (matchup and matchup.blue) or placeholder
+
+    -- 1. Recall any cards in the slots back into their source decks.
     local decksByVar = {}
     for _, slot in ipairs(missionSlots) do
         local zone = getObjectFromGUID(Global.getVar(slot.zoneVar))
@@ -1248,25 +1408,37 @@ function generateMission()
     end
 
     Wait.frames(function()
-        for _, deck in pairs(decksByVar) do
-            deck.shuffle()
+        -- 2. Resolve each player's primary mission cards by name.
+        local redDeck = decksByVar["redPrimaryDeck_GUID"] or getObjectFromGUID(Global.getVar("redPrimaryDeck_GUID"))
+        local blueDeck = decksByVar["bluePrimaryDeck_GUID"] or getObjectFromGUID(Global.getVar("bluePrimaryDeck_GUID"))
+        local redGuids = resolvePrimaryCardGuids(redDeck, redMission)
+        local blueGuids = resolvePrimaryCardGuids(blueDeck, blueMission)
+
+        -- Report what the matching resolved to (chat), regardless of cards existing.
+        broadcastToAll("Matchup " .. key .. "  RED: " .. describePrimaryResolution(redMission, redGuids), {1, 0.55, 0.55})
+        broadcastToAll("Matchup " .. key .. "  BLUE: " .. describePrimaryResolution(blueMission, blueGuids), {0.55, 0.7, 1})
+
+        -- 3. Deployment + Twist stay random: shuffle those decks only.
+        for _, deckVar in ipairs({"deploymentDeck_GUID", "challengerDeck_GUID"}) do
+            local deck = decksByVar[deckVar]
+            if deck then deck.shuffle() end
         end
 
+        -- 4. Build the ordered placement list.
+        local placements = {}
         for _, slot in ipairs(missionSlots) do
-            local deck = decksByVar[slot.deckVar] or getObjectFromGUID(Global.getVar(slot.deckVar))
-            if deck then
-                deck.takeObject({
-                    position = slot.position,
-                    flip = true,
-                    smooth = true,
-                    callback_function = function(card)
-                        Wait.frames(function()
-                            card.locked = true
-                        end)
-                    end
-                })
+            if slot.role == "primary" then
+                local guids = (slot.player == "Red") and redGuids or blueGuids
+                local deck = (slot.player == "Red") and redDeck or blueDeck
+                local info = guids[slot.index]
+                table.insert(placements, {deck = deck, guid = info and info.guid or nil, position = slot.position})
+            else
+                local deck = decksByVar[slot.deckVar] or getObjectFromGUID(Global.getVar(slot.deckVar))
+                table.insert(placements, {deck = deck, guid = nil, position = slot.position})
             end
         end
+
+        dealMissionCards(placements, 1)
     end, 2)
 end
 
