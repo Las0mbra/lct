@@ -5,8 +5,8 @@ secondary11ZoneObj = getObjectFromGUID(Global.getVar("secondary11CardZone_GUID")
 secondary12ZoneObj = getObjectFromGUID(Global.getVar("secondary12CardZone_GUID"))
 secondary21ZoneObj = getObjectFromGUID(Global.getVar("secondary21CardZone_GUID"))
 secondary22ZoneObj = getObjectFromGUID(Global.getVar("secondary22CardZone_GUID"))
-redDiscardPosition = { x = 79.04, y = 0.98, z = 16.60 }
-blueDiscardPosition = { x = 79.04, y = 0.98, z = -16.60 }
+redDiscardPosition = { x = 77.04, y = 0.98, z = 16.60 }
+blueDiscardPosition = { x = 77.04, y = 0.98, z = -16.60 }
 redSecondaryBoard_GUID = "66def7"
 blueSecondaryBoard_GUID = "76200a"
 secondarySlotButtonSize = 120
@@ -37,7 +37,7 @@ BTN_L_IX_MINUS = 3
 
 -- Tooltips[player, k-index]
 tooltips = {{"Sum", "Secondary 2", "Secondary 1", "Primary"},{"Sum", "Secondary 1", "Secondary 2", "Primary"}}
-TURN_SUM_CENTER_SHIFT = 0.50
+TURN_SUM_CENTER_SHIFT = 0.38
 
 -- player, round, k-index
 scores = {
@@ -59,27 +59,34 @@ scores = {
 
 button = {}
 
+SCORE_NAME_X = -5.15
+SCORE_TOTAL_X = 6.85
+SCORE_FIRST_ROUND_X = 0.60
+SCORE_ROUND_GAP_X = 1.18
+SCORE_SIDE_Z = 0.98
+SCORE_CENTER_Z = -0.05
+
 playerOneTitle = {
 	index = 0,
-	width = 3000,
-	height = 500,
+	width = 2550,
+	height = 425,
 	label = "Player 1",
 	click_function = 'p1',
-	font_size = 400,
+	font_size = 340,
 	function_owner = self,
-	position = {-8, -0.05, -4.25},
+	position = {-6.85, -0.05, -2.95},
 	rotation = {0, 90, 180},
 	tooltip = "Click to put your name here"
 }
 playerTwoTitle = {
 	index = 1,
-	width = 3000,
-	height = 500,
+	width = 2550,
+	height = 425,
 	label = "Player 2",
 	click_function = 'p2',
-	font_size = 400,
+	font_size = 340,
 	function_owner = self,
-	position = {-8, -0.05, 2.25},
+	position = {-6.85, -0.05, 2.95},
 	rotation = {0, 90, 180},
 	tooltip = "Click to put your name here"
 }
@@ -93,7 +100,7 @@ playerTotal = {
 		click_function = 'nothing',
 		font_size = 500,
 		function_owner = self,
-		position = {10, -0.05, -2.12},
+		position = {SCORE_TOTAL_X, -0.05, -1.00},
 		rotation = {0, 90, 180},
 		tooltip = "Player 1"
 	},
@@ -105,7 +112,7 @@ playerTotal = {
 		click_function = 'nothing',
 		font_size = 500,
 		function_owner = self,
-		position = {10, -0.05, 0.12},
+		position = {SCORE_TOTAL_X, -0.05, 0.95},
 		rotation = {0, 90, 180},
 		tooltip = "Player 2"
 	}
@@ -269,7 +276,7 @@ function onload(save_data)
 		return
 	end
 
-	Wait.frames(function() self.setPosition({74,1,-1}) end, 1)
+	Wait.frames(function() self.setPosition({71.50,0.95,0.00}) end, 1)
 	self.setLock(true)
 
 	self.createButton( playerOneTitle )
@@ -281,7 +288,7 @@ function onload(save_data)
 
 	local b_xpos = 0
 	local b_zpos = 0
-	local b_zoffset = -1
+	local b_zoffset = SCORE_CENTER_Z
 	local b_index = 4
 
 	-- Scoring buttons
@@ -289,12 +296,12 @@ function onload(save_data)
 	-- i is player
 	for i=1,2 do
 		button[i] = {}
-		b_xpos = 2.14
+		b_xpos = SCORE_FIRST_ROUND_X
 
 		-- j is battle round
 		for j=1,5 do
 			button[i][j] = {}
-			b_zpos = 1.2
+			b_zpos = SCORE_SIDE_Z
 
 			-- k is index - turn sum, secondary 1, secondary 2, primary
 			for k=1,4 do
@@ -381,7 +388,7 @@ function onload(save_data)
 					::continue_score_column::
 				end	-- k-loop
 
-			b_xpos = b_xpos + 1.55
+			b_xpos = b_xpos + SCORE_ROUND_GAP_X
 		end -- j-loop
 
 	end -- i-loop

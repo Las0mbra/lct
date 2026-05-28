@@ -1293,10 +1293,10 @@ end
 
 function getSecondaryDiscardPosition(color)
     if color == "Red" then
-        return {x = 79.04, y = 0.98, z = 16.60}
+        return {x = 77.04, y = 0.98, z = 16.60}
     end
 
-    return {x = 79.04, y = 0.98, z = -16.60}
+    return {x = 77.04, y = 0.98, z = -16.60}
 end
 
 function refreshSecondaryNamesForColor(color)

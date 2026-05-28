@@ -25839,9 +25839,9 @@
       "GUID": "06d627",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": 74,
-        "posY": 1,
-        "posZ": -1,
+        "posX": 71.5,
+        "posY": 0.95,
+        "posZ": 0,
         "rotX": -1.60005129e-06,
         "rotY": 180.012192,
         "rotZ": 180,
@@ -25877,8 +25877,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomMesh": {
-        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1461932452813595690/91831FA376A4FED1DD74269E69379812C4BB7C2C/",
-        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/17752445197195745464/CC7EE898A88F61DBBB60BE9D872D7E1C2C55CA22/",
+        "MeshURL": "file:///home/gtsigouris/Downloads/SCORESHEETV2.obj",
+        "DiffuseURL": "file:////home/gtsigouris/Downloads/placehold1.png",
         "ColliderURL": "",
         "Convex": true,
         "MaterialIndex": 3,
@@ -37853,7 +37853,7 @@
       "GUID": "76200a",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": 75.47475,
+        "posX": 73.47475,
         "posY": 0.9049991,
         "posZ": -11.1186075,
         "rotX": -5.04182367e-07,
@@ -37918,7 +37918,7 @@
       "GUID": "66def7",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": 75.47475,
+        "posX": 73.47475,
         "posY": 0.9049991,
         "posZ": 11.1186075,
         "rotX": -5.04182367e-07,
@@ -38819,7 +38819,7 @@
       "GUID": "c1e001",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 79.02251,
+        "posX": 77.02251,
         "posY": 0.92,
         "posZ": 11.0907164,
         "rotX": 0.0,
@@ -38868,7 +38868,7 @@
       "GUID": "c1e002",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 79.02242,
+        "posX": 77.02242,
         "posY": 0.92,
         "posZ": 13.7112818,
         "rotX": 0.0,
@@ -38917,7 +38917,7 @@
       "GUID": "c1e003",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 75.51211,
+        "posX": 73.51211,
         "posY": 0.92,
         "posZ": 8.49511,
         "rotX": 0.0,
@@ -38966,7 +38966,7 @@
       "GUID": "c1e004",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 75.48236,
+        "posX": 73.48236,
         "posY": 0.92,
         "posZ": 11.09,
         "rotX": 0.0,
@@ -39015,7 +39015,7 @@
       "GUID": "c1e005",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 75.47716,
+        "posX": 73.47716,
         "posY": 0.92,
         "posZ": 13.71,
         "rotX": 0.0,
@@ -39064,7 +39064,7 @@
       "GUID": "c1e006",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 71.92484,
+        "posX": 69.92484,
         "posY": 0.92,
         "posZ": 8.5,
         "rotX": 0.0,
@@ -39113,7 +39113,7 @@
       "GUID": "c1e007",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 71.92,
+        "posX": 69.92,
         "posY": 0.92,
         "posZ": 11.0900822,
         "rotX": 0.0,
@@ -39162,7 +39162,7 @@
       "GUID": "c1e008",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 71.92,
+        "posX": 69.92,
         "posY": 0.92,
         "posZ": 13.7087469,
         "rotX": 0.0,
@@ -39211,7 +39211,7 @@
       "GUID": "b1e001",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 79.02251,
+        "posX": 77.02251,
         "posY": 0.92,
         "posZ": -11.0907164,
         "rotX": 0.0,
@@ -39260,7 +39260,7 @@
       "GUID": "b1e002",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 79.02242,
+        "posX": 77.02242,
         "posY": 0.92,
         "posZ": -13.7112818,
         "rotX": 0.0,
@@ -39309,7 +39309,7 @@
       "GUID": "b1e003",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 75.51211,
+        "posX": 73.51211,
         "posY": 0.92,
         "posZ": -8.49511,
         "rotX": 0.0,
@@ -39358,7 +39358,7 @@
       "GUID": "b1e004",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 75.48236,
+        "posX": 73.48236,
         "posY": 0.92,
         "posZ": -11.09,
         "rotX": 0.0,
@@ -39407,7 +39407,7 @@
       "GUID": "b1e005",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 75.47716,
+        "posX": 73.47716,
         "posY": 0.92,
         "posZ": -13.71,
         "rotX": 0.0,
@@ -39456,7 +39456,7 @@
       "GUID": "b1e006",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 71.92484,
+        "posX": 69.92484,
         "posY": 0.92,
         "posZ": -8.5,
         "rotX": 0.0,
@@ -39505,7 +39505,7 @@
       "GUID": "b1e007",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 71.92,
+        "posX": 69.92,
         "posY": 0.92,
         "posZ": -11.0900822,
         "rotX": 0.0,
@@ -39554,7 +39554,7 @@
       "GUID": "b1e008",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 71.92,
+        "posX": 69.92,
         "posY": 0.92,
         "posZ": -13.7087469,
         "rotX": 0.0,
@@ -39603,7 +39603,7 @@
       "GUID": "d1e001",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 79.04,
+        "posX": 75.37,
         "posY": 0.92,
         "posZ": 5.2,
         "rotX": 0.0,
@@ -39652,7 +39652,7 @@
       "GUID": "d1e002",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 79.04,
+        "posX": 75.37,
         "posY": 0.92,
         "posZ": 3.15,
         "rotX": 0.0,
@@ -39701,7 +39701,7 @@
       "GUID": "d1e003",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 79.04,
+        "posX": 75.37,
         "posY": 0.92,
         "posZ": -3.05,
         "rotX": 0.0,
@@ -39750,7 +39750,7 @@
       "GUID": "d1e004",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 79.04,
+        "posX": 75.37,
         "posY": 0.92,
         "posZ": -5.1,
         "rotX": 0.0,
@@ -39799,7 +39799,7 @@
       "GUID": "d1e005",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 79.04,
+        "posX": 75.37,
         "posY": 0.92,
         "posZ": 0.04,
         "rotX": 0.0,
@@ -39848,7 +39848,7 @@
       "GUID": "d1e006",
       "Name": "ScriptingTrigger",
       "Transform": {
-        "posX": 75.11,
+        "posX": 73.11,
         "posY": 0.92,
         "posZ": 0.04,
         "rotX": 0.0,
@@ -39898,7 +39898,7 @@
       "Name": "3DText",
       "Transform": {
         "posX": 76.47,
-        "posY": 0.9999996,
+        "posY": -5.0,
         "posZ": 4.15,
         "rotX": 90.0,
         "rotY": 89.71415,
@@ -39953,7 +39953,7 @@
       "Name": "3DText",
       "Transform": {
         "posX": 75.84,
-        "posY": 0.9999996,
+        "posY": -5.0,
         "posZ": 4.15,
         "rotX": 90.0,
         "rotY": 89.71415,
@@ -40008,7 +40008,7 @@
       "Name": "3DText",
       "Transform": {
         "posX": 75.21,
-        "posY": 0.9999996,
+        "posY": -5.0,
         "posZ": 4.15,
         "rotX": 90.0,
         "rotY": 89.71415,
@@ -40063,7 +40063,7 @@
       "Name": "3DText",
       "Transform": {
         "posX": 74.58,
-        "posY": 0.9999996,
+        "posY": -5.0,
         "posZ": 4.15,
         "rotX": 90.0,
         "rotY": 89.71415,
@@ -40118,7 +40118,7 @@
       "Name": "3DText",
       "Transform": {
         "posX": 73.95,
-        "posY": 0.9999996,
+        "posY": -5.0,
         "posZ": 4.15,
         "rotX": 90.0,
         "rotY": 89.71415,
@@ -40173,7 +40173,7 @@
       "Name": "3DText",
       "Transform": {
         "posX": 76.47,
-        "posY": 0.9999996,
+        "posY": -5.0,
         "posZ": -3.95,
         "rotX": 90.0,
         "rotY": 89.71415,
@@ -40228,7 +40228,7 @@
       "Name": "3DText",
       "Transform": {
         "posX": 75.84,
-        "posY": 0.9999996,
+        "posY": -5.0,
         "posZ": -3.95,
         "rotX": 90.0,
         "rotY": 89.71415,
@@ -40283,7 +40283,7 @@
       "Name": "3DText",
       "Transform": {
         "posX": 75.21,
-        "posY": 0.9999996,
+        "posY": -5.0,
         "posZ": -3.95,
         "rotX": 90.0,
         "rotY": 89.71415,
@@ -40338,7 +40338,7 @@
       "Name": "3DText",
       "Transform": {
         "posX": 74.58,
-        "posY": 0.9999996,
+        "posY": -5.0,
         "posZ": -3.95,
         "rotX": 90.0,
         "rotY": 89.71415,
@@ -40393,7 +40393,7 @@
       "Name": "3DText",
       "Transform": {
         "posX": 73.95,
-        "posY": 0.9999996,
+        "posY": -5.0,
         "posZ": -3.95,
         "rotX": 90.0,
         "rotY": 89.71415,
