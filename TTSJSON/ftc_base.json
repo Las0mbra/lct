@@ -25877,8 +25877,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomMesh": {
-        "MeshURL": "file:///home/gtsigouris/Downloads/SCORESHEETV2.obj",
-        "DiffuseURL": "file:////home/gtsigouris/Downloads/placehold1.png",
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/16566457576718859030/BD0EB5B1562A5F67D7E6AC6AB85E33A4F9820781/",
+        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11159664248693195246/4A2B7694839D947C706342D6A73234BA9BDDF75C/",
         "ColliderURL": "",
         "Convex": true,
         "MaterialIndex": 3,
