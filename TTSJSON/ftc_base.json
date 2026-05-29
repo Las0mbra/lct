@@ -26948,17 +26948,17 @@
       "Sticky": true,
       "Tooltip": true,
       "GridProjection": false,
-      "HideWhenFaceDown": true,
+      "HideWhenFaceDown": false,
       "Hands": true,
       "CardID": 10000,
       "SidewaysCard": false,
       "CustomDeck": {
         "100": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2028354869666888393/D6190B80FC2CBE43F5CD03793558BF2A717A74C5/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3//",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9229363937234509626/81DF5519CE0CE63BD3B1691ADC59BA53C7DBF148/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/12199892373047430544/364D378C44C4DB445989AA9A31AF4493E0058A7F/",
           "NumWidth": 1,
           "NumHeight": 1,
-          "BackIsHidden": true,
+          "BackIsHidden": false,
           "UniqueBack": false,
           "Type": 0
         }
@@ -27009,17 +27009,17 @@
       "Sticky": true,
       "Tooltip": true,
       "GridProjection": false,
-      "HideWhenFaceDown": true,
+      "HideWhenFaceDown": false,
       "Hands": true,
       "CardID": 10000,
       "SidewaysCard": false,
       "CustomDeck": {
         "100": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2028354869666888393/D6190B80FC2CBE43F5CD03793558BF2A717A74C5/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3//",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9229363937234509626/81DF5519CE0CE63BD3B1691ADC59BA53C7DBF148/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/12199892373047430544/364D378C44C4DB445989AA9A31AF4493E0058A7F/",
           "NumWidth": 1,
           "NumHeight": 1,
-          "BackIsHidden": true,
+          "BackIsHidden": false,
           "UniqueBack": false,
           "Type": 0
         }
@@ -27070,17 +27070,17 @@
       "Sticky": true,
       "Tooltip": true,
       "GridProjection": false,
-      "HideWhenFaceDown": true,
+      "HideWhenFaceDown": false,
       "Hands": true,
       "CardID": 10000,
       "SidewaysCard": false,
       "CustomDeck": {
         "100": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2028354869666888393/D6190B80FC2CBE43F5CD03793558BF2A717A74C5/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3//",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9229363937234509626/81DF5519CE0CE63BD3B1691ADC59BA53C7DBF148/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/12199892373047430544/364D378C44C4DB445989AA9A31AF4493E0058A7F/",
           "NumWidth": 1,
           "NumHeight": 1,
-          "BackIsHidden": true,
+          "BackIsHidden": false,
           "UniqueBack": false,
           "Type": 0
         }
@@ -27131,17 +27131,17 @@
       "Sticky": true,
       "Tooltip": true,
       "GridProjection": false,
-      "HideWhenFaceDown": true,
+      "HideWhenFaceDown": false,
       "Hands": true,
       "CardID": 10000,
       "SidewaysCard": false,
       "CustomDeck": {
         "100": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2028354869666888393/D6190B80FC2CBE43F5CD03793558BF2A717A74C5/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3//",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9229363937234509626/81DF5519CE0CE63BD3B1691ADC59BA53C7DBF148/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/12199892373047430544/364D378C44C4DB445989AA9A31AF4493E0058A7F/",
           "NumWidth": 1,
           "NumHeight": 1,
-          "BackIsHidden": true,
+          "BackIsHidden": false,
           "UniqueBack": false,
           "Type": 0
         }
@@ -31078,7 +31078,7 @@
         "posX": 82.47478,
         "posY": 0.9498131,
         "posZ": 11.1289787,
-        "rotX": -4.74909484E-07,
+        "rotX": -4.74909484e-07,
         "rotY": 270.0,
         "rotZ": 180.0,
         "scaleX": 1.0,
@@ -31560,7 +31560,7 @@
         "posX": 82.44324,
         "posY": 0.964255869,
         "posZ": -11.1476974,
-        "rotX": -4.48204929E-07,
+        "rotX": -4.48204929e-07,
         "rotY": 269.99823,
         "rotZ": 180.0,
         "scaleX": 1.0,
@@ -32254,7 +32254,7 @@
         "posX": 82.44324,
         "posY": 0.9738839,
         "posZ": -9.200294,
-        "rotX": -5.613313E-07,
+        "rotX": -5.613313e-07,
         "rotY": 270.010376,
         "rotZ": 180.0,
         "scaleX": 1.0,
@@ -32994,7 +32994,7 @@
             "posX": 74.1318,
             "posY": 0.9136047,
             "posZ": -34.65356,
-            "rotX": -4.8922783E-07,
+            "rotX": -4.8922783e-07,
             "rotY": 270.0,
             "rotZ": 180.0,
             "scaleX": 1.0,
@@ -33047,16 +33047,16 @@
         }
       ]
     },
-      {
+    {
       "GUID": "1f38a1",
       "Name": "Custom_Token",
       "Transform": {
         "posX": -15.7271786,
         "posY": 1.06149852,
         "posZ": -0.134739235,
-        "rotX": 1.71137717E-08,
+        "rotX": 1.71137717e-08,
         "rotY": 270.020081,
-        "rotZ": -5.72822181E-08,
+        "rotZ": -5.72822181e-08,
         "scaleX": 7.65000963,
         "scaleY": 1.0,
         "scaleZ": 7.65000963
@@ -33104,16 +33104,16 @@
       "LuaScriptState": "",
       "XmlUI": ""
     },
-      {
+    {
       "GUID": "3fa90f",
       "Name": "CardCustom",
       "Transform": {
         "posX": 22.3792019,
         "posY": 0.975103438,
         "posZ": -15.5140142,
-        "rotX": -1.945767E-08,
+        "rotX": -1.945767e-08,
         "rotY": 180.003967,
-        "rotZ": -1.45253367E-07,
+        "rotZ": -1.45253367e-07,
         "scaleX": 1.5,
         "scaleY": 1.0,
         "scaleZ": 1.5
@@ -33162,16 +33162,16 @@
       "LuaScriptState": "",
       "XmlUI": ""
     },
-      {
+    {
       "GUID": "1d0b3a",
       "Name": "CardCustom",
       "Transform": {
         "posX": 22.4739685,
         "posY": 0.9751034,
         "posZ": -8.225743,
-        "rotX": -3.879073E-08,
+        "rotX": -3.879073e-08,
         "rotY": 180.003967,
-        "rotZ": -7.44505542E-08,
+        "rotZ": -7.44505542e-08,
         "scaleX": 1.5,
         "scaleY": 1.0,
         "scaleZ": 1.5
@@ -33220,16 +33220,16 @@
       "LuaScriptState": "",
       "XmlUI": ""
     },
-      {
+    {
       "GUID": "1b97c2",
       "Name": "CardCustom",
       "Transform": {
         "posX": 22.5688152,
         "posY": 0.975103259,
         "posZ": -0.9312511,
-        "rotX": -5.01340551E-08,
+        "rotX": -5.01340551e-08,
         "rotY": 180.004044,
-        "rotZ": -2.08136754E-07,
+        "rotZ": -2.08136754e-07,
         "scaleX": 1.5,
         "scaleY": 1.0,
         "scaleZ": 1.5
@@ -33278,16 +33278,16 @@
       "LuaScriptState": "",
       "XmlUI": ""
     },
-      {
+    {
       "GUID": "3a44f8",
       "Name": "CardCustom",
       "Transform": {
         "posX": 22.78682,
         "posY": 0.975103438,
         "posZ": 6.63632441,
-        "rotX": -4.882842E-07,
+        "rotX": -4.882842e-07,
         "rotY": 180.09494,
-        "rotZ": 2.1927535E-07,
+        "rotZ": 2.1927535e-07,
         "scaleX": 1.5,
         "scaleY": 1.0,
         "scaleZ": 1.5
@@ -33336,16 +33336,16 @@
       "LuaScriptState": "",
       "XmlUI": ""
     },
-      {
+    {
       "GUID": "4b20be",
       "Name": "CardCustom",
       "Transform": {
         "posX": 22.7586269,
         "posY": 0.975103259,
         "posZ": 13.6666231,
-        "rotX": 5.922498E-08,
+        "rotX": 5.922498e-08,
         "rotY": 179.996948,
-        "rotZ": -2.01452664E-07,
+        "rotZ": -2.01452664e-07,
         "scaleX": 1.5,
         "scaleY": 1.0,
         "scaleZ": 1.5
@@ -33394,14 +33394,14 @@
       "LuaScriptState": "",
       "XmlUI": ""
     },
-      {
+    {
       "GUID": "8104e1",
       "Name": "Deck",
       "Transform": {
         "posX": 82.47478,
         "posY": 1.00276756,
         "posZ": 13.0763836,
-        "rotX": -5.54599637E-07,
+        "rotX": -5.54599637e-07,
         "rotY": 270.029541,
         "rotZ": 180.0,
         "scaleX": 1.0,
@@ -33969,7 +33969,7 @@
             "posX": 80.50159,
             "posY": 1.05373943,
             "posZ": -62.6158943,
-            "rotX": -3.19696142E-07,
+            "rotX": -3.19696142e-07,
             "rotY": 270.000061,
             "rotZ": 180.000061,
             "scaleX": 1.0,
@@ -34375,7 +34375,7 @@
             "posX": 80.44547,
             "posY": 0.9863482,
             "posZ": -62.46467,
-            "rotX": -4.10677167E-05,
+            "rotX": -4.10677167e-05,
             "rotY": 269.999481,
             "rotZ": 180.000656,
             "scaleX": 1.0,
@@ -34549,7 +34549,7 @@
             "posX": 80.7999039,
             "posY": 0.913603,
             "posZ": -62.5468941,
-            "rotX": 3.310529E-05,
+            "rotX": 3.310529e-05,
             "rotY": 269.9992,
             "rotZ": 180.000336,
             "scaleX": 1.0,
@@ -34602,14 +34602,14 @@
         }
       ]
     },
-      {
+    {
       "GUID": "994347",
       "Name": "Deck",
       "Transform": {
         "posX": 82.44324,
         "posY": 1.00276828,
         "posZ": -13.0951023,
-        "rotX": -4.078407E-07,
+        "rotX": -4.078407e-07,
         "rotY": 270.007019,
         "rotZ": 180.0,
         "scaleX": 1.0,
@@ -35235,7 +35235,7 @@
             "posX": 75.8746643,
             "posY": 1.04411662,
             "posZ": -85.2967,
-            "rotX": 5.067949E-05,
+            "rotX": 5.067949e-05,
             "rotY": 269.996582,
             "rotZ": 180.000214,
             "scaleX": 1.0,
@@ -35699,7 +35699,7 @@
             "posX": 76.18999,
             "posY": 0.9533092,
             "posZ": -85.727,
-            "rotX": -4.912452E-07,
+            "rotX": -4.912452e-07,
             "rotY": 270.000061,
             "rotZ": 180.0,
             "scaleX": 1.0,
@@ -35757,7 +35757,7 @@
             "posX": 76.2876,
             "posY": 0.913606048,
             "posZ": -85.57245,
-            "rotX": -4.96829955E-07,
+            "rotX": -4.96829955e-07,
             "rotY": 270.000061,
             "rotZ": 180.0,
             "scaleX": 1.0,
@@ -35817,7 +35817,7 @@
         "posX": 82.4747849,
         "posY": 0.9738834,
         "posZ": 9.181575,
-        "rotX": -6.417889E-07,
+        "rotX": -6.417889e-07,
         "rotY": 270.001556,
         "rotZ": 180.0,
         "scaleX": 1.0,
@@ -35977,7 +35977,7 @@
             "posX": 85.5329056,
             "posY": 1.00905144,
             "posZ": 21.2363682,
-            "rotX": -4.90929438E-07,
+            "rotX": -4.90929438e-07,
             "rotY": 270.0,
             "rotZ": 180.0,
             "scaleX": 1.0,
@@ -36035,7 +36035,7 @@
             "posX": 85.5329056,
             "posY": 1.00905144,
             "posZ": 19.0298634,
-            "rotX": -5.335867E-07,
+            "rotX": -5.335867e-07,
             "rotY": 270.0,
             "rotZ": 180.0,
             "scaleX": 1.0,
@@ -36093,7 +36093,7 @@
             "posX": 85.5329056,
             "posY": 1.00905156,
             "posZ": 16.8233585,
-            "rotX": -8.794295E-07,
+            "rotX": -8.794295e-07,
             "rotY": 270.0,
             "rotZ": 180.0,
             "scaleX": 1.0,
@@ -36151,7 +36151,7 @@
             "posX": 85.5329056,
             "posY": 1.00905156,
             "posZ": 14.6168528,
-            "rotX": -4.711056E-07,
+            "rotX": -4.711056e-07,
             "rotY": 270.0,
             "rotZ": 180.0,
             "scaleX": 1.0,
@@ -36557,7 +36557,7 @@
             "posX": 74.1318,
             "posY": 0.9136047,
             "posZ": -34.65356,
-            "rotX": -4.8922783E-07,
+            "rotX": -4.8922783e-07,
             "rotY": 270.0,
             "rotZ": 180.0,
             "scaleX": 1.0,
