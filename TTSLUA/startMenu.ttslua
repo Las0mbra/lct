@@ -2664,11 +2664,18 @@ function selectMissionPack(packIndex)
 
     local redSecondaryDeckGuid = Global.getVar("edition11RedSecondaryDeck_GUID")
     local blueSecondaryDeckGuid = Global.getVar("edition11BlueSecondaryDeck_GUID")
-    local dealFixedSecondaries = false
+    local dealFixedSecondaries = true
+    local redFixedChoiceCardGuids = {"e9363d", "acca01"}
+    local blueFixedChoiceCardGuids = {"f68853", "7d0dc0"}
+    local redTacticalCardGuidToKeep = "838a9b"
+    local blueTacticalCardGuidToKeep = "a847c1"
     if legacyPrimaryDeckEnabled then
         redSecondaryDeckGuid = Global.getVar("redSecondaryDeck_GUID")
         blueSecondaryDeckGuid = Global.getVar("blueSecondaryDeck_GUID")
-        dealFixedSecondaries = true
+        redFixedChoiceCardGuids = nil
+        blueFixedChoiceCardGuids = nil
+        redTacticalCardGuidToKeep = nil
+        blueTacticalCardGuidToKeep = nil
     end
 
     Global.call("setMissionPack", {
@@ -2684,9 +2691,9 @@ function selectMissionPack(packIndex)
     end
 
     redMissionManager = getObjectFromGUID(Global.getVar("redMissionManager_GUID"))
-    redMissionManager.call("packSelected", {pack = packSelected, dealFixedSecondaries = dealFixedSecondaries})
+    redMissionManager.call("packSelected", {pack = packSelected, dealFixedSecondaries = dealFixedSecondaries, fixedChoiceCardGuids = redFixedChoiceCardGuids, tacticalCardGuidToKeep = redTacticalCardGuidToKeep})
     blueMissionManager = getObjectFromGUID(Global.getVar("blueMissionManager_GUID"))
-    blueMissionManager.call("packSelected", {pack = packSelected, dealFixedSecondaries = dealFixedSecondaries})
+    blueMissionManager.call("packSelected", {pack = packSelected, dealFixedSecondaries = dealFixedSecondaries, fixedChoiceCardGuids = blueFixedChoiceCardGuids, tacticalCardGuidToKeep = blueTacticalCardGuidToKeep})
 
     missionPackData = Global.getTable("missionPackData")[packSelected]
     deploymentDeck = getObjectFromGUID(missionPackData.deploymentDeck_GUID)

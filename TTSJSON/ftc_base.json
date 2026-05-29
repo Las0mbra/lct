@@ -26968,67 +26968,6 @@
       "XmlUI": ""
     },
     {
-      "GUID": "7ee8c9",
-      "Name": "CardCustom",
-      "Transform": {
-        "posX": -40.9592438,
-        "posY": 3.07473969,
-        "posZ": -56.1081352,
-        "rotX": -1.60000775e-06,
-        "rotY": 90.00556,
-        "rotZ": 3.19558552,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "Tactical Objectives",
-      "Description": "Select both of these cards to indicate that you will be using Tactical Missions instead of Fixed Missions for this game.",
-      "GMNotes": "TacticalObjectives",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 0.713235259,
-        "g": 0.713235259,
-        "b": 0.713235259
-      },
-      "Tags": [
-        "secondaryCard"
-      ],
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": false,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": true,
-      "CardID": 10000,
-      "SidewaysCard": false,
-      "CustomDeck": {
-        "100": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9229363937234509626/81DF5519CE0CE63BD3B1691ADC59BA53C7DBF148/",
-          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/12199892373047430544/364D378C44C4DB445989AA9A31AF4493E0058A7F/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": false,
-          "UniqueBack": false,
-          "Type": 0
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
       "GUID": "838a9b",
       "Name": "CardCustom",
       "Transform": {
@@ -27038,67 +26977,6 @@
         "rotX": 0,
         "rotY": 90,
         "rotZ": 0,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "Tactical Objectives",
-      "Description": "Select both of these cards to indicate that you will be using Tactical Missions instead of Fixed Missions for this game.",
-      "GMNotes": "TacticalObjectives",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 0.713235259,
-        "g": 0.713235259,
-        "b": 0.713235259
-      },
-      "Tags": [
-        "secondaryCard"
-      ],
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": false,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": true,
-      "CardID": 10000,
-      "SidewaysCard": false,
-      "CustomDeck": {
-        "100": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9229363937234509626/81DF5519CE0CE63BD3B1691ADC59BA53C7DBF148/",
-          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/12199892373047430544/364D378C44C4DB445989AA9A31AF4493E0058A7F/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": false,
-          "UniqueBack": false,
-          "Type": 0
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "89fa29",
-      "Name": "CardCustom",
-      "Transform": {
-        "posX": -42,
-        "posY": 3.06055784,
-        "posZ": 48.89186,
-        "rotX": 359.647,
-        "rotY": 89.9853439,
-        "rotZ": 0.5257112,
         "scaleX": 1.0,
         "scaleY": 1.0,
         "scaleZ": 1.0
