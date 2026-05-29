@@ -2661,12 +2661,32 @@ end
 
 function selectMissionPack(packIndex)
     packSelected = packIndex
-    Global.call("setMissionPack", {pack = packSelected})
+
+    local redSecondaryDeckGuid = Global.getVar("edition11RedSecondaryDeck_GUID")
+    local blueSecondaryDeckGuid = Global.getVar("edition11BlueSecondaryDeck_GUID")
+    local dealFixedSecondaries = false
+    if legacyPrimaryDeckEnabled then
+        redSecondaryDeckGuid = Global.getVar("redSecondaryDeck_GUID")
+        blueSecondaryDeckGuid = Global.getVar("blueSecondaryDeck_GUID")
+        dealFixedSecondaries = true
+    end
+
+    Global.call("setMissionPack", {
+        pack = packSelected,
+        redSecondaryDeck_GUID = redSecondaryDeckGuid,
+        blueSecondaryDeck_GUID = blueSecondaryDeckGuid,
+    })
+
+    if legacyPrimaryDeckEnabled then
+        Global.call("useTenthEditionSecondaryDecks")
+    else
+        Global.call("useEdition11SecondaryDecks")
+    end
 
     redMissionManager = getObjectFromGUID(Global.getVar("redMissionManager_GUID"))
-    redMissionManager.call("packSelected", {pack = packSelected})
+    redMissionManager.call("packSelected", {pack = packSelected, dealFixedSecondaries = dealFixedSecondaries})
     blueMissionManager = getObjectFromGUID(Global.getVar("blueMissionManager_GUID"))
-    blueMissionManager.call("packSelected", {pack = packSelected})
+    blueMissionManager.call("packSelected", {pack = packSelected, dealFixedSecondaries = dealFixedSecondaries})
 
     missionPackData = Global.getTable("missionPackData")[packSelected]
     deploymentDeck = getObjectFromGUID(missionPackData.deploymentDeck_GUID)

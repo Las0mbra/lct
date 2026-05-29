@@ -11,6 +11,7 @@ selectedPack = nil
 playerColor = nil
 cardsDealt = false
 secondariesLockedIn = false
+fixedSecondaryHandSetupEnabled = false
 handZone = nil
 secondaryDeck = nil
 secondaryDeckPosition = nil
@@ -28,6 +29,7 @@ function onSave()
         svSelectedPack = selectedPack,
         svCardsDealt = cardsDealt,
         svSecondariesLockedIn = secondariesLockedIn,
+        svFixedSecondaryHandSetupEnabled = fixedSecondaryHandSetupEnabled,
     })
 
     return saved_data
@@ -39,6 +41,7 @@ function onLoad(saved_data)
         selectedPack = loaded_data.svSelectedPack
         cardsDealt = loaded_data.svCardsDealt
         secondariesLockedIn = loaded_data.svSecondariesLockedIn or false
+        fixedSecondaryHandSetupEnabled = loaded_data.svFixedSecondaryHandSetupEnabled or false
     end
 
     if self.getGUID() == Global.getVar("redMissionManager_GUID") then
@@ -101,6 +104,7 @@ end
 
 function packSelected(params)
     selectedPack = params.pack
+    fixedSecondaryHandSetupEnabled = params.dealFixedSecondaries == true
     updateForSelectedPack()
 
     secondaryDeck.setPosition(secondaryDeckPosition)
@@ -123,7 +127,7 @@ end
 function tryDealFixedSecondaries()
     -- Only deal out the cards if our player is seated, we know what mission pack
     -- we're playing, and we haven't already dealt them.
-    if Player[playerColor].seated and selectedPack and not cardsDealt then
+    if fixedSecondaryHandSetupEnabled and Player[playerColor].seated and selectedPack and not cardsDealt then
         local fixedDeck = getObjectFromGUID(missionPackData.fixedSecondaryDeck_GUID)
         local newFixedDeck = fixedDeck.clone({position = fixedDeck.getPosition()})
         newFixedDeck.deal(fixedDeck.getQuantity(), playerColor)

@@ -248,8 +248,7 @@ function getActiveSecondaryNames(color)
 end
 
 function getRemainingDeckSecondaryNames(color)
-    local deckGuid = (color == "Red") and redSecondaryDeck_GUID or blueSecondaryDeck_GUID
-    local deck = getObjectFromGUID(deckGuid)
+    local deck = getSecondaryDeckByColor(color)
     if not deck then return {} end
     local names = {}
     local contents = deck.getObjects()
@@ -485,6 +484,12 @@ challengerDeck_GUID = "ffdf05"
 primaryDeck_GUID = "d26e9c"
 redSecondaryDeck_GUID = "c0fb49"
 blueSecondaryDeck_GUID = "bbdb02"
+edition11RedSecondaryDeck_GUID = "8104e1"
+edition11BlueSecondaryDeck_GUID = "994347"
+
+redSecondaryDeckPosition = {x = 77.04, y = 0.98, z = 8.45}
+blueSecondaryDeckPosition = {x = 77.04, y = 0.98, z = -8.45}
+hiddenMissionDeckPosition = {85.0, -5.0, 4.75}
 
 -- Blue player sits on the -Z side, red on +Z (matches the mission managers,
 -- dice rollers and primary card slots). The deck nearest each player feeds it.
@@ -760,14 +765,17 @@ function stopPolling()
 end
 
 function onSave()
+    redSecondaryDeckGUID = nil
     blueSecondaryDeckGUID = nil
     if packSelected then
+        redSecondaryDeckGUID = missionPackData[packSelected].redSecondaryDeck_GUID
         blueSecondaryDeckGUID = missionPackData[packSelected].blueSecondaryDeck_GUID
     end
     saved_data = JSON.encode({
         svredPlayerID = redPlayerID,
         svbluePlayerID = bluePlayerID,
         svPackSelected = packSelected,
+        svRedSecondaryDeckGUID = redSecondaryDeckGUID,
         svBlueSecondaryDeckGUID = blueSecondaryDeckGUID,
         svPlayerHudSettings = playerHudSettings
     })
@@ -825,10 +833,30 @@ function hideMissionDeckUntilSelected(deckGUID)
     local deck = getObjectFromGUID(deckGUID)
     if not deck then return end
 
-    deck.setPosition({85.0, -5.0, 4.75})
+    deck.setPosition(hiddenMissionDeckPosition)
     deck.locked = true
     deck.tooltip = false
     deck.interactable = false
+end
+
+function activateMissionDeck(deckGUID, position, name)
+    local deck = getObjectFromGUID(deckGUID)
+    if not deck then return nil end
+
+    deck.setPosition(position)
+    deck.setRotation({0, 270, 180})
+    if name then deck.setName(name) end
+    deck.locked = false
+    deck.tooltip = true
+    deck.interactable = true
+    return deck
+end
+
+function destroyObjectByGUID(guid)
+    local obj = getObjectFromGUID(guid)
+    if obj then
+        destroyObject(obj)
+    end
 end
 
 function onLoad(saved_data)
@@ -845,6 +873,7 @@ function onLoad(saved_data)
         ensureHudSettings("Red")
         ensureHudSettings("Blue")
         if packSelected then
+            missionPackData[packSelected].redSecondaryDeck_GUID = loaded_data.svRedSecondaryDeckGUID or redSecondaryDeck_GUID
             missionPackData[packSelected].blueSecondaryDeck_GUID = loaded_data.svBlueSecondaryDeckGUID or blueSecondaryDeck_GUID
         end
     else
@@ -857,6 +886,8 @@ function onLoad(saved_data)
     if not packSelected then
         hideMissionDeckUntilSelected(redSecondaryDeck_GUID)
         hideMissionDeckUntilSelected(blueSecondaryDeck_GUID)
+        hideMissionDeckUntilSelected(edition11RedSecondaryDeck_GUID)
+        hideMissionDeckUntilSelected(edition11BlueSecondaryDeck_GUID)
     end
     ---- end loading
     if allowMenu then
@@ -922,7 +953,35 @@ end
 
 function setMissionPack(params)
     packSelected = params.pack
+    local packData = missionPackData[packSelected]
+    if not packData then return end
+
+    packData.redSecondaryDeck_GUID = params.redSecondaryDeck_GUID or redSecondaryDeck_GUID
+    packData.blueSecondaryDeck_GUID = params.blueSecondaryDeck_GUID or blueSecondaryDeck_GUID
+end
+
+function useEdition11SecondaryDecks()
+    if not packSelected or not missionPackData[packSelected] then return end
+
+    missionPackData[packSelected].redSecondaryDeck_GUID = edition11RedSecondaryDeck_GUID
+    missionPackData[packSelected].blueSecondaryDeck_GUID = edition11BlueSecondaryDeck_GUID
+
+    activateMissionDeck(edition11RedSecondaryDeck_GUID, redSecondaryDeckPosition, "Red secondary mission cards")
+    activateMissionDeck(edition11BlueSecondaryDeck_GUID, blueSecondaryDeckPosition, "Blue secondary mission cards")
+    destroyObjectByGUID(redSecondaryDeck_GUID)
+    destroyObjectByGUID(blueSecondaryDeck_GUID)
+end
+
+function useTenthEditionSecondaryDecks()
+    if not packSelected or not missionPackData[packSelected] then return end
+
+    missionPackData[packSelected].redSecondaryDeck_GUID = redSecondaryDeck_GUID
     missionPackData[packSelected].blueSecondaryDeck_GUID = blueSecondaryDeck_GUID
+
+    activateMissionDeck(redSecondaryDeck_GUID, redSecondaryDeckPosition, "Red secondary mission cards")
+    activateMissionDeck(blueSecondaryDeck_GUID, blueSecondaryDeckPosition, "Blue secondary mission cards")
+    hideMissionDeckUntilSelected(edition11RedSecondaryDeck_GUID)
+    hideMissionDeckUntilSelected(edition11BlueSecondaryDeck_GUID)
 end
 
 function autoSeatPerson(_person)
@@ -1282,6 +1341,12 @@ function getSecondaryCardZoneByIndex(color, index)
     return getObjectFromGUID(zoneGuid)
 end
 
+function getSecondarySlotCardPosition(zone)
+    local pos = zone.getPosition()
+    pos.y = pos.y + 0.15
+    return pos
+end
+
 function getSecondaryDeckByColor(color)
     if not packSelected or not missionPackData[packSelected] then
         return nil
@@ -1456,7 +1521,7 @@ function drawSecondaryToFirstOpenSlot(params)
 
     for _, slot in ipairs(openSlots) do
         deckObj.takeObject({
-            position = slot.zone.getPosition(),
+            position = getSecondarySlotCardPosition(slot.zone),
             rotation = {x = 0, y = 270, z = 180},
             flip = true,
             smooth = true,
@@ -1545,7 +1610,7 @@ function recycleSecondarySlot(params)
     deckObj.shuffle()
     Wait.frames(function()
         deckObj.takeObject({
-            position = zone.getPosition(),
+            position = getSecondarySlotCardPosition(zone),
             rotation = {x = 0, y = 270, z = 180},
             flip = true,
             smooth = true,
