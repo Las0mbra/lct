@@ -1313,9 +1313,47 @@ function getRedSecondaryCardZones()
     return getSecondaryCardZones(redSecondaryCardZone_GUIDs)
 end
 
+-- zone.getObjects() can miss cards that were script-moved into a slot and
+-- then locked, especially during/after smooth movement. Combine the zone query
+-- with a positional scan (same approach as the mission primary slots) so
+-- occupancy, labels, discard and recycle all see cards that are visibly there.
+function getCardsInSecondarySlot(zone)
+    if not zone then
+        return {}
+    end
+
+    local found = {}
+    local seen = {}
+    local function add(obj)
+        if obj and (obj.tag == "Card" or obj.tag == "Deck" or obj.type == "Card" or obj.type == "Deck") and not seen[obj.getGUID()] then
+            seen[obj.getGUID()] = true
+            found[#found + 1] = obj
+        end
+    end
+
+    for _, obj in ipairs(zone.getObjects()) do
+        add(obj)
+    end
+
+    local bounds = zone.getBounds()
+    local center = bounds.center
+    local halfX = bounds.size.x / 2
+    local halfZ = bounds.size.z / 2
+    for _, obj in ipairs(getAllObjects()) do
+        local pos = obj.getPosition()
+        if math.abs(pos.x - center.x) <= halfX and
+           math.abs(pos.z - center.z) <= halfZ and
+           pos.y > 0.5 and pos.y < 3.0 then
+            add(obj)
+        end
+    end
+
+    return found
+end
+
 function getFirstOpenSecondaryCardZone(zoneGuids)
     for _, slot in ipairs(getSecondaryCardZones(zoneGuids)) do
-        if #slot.zone.getObjects() == 0 then
+        if #getCardsInSecondarySlot(slot.zone) == 0 then
             return slot
         end
     end
@@ -1400,12 +1438,10 @@ function getSecondaryCardName(zone)
         return nil
     end
 
-    for _, object in ipairs(zone.getObjects()) do
-        if object.tag == "Card" or object.tag == "Deck" then
-            local name = object.getName()
-            if name and name ~= "" then
-                return name
-            end
+    for _, object in ipairs(getCardsInSecondarySlot(zone)) do
+        local name = object.getName()
+        if name and name ~= "" then
+            return name
         end
     end
 
@@ -1505,7 +1541,7 @@ function drawSecondaryToFirstOpenSlot(params)
     -- "first open" would return the same slot twice.
     local openSlots = {}
     for _, slot in ipairs(getSecondaryCardZones(params.zoneGuids)) do
-        if #slot.zone.getObjects() == 0 then
+        if #getCardsInSecondarySlot(slot.zone) == 0 then
             openSlots[#openSlots + 1] = slot
             if #openSlots >= 2 then break end
         end
@@ -1570,11 +1606,9 @@ function discardSecondarySlot(params)
     end
 
     local discardPosition = getSecondaryDiscardPosition(color)
-    for _, object in ipairs(zone.getObjects()) do
-        if object.tag == "Card" or object.tag == "Deck" then
-            object.locked = false
-            object.setPositionSmooth(discardPosition)
-        end
+    for _, object in ipairs(getCardsInSecondarySlot(zone)) do
+        object.locked = false
+        object.setPositionSmooth(discardPosition)
     end
 
     Wait.time(function() refreshSecondaryNamesForColor(color) end, 0.25)
@@ -1595,12 +1629,10 @@ function recycleSecondarySlot(params)
     end
 
     local recycledAny = false
-    for _, object in ipairs(zone.getObjects()) do
-        if object.tag == "Card" or object.tag == "Deck" then
-            object.locked = false
-            deckObj = deckObj.putObject(object) or deckObj
-            recycledAny = true
-        end
+    for _, object in ipairs(getCardsInSecondarySlot(zone)) do
+        object.locked = false
+        deckObj = deckObj.putObject(object) or deckObj
+        recycledAny = true
     end
 
     if not recycledAny then
