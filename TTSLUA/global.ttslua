@@ -45,7 +45,9 @@ function setHudValue(params)
     if not params or not params.id then return end
     for _, prefix in ipairs(HUD_PANEL_PREFIXES) do
         pcall(function()
-            Global.UI.setValue(prefix .. params.id, params.value)
+            local uiId = prefix .. params.id
+            Global.UI.setValue(uiId, params.value)
+            Global.UI.setAttribute(uiId, "text", params.value)
         end)
     end
 end
