@@ -496,10 +496,10 @@ redPrimaryDeck_GUID = "25c0d8"  -- z = +12.5 (red side)
 -- are still labelled the old, inverted way -- cosmetic only, the GUIDs below
 -- are what the code uses. Swap those nicknames in the save if you want them
 -- to read correctly in the editor.
-missionCardZone_BluePrimary1_GUID = "d1e003" -- z = -3.05 (blue side)
-missionCardZone_BluePrimary2_GUID = "d1e004" -- z = -5.10 (blue side)
-missionCardZone_RedPrimary1_GUID  = "d1e001" -- z =  5.20 (red side)
-missionCardZone_RedPrimary2_GUID  = "d1e002" -- z =  3.15 (red side)
+missionCardZone_BluePrimary1_GUID = "d1e003" -- z = -2.55 (blue side)
+missionCardZone_BluePrimary2_GUID = "d1e004" -- z = -4.80 (blue side)
+missionCardZone_RedPrimary1_GUID  = "d1e001" -- z =  4.80 (red side)
+missionCardZone_RedPrimary2_GUID  = "d1e002" -- z =  2.55 (red side)
 missionCardZone_Deployment_GUID   = "d1e005"
 missionCardZone_Twist_GUID        = "d1e006"
 

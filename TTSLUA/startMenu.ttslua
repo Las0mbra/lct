@@ -1134,7 +1134,7 @@ deployDownBtn = {
     font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
 
-dispositionControlWorldX = 82.0
+dispositionControlWorldX = 80.0
 blueDispositionControlWorldZ = 11.1
 redDispositionControlWorldZ = -11.1
 dispositionControlWorldY = 1.0
@@ -1218,20 +1218,18 @@ function redDispositionDown()
     updateDispositionSelection("Red", -1)
 end
 
-generateMissionWorldX = 84.0
+generateMissionWorldX = 80.0
 generateMissionWorldY = 1.0
 generateMissionWorldZ = 0.0
 
 -- "primary" slots are filled deterministically from the disposition matchup
--- (player + index decide which mission card lands here). "deployment" keeps
--- the original random shuffle-and-draw. Red is the +Z pair, blue the -Z pair
--- (see the deck/zone notes in global.ttslua).
+-- (player + index decide which mission card lands here). Red is the +Z pair,
+-- blue the -Z pair (see the deck/zone notes in global.ttslua).
 missionSlots = {
-    {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  5.20}},
-    {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  3.15}},
-    {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -3.05}},
-    {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -5.10}},
-    {role = "deployment",                          zoneVar = "missionCardZone_Deployment_GUID",   deckVar = "deploymentDeck_GUID",   position = {75.37, 1.01,  0.04}},
+    {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  4.80}},
+    {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  2.55}},
+    {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -2.55}},
+    {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -4.80}},
 }
 
 function writeGenerateMissionButton()
@@ -1239,7 +1237,7 @@ function writeGenerateMissionButton()
     self.createButton({
         label = "Generate Mission", click_function = "generateMission", function_owner = self,
         position = {center.x, center.y, center.z}, rotation = {0, 0, 0},
-        height = 600, width = 4000, font_size = 320,
+        height = 450, width = 3000, font_size = 240,
         color = {0, 0, 0}, font_color = {1, 1, 1},
         tooltip = "Deal each player's primary mission for the current dispositions",
     })
@@ -1417,11 +1415,8 @@ function generateMission()
         broadcastToAll("Matchup " .. key .. "  RED: " .. describePrimaryResolution(redMission, redGuids), {1, 0.55, 0.55})
         broadcastToAll("Matchup " .. key .. "  BLUE: " .. describePrimaryResolution(blueMission, blueGuids), {0.55, 0.7, 1})
 
-        -- 3. Deployment stays random: shuffle that deck only.
-        local deploymentDeck = decksByVar["deploymentDeck_GUID"]
-        if deploymentDeck then deploymentDeck.shuffle() end
+        -- 3. Build the ordered placement list.
 
-        -- 4. Build the ordered placement list.
         local placements = {}
         for _, slot in ipairs(missionSlots) do
             if slot.role == "primary" then
