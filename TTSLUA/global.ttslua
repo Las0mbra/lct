@@ -533,10 +533,10 @@ PLACEHOLDER_MISSION = "Blank Primary"
 
 missionMatchups = {
     -- Disruption (1) is red
-    ["1_1"] = { red = "Placeholder",            blue = "Placeholder" },
+    ["1_1"] = { red = "Outmaneuver",            blue = "Outmaneuver" },
     ["1_2"] = { red = "Locate and Deny",        blue = "Extract Relic" },
-    ["1_3"] = { red = "Placeholder",            blue = "Punishment" },
-    ["1_4"] = { red = "Placeholder",            blue = "Surveil the Foe" },
+    ["1_3"] = { red = "Delay Battle",            blue = "Punishment" },
+    ["1_4"] = { red = "Smoke and Mirrors",            blue = "Surveil the Foe" },
     ["1_5"] = { red = "Death Trap",             blue = "Determined Acquisition" },
 
     -- Priority Assets (2) is red
@@ -547,21 +547,21 @@ missionMatchups = {
     ["2_5"] = { red = "Secure Asset",           blue = "Inescapable Dominion" },
 
     -- Purge the Foe (3) is red
-    ["3_1"] = { red = "Punishment",             blue = "Placeholder" },
+    ["3_1"] = { red = "Punishment",             blue = "Delay Battle" },
     ["3_2"] = { red = "Destroyer's Wrath",      blue = "Vital Link" },
     ["3_3"] = { red = "Meatgrinder",            blue = "Meatgrinder" },
     ["3_4"] = { red = "Consecrate",             blue = "Triangulation" },
     ["3_5"] = { red = "Unstoppable Force",      blue = "Immovable Object" },
 
     -- Reconnaissance (4) is red
-    ["4_1"] = { red = "Surveil the Foe",        blue = "Placeholder" },
+    ["4_1"] = { red = "Surveil the Foe",        blue = "Smoke and Mirrors" },
     ["4_2"] = { red = "Search and Scour",       blue = "Vanguard Operation" },
     ["4_3"] = { red = "Triangulation",          blue = "Consecrate" },
     ["4_4"] = { red = "Gather Intel",           blue = "Gather Intel" },
     ["4_5"] = { red = "Reconnaissance Sweep",   blue = "Purge and Secure" },
 
     -- Take and Hold (5) is red
-    ["5_1"] = { red = "Determined Acquisition", blue = "Placeholder" },
+    ["5_1"] = { red = "Determined Acquisition", blue = "Death Trap" },
     ["5_2"] = { red = "Inescapable Dominion",   blue = "Secure Asset" },
     ["5_3"] = { red = "Immovable Object",       blue = "Unstoppable Force" },
     ["5_4"] = { red = "Purge and Secure",       blue = "Reconnaissance Sweep" },

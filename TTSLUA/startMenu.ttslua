@@ -2667,8 +2667,8 @@ function selectMissionPack(packIndex)
     local redSecondaryDeckGuid = Global.getVar("edition11RedSecondaryDeck_GUID")
     local blueSecondaryDeckGuid = Global.getVar("edition11BlueSecondaryDeck_GUID")
     local dealFixedSecondaries = true
-    local redFixedChoiceCardGuids = {"e9363d", "acca01"}
-    local blueFixedChoiceCardGuids = {"f68853", "7d0dc0"}
+    local redFixedChoiceCardGuids = {"e9363d", "acca01", "8c62d6"}
+    local blueFixedChoiceCardGuids = {"f68853", "7d0dc0", "27bca6"}
     local redTacticalCardGuidToKeep = "838a9b"
     local blueTacticalCardGuidToKeep = "a847c1"
     if legacyPrimaryDeckEnabled then

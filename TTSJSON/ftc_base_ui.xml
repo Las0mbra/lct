@@ -16,12 +16,12 @@
 
 <Panel id="main" active="false" position="0 0 0" scale="0.5 0.5 0.5" offsetXY="0 0" color="#10141EEE" outline="#31415F" outlineSize="8" width="1600" height="1000" rectAlignment="MiddleCenter" visibility="Diamonds">
   <Button id="closeBtn" color="#1A1A2ACC" textColor="#FFFFFF" width="80" height="80" fontSize="42" fontStyle="Bold" roundEdges="true" onClick="closeMenu" outline="#5B6780" outlineSize="3" offsetXY="720 420">X</Button>
-  <Text text="⚔ LCT 40K TABLE ⚔" fontSize="72" color="#F3F6FA" fontStyle="Bold" offsetXY="0 370" alignment="MiddleCenter"/>
-  <Text text="Patch 1.02" fontSize="42" color="#AFC1D8" fontStyle="Bold" offsetXY="0 300" alignment="MiddleCenter"/>
+  <Text text="Patch 1.3b" fontSize="72" color="#F3F6FA" fontStyle="Bold" offsetXY="0 370" alignment="MiddleCenter"/>
+  <Text text="LCT 40K TABLE" fontSize="42" color="#AFC1D8" fontStyle="Bold" offsetXY="0 300" alignment="MiddleCenter"/>
 
   <Panel id="SplashChangelog" width="1360" height="500" offsetXY="0 0" color="#182233CC" outline="#31415F99" outlineSize="3">
     <Text text="Hints &amp; Tips" fontSize="34" color="#F3F6FA" fontStyle="Bold" offsetXY="0 220" alignment="MiddleCenter"/>
-    <Text text="* Secondaries lock when you start the game.&#10;* You can drag and drop the overlays! You can pass turns/phases by clicking Round/Turn.&#10;* Open scoreboard by pressing the button next to the overlay to see more info!&#10;* You can add time and pass clock by clicking it&#10;* Go to Options -&gt; Game Keys to add shortcut buttons!&#10;* Now if you right-click dice spawn buttons (+2d6, +3d6 etc) you automatically roll them&#10;* New rolling algorithm!&#10;* Lots of performance and UI fixes!&#10;* Join Discord for more info :)" fontSize="26" color="#D8E1EA" offsetXY="0 -40" width="1280" height="400" alignment="UpperLeft"/>
+    <Text text="* Secondaries lock when game starts :)&#10;* Uploaded new primary/secondaries based on leaks, will replace when proper images&#10;* The mission matrix should be up and running. The Deployment picker will be in the next update.&#10;* For any questions reach out to LCT Discord" fontSize="30" color="#D8E1EA" offsetXY="0 -40" width="1280" height="400" alignment="UpperLeft"/>
   </Panel>
 
   <Button id="redBtn" color="#B52020" textColor="#FFFFFF" width="460" height="150" fontSize="52" fontStyle="Bold" roundEdges="true" onClick="placeToRed" outline="#F06A6A" outlineSize="4" offsetXY="-540 -350">Red</Button>
