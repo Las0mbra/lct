@@ -18,6 +18,14 @@ ttsDebugEnabled = false
 dispositionValues = {"Disruption", "Priority Assets", "Purge the Foe", "Reconnaissance", "Take and Hold"}
 blueDispositionSelected = 1
 redDispositionSelected = 1
+matTextureSelected = 1
+mapMat_GUID = "28865a"
+matTextures = {
+    {name = "Green", color = {0.00, 0.31, 0.03}, url = "https://steamusercontent-a.akamaihd.net/ugc/11600812045538713232/0064F3B919AEC48D35C233786977578689C81AD1/"},
+    {name = "Blue Green", color = {0.00, 0.31, 0.44}, url = "https://steamusercontent-a.akamaihd.net/ugc/12661578557139534569/9D589BE05341F1CE8EA20369387C7C5077587AB9/"},
+    {name = "Grey Green", color = {0.38, 0.40, 0.34}, url = "https://steamusercontent-a.akamaihd.net/ugc/12631014249723827365/F940CC388DB67806FB4FC81A4CEEFFB20C1FDBE8/"},
+    {name = "Muted Mauve", color = {0.36, 0.26, 0.41}, url = "https://steamusercontent-a.akamaihd.net/ugc/12602332143542612703/BC19D77679D80E92322FC9E22379165CBAE9DC32/"},
+}
 
 function ttsDebugLog(message)
     if ttsDebugEnabled then
@@ -50,6 +58,7 @@ function onLoad(saved_data)
         packSelected = loaded_data.svPackSelected
         blueDispositionSelected = loaded_data.svblueDispositionSelected or blueDispositionSelected
         redDispositionSelected = loaded_data.svredDispositionSelected or redDispositionSelected
+        matTextureSelected = loaded_data.svMatTextureSelected or matTextureSelected
     end
 
     if sizeConfirmed then
@@ -69,6 +78,7 @@ function onLoad(saved_data)
     rebuildOverlayTracking()
 
     mat = getObjectFromGUID(mat_GUID)
+    applyMatTexture(false)
     if simulation then ttsDebugLog("THIS IS "..currentTurn.." TURN") end
 
     redTurnCounter = getObjectFromGUID(Global.getVar("redTurnCounter_GUID"))
@@ -112,6 +122,7 @@ function onSave()
         svPackSelected = packSelected,
         svblueDispositionSelected = blueDispositionSelected,
         svredDispositionSelected = redDispositionSelected,
+        svMatTextureSelected = matTextureSelected,
     })
 
     return saved_data
@@ -426,6 +437,42 @@ confirmBtnLegacy = {
 function refreshMat()
     mat = getObjectFromGUID(mat_GUID)
 end
+
+function normalizeMatTextureIndex(index)
+    if index > #matTextures then
+        return 1
+    end
+    if index < 1 then
+        return #matTextures
+    end
+    return index
+end
+
+function applyMatTexture(rewriteMenu)
+    matTextureSelected = normalizeMatTextureIndex(matTextureSelected)
+    local selected = matTextures[matTextureSelected]
+    local mapMat = getObjectFromGUID(mapMat_GUID)
+    if not mapMat or not selected then return end
+
+    local customInfo = mapMat.getCustomObject()
+    customInfo.image = selected.url
+    mapMat.setCustomObject(customInfo)
+    mapMat.reload()
+
+    if rewriteMenu then
+        Wait.frames(function() writeMenus() end, 2)
+    end
+end
+
+function setMatTexture(index)
+    matTextureSelected = normalizeMatTextureIndex(index)
+    applyMatTexture(true)
+end
+
+function setMatTexture1() setMatTexture(1) end
+function setMatTexture2() setMatTexture(2) end
+function setMatTexture3() setMatTexture(3) end
+function setMatTexture4() setMatTexture(4) end
 
 function writeSizeMenu()
     self.clearButtons()
@@ -2993,6 +3040,23 @@ function writeStartMenu()
     self.createButton(firstPlayerBtn)
 end
 
+matTextureButtonZ = 4.1
+matTextureButtonSpacing = 1.15
+matTextureButtonSize = 720
+
+function writeMatTexturePickerMenu()
+    for i, texture in ipairs(matTextures) do
+        local offset = (i - ((#matTextures + 1) / 2)) * matTextureButtonSpacing
+        local border = (i == matTextureSelected) and {1, 1, 1} or {0, 0, 0}
+        self.createButton({
+            label = "", click_function = "setMatTexture" .. i, function_owner = self,
+            position = {offset, 5, matTextureButtonZ}, rotation = {0, 0, 0},
+            height = matTextureButtonSize, width = matTextureButtonSize, font_size = 1,
+            color = texture.color, font_color = border, tooltip = texture.name,
+        })
+    end
+end
+
 function writeDeployPickerMenu()
     if not deploySelected or not DeployZonesData[deploySelected] then
         deploySelected = #DeployZonesData
@@ -3005,6 +3069,7 @@ end
 
 function writeDeployMenu()
     writeDeployPickerMenu()
+    writeMatTexturePickerMenu()
     writeDispositionMenu()
     -- self.createButton(nineFromDeployBtn)
 
@@ -3024,7 +3089,6 @@ function writeIngameMenu()
         nextPhaseBtn.label = phases[currentPhase].."\nPASS TURN"
     end
     self.createButton(nextPhaseBtn)
-    writeDeployPickerMenu()
     writeDispositionMenu(true)
 end
 
