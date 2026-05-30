@@ -568,6 +568,37 @@ missionMatchups = {
     ["5_5"] = { red = "Battlefield Dominance",  blue = "Battlefield Dominance" },
 }
 
+-- Deployment choices keyed the same way as missionMatchups. Each entry is
+-- a deterministic set of deployment cards from deploymentDeck_GUID (2dc2e8).
+-- Edit these per pairing as the matrix gets finalized.
+missionDeploymentMatchups = {
+    ["1_1"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["1_2"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["1_3"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["1_4"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["1_5"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["2_1"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["2_2"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["2_3"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["2_4"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["2_5"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["3_1"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["3_2"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["3_3"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["3_4"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["3_5"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["4_1"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["4_2"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["4_3"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["4_4"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["4_5"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["5_1"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["5_2"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["5_3"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["5_4"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["5_5"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+}
+
 interactiveButtonTableQuarters_State = 1
 interactiveButtonAreaDenial = 1
 interactiveButtonStratReserves = 1
