@@ -22,9 +22,9 @@ matTextureSelected = 1
 mapMat_GUID = "28865a"
 matTextures = {
     {name = "Green", color = {0.00, 0.31, 0.03}, url = "https://steamusercontent-a.akamaihd.net/ugc/11600812045538713232/0064F3B919AEC48D35C233786977578689C81AD1/"},
-    {name = "Blue Green", color = {0.00, 0.31, 0.44}, url = "https://steamusercontent-a.akamaihd.net/ugc/12661578557139534569/9D589BE05341F1CE8EA20369387C7C5077587AB9/"},
-    {name = "Grey Green", color = {0.38, 0.40, 0.34}, url = "https://steamusercontent-a.akamaihd.net/ugc/12631014249723827365/F940CC388DB67806FB4FC81A4CEEFFB20C1FDBE8/"},
-    {name = "Muted Mauve", color = {0.36, 0.26, 0.41}, url = "https://steamusercontent-a.akamaihd.net/ugc/12602332143542612703/BC19D77679D80E92322FC9E22379165CBAE9DC32/"},
+    {name = "Blue", color = {0.00, 0.31, 0.44}, url = "https://steamusercontent-a.akamaihd.net/ugc/12661578557139534569/9D589BE05341F1CE8EA20369387C7C5077587AB9/"},
+    {name = "Grey", color = {0.38, 0.40, 0.34}, url = "https://steamusercontent-a.akamaihd.net/ugc/12631014249723827365/F940CC388DB67806FB4FC81A4CEEFFB20C1FDBE8/"},
+    {name = "Purple", color = {0.36, 0.26, 0.41}, url = "https://steamusercontent-a.akamaihd.net/ugc/12602332143542612703/BC19D77679D80E92322FC9E22379165CBAE9DC32/"},
 }
 
 function ttsDebugLog(message)
@@ -377,29 +377,12 @@ confirmBtn = {
     press_color    = { 0.13, 0.55, 0.12, 1 }
 }
 
-confirmBtn2v2 = {
-    index          = i,
-    label          = "2v2",
-    click_function = "none",
-    function_owner = self,
-    position       = { -menuSizeX + 6.0, menuSizeY, menuSizeZ + 2.65 },
-    rotation       = { 0, 0, 0 },
-    height         = 810,
-    width          = 4500,
-    scale          = { 1, 1, 1 },
-    font_size      = 375,
-    color          = { 0.856, 0.09998388, 0.09398384 },
-    font_color     = { 1.0, 1.0, 1.0 },
-    hover_color    = { 1.0, 0.18, 0.16, 1 },
-    press_color    = { 0.65, 0.06, 0.05, 1 }
-}
-
 confirmBtn4 = {
     index          = i,
     label          = "Solo",
     click_function = "confirmForSingles",
     function_owner = self,
-    position       = { -menuSizeX - 6.0, menuSizeY, menuSizeZ + 4.65 },
+    position       = { -menuSizeX + 6.0, menuSizeY, menuSizeZ + 2.65 },
     rotation       = { 0, 0, 0 },
     height         = 810,
     width          = 4500,
@@ -468,8 +451,6 @@ function writeSizeMenu()
     self.createButton(sizeUpBtn)
     self.createButton(sizeDownBtn)
     self.createButton(confirmBtn)
-    self.createButton(confirmBtn2v2)
-    self.createButton(removeMapsBtn)
     self.createButton(confirmBtn4)
     mat.setScale(sizeData[mapSizeSelected].scale)
     mat.setPosition(positionValue)
