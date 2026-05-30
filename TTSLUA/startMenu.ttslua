@@ -455,9 +455,11 @@ function applyMatTexture(rewriteMenu)
     if not mapMat or not selected then return end
 
     local customInfo = mapMat.getCustomObject()
-    customInfo.image = selected.url
-    mapMat.setCustomObject(customInfo)
-    mapMat.reload()
+    if customInfo.image ~= selected.url then
+        customInfo.image = selected.url
+        mapMat.setCustomObject(customInfo)
+        mapMat.reload()
+    end
 
     if rewriteMenu then
         Wait.frames(function() writeMenus() end, 2)
@@ -479,7 +481,7 @@ function writeSizeMenu()
     if sizeConfirmed then
         return
     end
-    self.createButton(startBtnDisabled)
+    createButtonWithBorder(startBtnDisabled)
     self.createButton(sizeMenuBtn)
     sizeBtn.label=sizeData[mapSizeSelected].name
     self.createButton(sizeBtn)
@@ -3034,25 +3036,57 @@ function writeMenus()
     end
 end
 
-function writeStartMenu()
-    if gameMode ~= "game" then return end
-    self.createButton(startBtn)
-    self.createButton(firstPlayerBtn)
+menuButtonBorderThickness = 70
+
+-- Creates a button with a border by drawing a slightly larger backing button behind it
+-- (TTS buttons have no outline property). borderColor defaults to dark grey.
+function createButtonWithBorder(params, borderColor)
+    local border = {}
+    for k, v in pairs(params) do border[k] = v end
+    border.label = ""
+    border.font_size = 1
+    border.height = (params.height or 0) + menuButtonBorderThickness
+    border.width = (params.width or 0) + menuButtonBorderThickness
+    border.color = borderColor or {0.1, 0.1, 0.1}
+    self.createButton(border)
+
+    -- Raise the real button slightly in y so it renders on top of the border.
+    local top = {}
+    for k, v in pairs(params) do top[k] = v end
+    top.position = {params.position[1], params.position[2] + 0.01, params.position[3]}
+    self.createButton(top)
 end
 
-matTextureButtonZ = 4.1
-matTextureButtonSpacing = 1.15
-matTextureButtonSize = 720
+function writeStartMenu()
+    if gameMode ~= "game" then return end
+    createButtonWithBorder(startBtn)
+    createButtonWithBorder(firstPlayerBtn)
+end
+
+matTextureButtonZ = 4.8
+matTextureButtonSpacing = 1.0
+matTextureButtonSize = 360
+matTextureBorderThickness = 70
 
 function writeMatTexturePickerMenu()
     for i, texture in ipairs(matTextures) do
         local offset = (i - ((#matTextures + 1) / 2)) * matTextureButtonSpacing
-        local border = (i == matTextureSelected) and {1, 1, 1} or {0, 0, 0}
+        local isSelected = (i == matTextureSelected)
+        local borderColor = isSelected and {1, 1, 1} or {0.1, 0.1, 0.1}
+        -- Border: a slightly larger button rendered behind the swatch (TTS buttons have no outline).
         self.createButton({
             label = "", click_function = "setMatTexture" .. i, function_owner = self,
             position = {offset, 5, matTextureButtonZ}, rotation = {0, 0, 0},
-            height = matTextureButtonSize, width = matTextureButtonSize, font_size = 1,
-            color = texture.color, font_color = border, tooltip = texture.name,
+            height = matTextureButtonSize + matTextureBorderThickness,
+            width = matTextureButtonSize + matTextureBorderThickness, font_size = 1,
+            color = borderColor, tooltip = texture.name,
+        })
+        -- Color swatch on top (raised slightly in y so it renders above the border).
+        self.createButton({
+            label = isSelected and "✓" or "", click_function = "setMatTexture" .. i, function_owner = self,
+            position = {offset, 5.01, matTextureButtonZ}, rotation = {0, 0, 0},
+            height = matTextureButtonSize, width = matTextureButtonSize, font_size = 180,
+            color = texture.color, font_color = {1, 1, 1}, tooltip = texture.name,
         })
     end
 end
@@ -3088,7 +3122,7 @@ function writeIngameMenu()
     if currentPhase == #phases then
         nextPhaseBtn.label = phases[currentPhase].."\nPASS TURN"
     end
-    self.createButton(nextPhaseBtn)
+    createButtonWithBorder(nextPhaseBtn)
     writeDispositionMenu(true)
 end
 
@@ -3216,6 +3250,14 @@ function startGame(obj, player, alt)
             if not simulation then
                 return
             end
+        end
+    end
+
+    local selectedDeployZone = DeployZonesData and DeployZonesData[deploySelected]
+    if not selectedDeployZone or selectedDeployZone.name == "No Deployment Zone" then
+        broadcastToAll("Cannot start: select a deployment zone first.", {1, 0, 0})
+        if not simulation then
+            return
         end
     end
 

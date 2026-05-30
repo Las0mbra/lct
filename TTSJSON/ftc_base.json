@@ -1765,7 +1765,7 @@
         "b": 0
       },
       "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/34445928215195743/FB55BBB52F84D202ACB9F20E7DC451ED0568BA3F/",
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/10365186186880024371/7CFC32CC352FD562D93EB11DBF649FC510E46D73/",
         "ImageSecondaryURL": "",
         "WidthScale": 1
       },
@@ -1813,7 +1813,7 @@
         "b": 1
       },
       "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/34445928215195743/FB55BBB52F84D202ACB9F20E7DC451ED0568BA3F/",
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/10365186186880024371/7CFC32CC352FD562D93EB11DBF649FC510E46D73/",
         "ImageSecondaryURL": "",
         "WidthScale": 1
       },
@@ -18478,7 +18478,7 @@
       "CustomDeck": {
         "769": {
           "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/34446555856803334/3FD1FBAA23B45260F8FE24168EC6C7252E227B3B/",
-          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/34441311436046576/F5AD59FD0DE91FF151ABC58705F5CAE2CC32F71C/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/10365186186880024371/7CFC32CC352FD562D93EB11DBF649FC510E46D73/",
           "NumWidth": 1,
           "NumHeight": 1,
           "BackIsHidden": true,
@@ -20680,332 +20680,6 @@
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": ""
-    },
-    {
-      "GUID": "21aa0e",
-      "Name": "Custom_Model_Infinite_Bag",
-      "Transform": {
-        "posX": 27.7646751,
-        "posY": -4.9643597,
-        "posZ": 41.07474,
-        "rotX": 1.53520944e-06,
-        "rotY": 359.9939,
-        "rotZ": -5.588864e-07,
-        "scaleX": 2.960637,
-        "scaleY": 0.1287234,
-        "scaleZ": 2.960637
-      },
-      "Nickname": "[b][i]Battle-shocked[/i][/b]",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1,
-        "a": 0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "MaterialIndex": -1,
-      "MeshIndex": -1,
-      "CustomMesh": {
-        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071991282/5C391C2599AE5F6972D6EFA7BFC04B41D6E821E3/",
-        "DiffuseURL": "",
-        "NormalURL": "",
-        "ColliderURL": "",
-        "Convex": true,
-        "MaterialIndex": 0,
-        "TypeIndex": 7,
-        "CastShadows": true
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "ContainedObjects": [
-        {
-          "GUID": "b20417",
-          "Name": "Custom_Token",
-          "Transform": {
-            "posX": 0,
-            "posY": 0,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 0,
-            "rotZ": 0,
-            "scaleX": 0.5,
-            "scaleY": 1,
-            "scaleZ": 0.5
-          },
-          "Nickname": "[b][i]Battle-shocked[/i][/b]",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13010387546801221302/5C4BD741352EA2EFD9EB642178AAACA4F853518E/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1,
-            "WidthScale": 0,
-            "CustomToken": {
-              "Thickness": 0.1,
-              "MergeDistancePixels": 25,
-              "StandUp": false,
-              "Stackable": false
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        }
-      ],
-      "ChildObjects": [
-        {
-          "GUID": "9cdd75",
-          "Name": "Custom_Token",
-          "Transform": {
-            "posX": 0,
-            "posY": 0,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 0,
-            "rotZ": 0,
-            "scaleX": 0.267505437,
-            "scaleY": 5,
-            "scaleZ": 0.267947078
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13010387546801221302/5C4BD741352EA2EFD9EB642178AAACA4F853518E/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1,
-            "WidthScale": 0
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        }
-      ]
-    },
-    {
-      "GUID": "98e221",
-      "Name": "Custom_Model_Infinite_Bag",
-      "Transform": {
-        "posX": 31.1273727,
-        "posY": -4.9643597,
-        "posZ": 41.0697861,
-        "rotX": 1.57799332e-06,
-        "rotY": 5.187348e-05,
-        "rotZ": -5.99224961e-07,
-        "scaleX": 2.960637,
-        "scaleY": 0.1287234,
-        "scaleZ": 2.960637
-      },
-      "Nickname": "[b][i]Action-In-Progress[/i][/b]",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1,
-        "a": 0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "MaterialIndex": -1,
-      "MeshIndex": -1,
-      "CustomMesh": {
-        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071991282/5C391C2599AE5F6972D6EFA7BFC04B41D6E821E3/",
-        "DiffuseURL": "",
-        "NormalURL": "",
-        "ColliderURL": "",
-        "Convex": true,
-        "MaterialIndex": 0,
-        "TypeIndex": 7,
-        "CastShadows": true
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "ContainedObjects": [
-        {
-          "GUID": "b20417",
-          "Name": "Custom_Token",
-          "Transform": {
-            "posX": 0,
-            "posY": 0,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 0,
-            "rotZ": 0,
-            "scaleX": 0.5,
-            "scaleY": 1,
-            "scaleZ": 0.5
-          },
-          "Nickname": "[b][i]Action-In-Progress[/i][/b]",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/12413768925086392778/385D1E7F4CF527EE13008502130B0288E17AF648/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1,
-            "WidthScale": 0,
-            "CustomToken": {
-              "Thickness": 0.1,
-              "MergeDistancePixels": 25,
-              "StandUp": false,
-              "Stackable": false
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        }
-      ],
-      "ChildObjects": [
-        {
-          "GUID": "9cdd75",
-          "Name": "Custom_Token",
-          "Transform": {
-            "posX": 0,
-            "posY": 0,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 0,
-            "rotZ": 0,
-            "scaleX": 0.267505437,
-            "scaleY": 5,
-            "scaleZ": 0.267947078
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/12413768925086392778/385D1E7F4CF527EE13008502130B0288E17AF648/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1,
-            "WidthScale": 0
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        }
-      ]
     },
     {
       "GUID": "f7d85a",
@@ -24557,7 +24231,7 @@
       "Hands": false,
       "MaterialIndex": 1,
       "LuaScript": "",
-      "LuaScriptState": "{\"cd\":{\"move\":true,\"scale\":false},\"tid\":[{\"name\":\"Urban 1\",\"url\":\"http://cloud-3.steamusercontent.com/ugc/849339809539335607/A315686492591FD0DE01FE60C418CC54AD0F8719/\"},{\"name\":\"Urban 2\",\"url\":\"http://cloud-3.steamusercontent.com/ugc/849339809539324370/51C21480B786A9216BA5EDB44E2A10E35DDF3601/\"},{\"name\":\"Desert 1\",\"url\":\"http://cloud-3.steamusercontent.com/ugc/849339809539332522/5289A4E95F8A2C03C1CD552D9A0A4CC98BEEBE44/\"},{\"name\":\"Desert 2\",\"url\":\"http://cloud-3.steamusercontent.com/ugc/849339809539334528/422A466AB6D8B919E18852C90CFFF582E0A47F35/\"},{\"name\":\"Desert River\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477311500/010B988AA13234C915CF7ADB95B9993BF08FDD1A/\"},{\"name\":\"Grass 1\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477318654/C73F9B4F486C47CB2808138069F1DBBBE6B71B14/\"},{\"name\":\"Grass 2\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477323114/3B56A233BA2F93E954BBBF0064208B973EC68727/\"},{\"name\":\"Rubble Grass\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477337108/BED38DF4AAD4F57AC10A6327DD5822F0057B5C4B/\"},{\"name\":\"Snow\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477340711/9634494CC699D1D188D3F0E7FD4737167552F7DE/\"},{\"name\":\"Ice\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477345048/37A2E39D5099828A4057DECC53804AC36276A669/\"},{\"name\":\"Lava\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477355670/DC4B8F6E22A832A6E3BAA3F8D6C95F433D4D475B/\"},{\"name\":\"Lunar\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477358932/73C74608E61F99D1306818739324FFB6DB3FF8C1/\"},{\"name\":\"Chaos\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477362115/1B6EA548941B8648DD382A3FA4FAA922FB1B218B/\"},{\"name\":\"Nurgle\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477364563/66F3F747C31150EC7C96B7F5065A797A7B5856A5/\"},{\"name\":\"Necro\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477367523/F93D77442BCED2AED5326D982B80F742DDBF1ADE/\"},{\"name\":\"KT Map 1\",\"url\":\"http://cloud-3.steamusercontent.com/ugc/789758618465975861/49CDBABA8927DC51FB24CA775FD92F056D1CD8AB/\"},{\"name\":\"KT Map 2\",\"url\":\"http://cloud-3.steamusercontent.com/ugc/789758618465974897/9D9E656F07CA35F112D3020F18B2F0461EB6E9EE/\"},{\"name\":\"KT Map 3\",\"url\":\"http://cloud-3.steamusercontent.com/ugc/789758618465975252/49C41C4F69AB3530EBDCA30870F78BBEB80EF1A9/\"},{\"name\":\"KT Map 4\",\"url\":\"http://cloud-3.steamusercontent.com/ugc/789758618465975570/025A6B3CEF1692272FAE550919E00507B40F207D/\"},{\"name\":\"KT Map 5\",\"url\":\"https://steamusercontent-a.akamaihd.net/ugc/34445928215195743/FB55BBB52F84D202ACB9F20E7DC451ED0568BA3F/\"},{\"name\":\"Green felt\",\"url\":\"https://steamusercontent-a.akamaihd.net/ugc/34445928215195743/FB55BBB52F84D202ACB9F20E7DC451ED0568BA3F/\"},{\"name\":\"Red felt\",\"url\":\"https://i.imgur.com/DbPelDi.jpg\"},{\"name\":\"Grey felt\",\"url\":\"https://i.imgur.com/N0O6aqj.jpg\"}]}",
+      "LuaScriptState": "{\"cd\":{\"move\":true,\"scale\":false},\"tid\":[{\"name\":\"Urban 1\",\"url\":\"http://cloud-3.steamusercontent.com/ugc/849339809539335607/A315686492591FD0DE01FE60C418CC54AD0F8719/\"},{\"name\":\"Urban 2\",\"url\":\"http://cloud-3.steamusercontent.com/ugc/849339809539324370/51C21480B786A9216BA5EDB44E2A10E35DDF3601/\"},{\"name\":\"Desert 1\",\"url\":\"http://cloud-3.steamusercontent.com/ugc/849339809539332522/5289A4E95F8A2C03C1CD552D9A0A4CC98BEEBE44/\"},{\"name\":\"Desert 2\",\"url\":\"http://cloud-3.steamusercontent.com/ugc/849339809539334528/422A466AB6D8B919E18852C90CFFF582E0A47F35/\"},{\"name\":\"Desert River\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477311500/010B988AA13234C915CF7ADB95B9993BF08FDD1A/\"},{\"name\":\"Grass 1\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477318654/C73F9B4F486C47CB2808138069F1DBBBE6B71B14/\"},{\"name\":\"Grass 2\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477323114/3B56A233BA2F93E954BBBF0064208B973EC68727/\"},{\"name\":\"Rubble Grass\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477337108/BED38DF4AAD4F57AC10A6327DD5822F0057B5C4B/\"},{\"name\":\"Snow\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477340711/9634494CC699D1D188D3F0E7FD4737167552F7DE/\"},{\"name\":\"Ice\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477345048/37A2E39D5099828A4057DECC53804AC36276A669/\"},{\"name\":\"Lava\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477355670/DC4B8F6E22A832A6E3BAA3F8D6C95F433D4D475B/\"},{\"name\":\"Lunar\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477358932/73C74608E61F99D1306818739324FFB6DB3FF8C1/\"},{\"name\":\"Chaos\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477362115/1B6EA548941B8648DD382A3FA4FAA922FB1B218B/\"},{\"name\":\"Nurgle\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477364563/66F3F747C31150EC7C96B7F5065A797A7B5856A5/\"},{\"name\":\"Necro\",\"url\":\"https://steamuserimages-a.akamaihd.net/ugc/961990768477367523/F93D77442BCED2AED5326D982B80F742DDBF1ADE/\"},{\"name\":\"KT Map 1\",\"url\":\"http://cloud-3.steamusercontent.com/ugc/789758618465975861/49CDBABA8927DC51FB24CA775FD92F056D1CD8AB/\"},{\"name\":\"KT Map 2\",\"url\":\"http://cloud-3.steamusercontent.com/ugc/789758618465974897/9D9E656F07CA35F112D3020F18B2F0461EB6E9EE/\"},{\"name\":\"KT Map 3\",\"url\":\"http://cloud-3.steamusercontent.com/ugc/789758618465975252/49C41C4F69AB3530EBDCA30870F78BBEB80EF1A9/\"},{\"name\":\"KT Map 4\",\"url\":\"http://cloud-3.steamusercontent.com/ugc/789758618465975570/025A6B3CEF1692272FAE550919E00507B40F207D/\"},{\"name\":\"KT Map 5\",\"url\":\"https://steamusercontent-a.akamaihd.net/ugc/13586351178749913894/3BCDADAE39772CE43283847156ADB943988DA19B/\"},{\"name\":\"Green felt\",\"url\":\"https://steamusercontent-a.akamaihd.net/ugc/13586351178749913894/3BCDADAE39772CE43283847156ADB943988DA19B/\"},{\"name\":\"Red felt\",\"url\":\"https://i.imgur.com/DbPelDi.jpg\"},{\"name\":\"Grey felt\",\"url\":\"https://i.imgur.com/N0O6aqj.jpg\"}]}",
       "XmlUI": ""
     },
     {
@@ -24772,7 +24446,7 @@
       "Number": 0,
       "CustomMesh": {
         "MeshURL": "http://cloud-3.steamusercontent.com/ugc/94979895601488369/894F4E9B36D9116E12A24DAAFE1B4FD26A1880D2/",
-        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/34445199169868588/DA62A66722C3DAD30148A5882BC16322B989C557/",
+        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/784124162959095290/7FB95A71D31DE2FF8B3C4FC16B21492B99CE0533/",
         "NormalURL": "",
         "ColliderURL": "",
         "Convex": true,
@@ -25730,8 +25404,8 @@
           "HideWhenFaceDown": false,
           "Hands": false,
           "CustomImage": {
-            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/34445928215195743/FB55BBB52F84D202ACB9F20E7DC451ED0568BA3F/",
-            "ImageSecondaryURL": "http://cloud-3.steamusercontent.com/ugc/34445928215195743/FB55BBB52F84D202ACB9F20E7DC451ED0568BA3F/",
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13586351178749913894/3BCDADAE39772CE43283847156ADB943988DA19B/",
+            "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13586351178749913894/3BCDADAE39772CE43283847156ADB943988DA19B/",
             "ImageScalar": 1.0,
             "WidthScale": 0.0,
             "CustomTile": {
@@ -28725,7 +28399,6 @@
       "Hands": false,
       "SidewaysCard": false,
       "DeckIDs": [
-        5600,
         5500,
         5400,
         5300,
@@ -28736,15 +28409,6 @@
         6000
       ],
       "CustomDeck": {
-        "56": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699594388/618C8328BA487F9F89A59951DDEAD354730A2B4D/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        },
         "55": {
           "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699592499/00146C4943E1042C5094A7D5D3A3F9605EA35955/",
           "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
@@ -28822,67 +28486,6 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "ContainedObjects": [
-        {
-          "GUID": "ec78cd",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": 82.5820541,
-            "posY": 1.05934012,
-            "posZ": 16.81191,
-            "rotX": -0.000165416059,
-            "rotY": 270.006073,
-            "rotZ": 180.000381,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "Sites of Power",
-          "Description": "The objective markers in No Man’s Land are sites of power. At the end of each Command phase, the player whose turn it is empowers all sites of power that they control that have one or more [b]CHARACTER[/b] models from their army within range; each site of power remains empowered by that player while one or more of their [b]CHARACTER[/b] model remains within range of it.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores VP as follows (up to 15VP per turn):\r\n\r\n* 3VP for each objective marker they control.\r\n* 3VP for each site of power that they have empowered.\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Tags": [
-            "primaryCard"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 5600,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "56": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699594388/618C8328BA487F9F89A59951DDEAD354730A2B4D/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
         {
           "GUID": "3ad5a3",
           "Name": "CardCustom",
