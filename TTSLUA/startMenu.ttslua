@@ -1154,8 +1154,21 @@ end
 dispositionScale = 0.4125
 dispositionArrowOffset = arrowOffset * dispositionScale
 
+dispositionButtonColors = {
+    ["Disruption"] = {0.36, 0.62, 1.00},
+    ["Priority Assets"] = {1.00, 0.92, 0.45},
+    ["Purge the Foe"] = {1.00, 0.58, 0.58},
+    ["Reconnaissance"] = {0.55, 0.95, 0.90},
+    ["Take and Hold"] = {0.38, 0.76, 0.34},
+}
+
+function getDispositionButtonColor(selectedValue)
+    return dispositionButtonColors[selectedValue] or {1, 1, 1}
+end
+
 function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunction, upFunction, locked)
     local selectedValue = dispositionValues[selectedIndex] or dispositionValues[1]
+    local selectedColor = getDispositionButtonColor(selectedValue)
     local center = self.positionToLocal({dispositionControlWorldX, dispositionControlWorldY, centerWorldZ})
     local cx, cy, cz = center.x, center.y, center.z
 
@@ -1163,7 +1176,7 @@ function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunct
         label = selectedValue, click_function = "none", function_owner = self,
         position = {cx, cy, cz}, rotation = {0, 0, 0},
         height = 750 * dispositionScale, width = 6000 * dispositionScale, font_size = 400 * dispositionScale,
-        color = {1, 1, 1}, font_color = {0, 0, 0}, tooltip = label,
+        color = selectedColor, font_color = {0, 0, 0}, tooltip = label,
     })
 
     if locked then
