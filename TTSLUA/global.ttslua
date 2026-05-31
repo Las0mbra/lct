@@ -1568,14 +1568,15 @@ function drawSecondaryToFirstOpenSlot(params)
         return
     end
 
-    -- Collect up to 2 open slots upfront. Smooth takeObject means the first card
-    -- hasn't physically landed when the second draw fires, so re-querying for
-    -- "first open" would return the same slot twice.
+    -- Collect up to maxCards open slots upfront (defaults to 2). Smooth takeObject
+    -- means the first card hasn't physically landed when the second draw fires, so
+    -- re-querying for "first open" would return the same slot twice.
+    local maxCards = params.maxCards or 2
     local openSlots = {}
     for _, slot in ipairs(getSecondaryCardZones(params.zoneGuids)) do
         if #getCardsInSecondarySlot(slot.zone) == 0 then
             openSlots[#openSlots + 1] = slot
-            if #openSlots >= 2 then break end
+            if #openSlots >= maxCards then break end
         end
     end
 
@@ -1626,6 +1627,30 @@ function drawRedSecondaryToFirstOpenSlot()
         refreshNames = refreshRedSecondaryNames,
         fullMessage = "Red already has 8 active secondary cards.",
         deckMissingMessage = "Red secondary deck could not be found.",
+    })
+end
+
+function drawBlueSecondaryToFirstOpenSlotSingle()
+    drawSecondaryToFirstOpenSlot({
+        color = "Blue",
+        zoneGuids = blueSecondaryCardZone_GUIDs,
+        deckGuidKey = "blueSecondaryDeck_GUID",
+        refreshNames = refreshBlueSecondaryNames,
+        fullMessage = "Blue already has 8 active secondary cards.",
+        deckMissingMessage = "Blue secondary deck could not be found.",
+        maxCards = 1,
+    })
+end
+
+function drawRedSecondaryToFirstOpenSlotSingle()
+    drawSecondaryToFirstOpenSlot({
+        color = "Red",
+        zoneGuids = redSecondaryCardZone_GUIDs,
+        deckGuidKey = "redSecondaryDeck_GUID",
+        refreshNames = refreshRedSecondaryNames,
+        fullMessage = "Red already has 8 active secondary cards.",
+        deckMissingMessage = "Red secondary deck could not be found.",
+        maxCards = 1,
     })
 end
 
