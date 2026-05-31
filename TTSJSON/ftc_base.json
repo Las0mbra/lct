@@ -15587,8 +15587,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomMesh": {
-        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/16566457576718859030/BD0EB5B1562A5F67D7E6AC6AB85E33A4F9820781/",
-        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11159664248693195246/4A2B7694839D947C706342D6A73234BA9BDDF75C/",
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/14987944689420543018/B157A2560F597D370CDDC62C2DF7F9C6EDFAC76C/",
+        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/15502860746335846524/6A4B1B629B7FA1597153FEE905C76C9BFD87F146/",
         "ColliderURL": "",
         "Convex": true,
         "MaterialIndex": 3,

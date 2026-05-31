@@ -26,9 +26,16 @@ scoresheetActive = true
 
 -- Button k-indexes
 BTN_K_IX_TURN_SUM = 1
-BTN_K_IX_SECONDARY_1 = 2
-BTN_K_IX_SECONDARY_2 = 3
-BTN_K_IX_PRIMARY = 4
+BTN_K_IX_PRIMARY = 2
+BTN_K_IX_SECONDARY = 3
+
+-- Scoring caps
+ROUND_PRIMARY_CAP = 15    -- max primary points per battle round
+ROUND_SECONDARY_CAP = 15  -- max secondary points per battle round
+GAME_PRIMARY_CAP = 45     -- max primary points for the whole game
+GAME_SECONDARY_CAP = 45   -- max secondary points for the whole game
+GAME_BASE_POINTS = 10     -- painted army bonus added to every total
+GAME_TOTAL_CAP = 100      -- max overall score (45 + 45 + 10)
 
 -- Button l-indexes
 BTN_L_IX_SCORE = 1
@@ -36,24 +43,24 @@ BTN_L_IX_PLUS = 2
 BTN_L_IX_MINUS = 3
 
 -- Tooltips[player, k-index]
-tooltips = {{"Sum", "Secondary 2", "Secondary 1", "Primary"},{"Sum", "Secondary 1", "Secondary 2", "Primary"}}
+tooltips = {{"Sum", "Primary", "Secondary"},{"Sum", "Primary", "Secondary"}}
 TURN_SUM_CENTER_SHIFT = 0.38
 
--- player, round, k-index
+-- player, round, k-index (turn sum, primary, secondary)
 scores = {
 	{
-		{0, 0, 0, 0},
-		{0, 0, 0, 0},
-		{0, 0, 0, 0},
-		{0, 0, 0, 0},
-		{0, 0, 0, 0}
+		{0, 0, 0},
+		{0, 0, 0},
+		{0, 0, 0},
+		{0, 0, 0},
+		{0, 0, 0}
 	},
 	{
-		{0, 0, 0, 0},
-		{0, 0, 0, 0},
-		{0, 0, 0, 0},
-		{0, 0, 0, 0},
-		{0, 0, 0, 0}
+		{0, 0, 0},
+		{0, 0, 0},
+		{0, 0, 0},
+		{0, 0, 0},
+		{0, 0, 0}
 	}
 }
 
@@ -65,6 +72,8 @@ SCORE_FIRST_ROUND_X = -0.75
 SCORE_ROUND_GAP_X = 1.50
 SCORE_SIDE_Z = 0.98
 SCORE_CENTER_Z = -0.05
+SCORE_EDGE_SHIFT_Z = -0.5  -- push score columns toward each player's board edge (red -Z, blue +Z); round sum stays put
+PRIMARY_SECONDARY_GAP_Z = 0.2  -- extra spacing nudged onto the secondary column to separate it from primary
 
 playerOneTitle = {
 	index = 0,
@@ -303,8 +312,8 @@ function onload(save_data)
 			button[i][j] = {}
 			b_zpos = SCORE_SIDE_Z
 
-			-- k is index - turn sum, secondary 1, secondary 2, primary
-			for k=1,4 do
+			-- k is index - turn sum, primary, secondary
+			for k=1,3 do
 				button[i][j][k] = {}
 
 				local newButton = {
@@ -323,6 +332,15 @@ function onload(save_data)
 				newButton.index = b_index
 				b_index = b_index + 1
 
+					-- Push scoring columns toward this player's board edge. Round sum
+					-- is left untouched so it stays centred.
+					local edgeShift = (i == 1) and SCORE_EDGE_SHIFT_Z or -SCORE_EDGE_SHIFT_Z
+					-- Add a bit more spacing between primary and secondary by nudging
+					-- the secondary column further toward the edge.
+					if k == BTN_K_IX_SECONDARY then
+						edgeShift = edgeShift + ((i == 1) and -PRIMARY_SECONDARY_GAP_Z or PRIMARY_SECONDARY_GAP_Z)
+					end
+
 					local actual_zpos = b_zpos
 					if i == 1 then
 						actual_zpos = actual_zpos * -1
@@ -334,6 +352,8 @@ function onload(save_data)
 						else
 							actual_zpos = actual_zpos - TURN_SUM_CENTER_SHIFT
 						end
+					else
+						actual_zpos = actual_zpos + edgeShift
 					end
 					b_zpos = b_zpos + 0.66
 
@@ -369,6 +389,7 @@ function onload(save_data)
 						actual_zpos = actual_zpos * -1
 					end
 					actual_zpos = actual_zpos + b_zoffset
+					actual_zpos = actual_zpos + edgeShift
 
 						if l == BTN_L_IX_PLUS then
 							smallButton.position = {b_xpos - 0.25, -0.05, actual_zpos}
@@ -418,7 +439,7 @@ end
 function updateAll(reset)
 	for i=1,2 do
 		for j=1,5 do
-			for k=1,4 do
+			for k=1,3 do
 				if reset then scores[i][j][k] = 0 end
 				updateScore(i, j, k)
 			end
@@ -445,6 +466,21 @@ end
 function nothing()
 end
 
+function capRoundScore(k, value)
+	-- Clamp a round's score into [0, per-round cap]: never negative, and never
+	-- more than 15 primary or 15 secondary points in a single round.
+	if value < 0 then
+		return 0
+	end
+	if k == BTN_K_IX_PRIMARY and value > ROUND_PRIMARY_CAP then
+		return ROUND_PRIMARY_CAP
+	end
+	if k == BTN_K_IX_SECONDARY and value > ROUND_SECONDARY_CAP then
+		return ROUND_SECONDARY_CAP
+	end
+	return value
+end
+
 function plus(i, j, k, alt)
 	-- Increment player I's score for battle round J, scoring component K.
 	-- alt is true if right-clicked, increments by 5.
@@ -452,7 +488,7 @@ function plus(i, j, k, alt)
 	local diff = 1
 	if alt then diff = 5 end
 
-	local score = scores[i][j][k] + diff
+	local score = capRoundScore(k, scores[i][j][k] + diff)
 	scores[i][j][k] = score
 
 	updateScore(i, j, k)
@@ -465,7 +501,7 @@ function minus(i, j, k, alt)
 	local diff = 1
 	if alt then diff = 5 end
 
-	local score = scores[i][j][k] - diff
+	local score = capRoundScore(k, scores[i][j][k] - diff)
 	scores[i][j][k] = score
 
 	updateScore(i, j, k)
@@ -496,8 +532,7 @@ end
 function roundSum(pId, roundId)
 	return
 		safeScoreNumber(scores[pId][roundId][BTN_K_IX_PRIMARY]) +
-		safeScoreNumber(scores[pId][roundId][BTN_K_IX_SECONDARY_1]) +
-		safeScoreNumber(scores[pId][roundId][BTN_K_IX_SECONDARY_2])
+		safeScoreNumber(scores[pId][roundId][BTN_K_IX_SECONDARY])
 end
 
 function playerSum(pId)
@@ -506,15 +541,14 @@ function playerSum(pId)
 
 	for j = 1,5 do
 		pri_sum = pri_sum + scores[pId][j][BTN_K_IX_PRIMARY]
-		sec_sum = sec_sum + scores[pId][j][BTN_K_IX_SECONDARY_1]
-		sec_sum = sec_sum + scores[pId][j][BTN_K_IX_SECONDARY_2]
+		sec_sum = sec_sum + scores[pId][j][BTN_K_IX_SECONDARY]
 	end
-	if pri_sum > 90 then pri_sum = 90 end
-	if sec_sum > 70 then sec_sum = 70 end
+	if pri_sum > GAME_PRIMARY_CAP then pri_sum = GAME_PRIMARY_CAP end
+	if sec_sum > GAME_SECONDARY_CAP then sec_sum = GAME_SECONDARY_CAP end
 
-	local score = pri_sum + sec_sum + 10
-	if score > 200 then score = 200 end
-	-- painted army gives +10
+	-- painted army gives +GAME_BASE_POINTS
+	local score = pri_sum + sec_sum + GAME_BASE_POINTS
+	if score > GAME_TOTAL_CAP then score = GAME_TOTAL_CAP end
 
 	-- Scoresheet player 1 = Red, player 2 = Blue, but the VP Scores HUD rows are
 	-- ordered Blue (row 1) then Red (row 2) — matching the CP counters. Map pId to
@@ -546,15 +580,12 @@ function getRoundSummaryForPlayer(pId)
 	local roundSummary = {}
 	for j=1,5 do
 		local primary = safeScoreNumber(scores[pId][j][BTN_K_IX_PRIMARY])
-		local secondary1 = safeScoreNumber(scores[pId][j][BTN_K_IX_SECONDARY_1])
-		local secondary2 = safeScoreNumber(scores[pId][j][BTN_K_IX_SECONDARY_2])
+		local secondary = safeScoreNumber(scores[pId][j][BTN_K_IX_SECONDARY])
 		table.insert(roundSummary, {
 			round = j,
 			primary = primary,
-			secondary1 = secondary1,
-			secondary2 = secondary2,
-			secondary = secondary1 + secondary2,
-			total = primary + secondary1 + secondary2
+			secondary = secondary,
+			total = primary + secondary
 		})
 	end
 	return roundSummary
@@ -565,13 +596,11 @@ function getMatchSummary()
 	local redName = (params and params.P1) or (Player.Red and Player.Red.steam_name) or "Red"
 	local blueName = (params and params.P2) or (Player.Blue and Player.Blue.steam_name) or "Blue"
 
-	local redPrimary = sumScoreComponent(1, BTN_K_IX_PRIMARY, 90)
-	local redSecondary = sumScoreComponent(1, BTN_K_IX_SECONDARY_1, nil) + sumScoreComponent(1, BTN_K_IX_SECONDARY_2, nil)
-	if redSecondary > 70 then redSecondary = 70 end
+	local redPrimary = sumScoreComponent(1, BTN_K_IX_PRIMARY, GAME_PRIMARY_CAP)
+	local redSecondary = sumScoreComponent(1, BTN_K_IX_SECONDARY, GAME_SECONDARY_CAP)
 
-	local bluePrimary = sumScoreComponent(2, BTN_K_IX_PRIMARY, 90)
-	local blueSecondary = sumScoreComponent(2, BTN_K_IX_SECONDARY_1, nil) + sumScoreComponent(2, BTN_K_IX_SECONDARY_2, nil)
-	if blueSecondary > 70 then blueSecondary = 70 end
+	local bluePrimary = sumScoreComponent(2, BTN_K_IX_PRIMARY, GAME_PRIMARY_CAP)
+	local blueSecondary = sumScoreComponent(2, BTN_K_IX_SECONDARY, GAME_SECONDARY_CAP)
 
 	local redRounds = getRoundSummaryForPlayer(1)
 	local blueRounds = getRoundSummaryForPlayer(2)
@@ -850,9 +879,6 @@ end
 function plus_113(_, _, alt)
 	plus(1, 1, 3, alt)
 end
-function plus_114(_, _, alt)
-	plus(1, 1, 4, alt)
-end
 function plus_121(_, _, alt)
 	plus(1, 2, 1, alt)
 end
@@ -861,9 +887,6 @@ function plus_122(_, _, alt)
 end
 function plus_123(_, _, alt)
 	plus(1, 2, 3, alt)
-end
-function plus_124(_, _, alt)
-	plus(1, 2, 4, alt)
 end
 function plus_131(_, _, alt)
 	plus(1, 3, 1, alt)
@@ -874,9 +897,6 @@ end
 function plus_133(_, _, alt)
 	plus(1, 3, 3, alt)
 end
-function plus_134(_, _, alt)
-	plus(1, 3, 4, alt)
-end
 function plus_141(_, _, alt)
 	plus(1, 4, 1, alt)
 end
@@ -885,9 +905,6 @@ function plus_142(_, _, alt)
 end
 function plus_143(_, _, alt)
 	plus(1, 4, 3, alt)
-end
-function plus_144(_, _, alt)
-	plus(1, 4, 4, alt)
 end
 function plus_151(_, _, alt)
 	plus(1, 5, 1, alt)
@@ -898,9 +915,6 @@ end
 function plus_153(_, _, alt)
 	plus(1, 5, 3, alt)
 end
-function plus_154(_, _, alt)
-	plus(1, 5, 4, alt)
-end
 function plus_211(_, _, alt)
 	plus(2, 1, 1, alt)
 end
@@ -909,9 +923,6 @@ function plus_212(_, _, alt)
 end
 function plus_213(_, _, alt)
 	plus(2, 1, 3, alt)
-end
-function plus_214(_, _, alt)
-	plus(2, 1, 4, alt)
 end
 function plus_221(_, _, alt)
 	plus(2, 2, 1, alt)
@@ -922,9 +933,6 @@ end
 function plus_223(_, _, alt)
 	plus(2, 2, 3, alt)
 end
-function plus_224(_, _, alt)
-	plus(2, 2, 4, alt)
-end
 function plus_231(_, _, alt)
 	plus(2, 3, 1, alt)
 end
@@ -933,9 +941,6 @@ function plus_232(_, _, alt)
 end
 function plus_233(_, _, alt)
 	plus(2, 3, 3, alt)
-end
-function plus_234(_, _, alt)
-	plus(2, 3, 4, alt)
 end
 function plus_241(_, _, alt)
 	plus(2, 4, 1, alt)
@@ -946,9 +951,6 @@ end
 function plus_243(_, _, alt)
 	plus(2, 4, 3, alt)
 end
-function plus_244(_, _, alt)
-	plus(2, 4, 4, alt)
-end
 function plus_251(_, _, alt)
 	plus(2, 5, 1, alt)
 end
@@ -957,69 +959,6 @@ function plus_252(_, _, alt)
 end
 function plus_253(_, _, alt)
 	plus(2, 5, 3, alt)
-end
-function plus_254(_, _, alt)
-	plus(2, 5, 4, alt)
-end
-function plus_311(_, _, alt)
-	plus(3, 1, 1, alt)
-end
-function plus_312(_, _, alt)
-	plus(3, 1, 2, alt)
-end
-function plus_313(_, _, alt)
-	plus(3, 1, 3, alt)
-end
-function plus_314(_, _, alt)
-	plus(3, 1, 4, alt)
-end
-function plus_321(_, _, alt)
-	plus(3, 2, 1, alt)
-end
-function plus_322(_, _, alt)
-	plus(3, 2, 2, alt)
-end
-function plus_323(_, _, alt)
-	plus(3, 2, 3, alt)
-end
-function plus_324(_, _, alt)
-	plus(3, 2, 4, alt)
-end
-function plus_331(_, _, alt)
-	plus(3, 3, 1, alt)
-end
-function plus_332(_, _, alt)
-	plus(3, 3, 2, alt)
-end
-function plus_333(_, _, alt)
-	plus(3, 3, 3, alt)
-end
-function plus_334(_, _, alt)
-	plus(3, 3, 4, alt)
-end
-function plus_341(_, _, alt)
-	plus(3, 4, 1, alt)
-end
-function plus_342(_, _, alt)
-	plus(3, 4, 2, alt)
-end
-function plus_343(_, _, alt)
-	plus(3, 4, 3, alt)
-end
-function plus_344(_, _, alt)
-	plus(3, 4, 4, alt)
-end
-function plus_351(_, _, alt)
-	plus(3, 5, 1, alt)
-end
-function plus_352(_, _, alt)
-	plus(3, 5, 2, alt)
-end
-function plus_353(_, _, alt)
-	plus(3, 5, 3, alt)
-end
-function plus_354(_, _, alt)
-	plus(3, 5, 4, alt)
 end
 
 function minus_111(_, _, alt)
@@ -1031,9 +970,6 @@ end
 function minus_113(_, _, alt)
 	minus(1, 1, 3, alt)
 end
-function minus_114(_, _, alt)
-	minus(1, 1, 4, alt)
-end
 function minus_121(_, _, alt)
 	minus(1, 2, 1, alt)
 end
@@ -1042,9 +978,6 @@ function minus_122(_, _, alt)
 end
 function minus_123(_, _, alt)
 	minus(1, 2, 3, alt)
-end
-function minus_124(_, _, alt)
-	minus(1, 2, 4, alt)
 end
 function minus_131(_, _, alt)
 	minus(1, 3, 1, alt)
@@ -1055,9 +988,6 @@ end
 function minus_133(_, _, alt)
 	minus(1, 3, 3, alt)
 end
-function minus_134(_, _, alt)
-	minus(1, 3, 4, alt)
-end
 function minus_141(_, _, alt)
 	minus(1, 4, 1, alt)
 end
@@ -1066,9 +996,6 @@ function minus_142(_, _, alt)
 end
 function minus_143(_, _, alt)
 	minus(1, 4, 3, alt)
-end
-function minus_144(_, _, alt)
-	minus(1, 4, 4, alt)
 end
 function minus_151(_, _, alt)
 	minus(1, 5, 1, alt)
@@ -1079,9 +1006,6 @@ end
 function minus_153(_, _, alt)
 	minus(1, 5, 3, alt)
 end
-function minus_154(_, _, alt)
-	minus(1, 5, 4, alt)
-end
 function minus_211(_, _, alt)
 	minus(2, 1, 1, alt)
 end
@@ -1090,9 +1014,6 @@ function minus_212(_, _, alt)
 end
 function minus_213(_, _, alt)
 	minus(2, 1, 3, alt)
-end
-function minus_214(_, _, alt)
-	minus(2, 1, 4, alt)
 end
 function minus_221(_, _, alt)
 	minus(2, 2, 1, alt)
@@ -1103,9 +1024,6 @@ end
 function minus_223(_, _, alt)
 	minus(2, 2, 3, alt)
 end
-function minus_224(_, _, alt)
-	minus(2, 2, 4, alt)
-end
 function minus_231(_, _, alt)
 	minus(2, 3, 1, alt)
 end
@@ -1114,9 +1032,6 @@ function minus_232(_, _, alt)
 end
 function minus_233(_, _, alt)
 	minus(2, 3, 3, alt)
-end
-function minus_234(_, _, alt)
-	minus(2, 3, 4, alt)
 end
 function minus_241(_, _, alt)
 	minus(2, 4, 1, alt)
@@ -1127,9 +1042,6 @@ end
 function minus_243(_, _, alt)
 	minus(2, 4, 3, alt)
 end
-function minus_244(_, _, alt)
-	minus(2, 4, 4, alt)
-end
 function minus_251(_, _, alt)
 	minus(2, 5, 1, alt)
 end
@@ -1138,67 +1050,4 @@ function minus_252(_, _, alt)
 end
 function minus_253(_, _, alt)
 	minus(2, 5, 3, alt)
-end
-function minus_254(_, _, alt)
-	minus(2, 5, 4, alt)
-end
-function minus_311(_, _, alt)
-	minus(3, 1, 1, alt)
-end
-function minus_312(_, _, alt)
-	minus(3, 1, 2, alt)
-end
-function minus_313(_, _, alt)
-	minus(3, 1, 3, alt)
-end
-function minus_314(_, _, alt)
-	minus(3, 1, 4, alt)
-end
-function minus_321(_, _, alt)
-	minus(3, 2, 1, alt)
-end
-function minus_322(_, _, alt)
-	minus(3, 2, 2, alt)
-end
-function minus_323(_, _, alt)
-	minus(3, 2, 3, alt)
-end
-function minus_324(_, _, alt)
-	minus(3, 2, 4, alt)
-end
-function minus_331(_, _, alt)
-	minus(3, 3, 1, alt)
-end
-function minus_332(_, _, alt)
-	minus(3, 3, 2, alt)
-end
-function minus_333(_, _, alt)
-	minus(3, 3, 3, alt)
-end
-function minus_334(_, _, alt)
-	minus(3, 3, 4, alt)
-end
-function minus_341(_, _, alt)
-	minus(3, 4, 1, alt)
-end
-function minus_342(_, _, alt)
-	minus(3, 4, 2, alt)
-end
-function minus_343(_, _, alt)
-	minus(3, 4, 3, alt)
-end
-function minus_344(_, _, alt)
-	minus(3, 4, 4, alt)
-end
-function minus_351(_, _, alt)
-	minus(3, 5, 1, alt)
-end
-function minus_352(_, _, alt)
-	minus(3, 5, 2, alt)
-end
-function minus_353(_, _, alt)
-	minus(3, 5, 3, alt)
-end
-function minus_354(_, _, alt)
-	minus(3, 5, 4, alt)
 end
