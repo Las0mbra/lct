@@ -385,7 +385,7 @@ function createMemoryActionButtons()
     local isTokenBag = (self.getGUID() == "7aca71") or (self.getGUID() == "10a26a")
     local showLabel = isTokenBag and "Show Tokens" or "Show Maps"
     local showWidth = isTokenBag and 1600 or 1400
-    local hasToolTip = isTokenBag and "Christian made me add this!!" or ""
+    local hasToolTip = isTokenBag and "Place Tokens" or ""
     self.createButton({
         label=showLabel, click_function="buttonClick_place", function_owner=self,
         position={0,0.2,-2}, rotation={0,180,0}, height=350, width=showWidth,

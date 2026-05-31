@@ -16,12 +16,12 @@
 
 <Panel id="main" active="false" position="0 0 0" scale="0.5 0.5 0.5" offsetXY="0 0" color="#10141EEE" outline="#31415F" outlineSize="8" width="1600" height="1000" rectAlignment="MiddleCenter" visibility="Diamonds">
   <Button id="closeBtn" color="#1A1A2ACC" textColor="#FFFFFF" width="80" height="80" fontSize="42" fontStyle="Bold" roundEdges="true" onClick="closeMenu" outline="#5B6780" outlineSize="3" offsetXY="720 420">X</Button>
-  <Text text="Patch 1.3b" fontSize="72" color="#F3F6FA" fontStyle="Bold" offsetXY="0 370" alignment="MiddleCenter"/>
+  <Text text="Patch 1.3d" fontSize="72" color="#F3F6FA" fontStyle="Bold" offsetXY="0 370" alignment="MiddleCenter"/>
   <Text text="LCT 40K TABLE" fontSize="42" color="#AFC1D8" fontStyle="Bold" offsetXY="0 300" alignment="MiddleCenter"/>
 
   <Panel id="SplashChangelog" width="1360" height="500" offsetXY="0 0" color="#182233CC" outline="#31415F99" outlineSize="3">
-    <Text text="Hints &amp; Tips" fontSize="34" color="#F3F6FA" fontStyle="Bold" offsetXY="0 220" alignment="MiddleCenter"/>
-    <Text text="* Secondaries lock when game starts :)&#10;* Uploaded new primary/secondaries based on leaks, will replace when proper images&#10;* The mission matrix should be up and running. The Deployment picker will be in the next update.&#10;* For any questions reach out to LCT Discord" fontSize="30" color="#D8E1EA" offsetXY="0 -40" width="1280" height="400" alignment="UpperLeft"/>
+    <Text text="Patch Notes" fontSize="34" color="#F3F6FA" fontStyle="Bold" offsetXY="0 220" alignment="MiddleCenter"/>
+    <Text text="* Dropped support for 10E legacy&#10;* Gaining or Decreasing CP via widget or overlay now is logged in chat for tracking.&#10;* Added colours to disposition picker for better matching&#10;* Added deployment picker based on disposition, currently we only have 3 deployment zones per disposition match up but that will change as GW shows more stuff.&#10;* Added VP limitations for primary, secondaries and total scores.&#10;* Changed scoreboard buttons&#10;* Added the option to change table mat (more to come!)&#10;* Lots of new tokens!&#10;* Major code cleanup." fontSize="26" color="#D8E1EA" offsetXY="0 -40" width="1280" height="400" alignment="UpperLeft"/>
   </Panel>
 
   <Button id="redBtn" color="#B52020" textColor="#FFFFFF" width="460" height="150" fontSize="52" fontStyle="Bold" roundEdges="true" onClick="placeToRed" outline="#F06A6A" outlineSize="4" offsetXY="-540 -350">Red</Button>
