@@ -2755,6 +2755,16 @@ function updateCpHUD()
     Global.call("setHudAttribute", {id = "CPWatch2", attr = "text", value = "CP: " .. redCpCounter.Counter.getValue()})
 end
 
+-- "Round R, <Color> Turn T" stamp shared by the turn-pass and CP-change chat
+-- messages. Uses the round counter (ee92cf) and the active player's turn counter.
+function getTurnStateLabel()
+    local roundObj = getObjectFromGUID("ee92cf")
+    local round = (roundObj and roundObj.Counter.getValue()) or 0
+    local turnCounter = (currentTurn == "Red") and redTurnCounter or blueTurnCounter
+    local turnNum = (turnCounter and turnCounter.Counter.getValue()) or 0
+    return "Round " .. round .. ", " .. currentTurn .. " Turn " .. turnNum
+end
+
 function gameNotStartedGuard()
     if inGame then return false end
     broadcastToAll("Game hasn't started!", {1, 0.5, 0})
@@ -2896,15 +2906,16 @@ function passTurn(obj, player_color_click, alt_click)
     end
 
     currentPhase = 1
+    local cpMessage
     if currentTurn == "Red" then
         currentTurn = "Blue"
         blueTurnCounter.call("increaseSelf")
         blueCpCounter.Counter.increment()
         if cpEveryTurn then
             redCpCounter.Counter.increment()
-            Wait.time(function() broadcastToAll("Both CPs incremented!", "White") end, 0.3)
+            cpMessage = "Both players gained a CP"
         else
-            Wait.time(function() broadcastToAll("Blue CPs incremented!", "Blue") end, 0.3)
+            cpMessage = "Blue player gained a CP"
         end
     else
         currentTurn = "Red"
@@ -2912,14 +2923,22 @@ function passTurn(obj, player_color_click, alt_click)
         redCpCounter.Counter.increment()
         if cpEveryTurn then
             blueCpCounter.Counter.increment()
-            Wait.time(function() broadcastToAll("Both CPs incremented!", "White") end, 0.3)
+            cpMessage = "Both players gained a CP"
         else
-            Wait.time(function() broadcastToAll("Red CPs incremented!", "Red") end, 0.3)
+            cpMessage = "Red player gained a CP"
         end
     end
+
+    -- Re-baseline the CP counters so their value pollers treat this automatic
+    -- turn-pass gain as the new baseline and don't also announce it as a manual
+    -- CP change (see cpCounter.ttslua).
+    redCpCounter.call("markBaseline")
+    blueCpCounter.call("markBaseline")
+
     updateCpHUD()
     updateGameStateHUD()
 
+    printToAll(getTurnStateLabel() .. " - " .. cpMessage, "Yellow")
     broadcastToAll("It's " .. currentTurn .. " Player's turn", currentTurn)
     writeMenus()
 end
