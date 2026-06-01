@@ -541,7 +541,7 @@ blueSecondaryName_GUIDs = {
 }
 challengerCardZone_GUID = "cdecf2"
 
-deploymentDeck_GUID = "2dc2e8"
+deploymentDeck_GUID = "23699d"
 challengerDeck_GUID = "ffdf05"
 primaryDeck_GUID = "d26e9c"
 redSecondaryDeck_GUID = "c0fb49"
@@ -629,7 +629,7 @@ missionMatchups = {
 }
 
 -- Deployment choices keyed the same way as missionMatchups. Each entry is
--- a deterministic set of deployment cards from deploymentDeck_GUID (2dc2e8).
+-- a deterministic set of deployment cards from deploymentDeck_GUID.
 -- Edit these per pairing as the matrix gets finalized.
 missionDeploymentMatchups = {
     ["1_1"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
@@ -689,7 +689,7 @@ Unexploded Ordnance 41f293
 Crucible of Battle e96d18
 Dawn of War 7f45dc
 Hammer and Anvil 97f3f0
-Search and Destroy 09c961
+11e Deployment Zones 23699d
 Sweeping Engagement c6edf3
 Tipping Point 77cde6
 
@@ -711,7 +711,7 @@ missionPackData = {
     {
         id = MISSION_PACK_PARIAH_NEXUS,
         name = "Chapter Approved 2025",
-        deploymentDeck_GUID = "2dc2e8",
+        deploymentDeck_GUID = "23699d",
         primaryDeck_GUID = "d26e9c",
         fixedSecondaryDeck_GUID = "b55459",
         redSecondaryDeck_GUID = "c0fb49",
@@ -734,13 +734,13 @@ missionPackData = {
             -- H: Supply Drop / Hammer and Anvil
             {name = "H", primary = "981226", deployment = "97f3f0"},
             -- I: Hidden Supplies / Search and Destroy
-            {name = "I", primary = "85718f", deployment = "09c961"},
+            {name = "I", primary = "85718f", deployment = "23699d"},
             -- J: Linchpin / Search and Destroy
-            {name = "J", primary = "540fd0", deployment = "09c961"},
+            {name = "J", primary = "540fd0", deployment = "23699d"},
             -- K: Scorched Earth / Search and Destroy
-            {name = "K", primary = "6860de", deployment = "09c961"},
+            {name = "K", primary = "6860de", deployment = "23699d"},
             -- L: Take and Hold / Search and Destroy
-            {name = "L", primary = "bffd57", deployment = "09c961"},
+            {name = "L", primary = "bffd57", deployment = "23699d"},
             -- M: Purge the Foe / Crucible of Battle
             {name = "M", primary = "d9d35a", deployment = "e96d18"},
             -- N: Hidden Supplies / Crucible of Battle
@@ -760,10 +760,10 @@ missionPackData = {
             -- UKTC Maps
             {name = "U", primary = "7fa6d0", deployment = "c6edf3"},
             {name = "V", primary = "d9d35a", deployment = "e96d18"},
-            {name = "W", primary = "85718f", deployment = "09c961"},
+            {name = "W", primary = "85718f", deployment = "23699d"},
             {name = "X", primary = "540fd0", deployment = "7f45dc"},
-            {name = "Y", primary = "bffd57", deployment = "09c961"},
-            {name = "Z", primary = "bffd57", deployment = "09c961"}
+            {name = "Y", primary = "bffd57", deployment = "23699d"},
+            {name = "Z", primary = "bffd57", deployment = "23699d"}
         }
     },
 }

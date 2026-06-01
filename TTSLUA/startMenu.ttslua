@@ -403,13 +403,15 @@ function destroyLegacyPrimaryDeck()
 end
 
 STARTUP_MAP_CARDS = {
-    {guid = "3fa90f", pos = {22.865818, 0.975103438, -12.023735},      rot = {0, 180.004364, 0}},  -- Crucible Map 2
-    {guid = "1d0b3a", pos = {22.9394054, 0.975103438, -3.73517513},    rot = {0, 180.00441, 0}},   -- CRUCIBLE 1
-    {guid = "1b97c2", pos = {23.01305, 0.975103438, 4.559607},         rot = {0, 180.0043, 0}},    -- Hammer & Anvil 2
-    {guid = "3a44f8", pos = {23.0868645, 0.975103438, 12.873724},      rot = {0, 180.004333, 0}},  -- Hammer & Anvil 1
-    {guid = "4b20be", pos = {14.9908428, 0.975103438, -3.655732},      rot = {0, 180, 0}},         -- Search & Destroy 1
-    {guid = "67f3ab", pos = {14.9908428, 0.975103438, 4.62399864},     rot = {0, 180, 0}},         -- Search & Destroy 2
-    {guid = "6f30f5", pos = {2.28751445, 1.21699846, 0.246165633},     rot = {0, 90.0000153, 0}},  -- Important note
+    {guid = "eaf123", pos = {5.00, 1.00, 14.50},  rot = {0, 180, 0}},  -- Hammer and Anvil 1 Deck
+    {guid = "d90d6b", pos = {5.00, 1.00, 9.50},   rot = {0, 180, 0}},  -- Hammer & Anvil 2 Deck
+    {guid = "5bea3b", pos = {5.00, 1.00, -14.50}, rot = {0, 180, 0}},  -- Search & Destroy 2 Deck
+    {guid = "44b223", pos = {5.00, 1.00, -9.50},  rot = {0, 180, 0}},  -- Search & Destroy 1 Deck
+    {guid = "b5a38c", pos = {5.00, 1.00, 2.50},   rot = {0, 180, 0}},  -- Crucible 1 Deck
+    {guid = "6e78c9", pos = {5.00, 1.00, -2.50},   rot = {0, 180, 0}},  -- Crucible 2 Deck
+    {guid = "6713e1", pos = {-4.3929005, 0.9614988, 11.895701}, rot = {5.3779473e-08, 270.00006, -3.8887436e-08}},  -- https://steamcommunity.com/sharedfiles/filedetails/?id=3427040776
+    {guid = "fc2507", pos = {-4.3929, 0.9614989, 0.1457061}, rot = {5.371441e-08, 270.00092, -5.6065662e-08}},  -- https://steamcommunity.com/sharedfiles/filedetails/?id=3702781217
+    {guid = "a982e3", pos = {-4.3929005, 0.96149874, -11.604293}, rot = {-3.5893564e-07, 270.00006, 1.4783116e-07}},  -- https://steamcommunity.com/sharedfiles/filedetails/?id=3733857840
 }
 
 function hideStartupMapCards()
@@ -430,17 +432,21 @@ function placeStartupMapCards()
     end
 end
 
--- "Force dispositions" reference token. Shown only for the 1v1/Solo (11th ed.)
--- modes; hidden while the size menu is up and destroyed for 10th Edition.
-forceDispositionToken_GUID = "1f38a1"
+-- "Force dispositions" reference token was removed from the save.
+forceDispositionToken_GUID = nil
 forceDispositionTokenPosition = {-15.7271786, 1.06149852, -0.134739235}
 forceDispositionTokenRotation = {0, 270.020081, 0}
 
 function placeForceDispositionToken()
-    placeObjectAtPosition(forceDispositionToken_GUID, forceDispositionTokenPosition, forceDispositionTokenRotation)
+    if forceDispositionToken_GUID then
+        placeObjectAtPosition(forceDispositionToken_GUID, forceDispositionTokenPosition, forceDispositionTokenRotation)
+    end
 end
 
 function hideForceDispositionToken()
+    if not forceDispositionToken_GUID then
+        return
+    end
     local obj = getObjectFromGUID(forceDispositionToken_GUID)
     if obj then
         obj.setPosition({forceDispositionTokenPosition[1], -5.0, forceDispositionTokenPosition[3]})
@@ -888,6 +894,13 @@ missionSlots = {
     {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -4.80}},
 }
 
+randomDeploymentDecks = {
+    {guid = "23699d", name = "11e Deployment Zones"},
+}
+
+deploymentCardSourceDeckByGuid = {}
+deploymentCardSourceDeckByName = {}
+
 deploymentLockTargetPosition = {75.37, 1.01, 0.00}
 deploymentLockButtonWorldX = 81.65
 deploymentLockButtonWorldY = 1.00
@@ -993,44 +1006,93 @@ function getDeploymentCardInSlot(slot, deploymentDeck)
     return nil
 end
 
-function returnCardsInDeploymentSlotsToDeck(includeLockedIn)
-    local deploymentDeck = getObjectFromGUID(Global.getVar("deploymentDeck_GUID"))
-    if not deploymentDeck then return nil end
+function rememberDeploymentCardSource(card, deckGuid)
+    if not card or not deckGuid then return end
+    local guid = card.getGUID and card.getGUID() or nil
+    if guid then
+        deploymentCardSourceDeckByGuid[guid] = deckGuid
+    end
+    local name = card.getName and card.getName() or nil
+    if name and name ~= "" then
+        deploymentCardSourceDeckByName[normalizeMissionName(name)] = deckGuid
+    end
+end
 
-    for _, slot in ipairs(missionSlots) do
-        if slot.role == "deployment" then
-            for _, obj in ipairs(getObjectsInMissionSlot(slot, nil)) do
-                if obj ~= deploymentDeck then
-                    obj.locked = false
-                    deploymentDeck = deploymentDeck.putObject(obj) or deploymentDeck
+function cacheDeploymentDeckContents()
+    for _, deckInfo in ipairs(randomDeploymentDecks) do
+        local deck = getObjectFromGUID(deckInfo.guid)
+        if deck and deck.getObjects then
+            for _, entry in ipairs(deck.getObjects()) do
+                if entry.guid then
+                    deploymentCardSourceDeckByGuid[entry.guid] = deckInfo.guid
+                end
+                local name = entry.nickname or entry.name
+                if name and name ~= "" then
+                    deploymentCardSourceDeckByName[normalizeMissionName(name)] = deckInfo.guid
                 end
             end
         end
     end
+end
 
-    if includeLockedIn then
-        local lockedDeploymentSlot = {position = deploymentLockTargetPosition}
-        for _, obj in ipairs(getObjectsInMissionSlot(lockedDeploymentSlot, nil)) do
-            if obj ~= deploymentDeck then
-                obj.locked = false
-                deploymentDeck = deploymentDeck.putObject(obj) or deploymentDeck
-            end
+function getDeploymentCardSourceDeck(card)
+    cacheDeploymentDeckContents()
+    if not card then return nil end
+
+    local guid = card.getGUID and card.getGUID() or nil
+    local deckGuid = guid and deploymentCardSourceDeckByGuid[guid] or nil
+
+    if not deckGuid and card.getName then
+        local name = card.getName()
+        deckGuid = deploymentCardSourceDeckByName[normalizeMissionName(name)]
+    end
+
+    return deckGuid and getObjectFromGUID(deckGuid) or nil
+end
+
+function returnDeploymentCardToSourceDeck(card)
+    if not card then return nil end
+
+    local sourceDeck = getDeploymentCardSourceDeck(card)
+    if sourceDeck then
+        card.locked = false
+        return sourceDeck.putObject(card) or sourceDeck
+    end
+
+    local fallbackDeck = getObjectFromGUID(Global.getVar("deploymentDeck_GUID"))
+    if fallbackDeck then
+        card.locked = false
+        return fallbackDeck.putObject(card) or fallbackDeck
+    end
+
+    return nil
+end
+
+function returnDeploymentCardsFromSlot(slot)
+    for _, obj in ipairs(getObjectsInMissionSlot(slot, nil)) do
+        returnDeploymentCardToSourceDeck(obj)
+    end
+end
+
+function returnCardsInDeploymentSlotsToDeck(includeLockedIn)
+    for _, slot in ipairs(missionSlots) do
+        if slot.role == "deployment" then
+            returnDeploymentCardsFromSlot(slot)
         end
     end
 
-    return deploymentDeck
+    if includeLockedIn then
+        returnDeploymentCardsFromSlot({position = deploymentLockTargetPosition})
+    end
 end
 
 function moveDeploymentCardToLockTarget(cardToMove)
     if not cardToMove then return end
-    local deploymentDeck = getObjectFromGUID(Global.getVar("deploymentDeck_GUID"))
-    if deploymentDeck then
-        local lockedDeploymentSlot = {position = deploymentLockTargetPosition}
-        for _, obj in ipairs(getObjectsInMissionSlot(lockedDeploymentSlot, nil)) do
-            if obj ~= deploymentDeck and obj ~= cardToMove then
-                obj.locked = false
-                deploymentDeck = deploymentDeck.putObject(obj) or deploymentDeck
-            end
+
+    local lockedDeploymentSlot = {position = deploymentLockTargetPosition}
+    for _, obj in ipairs(getObjectsInMissionSlot(lockedDeploymentSlot, nil)) do
+        if obj ~= cardToMove then
+            returnDeploymentCardToSourceDeck(obj)
         end
     end
 
@@ -1047,8 +1109,7 @@ function lockInDeploymentSlot(index)
     local slot = getDeploymentMissionSlot(index)
     if not slot then return end
 
-    local deploymentDeck = getObjectFromGUID(Global.getVar("deploymentDeck_GUID"))
-    local cardToMove = getDeploymentCardInSlot(slot, deploymentDeck)
+    local cardToMove = getDeploymentCardInSlot(slot, nil)
 
     if not cardToMove then
         broadcastToAll("No deployment card found above this Lock-in button.", "Yellow")
@@ -1059,11 +1120,10 @@ function lockInDeploymentSlot(index)
 end
 
 function randomPickDeployment()
-    local deploymentDeck = getObjectFromGUID(Global.getVar("deploymentDeck_GUID"))
     local available = {}
     for _, slot in ipairs(missionSlots) do
         if slot.role == "deployment" then
-            local card = getDeploymentCardInSlot(slot, deploymentDeck)
+            local card = getDeploymentCardInSlot(slot, nil)
             if card then
                 table.insert(available, card)
             end
@@ -1163,6 +1223,50 @@ function getCurrentDeploymentChoices(key)
     return deployments[key] or {}
 end
 
+function copyRandomDeploymentDecks()
+    local decks = {}
+    for _, deckInfo in ipairs(randomDeploymentDecks) do
+        table.insert(decks, deckInfo)
+    end
+    return decks
+end
+
+function chooseRandomDeploymentCards(count)
+    cacheDeploymentDeckContents()
+    local choices = {}
+    local availableCards = {}
+
+    for _, deckInfo in ipairs(randomDeploymentDecks) do
+        local deck = getObjectFromGUID(deckInfo.guid)
+        local cards = deck and deck.getObjects and deck.getObjects() or {}
+        for _, card in ipairs(cards) do
+            table.insert(availableCards, {deck = deck, deckInfo = deckInfo, card = card})
+        end
+    end
+
+    while #choices < count and #availableCards > 0 do
+        local cardIndex = math.random(#availableCards)
+        local picked = table.remove(availableCards, cardIndex)
+        local deckInfo = picked.deckInfo
+        local card = picked.card
+        local name = card.nickname or card.name or deckInfo.name
+
+        deploymentCardSourceDeckByGuid[card.guid] = deckInfo.guid
+        if name and name ~= "" then
+            deploymentCardSourceDeckByName[normalizeMissionName(name)] = deckInfo.guid
+        end
+        table.insert(choices, {
+            deck = picked.deck,
+            deckGuid = deckInfo.guid,
+            deckName = deckInfo.name,
+            guid = card.guid,
+            name = name,
+        })
+    end
+
+    return choices
+end
+
 -- Deal one card per frame so repeated takeObject calls on the same deck don't
 -- collide within a single frame. guid == nil means "draw the top card".
 function dealMissionCards(placements, i)
@@ -1174,6 +1278,9 @@ function dealMissionCards(placements, i)
             flip = true,
             smooth = true,
             callback_function = function(card)
+                if p.sourceDeckGuid then
+                    rememberDeploymentCardSource(card, p.sourceDeckGuid)
+                end
                 Wait.frames(function()
                     if card then card.locked = true end
                 end, 1)
@@ -1197,48 +1304,41 @@ function generateMission()
     -- 1. Recall any cards in the slots back into their source decks.
     local decksByVar = {}
     for _, slot in ipairs(missionSlots) do
-        local zoneGuid = slot.zoneVar and Global.getVar(slot.zoneVar) or nil
-        local zone = zoneGuid and getObjectFromGUID(zoneGuid) or nil
-        local deck = decksByVar[slot.deckVar] or getObjectFromGUID(Global.getVar(slot.deckVar))
-        if deck then
-            for _, obj in ipairs(getObjectsInMissionSlot(slot, zone)) do
-                if obj ~= deck then
-                    obj.locked = false
-                    deck = deck.putObject(obj) or deck
+        if slot.role == "deployment" then
+            returnDeploymentCardsFromSlot(slot)
+        else
+            local zoneGuid = slot.zoneVar and Global.getVar(slot.zoneVar) or nil
+            local zone = zoneGuid and getObjectFromGUID(zoneGuid) or nil
+            local deck = decksByVar[slot.deckVar] or getObjectFromGUID(Global.getVar(slot.deckVar))
+            if deck then
+                for _, obj in ipairs(getObjectsInMissionSlot(slot, zone)) do
+                    if obj ~= deck then
+                        obj.locked = false
+                        deck = deck.putObject(obj) or deck
+                    end
                 end
+                decksByVar[slot.deckVar] = deck
             end
-            decksByVar[slot.deckVar] = deck
         end
     end
 
-    local deploymentDeck = decksByVar["deploymentDeck_GUID"] or getObjectFromGUID(Global.getVar("deploymentDeck_GUID"))
-    if deploymentDeck then
-        local lockedDeploymentSlot = {position = deploymentLockTargetPosition}
-        for _, obj in ipairs(getObjectsInMissionSlot(lockedDeploymentSlot, nil)) do
-            if obj ~= deploymentDeck then
-                obj.locked = false
-                deploymentDeck = deploymentDeck.putObject(obj) or deploymentDeck
-            end
-        end
-        decksByVar["deploymentDeck_GUID"] = deploymentDeck
-    end
+    returnDeploymentCardsFromSlot({position = deploymentLockTargetPosition})
 
     Wait.frames(function()
         -- 2. Resolve each player's primary mission cards by name.
         local redDeck = decksByVar["redPrimaryDeck_GUID"] or getObjectFromGUID(Global.getVar("redPrimaryDeck_GUID"))
         local blueDeck = decksByVar["bluePrimaryDeck_GUID"] or getObjectFromGUID(Global.getVar("bluePrimaryDeck_GUID"))
-        local deploymentDeck = decksByVar["deploymentDeck_GUID"] or getObjectFromGUID(Global.getVar("deploymentDeck_GUID"))
         local redGuids = resolvePrimaryCardGuids(redDeck, redMission)
         local blueGuids = resolvePrimaryCardGuids(blueDeck, blueMission)
-        local deploymentChoices = getCurrentDeploymentChoices(key)
-        local deploymentGuids = {}
-        for i, deploymentName in ipairs(deploymentChoices) do
-            deploymentGuids[i] = resolveDeckCardByName(deploymentDeck, deploymentName)
+        local deploymentChoices = chooseRandomDeploymentCards(3)
+        local deploymentNames = {}
+        for _, choice in ipairs(deploymentChoices) do
+            table.insert(deploymentNames, choice.name or choice.deckName or "Unknown")
         end
 
         -- Compact mission summary for chat and the screen notification.
         broadcastToAll(
-            "Red Mission: " .. redMission .. ", Blue Mission: " .. blueMission .. ", Deployment Zones: " .. table.concat(deploymentChoices, ", "),
+            "Red Mission: " .. redMission .. ", Blue Mission: " .. blueMission .. ", Deployment Cards: " .. table.concat(deploymentNames, ", "),
             "Yellow"
         )
 
@@ -1252,9 +1352,9 @@ function generateMission()
                 local info = guids[slot.index]
                 table.insert(placements, {deck = deck, guid = info and info.guid or nil, position = slot.position})
             elseif slot.role == "deployment" then
-                local info = deploymentGuids[slot.index]
-                if info and info.guid then
-                    table.insert(placements, {deck = deploymentDeck, guid = info.guid, position = slot.position})
+                local info = deploymentChoices[slot.index]
+                if info and info.guid and info.deck then
+                    table.insert(placements, {deck = info.deck, guid = info.guid, position = slot.position, sourceDeckGuid = info.deckGuid})
                 end
             end
         end
