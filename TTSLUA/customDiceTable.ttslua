@@ -351,8 +351,11 @@ customBubbleInput = {
 }
 
 -- Custom Bubble Button
+-- LEFT CLICK applies the size typed in the on-mat input box.
+-- RIGHT CLICK (alt) opens the on-screen size overlay; 0 or a blank value there
+-- clears the bubbles on the selected models.
 customBubbleBtn = {
-    label = "Go", tooltip = "Apply custom bubble size", click_function = "applyCustomBubble", function_owner = self,
+    label = "Go", tooltip = "LEFT CLICK: apply size from the box\nRIGHT CLICK: on-screen size entry (0/blank clears selected)", click_function = "applyCustomBubble", function_owner = self,
     position = {-5.88, Yoffset, -1.40}, rotation = {0, 0, 0},
     width = 800, height = 1000, font_size = 500,
     color = {0.13, 0.13, 0.13, 1}, font_color = {1, 1, 1},
@@ -2331,12 +2334,36 @@ function setCustomBubbleSize(_, _, value, _)
     customBubbleSize = tonumber(value) or 0
 end
 
-function applyCustomBubble(_, player, _)
-    if customBubbleSize > 0 then
-        toggleMeasurementCircleForSelection(customBubbleSize, player)
-    else
-        printToColor("Please enter a valid bubble size", player, "Red")
+function applyCustomBubble(_, playerColor, alt)
+    if alt then
+        -- Right-click opens the on-screen typed-size overlay instead.
+        requestBubbleInput(_, playerColor, alt)
+        return
     end
+    if customBubbleSize > 0 then
+        toggleMeasurementCircleForSelection(customBubbleSize, playerColor)
+    else
+        printToColor("Please enter a valid bubble size", playerColor, "Red")
+    end
+end
+
+-- ===== Screen-space custom bubble input overlay (1-60) =====
+-- The overlay panel + its input/submit callbacks live on the Global canvas
+-- (global.ttslua / ftc_base_ui.xml). This button just asks Global to open it,
+-- passing this mat's GUID so Global can call applyBubbleFromOverlay back here.
+function requestBubbleInput(_, playerColor, _)
+    Global.call("openBubbleInput", {color = playerColor, mat = self.getGUID()})
+end
+
+-- Invoked by Global once the player confirms a size in the overlay.
+function applyBubbleFromOverlay(params)
+    toggleMeasurementCircleForSelection(params.radius, params.color)
+end
+
+-- Invoked by Global when the overlay value is 0 / blank: clear bubbles on the
+-- player's selected models (same as the "Clear Bubbles (Selected)" action).
+function clearBubblesFromOverlay(params)
+    clearMeasuringCircles(nil, params.color, true)
 end
 
 function changeMeasurementCircle(newRequestedRadius, target, presetBase, ownerColor)

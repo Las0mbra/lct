@@ -11330,9 +11330,9 @@
       "Description": "{\n  \"Cumulative\": \"no\",\n  \"Update_Frequency\": \"0.2\"\n}",
       "GMNotes": "",
       "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0
       },
       "LayoutGroupSortIndex": 0,
       "Locked": true,
@@ -12783,9 +12783,9 @@
       "Description": "{\n  \"Cumulative\": \"no\",\n  \"Update_Frequency\": \"0.2\"\n}",
       "GMNotes": "",
       "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0
       },
       "LayoutGroupSortIndex": 0,
       "Locked": true,

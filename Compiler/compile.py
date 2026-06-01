@@ -3,8 +3,9 @@
 Compiles TTSLUA scripts into the TTS JSON save file.
 
 Usage:
-    python3 compile.py          # prompts for version, writes compiled JSON
-    python3 compile.py --test   # uses "test" as version, copies to TTS saves folder
+    python3 compile.py            # prompts for version, writes compiled JSON
+    python3 compile.py --test     # uses "test" as version, copies to TTS saves folder
+    python3 compile.py --release  # version + patch notes taken from CHANGELOG.md
 """
 
 import argparse
@@ -21,6 +22,8 @@ PATH_LUA   = SCRIPT_DIR.parent / "TTSLUA"
 PATH_JSON  = SCRIPT_DIR.parent / "TTSJSON"
 JSON_NAME  = "ftc_base"
 XML_NAME   = "ftc_base_ui"
+CHANGELOG  = SCRIPT_DIR.parent / "CHANGELOG.md"
+GLOBAL_LUA = "global.ttslua"
 
 REGEX_LUA_GUID       = re.compile(r'([0-9a-f]{6})')
 REGEX_JSON_GUID      = re.compile(r'"GUID": "(.*)"')
@@ -76,14 +79,14 @@ def inject_xml(json_lines: list, xml_file: Path):
     print("WARNING: populated XmlUI line not found in JSON — XML not injected.")
 
 
-def inject_lua_into_line(json_lines: list, line_idx: int, lua_file: Path):
-    """Replace the LuaScript value on a JSON line with the content of a lua file.
+def inject_lua_into_line(json_lines: list, line_idx: int, lua_text: str):
+    """Replace the LuaScript value on a JSON line with the given lua source text.
 
     Works whether the existing field is empty (`""`) or already populated — the
     full `"LuaScript": "..."` field is matched and rewritten in place, so a
     re-export of the save into ftc_base.json can't double-inject content.
     """
-    lua_content = json.dumps(lua_file.read_text(encoding="utf-8"))
+    lua_content = json.dumps(lua_text)
     line = json_lines[line_idx]
     new_line, count = REGEX_JSON_LUASCRIPT_FIELD.subn(
         lambda m: m.group(1) + lua_content, line, count=1
@@ -98,18 +101,84 @@ def inject_lua_into_line(json_lines: list, line_idx: int, lua_file: Path):
 
 def collect_lua_files() -> list:
     """Return [global.ttslua, ...all other .ttslua files recursively sorted]."""
-    global_file = PATH_LUA / "global.ttslua"
+    global_file = PATH_LUA / GLOBAL_LUA
     others = sorted(
-        f for f in PATH_LUA.rglob("*.ttslua") if f.name != "global.ttslua"
+        f for f in PATH_LUA.rglob("*.ttslua") if f.name != GLOBAL_LUA
     )
     return [global_file] + others
+
+
+def parse_changelog(path: Path):
+    """Return (version, [note, ...]) from the top `## vX.Y.Z` section of CHANGELOG.md.
+
+    The first `## ` heading is the version; the `- ` bullets beneath it (up to the
+    next `## ` heading) are the player-facing patch notes.
+    """
+    if not path.exists():
+        return None, []
+    version, notes, in_section = None, [], False
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        s = raw.strip()
+        if s.startswith("## "):
+            if in_section:
+                break
+            version = s[3:].strip()
+            if version and not version.startswith("v"):
+                version = "v" + version
+            in_section = True
+        elif in_section and s.startswith("- "):
+            notes.append(s[2:].strip())
+    return version, notes
+
+
+def stamp_global(lua_text: str, version: str, patch: str, notes: list) -> str:
+    """Rewrite the GAME_VERSION / GAME_PATCH / GAME_CHANGELOG markers in global.ttslua.
+
+    version : build stamp ("test" or the release version) — drives chat + save name.
+    patch   : latest CHANGELOG version — shown on the splash overlay.
+    notes   : latest CHANGELOG bullets — shown on the splash overlay.
+    """
+    note_literal = "{" + ", ".join(json.dumps(n) for n in notes) + "}"
+    replacements = [
+        (r"^.*--\s*@@LCT_VERSION@@.*$",
+         f"GAME_VERSION = {json.dumps(version or 'DEV')}   -- @@LCT_VERSION@@"),
+        (r"^.*--\s*@@LCT_PATCH@@.*$",
+         f"GAME_PATCH = {json.dumps(patch or 'DEV')}   -- @@LCT_PATCH@@"),
+        (r"^.*--\s*@@LCT_CHANGELOG@@.*$",
+         f"GAME_CHANGELOG = {note_literal}   -- @@LCT_CHANGELOG@@"),
+    ]
+    for pattern, repl in replacements:
+        lua_text, count = re.subn(pattern, repl, lua_text, count=1, flags=re.M)
+        if count != 1:
+            print(f"WARNING: marker {pattern!r} not found in global.ttslua — not injected.")
+    return lua_text
+
+
+def stamp_save_name(line: str, version: str) -> str:
+    """Append ` - <version>` to a `"SaveName"`/`"GameMode"` JSON string value.
+
+    Matches the full `"key": "value",` shape so it works regardless of the value
+    or a trailing escaped newline, instead of slicing a fixed number of chars.
+    """
+    m = re.match(r'(\s*"(?:SaveName|GameMode)":\s*")(.*)("\s*,?\s*)$', line)
+    if not m:
+        return line
+    head, value, tail = m.groups()
+    if value.endswith("\\n"):
+        value = value[:-2]
+    return f"{head}{value} - {version}{tail}"
 
 
 def main():
     parser = argparse.ArgumentParser(description="Compile TTS Lua scripts into JSON.")
     parser.add_argument("--test", action="store_true",
                         help="Tag as 'test' build and copy to TTS saves folder.")
+    parser.add_argument("--release", action="store_true",
+                        help="Take version and patch notes from CHANGELOG.md.")
     args = parser.parse_args()
+    if args.test and args.release:
+        print("ERROR: use either --test or --release, not both.")
+        sys.exit(1)
 
     json_file = PATH_JSON / f"{JSON_NAME}.json"
     if not json_file.exists():
@@ -121,8 +190,21 @@ def main():
     validate_json_text(json_text, json_file.name)
     print("Done.")
 
+    # The latest CHANGELOG entry (top section) always drives the splash overlay,
+    # for both test and release builds.
+    patch, changelog_notes = parse_changelog(CHANGELOG)
+    if patch:
+        print(f"Latest patch from {CHANGELOG.name}: {patch} ({len(changelog_notes)} notes).")
+    else:
+        print(f"WARNING: no '## vX.Y.Z' entry found in {CHANGELOG.name} — splash not updated.")
+
     if args.test:
         version = "test"
+    elif args.release:
+        if not patch:
+            print(f"ERROR: --release needs a '## vX.Y.Z' entry at the top of {CHANGELOG.name}.")
+            sys.exit(1)
+        version = patch
     else:
         version = input("Version number (leave blank for none): ").strip()
         if version and not version.startswith("v"):
@@ -172,8 +254,13 @@ def main():
     inject_xml(json_lines, xml_file)
 
     # --- Inject global.ttslua into the first LuaScript slot ---
+    # Stamp the player-facing version + patch notes into the Global script as it
+    # is injected; the source file on disk is left untouched.
     print("Injecting global.ttslua... ", end="")
-    inject_lua_into_line(json_lines, json_lua_line_idxs[0], lua_files[0])
+    global_text = stamp_global(
+        lua_files[0].read_text(encoding="utf-8"), version, patch, changelog_notes
+    )
+    inject_lua_into_line(json_lines, json_lua_line_idxs[0], global_text)
     print("Done.")
 
     # --- Inject each object script by matching GUIDs ---
@@ -190,7 +277,10 @@ def main():
                 if lua_slot_idx is None:
                     print(f"No LuaScript slot found after GUID {find_guid}! Ending compilation.")
                     sys.exit(1)
-                inject_lua_into_line(json_lines, lua_slot_idx, lua_files[file_idx])
+                inject_lua_into_line(
+                    json_lines, lua_slot_idx,
+                    lua_files[file_idx].read_text(encoding="utf-8"),
+                )
                 print("Done.")
                 found = True
                 break
@@ -201,9 +291,8 @@ def main():
     # --- Stamp version into SaveName (line 1) and GameMode (line 2) ---
     if version:
         print(f"\nStamping version '{version}'...")
-        # Lines end with `\n",` — strip last 4 chars and append version tag
-        json_lines[1] = json_lines[1][:-4] + f' - {version}",'
-        json_lines[2] = json_lines[2][:-4] + f' - {version}",'
+        json_lines[1] = stamp_save_name(json_lines[1], version)
+        json_lines[2] = stamp_save_name(json_lines[2], version)
 
     # --- Write output ---
     out_name = f"{JSON_NAME}_{version}_compiled.json" if version else f"{JSON_NAME}_compiled.json"

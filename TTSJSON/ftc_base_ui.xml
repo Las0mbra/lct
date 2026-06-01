@@ -16,17 +16,37 @@
 
 <Panel id="main" active="false" position="0 0 0" scale="0.5 0.5 0.5" offsetXY="0 0" color="#10141EEE" outline="#31415F" outlineSize="8" width="1600" height="1000" rectAlignment="MiddleCenter" visibility="Diamonds">
   <Button id="closeBtn" color="#1A1A2ACC" textColor="#FFFFFF" width="80" height="80" fontSize="42" fontStyle="Bold" roundEdges="true" onClick="closeMenu" outline="#5B6780" outlineSize="3" offsetXY="720 420">X</Button>
-  <Text text="Patch 1.3d" fontSize="72" color="#F3F6FA" fontStyle="Bold" offsetXY="0 370" alignment="MiddleCenter"/>
+  <Text id="SplashPatch" text="Patch 1.3d" fontSize="72" color="#F3F6FA" fontStyle="Bold" offsetXY="0 370" alignment="MiddleCenter"/>
   <Text text="LCT 40K TABLE" fontSize="42" color="#AFC1D8" fontStyle="Bold" offsetXY="0 300" alignment="MiddleCenter"/>
 
   <Panel id="SplashChangelog" width="1360" height="500" offsetXY="0 0" color="#182233CC" outline="#31415F99" outlineSize="3">
     <Text text="Patch Notes" fontSize="34" color="#F3F6FA" fontStyle="Bold" offsetXY="0 220" alignment="MiddleCenter"/>
-    <Text text="* Dropped support for 10E legacy&#10;* Gaining or Decreasing CP via widget or overlay now is logged in chat for tracking.&#10;* Added colours to disposition picker for better matching&#10;* Added deployment picker based on disposition, currently we only have 3 deployment zones per disposition match up but that will change as GW shows more stuff.&#10;* Added VP limitations for primary, secondaries and total scores.&#10;* Changed scoreboard buttons&#10;* Added the option to change table mat (more to come!)&#10;* Lots of new tokens!&#10;* Major code cleanup." fontSize="26" color="#D8E1EA" offsetXY="0 -40" width="1280" height="400" alignment="UpperLeft"/>
+    <Text id="SplashChangelogText" text="* Dropped support for 10E legacy&#10;* Gaining or Decreasing CP via widget or overlay now is logged in chat for tracking.&#10;* Added colours to disposition picker for better matching&#10;* Added deployment picker based on disposition, currently we only have 3 deployment zones per disposition match up but that will change as GW shows more stuff.&#10;* Added VP limitations for primary, secondaries and total scores.&#10;* Changed scoreboard buttons&#10;* Added the option to change table mat (more to come!)&#10;* Lots of new tokens!&#10;* Major code cleanup." fontSize="26" color="#D8E1EA" offsetXY="0 -40" width="1280" height="400" alignment="UpperLeft"/>
   </Panel>
 
   <Button id="redBtn" color="#B52020" textColor="#FFFFFF" width="460" height="150" fontSize="52" fontStyle="Bold" roundEdges="true" onClick="placeToRed" outline="#F06A6A" outlineSize="4" offsetXY="-540 -350">Red</Button>
   <Button id="greyBtn" color="#4A4A4A" textColor="#FFFFFF" width="300" height="150" fontSize="38" fontStyle="Bold" roundEdges="true" onClick="placeToSpectator" outline="#9C9C9C" outlineSize="4" offsetXY="0 -350">Spectator</Button>
   <Button id="blueBtn" color="#1A5FC8" textColor="#FFFFFF" width="460" height="150" fontSize="52" fontStyle="Bold" roundEdges="true" onClick="placeToBlue" outline="#6DA8FF" outlineSize="4" offsetXY="540 -350">Blue</Button>
+</Panel>
+
+<!-- Custom bubble size input overlay - one per player (opened by the dice-mat "123" button or the "Custom Bubble Size" game key). Visibility is fixed so a player only ever sees their own. -->
+<Panel id="bubbleOverlay_Red" visibility="Red" active="false" rectAlignment="MiddleCenter" scale="0.75 0.75 0.75" width="560" height="340" color="#10141EF2" outline="#31415F" outlineSize="4" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+  <VerticalLayout padding="40 40 30 30" spacing="20" childForceExpandHeight="false">
+    <Text fontSize="38" fontStyle="Bold" color="#F3F6FA" alignment="MiddleCenter" preferredHeight="56">Custom Bubble Size</Text>
+    <Text fontSize="22" color="#AFC1D8" alignment="MiddleCenter" preferredHeight="34">Values:1-60. Blank or 0 clears.</Text>
+    <InputField id="bubbleInputField_Red" placeholder="" characterLimit="2" contentType="IntegerNumber" fontSize="40" alignment="MiddleCenter" color="#FFFFFF" textColor="#10141E" onValueChanged="cacheBubbleInput" onEndEdit="submitBubbleInput" preferredHeight="80"/>
+    <Button fontSize="30" fontStyle="Bold" textColor="#FFFFFF" color="#1A5FC8" onClick="submitBubbleInput" preferredHeight="70">OK</Button>
+  </VerticalLayout>
+  <Button text="X" fontSize="24" textColor="#FFFFFF" color="#B52020" width="44" height="44" roundEdges="true" outline="#2a2a4aCC" outlineSize="3" offsetXY="242 140" onClick="closeBubbleOverlay" tooltip="Close"/>
+</Panel>
+<Panel id="bubbleOverlay_Blue" visibility="Blue" active="false" rectAlignment="MiddleCenter" scale="0.75 0.75 0.75" width="560" height="340" color="#10141EF2" outline="#31415F" outlineSize="4" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+  <VerticalLayout padding="40 40 30 30" spacing="20" childForceExpandHeight="false">
+    <Text fontSize="38" fontStyle="Bold" color="#F3F6FA" alignment="MiddleCenter" preferredHeight="56">Custom Bubble Size</Text>
+    <Text fontSize="22" color="#AFC1D8" alignment="MiddleCenter" preferredHeight="34">Values:1-60. Blank or 0 clears.</Text>
+    <InputField id="bubbleInputField_Blue" placeholder="" characterLimit="2" contentType="IntegerNumber" fontSize="40" alignment="MiddleCenter" color="#FFFFFF" textColor="#10141E" onValueChanged="cacheBubbleInput" onEndEdit="submitBubbleInput" preferredHeight="80"/>
+    <Button fontSize="30" fontStyle="Bold" textColor="#FFFFFF" color="#1A5FC8" onClick="submitBubbleInput" preferredHeight="70">OK</Button>
+  </VerticalLayout>
+  <Button text="X" fontSize="24" textColor="#FFFFFF" color="#B52020" width="44" height="44" roundEdges="true" outline="#2a2a4aCC" outlineSize="3" offsetXY="242 140" onClick="closeBubbleOverlay" tooltip="Close"/>
 </Panel>
 
 <Panel id="RedHud_VPScores" visibility="Red" active="true" scale="0.43 0.43 0.43" width="1160" height="155" rectAlignment="UpperRight" offsetXY="-290 -72" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
