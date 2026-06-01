@@ -1137,6 +1137,14 @@ function spawnDice(n,player,alt)
     end
 end
 
+-- Cross-object entry point for the stats board. Object.call() can only pass a
+-- single argument, so the stats board sends a {n, player, alt} table which we
+-- unpack into the positional spawnDice signature.
+function spawnStatsDice(params)
+    if type(params) ~= "table" then return end
+    spawnDice(params.n, params.player, params.alt)
+end
+
 function sustainedHitsAction(_, color, alt)
     -- Left-click: apply 6+. Right-click (alt): apply 5+. No toggle.
     local threshold = alt and 5 or 6
@@ -1607,6 +1615,15 @@ function setDiceType()
     else
         diceType = "Die_6"
     end
+end
+
+function getStatsHelperDiceConfig()
+    setDiceType()
+    return {
+        diceType = diceType,
+        selectedColor = selectedColor,
+        customDiceImage = customDiceImage
+    }
 end
 
 function setDefaultState()
