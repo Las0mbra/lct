@@ -9,6 +9,17 @@ spawnPosition = nil
 customDieData = nil
 useCustomTrayDice = false
 activeCustomTrayDiceConfig = false
+statsHelperHeaderBackground = "#d6d6d6"
+unitRowPalettes = {
+  {
+    background = "#F4F1E8",
+    text = "#111111"
+  },
+  {
+    background = statsHelperHeaderBackground,
+    text = "#000000"
+  }
+}
 
 function onSave()
   return JSON.encode({
@@ -18,6 +29,7 @@ function onSave()
 end
 
 function onLoad(data)
+  self.setColorTint({1, 1, 1, 0})
   self.addContextMenuItem("Set Custom Dice", onSetCustomDiceClicked)
   self.addContextMenuItem("Reset Custom Dice", onResetCustomDiceClicked)
   self.addContextMenuItem("Set Spawn Position", onSetSpawnPositionClicked)
@@ -72,7 +84,7 @@ function setupStatsHelperTopRow()
   }
 
   if ui[2].children[2] and ui[2].children[2].children and ui[2].children[2].children[1] then
-    ui[2].children[2].attributes.columnWidths = "600 500 650 250 250"
+    ui[2].children[2].attributes.columnWidths = "450 350 1000 225 225"
     ui[2].children[2].children[1].children = {
       createHeaderCell("Unit"),
       createHeaderCell("Name"),
@@ -82,7 +94,7 @@ function setupStatsHelperTopRow()
     }
   end
   if ui[2].children[3] then
-    ui[2].children[3].attributes.columnWidths = "600 500 650 250 250"
+    ui[2].children[3].attributes.columnWidths = "450 350 1000 225 225"
     ui[2].children[3].attributes.rowBackgroundColor = "#FFFFFF"
   end
 
@@ -239,8 +251,15 @@ end
 
 function createWeaponTableRows(weaponMap)
   local result = {}
+  local currentUnit = nil
+  local paletteIndex = 0
   for i,v in ipairs(weaponMapToSortedRows(weaponMap)) do
-    table.insert(result, createWeaponRowUI(v))
+    local unitName = v.unitName or ""
+    if currentUnit ~= unitName then
+      currentUnit = unitName
+      paletteIndex = paletteIndex % #unitRowPalettes + 1
+    end
+    table.insert(result, createWeaponRowUI(v, unitRowPalettes[paletteIndex]))
   end
   return result
 end
@@ -277,18 +296,20 @@ function getUnitDisplayName(weaponData)
   return unitName
 end
 
-function createWeaponRowUI(weaponData)
+function createWeaponRowUI(weaponData, palette)
+  palette = palette or unitRowPalettes[1]
   return {
     tag = "Row",
     attributes = {
-      preferredHeight = 130
+      preferredHeight = 130,
+      color = palette.background
     },
     children = {
-      createTextCell(getUnitDisplayName(weaponData)),
-      createTextCell(weaponData.data.name),
-      createTextCell(weaponData.data.stats),
-      createButtonCell(getAttackInfo(weaponData), getAttackButtonId(weaponData), "onAttackClicked", weaponData.side),
-      createButtonCell(getRangeText(weaponData.data.range), "rangeButton_"..weaponData.data.name, "onRangeClicked"),
+      createTextCell(getUnitDisplayName(weaponData), palette),
+      createTextCell(weaponData.data.name, palette),
+      createTextCell(weaponData.data.stats, palette),
+      createButtonCell(getAttackInfo(weaponData), getAttackButtonId(weaponData), "onAttackClicked", weaponData.side, palette),
+      createButtonCell(getRangeText(weaponData.data.range), "rangeButton_"..weaponData.data.name, "onRangeClicked", nil, palette),
     }
   }
 end
@@ -576,11 +597,12 @@ function getRangeText(range)
   return tostring(range).."″"
 end
 
-function createButtonCell(text, id, click, side)
+function createButtonCell(text, id, click, side, palette)
+  palette = palette or unitRowPalettes[1]
   return {
     tag = "Cell",
     attributes = {
-      color = "#FFFFFF"
+      color = palette.background
     },
     children = {
       {
@@ -589,8 +611,8 @@ function createButtonCell(text, id, click, side)
           text = text,
           id = id,
           onClick = click,
-          color = "#FFFFFF",
-          textColor = "#000000",
+          color = palette.background,
+          textColor = palette.text,
           tooltip = side and "Can't shoot together with main weapon" or nil,
           tooltipBackgroundColor = "#141414FB",
           tooltipTextColor = "#CCCCCC",
@@ -601,14 +623,23 @@ function createButtonCell(text, id, click, side)
   }
 end
 
-function createTextCell(text)
+function createTextCell(text, palette)
+  palette = palette or unitRowPalettes[1]
   return {
     tag = "Cell",
+    attributes = {
+      color = palette.background
+    },
     children = {
       {
-        tag = "Text",
+        tag = "Button",
         attributes = {
-          text = text
+          text = text,
+          onClick = "",
+          color = palette.background,
+          textColor = palette.text,
+          fontSize = "36",
+          resizeTextForBestFit = "true"
         }
       }
     }
