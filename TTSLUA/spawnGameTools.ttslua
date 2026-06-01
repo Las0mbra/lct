@@ -92,23 +92,6 @@ instructionsBBtn={ label=instructionsLbl, click_function="resetTokens", function
             font_size=190, color="Green", font_color={1,1,1}
 }
 
-function webRequestCallback(webReturn)
-    print("Web Request Returned")
-    print(webReturn.is_done)
-    print(webReturn.text)
-    local sec_data = JSON.decode(web_data.text)
-
-    local version_data = sec_data.ver
-    local secNames = sec_data.names
-    --printToAll("\n\nVersion "..version_data, "Orange")
-end
-
-function printData(table)
-    for i, thing in ipairs(table) do
-        print(i.."  "..thing)
-    end
-end
-
 function onLoad()
     self.setName("Spawn game tools")
     self.setPosition({80,-5,0})
@@ -265,16 +248,6 @@ function hideShowArmy(color, hideShow)
 end
 
 -- END Hide show army manager
-
-function removeVal(list, value) -- rimuove solo il primo valore trovato
-    for i, val in ipairs(list) do
-        if val == value then
-            table.remove(list, i)
-            break
-        end
-    end
-    return list
-end
 
 function linkMini()
 end

@@ -12,7 +12,6 @@
 -- too lazy to change it all again.
 centerCircle_GUID = "51ee2f"
 quarterCircle_GUID = "51ee3f"
-templateObjective_GUID = "573333"
 startMenu_GUID = "738804"
 redDiceMat_GUID = "c57d70" -- diceTable
 blueDiceMat_GUID = "a84ed2" -- diceTable
@@ -103,14 +102,6 @@ function setHudAttributeForColor(color, params)
     local prefix = color .. "Hud_"
     pcall(function()
         Global.UI.setAttribute(prefix .. params.id, params.attr, params.value)
-    end)
-end
-
-function setHudValueForColor(color, params)
-    if not params or not params.id then return end
-    local prefix = color .. "Hud_"
-    pcall(function()
-        Global.UI.setValue(prefix .. params.id, params.value)
     end)
 end
 
@@ -317,10 +308,10 @@ function refreshScoringOverlay()
     for j = 1, 5 do
         local r = summary.red.rounds and summary.red.rounds[j] or {}
         local b = summary.blue.rounds and summary.blue.rounds[j] or {}
-        redRoundsText = redRoundsText .. string.format("<b>Round %d</b> | PRI: %d - SEC: %d - XTR: %d |\n",
-            j, r.primary or 0, r.secondary1 or 0, r.secondary2 or 0)
-        blueRoundsText = blueRoundsText .. string.format("<b>Round %d</b> | PRI: %d - SEC: %d - XTR: %d |\n",
-            j, b.primary or 0, b.secondary1 or 0, b.secondary2 or 0)
+        redRoundsText = redRoundsText .. string.format("<b>Round %d</b> | PRI: %d - SEC: %d |\n",
+            j, r.primary or 0, r.secondary or 0)
+        blueRoundsText = blueRoundsText .. string.format("<b>Round %d</b> | PRI: %d - SEC: %d |\n",
+            j, b.primary or 0, b.secondary or 0)
     end
     setHudValue({id = "ScoringOverlay_RedRounds", value = redRoundsText})
     setHudValue({id = "ScoringOverlay_BlueRounds", value = blueRoundsText})
@@ -391,6 +382,75 @@ function toggleHudOverlayForColor(params)
         settings.settingsOpen = false
     end
     applyHudPreferencesForColor(color)
+end
+
+-- ===== Custom bubble input overlay (screen space, 1-60) =====
+-- Each player has their OWN panel (bubbleOverlay_Red / bubbleOverlay_Blue) with
+-- fixed visibility in ftc_base_ui.xml, so one player's overlay is never shown to
+-- the other and both can be open at once. Opened by the dice-mat "123" button or
+-- the "Custom Bubble Size" game key; the result is applied on that player's mat.
+bubbleOverlayPending = {}   -- player color -> typed string (live, from onValueChanged)
+bubbleOverlayMat = {}       -- player color -> dice mat GUID to apply on
+bubbleOverlayLock = {}      -- player color -> debounce flag
+
+function diceMatForColor(color)
+    if color == "Red" then return redCustomDiceMat_GUID end
+    if color == "Blue" then return blueCustomDiceMat_GUID end
+    return nil
+end
+
+function openBubbleInput(params)
+    local color = params.color
+    if color ~= "Red" and color ~= "Blue" then return end
+    bubbleOverlayMat[color] = params.mat or diceMatForColor(color)
+    bubbleOverlayPending[color] = nil
+    Global.UI.setAttribute("bubbleInputField_" .. color, "text", "")
+    Global.UI.setAttribute("bubbleOverlay_" .. color, "active", "true")
+end
+
+function cacheBubbleInput(player, value, id)
+    if player then bubbleOverlayPending[player.color] = value end
+end
+
+function closeBubbleInput(color)
+    Global.UI.setAttribute("bubbleOverlay_" .. color, "active", "false")
+    Global.UI.setAttribute("bubbleInputField_" .. color, "text", "")
+    bubbleOverlayPending[color] = nil
+end
+
+-- UI callback for the overlay's red "X" close button.
+function closeBubbleOverlay(player, value, id)
+    local color = player and player.color
+    if color == "Red" or color == "Blue" then
+        closeBubbleInput(color)
+    end
+end
+
+-- Called by both Enter (InputField onEndEdit) and the OK button (onClick).
+-- Pressing OK also blurs the field, so both can fire; debounce to apply once.
+function submitBubbleInput(player, value, id)
+    local color = player and player.color
+    if color ~= "Red" and color ~= "Blue" then return end
+    if bubbleOverlayLock[color] then return end
+    bubbleOverlayLock[color] = true
+    Wait.time(function() bubbleOverlayLock[color] = false end, 0.4)
+
+    local matGuid = bubbleOverlayMat[color] or diceMatForColor(color)
+    local mat = matGuid and getObjectFromGUID(matGuid)
+    local n = tonumber(bubbleOverlayPending[color])
+
+    -- 0 or a blank value clears the bubbles on the player's selected models.
+    if not n or n <= 0 then
+        if mat then mat.call("clearBubblesFromOverlay", {color = color}) end
+        closeBubbleInput(color)
+        return
+    end
+
+    if n > 60 then n = 60 end
+    if mat then
+        mat.call("applyBubbleFromOverlay", {radius = n, color = color})
+    end
+    closeBubbleInput(color)
 end
 
 redCustomDiceMat_GUID = "acae21" -- diceTable
@@ -481,7 +541,7 @@ blueSecondaryName_GUIDs = {
 }
 challengerCardZone_GUID = "cdecf2"
 
-deploymentDeck_GUID = "2dc2e8"
+deploymentDeck_GUID = "23699d"
 challengerDeck_GUID = "ffdf05"
 primaryDeck_GUID = "d26e9c"
 redSecondaryDeck_GUID = "c0fb49"
@@ -568,6 +628,37 @@ missionMatchups = {
     ["5_5"] = { red = "Battlefield Dominance",  blue = "Battlefield Dominance" },
 }
 
+-- Deployment choices keyed the same way as missionMatchups. Each entry is
+-- a deterministic set of deployment cards from deploymentDeck_GUID.
+-- Edit these per pairing as the matrix gets finalized.
+missionDeploymentMatchups = {
+    ["1_1"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["1_2"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["1_3"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["1_4"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["1_5"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["2_1"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["2_2"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["2_3"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["2_4"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["2_5"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["3_1"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["3_2"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["3_3"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["3_4"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["3_5"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["4_1"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["4_2"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["4_3"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["4_4"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["4_5"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["5_1"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["5_2"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["5_3"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["5_4"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+    ["5_5"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
+}
+
 interactiveButtonTableQuarters_State = 1
 interactiveButtonAreaDenial = 1
 interactiveButtonStratReserves = 1
@@ -598,21 +689,29 @@ Unexploded Ordnance 41f293
 Crucible of Battle e96d18
 Dawn of War 7f45dc
 Hammer and Anvil 97f3f0
-Search and Destroy 09c961
+11e Deployment Zones 23699d
 Sweeping Engagement c6edf3
 Tipping Point 77cde6
 
 ]]--
 
 MISSION_PACK_PARIAH_NEXUS = 1
-game_version_ID = 16
+-- Player-facing version + patch notes. The compiler rewrites these three lines
+-- on every build from CHANGELOG.md; the `@@LCT_...@@` markers must stay intact.
+-- Left as-is, an uncompiled / dev build simply shows "DEV".
+--   GAME_VERSION : build stamp ("test" or the release version) - chat + save name
+--   GAME_PATCH   : latest CHANGELOG version - shown on the splash overlay
+--   GAME_CHANGELOG: latest CHANGELOG bullets - shown on the splash overlay
+GAME_VERSION = "DEV"   -- @@LCT_VERSION@@
+GAME_PATCH = "DEV"     -- @@LCT_PATCH@@
+GAME_CHANGELOG = {}    -- @@LCT_CHANGELOG@@
 LOCKED_IN_SECONDARIES = 0
 packSelected = nil
 missionPackData = {
     {
         id = MISSION_PACK_PARIAH_NEXUS,
         name = "Chapter Approved 2025",
-        deploymentDeck_GUID = "2dc2e8",
+        deploymentDeck_GUID = "23699d",
         primaryDeck_GUID = "d26e9c",
         fixedSecondaryDeck_GUID = "b55459",
         redSecondaryDeck_GUID = "c0fb49",
@@ -635,13 +734,13 @@ missionPackData = {
             -- H: Supply Drop / Hammer and Anvil
             {name = "H", primary = "981226", deployment = "97f3f0"},
             -- I: Hidden Supplies / Search and Destroy
-            {name = "I", primary = "85718f", deployment = "09c961"},
+            {name = "I", primary = "85718f", deployment = "23699d"},
             -- J: Linchpin / Search and Destroy
-            {name = "J", primary = "540fd0", deployment = "09c961"},
+            {name = "J", primary = "540fd0", deployment = "23699d"},
             -- K: Scorched Earth / Search and Destroy
-            {name = "K", primary = "6860de", deployment = "09c961"},
+            {name = "K", primary = "6860de", deployment = "23699d"},
             -- L: Take and Hold / Search and Destroy
-            {name = "L", primary = "bffd57", deployment = "09c961"},
+            {name = "L", primary = "bffd57", deployment = "23699d"},
             -- M: Purge the Foe / Crucible of Battle
             {name = "M", primary = "d9d35a", deployment = "e96d18"},
             -- N: Hidden Supplies / Crucible of Battle
@@ -661,10 +760,10 @@ missionPackData = {
             -- UKTC Maps
             {name = "U", primary = "7fa6d0", deployment = "c6edf3"},
             {name = "V", primary = "d9d35a", deployment = "e96d18"},
-            {name = "W", primary = "85718f", deployment = "09c961"},
+            {name = "W", primary = "85718f", deployment = "23699d"},
             {name = "X", primary = "540fd0", deployment = "7f45dc"},
-            {name = "Y", primary = "bffd57", deployment = "09c961"},
-            {name = "Z", primary = "bffd57", deployment = "09c961"}
+            {name = "Y", primary = "bffd57", deployment = "23699d"},
+            {name = "Z", primary = "bffd57", deployment = "23699d"}
         }
     },
 }
@@ -779,10 +878,40 @@ function onSave()
         svPackSelected = packSelected,
         svRedSecondaryDeckGUID = redSecondaryDeckGUID,
         svBlueSecondaryDeckGUID = blueSecondaryDeckGUID,
-        svPlayerHudSettings = playerHudSettings
+        svPlayerHudSettings = playerHudSettings,
+        svVersion = GAME_VERSION
     })
     --saved_data = ""
     return saved_data
+end
+
+-- Bare patch number (no leading "v") for display, e.g. "v1.0.0" -> "1.0.0".
+function patchNumber()
+    return (tostring(GAME_PATCH):gsub("^v", ""))
+end
+
+-- Short chat banner on load. A test build announces itself; a release build
+-- just states its patch. Patch notes live on the splash overlay, not chat.
+function announceVersion()
+    if GAME_VERSION == "test" then
+        printToAll("LCT - TEST BUILD (Patch " .. patchNumber() .. ")", "Yellow")
+    else
+        printToAll("LCT - Patch " .. patchNumber(), "Yellow")
+    end
+end
+
+-- Push the latest patch number + notes (injected from CHANGELOG.md) into the
+-- splash intro overlay. Runs on every load so the menu always reflects the
+-- build's CHANGELOG, regardless of test/release.
+function updateSplashOverlay()
+    Global.UI.setAttribute("SplashPatch", "text", "Patch " .. patchNumber())
+    if GAME_CHANGELOG and #GAME_CHANGELOG > 0 then
+        local lines = {}
+        for _, note in ipairs(GAME_CHANGELOG) do
+            lines[#lines + 1] = "* " .. note
+        end
+        Global.UI.setValue("SplashChangelogText", table.concat(lines, "\n"))
+    end
 end
 
 function updateTeamModel(obj, team)
@@ -818,19 +947,6 @@ function tagSelectedAsRed(playerColor, target)
     printToColor("Tagged selected objects as Blue", playerColor, "Blue")
   end
 
-function spawnOppositeForGUID(guid)
-    local orig = getObjectFromGUID(guid)
-    if not orig then return end
-    local data = JSON.decode(orig.getJSON())
-    data.Transform.posX = -data.Transform.posX
-    data.Transform.posZ = -data.Transform.posZ
-    data.Transform.rotY = (data.Transform.rotY + 180) % 360
-    spawnObjectJSON({
-        json = JSON.encode(data),
-        callback_function = function(obj) obj.lock() end
-    })
-end
-
 function hideMissionDeckUntilSelected(deckGUID)
     local deck = getObjectFromGUID(deckGUID)
     if not deck then return end
@@ -864,6 +980,9 @@ end
 function onLoad(saved_data)
     --addHotkey("Tag Selected as Red", tagSelectedAsRed)
     --addHotkey("Tag Selected as Blue", tagSelectedAsBlue)
+    addHotkey("Custom Bubble", function(playerColor, _, _)
+        openBubbleInput({color = playerColor, mat = diceMatForColor(playerColor)})
+    end)
     Turns.enable=false
     --- load vars from saved
     if saved_data ~= "" then
@@ -892,6 +1011,10 @@ function onLoad(saved_data)
         hideMissionDeckUntilSelected(edition11BlueSecondaryDeck_GUID)
     end
     ---- end loading
+    -- Refresh the splash overlay from this build's CHANGELOG, and drop a short
+    -- version banner in chat.
+    Wait.frames(updateSplashOverlay, 1)
+    Wait.time(announceVersion, 3)
     if allowMenu then
         if allowAutoSeat and redPlayerID ~= "" and bluePlayerID ~= "" then --  if the game is not started dont autoseat
                 autoSeatAll()
@@ -1072,13 +1195,6 @@ function demotePlayers()
     end
 end
 
-function promotePlayersOnConnect()  --NOT USED
-    if player_color == "Red" or player_color == "Blue"  then
-        Player["Red"].promote(true)
-        Player["Blue"].promote(true)
-    end
-end
-
 function showHideRedBlueBtn()
     if allowMenu then
         if Player.Red.seated == true then
@@ -1159,137 +1275,6 @@ function closeMenu(player, value, id)
 end
 
 backPosition={{0,0,0},{0,0,0},{0,0,0},{0,0,0}}
-function goToDiceRoller(player)
-    local matPositionOffset=12
-    local color=player.color
-    local diceMatGUID=redDiceMat_GUID
-    local i=1
-    if color == "Red" then
-        i=1
-    end
-    if color == "Orange" then
-        i=2
-    end
-    if color == "Blue" then
-        diceMatGUID = blueDiceMat_GUID
-        i=3
-        matPositionOffset=-matPositionOffset
-    end
-    if color == "Teal" then
-        diceMatGUID = blueDiceMat_GUID
-        i=4
-        matPositionOffset=-matPositionOffset
-    end
-    if Player[color].getSelectedObjects()[1] ~= nil then
-        backPosition[i]=Player[color].getSelectedObjects()[1].getPosition()
-    end
-
-    local matPos=getObjectFromGUID(diceMatGUID).getPosition()
-    matPos.x=matPos.x+matPositionOffset
-    moveCameraTo(matPos,30,color)
-end
-function goToScoreBoard(player)
-    local matPositionOffset = 0 -- Define matPositionOffset with a default value
-    local color = player.color
-    local matPos = getObjectFromGUID("06d627").getPosition()
-    matPos.x = matPos.x + matPositionOffset
-     moveCameraTo(matPos, 30, color, 90)
-end
-
-function goToSquad(player)
-    local i = 1
-    local color=player.color
-    if color == "Red" then
-        i=1
-    end
-    if color == "Orange" then
-        i=2
-    end
-    if color == "Blue" then
-        i=3
-    end
-    if color == "Teal" then
-        i=4
-    end
-    moveCameraTo(backPosition[i], 20, color)
-end
-
-function moveCameraTo(pos, dist, color, pitchOverride)
-    local rot = {0, 0, 0} -- Default rotation
-
-    if color == "Red" or color == "Orange" then
-        rot = {0, 180, 0}
-    elseif color == "Blue" or color == "Teal" then
-        rot = {0, 0, 0}
-    end
-
-    if pos[2] == 0 then
-        dist = dist + 30
-    end
-
-    local yaw = pitchOverride or rot[2]
-
-    Player[color].lookAt({
-        position = pos,
-        pitch = 90,
-        yaw = yaw,
-        distance = dist
-    })
-end
-
-function moveAllFromZoneToDeck(params)
-    local zoneObj = getObjectFromGUID(Global.getVar(params.zone .. "CardZone_GUID"))
-    local deckObj = getObjectFromGUID(missionPackData[packSelected][params.deck .. "Deck_GUID"])
-
-    local objects = zoneObj.getObjects()
-    for _,object in ipairs(objects) do
-        object.locked = false
-        deckObj.putObject(object)
-    end
-
-    deckObj.shuffle()
-end
-
-function moveOneFromDeckToZone(params)
-    local zoneObj = getObjectFromGUID(Global.getVar(params.zone .. "CardZone_GUID"))
-    local deckObj = getObjectFromGUID(Global.getVar(params.deck .. "Deck_GUID"))
-    local takeParams = {}
-    takeParams.position = zoneObj.getPosition()
-    takeParams.flip = true
-    takeParams.smooth = true
-    takeParams.callback_function = function(card)
-        Wait.frames(function()
-            card.locked = true
-        end)
-    end
-    if params["card"] then
-        takeParams.guid = params.card
-    else
-        deckObj.shuffle()
-    end
-    deckObj.takeObject(takeParams)
-end
-
-
-function moveOneFromDeckToZoneBlue(params)
-    local zoneObj = getObjectFromGUID(Global.getVar(params.zone .. "CardZone_GUID"))
-    local deckObj = getObjectFromGUID(missionPackData[packSelected][params.deck .. "Deck_GUID"])
-    local takeParams = {}
-    takeParams.position = zoneObj.getPosition()
-    takeParams.flip = true
-    takeParams.smooth = true
-    takeParams.callback_function = function(card)
-        Wait.frames(function()
-            card.locked = true
-        end)
-    end
-    if params["card"] then
-        takeParams.guid = params.card
-    else
-        deckObj.shuffle()
-    end
-    deckObj.takeObject(takeParams)
-end
 
 function getSecondaryCardZones(zoneGuids)
     local zones = {}
@@ -1305,14 +1290,6 @@ function getSecondaryCardZones(zoneGuids)
     end
 
     return zones
-end
-
-function getBlueSecondaryCardZones()
-    return getSecondaryCardZones(blueSecondaryCardZone_GUIDs)
-end
-
-function getRedSecondaryCardZones()
-    return getSecondaryCardZones(redSecondaryCardZone_GUIDs)
 end
 
 -- zone.getObjects() can miss cards that were script-moved into a slot and
@@ -1351,24 +1328,6 @@ function getCardsInSecondarySlot(zone)
     end
 
     return found
-end
-
-function getFirstOpenSecondaryCardZone(zoneGuids)
-    for _, slot in ipairs(getSecondaryCardZones(zoneGuids)) do
-        if #getCardsInSecondarySlot(slot.zone) == 0 then
-            return slot
-        end
-    end
-
-    return nil
-end
-
-function getFirstOpenBlueSecondaryCardZone()
-    return getFirstOpenSecondaryCardZone(blueSecondaryCardZone_GUIDs)
-end
-
-function getFirstOpenRedSecondaryCardZone()
-    return getFirstOpenSecondaryCardZone(redSecondaryCardZone_GUIDs)
 end
 
 function getSecondaryCardZoneByIndex(color, index)
@@ -1448,10 +1407,6 @@ function getSecondaryCardName(zone)
     end
 
     return nil
-end
-
-function getBlueSecondaryCardName(zone)
-    return getSecondaryCardName(zone)
 end
 
 function setSecondaryName(nameGuids, index, cardName)
@@ -1538,14 +1493,15 @@ function drawSecondaryToFirstOpenSlot(params)
         return
     end
 
-    -- Collect up to 2 open slots upfront. Smooth takeObject means the first card
-    -- hasn't physically landed when the second draw fires, so re-querying for
-    -- "first open" would return the same slot twice.
+    -- Collect up to maxCards open slots upfront (defaults to 2). Smooth takeObject
+    -- means the first card hasn't physically landed when the second draw fires, so
+    -- re-querying for "first open" would return the same slot twice.
+    local maxCards = params.maxCards or 2
     local openSlots = {}
     for _, slot in ipairs(getSecondaryCardZones(params.zoneGuids)) do
         if #getCardsInSecondarySlot(slot.zone) == 0 then
             openSlots[#openSlots + 1] = slot
-            if #openSlots >= 2 then break end
+            if #openSlots >= maxCards then break end
         end
     end
 
@@ -1596,6 +1552,30 @@ function drawRedSecondaryToFirstOpenSlot()
         refreshNames = refreshRedSecondaryNames,
         fullMessage = "Red already has 8 active secondary cards.",
         deckMissingMessage = "Red secondary deck could not be found.",
+    })
+end
+
+function drawBlueSecondaryToFirstOpenSlotSingle()
+    drawSecondaryToFirstOpenSlot({
+        color = "Blue",
+        zoneGuids = blueSecondaryCardZone_GUIDs,
+        deckGuidKey = "blueSecondaryDeck_GUID",
+        refreshNames = refreshBlueSecondaryNames,
+        fullMessage = "Blue already has 8 active secondary cards.",
+        deckMissingMessage = "Blue secondary deck could not be found.",
+        maxCards = 1,
+    })
+end
+
+function drawRedSecondaryToFirstOpenSlotSingle()
+    drawSecondaryToFirstOpenSlot({
+        color = "Red",
+        zoneGuids = redSecondaryCardZone_GUIDs,
+        deckGuidKey = "redSecondaryDeck_GUID",
+        refreshNames = refreshRedSecondaryNames,
+        fullMessage = "Red already has 8 active secondary cards.",
+        deckMissingMessage = "Red secondary deck could not be found.",
+        maxCards = 1,
     })
 end
 

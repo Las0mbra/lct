@@ -19,16 +19,6 @@ function printLast5()
 end
 
 -- Return pastel color if player is Red or Blue
-function getPastelIfRedOrBlue(pColor)
-    if pColor == "Red" then
-        return {1, 0.6, 0.6}  -- pastel red
-    elseif pColor == "Blue" then
-        return {0.6, 0.7, 1}  -- pastel blue closer to blue
-    else
-        return stringColorToRGB(pColor) or {1,1,1}
-    end
-end
-
 --Initialize Global Variables and pRNG Seed
 ver = 'BCB-2022-12-30'
 lastHolder = {}
@@ -265,7 +255,6 @@ function onObjectEnterContainer(container, obj)
             end, takeDiceOutDelay)
         else
             local pos = self.getPosition()
-            local f = self.getTransformRight()
             self.takeObject({
                 position          = {pos.x+20,pos.y+50,pos.z+20},
                 smooth            = false,
@@ -619,11 +608,4 @@ function setValueCallback(obj, tab)
     end
 
     startLuaCoroutine(self, 'insidef')
-end
-
-function waitFrames(frames)
-	while frames > 0 do
-		coroutine.yield(0)
-		frames = frames - 1
-	end
 end

@@ -18,6 +18,14 @@ ttsDebugEnabled = false
 dispositionValues = {"Disruption", "Priority Assets", "Purge the Foe", "Reconnaissance", "Take and Hold"}
 blueDispositionSelected = 1
 redDispositionSelected = 1
+matTextureSelected = 1
+mapMat_GUID = "28865a"
+matTextures = {
+    {name = "Green", color = {0.00, 0.31, 0.03}, url = "https://steamusercontent-a.akamaihd.net/ugc/11600812045538713232/0064F3B919AEC48D35C233786977578689C81AD1/"},
+    {name = "Blue", color = {0.00, 0.31, 0.44}, url = "https://steamusercontent-a.akamaihd.net/ugc/12661578557139534569/9D589BE05341F1CE8EA20369387C7C5077587AB9/"},
+    {name = "Grey", color = {0.38, 0.40, 0.34}, url = "https://steamusercontent-a.akamaihd.net/ugc/12631014249723827365/F940CC388DB67806FB4FC81A4CEEFFB20C1FDBE8/"},
+    {name = "Purple", color = {0.36, 0.26, 0.41}, url = "https://steamusercontent-a.akamaihd.net/ugc/12602332143542612703/BC19D77679D80E92322FC9E22379165CBAE9DC32/"},
+}
 
 function ttsDebugLog(message)
     if ttsDebugEnabled then
@@ -50,6 +58,7 @@ function onLoad(saved_data)
         packSelected = loaded_data.svPackSelected
         blueDispositionSelected = loaded_data.svblueDispositionSelected or blueDispositionSelected
         redDispositionSelected = loaded_data.svredDispositionSelected or redDispositionSelected
+        matTextureSelected = loaded_data.svMatTextureSelected or matTextureSelected
     end
 
     if sizeConfirmed then
@@ -69,6 +78,7 @@ function onLoad(saved_data)
     rebuildOverlayTracking()
 
     mat = getObjectFromGUID(mat_GUID)
+    applyMatTexture(false)
     if simulation then ttsDebugLog("THIS IS "..currentTurn.." TURN") end
 
     redTurnCounter = getObjectFromGUID(Global.getVar("redTurnCounter_GUID"))
@@ -112,141 +122,10 @@ function onSave()
         svPackSelected = packSelected,
         svblueDispositionSelected = blueDispositionSelected,
         svredDispositionSelected = redDispositionSelected,
+        svMatTextureSelected = matTextureSelected,
     })
 
     return saved_data
-end
-
-function makeAnnouncement()
-    local features={
-    "1.0.0: Changelog here-> https://lcttts.bearblog.dev/another-40k-tts-table/",
-    -- "1.7.0: All thanks should go to @gareth3001 for 90% of the fixes below!",
-    -- "1.7.0: Another thanks to GabrielL for the Hidden Supplies Fix!",
-    -- "1.7.0: Version: bumped due to big changes to desync issues if 2 players were far away",
-    -- "1.7.0: Maps: Updated GW Map 4",
-    -- "1.7.0: deployments: Support added for killteam... I think",
-    -- "1.6.19: Maps: Added alternative Hammer and Anvil objective markers",
-    -- "1.6.18: Maps: Updated maps 2 & 6 with small tweaks to ruins thanks @Engwar01",
-    -- "1.6.18: Rules: Updated rule PDFs to latest",
-    -- "1.6.18: Fix: Added clock back, cus why was it even gone like?",
-    -- "1.6.17: Fix: Fix GW Map 8. Updated GW Map selection images",
-    -- "1.6.16: Feat: Updated UKTC maps",
-    -- "1.6.16: I've completely got back into compeitive painting!",
-    --"1.6.19: Maps: Added alternative Hammer and Anvil objective markers",
-    --"1.6.18: Maps: Updated maps 2 & 6 with small tweaks to ruins thanks @Engwar01",
-    --"1.6.18: Rules: Updated rule PDFs to latest",
-    --"1.6.18: Fix: Added clock back, cus why was it even gone like?",
-    --"1.6.17: Fix: Fix GW Map 8. Updated GW Map selection images",
-    --"1.6.16: Feat: Updated UKTC maps",
-    --"1.6.16: I've completely got back into compeitive painting!",
-    -- "1.6.15: Fix: Updated UKTC map 4 to correct map",
-    -- "1.6.14: Feat: Marcus Miniatures Maps updated after £4000 payment finally completed",
-    -- "1.6.13: Feat: Lethal and sustained hits completely reworked, now you can click multiple times to add more hits and right/left click to add 5/6 hits",
-    -- "1.6.12: Feat: Added a huge banner to make it the most obvious thing in the world that I have a pateron",
-    -- "1.6.11: Feat: Breaking changes to lethal/sustained hits, now they you left click for 6, right click for 5 & 6. You can multiple click the buttons for sustained 2,3 etc",
-    -- "1.6.10: Fix: Blue action tocken toggle fixed",
-    -- "1.6.10: Feat: Added CLear All Bulles button to the dice mate",
-    -- "1.6.9: Fix: Updated floor battleshock tokens abit to be a little better?",
-    -- "1.6.8: Update: UKTC Map Updates and starting to hide shelves by default",
-    -- "1.6.8: Fix: GW Map 8 now has the correct terrain placements",
-    -- "1.6.7: Fix: Buggy lethal hit dice being pulled in",
-    -- "1.6.6: Fix: Dice table now shows the correct number of dice on top of it",
-    -- "1.6.5: Fix: Added back in the extract terrain button",
-    -- "1.6.5: Fix: Fixed blue secondaries not recycling",
-    -- "1.6.4: Feat: I hate the reserves board being so far away. Button to move it closer",
-    -- "1.6.3: Chore: I'm going to keep the version number the same so we don't lose our hotkeys each time. You will only see a version change here.",
-    -- "1.6.3: Fix: WTC had wrong missions in random WTC mission selector",
-    -- "1.6.2: Feat: Added floor markers for action, advance and battleshocked",
-    -- "1.6.2: Fix: Added hotkeys for auto makers and improved floating icons",
-    -- "1.6.1: Fix: Added token bags next to toggle floating icons",
-    -- "1.6.1: Fix: Fixed floating icons allowing items to be clicked",
-    -- "1.6.1: Feat: Added a button to toggle floating icons on/off",
-    -- "1.6: Feat: Floating Icons Toggle Added",
-    -- "1.6: Update: Moved the tokens next to the new floating icons if users don't like them (Christian)",
-    -- "1.6: Update: Updated Custon Counter to not look like shit",
-    -- "1.5.18: Feat: Slowly adding more icons",
-    -- "1.5.17: Feat: Add kill counters for purge the foe",
-    -- "1.5.16: Feat: WTC 2025 Maps Added & UKTC Maps 1 & 4 Updated. I love balls.",
-    -- "1.5.15: Feat: 2\" gap now supports 3 models within 2\" at the start and end",
-    -- "1.5.14: Feat: When importing Oppos Dice lethal hits are now imported and moved to dice mat",
-    -- "1.5.13: Feat: Added 1,3,6,9,12\" bubbles that allow for multiple models at once",
-    -- "1.5.12: Fix: UKTC Map 5 Center RUins incorrectly placed, thanks @Cablenator",
-    -- "1.5.11: Feat: Added save/restore button for people who didn't know about the hotkeys",
-    -- "1.5.10: Fix: Make UKTC missions more clear update dice bags on display and moved control board up",
-    -- "1.5.9: Fix: Wrong deployment used for map 4 of UKTC",
-    -- "1.5.8: Fix: Updated Stat Helper to v2.14.2 & moved the coin so its easier to click plus AP on dice",
-    -- "1.5.7: Feat: Change reserves mat colour",
-    -- "1.5.6: Feat: Feedback button so you let me know how much you hate me! I love at least 80% of you! The rest I'm on the fence about.",
-    -- "1.5.5: Feat: Added Random UKTC Mission selector",
-    -- "1.5.5: Feat: UKTC Maps updated with Beta Maps. All thanks to Minyiky for this work!",
-    --"1.5.4: Feat: Updated GW maps 7 & 8 and updated mission selection with new CA 2025",
-    --"1.5.3: Fix: Made the auto buttons have random colours",
-    --"1.5.2: Feat: Updated copy players buttons and 1D6 2D6 auto buttons in better place",
-    -- "1.5.0: Feat: CA 2025 Cards Added PN Moved to Legacy HUGE thank you to pants99 for this work. It was beautiful code!",
-    -- "1.5.0: Feat: For Priah Nexus Missions, https://steamcommunity.com/sharedfiles/filedetails/?id=3492154265",
-    -- "1.5.0: Feat: New Stat Check site v0.02 published https://stats.hutber.com",
-    --"1.4.5: Fix: pastebin changes their RAW URL, which broke GW Map 1. Updated to new after losing 3-2 at UKTC :D",
-    --"1.4.4: Fix: Removed 5 dice because everybody only needs 1!! (For the deployment order)",
-    --"1.4.4: Feat: Alpine Cup 2025 Maps Added",
-    --"1.4.3: Feat: Added Terraform objective States",
-    --"1.4.2: Fix: Updated all objectives primary/red/blue",
-    -- "1.4.1: Feat: Objectives are now clickable anywhere",
-    -- "1.4.0: Feat: WTC 2025 Maps Updated",
-    -- "1.4.0: Feat: Updated Objective Markers to be more visible",
-    -- "1.3.8: Feat: Added random WTC mission selector",
-    --"1.3.8: Fix: A random situation where the game would not start, added `force start` by clicking start 3 times",
-    --"1.3.7: Fix: If Mission Select was not used `lock your secondaries` message was displayed",
-    --"1.3.6: Feat: Hide tokens into a bag and added the most used near the dice mat",
-    --"1.3.5: Fix: Updated Stats Helper to fix the errors that rarely occured",
-    --"1.3.4: Feat: Added Secondary Cards next to dice mat",
-    --"1.3.3: Fix: Rewrote the Last 5 Rolls",
-    --"1.3.3: Fix: Added colours on mod inital load to the control board",
-    --"1.3.2: Feat: Cannot start game without secondaries locked in (expect for single player mode)",
-    --"1.3.1: Feat: Auto position models 2\" apart",
-    --"1.3.0: Feat: Instant 9\"/12\" Bubble for Deep Strike on models",
-    --"1.3.0: Fix: Removed button that disabled remove 1s",
-    --"1.2.4.3: Feat: New Control Board Feature Custom Counter for Kabal Tokens, Eldar Agile Maneuvers etc",
-    --"1.2.4.3: Fix: Last 5 rolls not displaying (please comment if not working)",
-    --"1.2.4.2: Fix: Updated Storm Hostile Objective secondary to newest version",
-    --"1.2.4.1: Feat: Added Core Rule Update PDF",
-    --"1.2.3: Fix: Bug that meant old reserves board was under the table",
-    --"1.2.2: Fix: Update Storm Hostile Objective secondary to newest version",
-    --"1.2.1: Style: Small placement updates on various objects. Please feedback if you hate it",
-    --"1.2.0: Feat: New dice spawner. Fix: stat helper updated",
-    --"1.1.9: Fix: Grab oppos dice now import lethal hits for you",
-    --"1.1.8: Feat: Finally fixed Selection Tool. Fix: sometimes you could interact with old dice mat would",
-    --"1.1.7: Feat: Added revert dice that will put dice back to their previously rolled state",
-    --"1.1.6: Style: Reverted some of the colours back, they were far too wet looking",
-    --"1.1.5: Style: Updated intro screen and updated buttons with cleaner names",
-    --"1.1.4: Style: Updated game cards with clearer names",
-    --"1.1.3: Feat: Added Single Player",
-    --"1.1.2: Fix: Improve secruity for injection and cheating",
-    --"1.1.1: Feat: Added Doubles support, feedback needed",
-    --"1.0.3: Fix: Updated Pariah Nexus Tournament Companion from 1.2 to 1.4",
-    --"1.0.2: Fix: corrected GW maps search and destory added missing map 3 and removed incorrect map 8",
-    --"1.0.1: Feat: Add dmg, ap and Str to dice",
-    --"1.0.0: Feat: Updated WTC maps to latest",
-    --"0.17: Feat: Remove clear map selection button added for casual play",
-    --"0.16: Feat: 'Import Dice' button added which will take all dice from your opponents board\n                                  Fix: Default slow role added and toggle to enable fast rolling\n                                  Fix: small bug that heights of vortex and stats helper were not being set correctly when toggled.",
-    --"0.15: Feat: Dice tracking added with Stats & Chances Buttons\n                                  Fix: corrected GW map 6, moved vortex into table.\n                                  Feat: Added in stats checker with toggle.",
-    --"0.14: Feat: Sustained and lethal buttons added.",
-    --"0.13: Fix: UKTC maps 2 & 5 terrain updated & GW map 4 error fixed.",
-    --"0.12: Fix: the lethal hits now stack in order rather than on top of each other.",
-    --"0.11: Documentation: Added a guide to the notes",
-    --"0.1: Fix: Fixed selection tool, corrected board/roller/scoreboard buttons. Allowed mult click for lethal hits",
-    --"0.09: Feat: A new button 'Lethal hits'. First version so please give feedback!",
-    --"0.08: Feat: Added new reserves board",
-    --"0.07: Fix: Selection tool not working",
-    --"0.06: Fix: Correct dice matt not going through floor! Sorry about that :O",
-    --"0.05: Add new button to top left that allows you to click directly to the board and the score board, fix Del(-) issue",
-    --"0.04: Added UKTC maps",
-    --"0.03: Added GW/WTC maps",
-    --"0.02: Added control board to control feature",
-    }
-    printToAll("NEW FEATURES:", "Yellow")
-    for i, new in ipairs(features) do
-        printToAll("- "..new, "Yellow")
-    end
 end
 
 -- ********************
@@ -366,29 +245,12 @@ confirmBtn = {
     press_color    = { 0.13, 0.55, 0.12, 1 }
 }
 
-confirmBtn2v2 = {
-    index          = i,
-    label          = "2v2",
-    click_function = "none",
-    function_owner = self,
-    position       = { -menuSizeX + 6.0, menuSizeY, menuSizeZ + 2.65 },
-    rotation       = { 0, 0, 0 },
-    height         = 810,
-    width          = 4500,
-    scale          = { 1, 1, 1 },
-    font_size      = 375,
-    color          = { 0.856, 0.09998388, 0.09398384 },
-    font_color     = { 1.0, 1.0, 1.0 },
-    hover_color    = { 1.0, 0.18, 0.16, 1 },
-    press_color    = { 0.65, 0.06, 0.05, 1 }
-}
-
 confirmBtn4 = {
     index          = i,
     label          = "Solo",
     click_function = "confirmForSingles",
     function_owner = self,
-    position       = { -menuSizeX - 6.0, menuSizeY, menuSizeZ + 4.65 },
+    position       = { -menuSizeX + 6.0, menuSizeY, menuSizeZ + 2.65 },
     rotation       = { 0, 0, 0 },
     height         = 810,
     width          = 4500,
@@ -403,124 +265,64 @@ confirmBtn4 = {
     press_color    = { 0.08, 0.4, 0.82, 1 }
 }
 
-confirmBtnLegacy = {
-    index          = i,
-    label          = "10th Edition",
-    click_function = "confirmForLegacy",
-    function_owner = self,
-    position       = { -menuSizeX + 6.0, menuSizeY, menuSizeZ + 4.65 },
-    rotation       = { 0, 0, 0 },
-    height         = 810,
-    width          = 4500,
-    scale          = { 1, 1, 1 },
-    font_size      = 375,
-    color          = {
-        0.627,
-        0.124999948,
-        0.941},
-    font_color     = { 1.0, 1.0, 1.0 },
-    hover_color    = { 0.72, 0.2, 1, 1 },
-    press_color    = { 0.47, 0.08, 0.74, 1 }
-}
-
 function refreshMat()
     mat = getObjectFromGUID(mat_GUID)
 end
+
+function normalizeMatTextureIndex(index)
+    if index > #matTextures then
+        return 1
+    end
+    if index < 1 then
+        return #matTextures
+    end
+    return index
+end
+
+function applyMatTexture(rewriteMenu)
+    matTextureSelected = normalizeMatTextureIndex(matTextureSelected)
+    local selected = matTextures[matTextureSelected]
+    local mapMat = getObjectFromGUID(mapMat_GUID)
+    if not mapMat or not selected then return end
+
+    local customInfo = mapMat.getCustomObject()
+    if customInfo.image ~= selected.url then
+        customInfo.image = selected.url
+        mapMat.setCustomObject(customInfo)
+        mapMat.reload()
+    end
+
+    if rewriteMenu then
+        Wait.frames(function() writeMenus() end, 2)
+    end
+end
+
+function setMatTexture(index)
+    matTextureSelected = normalizeMatTextureIndex(index)
+    applyMatTexture(true)
+end
+
+function setMatTexture1() setMatTexture(1) end
+function setMatTexture2() setMatTexture(2) end
+function setMatTexture3() setMatTexture(3) end
+function setMatTexture4() setMatTexture(4) end
 
 function writeSizeMenu()
     self.clearButtons()
     if sizeConfirmed then
         return
     end
-    self.createButton(startBtnDisabled)
+    createButtonWithBorder(startBtnDisabled)
     self.createButton(sizeMenuBtn)
     sizeBtn.label=sizeData[mapSizeSelected].name
     self.createButton(sizeBtn)
     self.createButton(sizeUpBtn)
     self.createButton(sizeDownBtn)
     self.createButton(confirmBtn)
-    self.createButton(confirmBtn2v2)
-    self.createButton(removeMapsBtn)
     self.createButton(confirmBtn4)
-    self.createButton(confirmBtnLegacy)
     mat.setScale(sizeData[mapSizeSelected].scale)
     mat.setPosition(positionValue)
 end
-
-local showMapsToggle = false
-local spawnedObjectRef = nil -- Store a reference to the spawned object
-
--- Function called when the button is clicked
-function onObjectClick(player_color, object_clicked)
-    showMapsToggle = true
-    local guidPositions = {
-        ["03286d"] = -4.776464939,
-        ["ca7711"] = -4.776464939,
-        ["cd649d"] = -4.776464939,
-        ["bf09bd"] = -4.776464939,
-        ["9a7c3c"] = -4.776464939,
-        ["3c8a1b"] = -6.19999981,
-        ["3c1373"] = -6.19999981,
-        ["8395b2"] = -6.19999981,
-        ["8a7c7a"] = -6.19999981,
-        ["4bb528"] = -6.19999981
-    }
-
-    -- Iterate over each GUID and destroy the object if found
-    for guid, _ in pairs(guidPositions) do
-        local obj = getObjectFromGUID(guid)
-        if obj then
-            destroyObject(obj) -- Destroy the object
-        else
-            print("Object with GUID " .. guid .. " not found.")
-        end
-    end
-
-    -- Destroy the spawned object
-    if spawnedObjectRef then
-        destroyObject(spawnedObjectRef)
-        spawnedObjectRef = nil -- Clear the reference after destruction
-    end
-end
-
--- Function to set up click events for a spawned object
-function setupClickEvents(spawnedObject)
-    spawnedObject.setLock(true)
-
-    -- Save the reference to the spawned object
-    spawnedObjectRef = spawnedObject
-
-    -- Create the button
-    spawnedObject.createButton({
-        label = showMapsToggle and "Show Maps" or "Clear Map Selection",
-        click_function = "onObjectClick",
-        function_owner = self,
-        position = {0, 3, -27},
-        height = 800,
-        width = 6500,
-        font_size = 700,
-        color = {0.5, 0.5, 0.5},
-        font_color = {1, 1, 1},
-    })
-end
-
--- Function to spawn an interactive object
-function spawnInteractiveObject()
-    spawnObject({
-        type = "BlockSquare",
-        position = {0, -2, 0},
-        scale = {1, 1, 1},
-        rotation = {0, -90, 0},
-        callback_function = function(spawnedObject)
-            if spawnedObject then
-                setupClickEvents(spawnedObject)
-            else
-                print("Failed to spawn object")
-            end
-        end
-    })
-end
-
 
 function sizeUp()
     sizeUpDown(1)
@@ -543,94 +345,9 @@ function sizeUpDown(increment)
 end
 
 
-function enableObjects()
-    local redCounterText = getObjectFromGUID("7ab8ca")
-    local blueCounterText = getObjectFromGUID("028baa")
-
-    if redCpCounter then
-        redCpCounter.setPosition({59.5, -1.32, 27.0})
-        redCpCounter.interactable = true
-        if redCounterText then
-            redCounterText.setValue("Player A Command Points")
-            redCounterText.setPosition({62.50006, 1.23999178, 27.0})
-        end
-    else
-        print("Red CP Counter not found!")
-    end
-
-    if blueCpCounter then
-        blueCpCounter.setPosition({59.5, -1.32, -27.0})
-        blueCpCounter.interactable = true
-        if blueCounterText then
-            blueCounterText.setValue("Player B Command Points")
-            blueCounterText.setPosition({62.50006, 1.23998809, -27.0})
-        end
-    else
-        print("Blue CP Counter not found!")
-    end
-end
-
-
-function createCounter(position, label)
-    local counter = spawnObject({
-        type = "Counter",
-        position = position,
-        scale = {1, 1, 1},
-    })
-    counter.setName(label)
-    counter.setValue(0)
-    return counter
-end
-
-function shuffleAndDealTeamCards()
-    local teamDeck = getObjectFromGUID(Global.getVar("teamDeck_GUID"))
-    teamDeck.shuffle()
-    local players = Player.getPlayers()
-    for i, player in ipairs(players) do
-        teamDeck.deal(1, player.color)
-    end
-    broadcastToAll("Teams have been randomized and dealt!", {0, 1, 0})
-end
-
-
-function placeGameTokens()
-    -- Check if the bag exists
-    local markedForDeathToken = getObjectFromGUID("cda0b3")
-    markedForDeathToken.setPosition({37.34079, 0.9, 29})
-
-    local tokenBag = getObjectFromGUID("f8ddf5")
-    if not tokenBag then
-        broadcastToAll("Error: Token bag not found (GUID: f8ddf5).", {1, 0, 0})
-        return
-    end
-
-    -- Extract the token object from the bag
-    local tokenTemplate = tokenBag.takeObject({guid = "7a8aba"})
-    if not tokenTemplate then
-        broadcastToAll("Error: Token template (GUID: 7a8aba) not found in bag.", {1, 0, 0})
-        return
-    end
-
-    -- Clean up the extracted template
-    tokenTemplate.destruct()
-end
 
 
 
-function spawnToken(position, label)
-    local token = spawnObject({
-        type = "BlockSquare",
-        position = position,
-        scale = {0.5, 0.5, 0.5},
-    })
-    token.setName(label)
-    return token
-end
-
-function setupExtraDeepStrikeMaps()
-    -- Logic to spawn and manage extra deep strike/transport maps if required
-    broadcastToAll("Extra Deep Strike Maps Enabled!", {0, 0.5, 1})
-end
 
 function confirmForSingles()
     singlesMode = "singles"
@@ -646,18 +363,7 @@ function confirmStandardGame()
     loadGameWithoutMapContainers()
 end
 
-function confirmForLegacy()
-    singlesMode = "singles"
-    deployMode = nil
-    legacyPrimaryDeckEnabled = true
-    destroyStartupMapCards()
-    destroyForceDispositionToken()
-    showLegacyPrimaryDeck()
-    confirmSizeGame()
-end
-
 function loadGameWithoutMapContainers()
-    destroyMapContainers()
     destroyLegacyPrimaryDeck()
     placeStartupMapCards()
     placeForceDispositionToken()
@@ -692,22 +398,20 @@ function showLegacyPrimaryDeck()
     setLegacyPrimaryDeckVisibility(true)
 end
 
-function hideLegacyPrimaryDeck()
-    setLegacyPrimaryDeckVisibility(false)
-end
-
 function destroyLegacyPrimaryDeck()
     destroyObjectByGUID(legacyPrimaryDeck_GUID)
 end
 
 STARTUP_MAP_CARDS = {
-    {guid = "3fa90f", pos = {22.865818, 0.975103438, -12.023735},      rot = {0, 180.004364, 0}},  -- Crucible Map 2
-    {guid = "1d0b3a", pos = {22.9394054, 0.975103438, -3.73517513},    rot = {0, 180.00441, 0}},   -- CRUCIBLE 1
-    {guid = "1b97c2", pos = {23.01305, 0.975103438, 4.559607},         rot = {0, 180.0043, 0}},    -- Hammer & Anvil 2
-    {guid = "3a44f8", pos = {23.0868645, 0.975103438, 12.873724},      rot = {0, 180.004333, 0}},  -- Hammer & Anvil 1
-    {guid = "4b20be", pos = {14.9908428, 0.975103438, -3.655732},      rot = {0, 180, 0}},         -- Search & Destroy 1
-    {guid = "67f3ab", pos = {14.9908428, 0.975103438, 4.62399864},     rot = {0, 180, 0}},         -- Search & Destroy 2
-    {guid = "6f30f5", pos = {2.28751445, 1.21699846, 0.246165633},     rot = {0, 90.0000153, 0}},  -- Important note
+    {guid = "eaf123", pos = {5.00, 1.00, 14.50},  rot = {0, 180, 0}},  -- Hammer and Anvil 1 Deck
+    {guid = "d90d6b", pos = {5.00, 1.00, 9.50},   rot = {0, 180, 0}},  -- Hammer & Anvil 2 Deck
+    {guid = "5bea3b", pos = {5.00, 1.00, -14.50}, rot = {0, 180, 0}},  -- Search & Destroy 2 Deck
+    {guid = "44b223", pos = {5.00, 1.00, -9.50},  rot = {0, 180, 0}},  -- Search & Destroy 1 Deck
+    {guid = "b5a38c", pos = {5.00, 1.00, 2.50},   rot = {0, 180, 0}},  -- Crucible 1 Deck
+    {guid = "6e78c9", pos = {5.00, 1.00, -2.50},   rot = {0, 180, 0}},  -- Crucible 2 Deck
+    {guid = "6713e1", pos = {-4.3929005, 0.9614988, 11.895701}, rot = {5.3779473e-08, 270.00006, -3.8887436e-08}},  -- https://steamcommunity.com/sharedfiles/filedetails/?id=3427040776
+    {guid = "fc2507", pos = {-4.3929, 0.9614989, 0.1457061}, rot = {5.371441e-08, 270.00092, -5.6065662e-08}},  -- https://steamcommunity.com/sharedfiles/filedetails/?id=3702781217
+    {guid = "a982e3", pos = {-4.3929005, 0.96149874, -11.604293}, rot = {-3.5893564e-07, 270.00006, 1.4783116e-07}},  -- https://steamcommunity.com/sharedfiles/filedetails/?id=3733857840
 }
 
 function hideStartupMapCards()
@@ -728,23 +432,21 @@ function placeStartupMapCards()
     end
 end
 
-function destroyStartupMapCards()
-    for _, card in ipairs(STARTUP_MAP_CARDS) do
-        destroyObjectByGUID(card.guid)
-    end
-end
-
--- "Force dispositions" reference token. Shown only for the 1v1/Solo (11th ed.)
--- modes; hidden while the size menu is up and destroyed for 10th Edition.
-forceDispositionToken_GUID = "1f38a1"
+-- "Force dispositions" reference token was removed from the save.
+forceDispositionToken_GUID = nil
 forceDispositionTokenPosition = {-15.7271786, 1.06149852, -0.134739235}
 forceDispositionTokenRotation = {0, 270.020081, 0}
 
 function placeForceDispositionToken()
-    placeObjectAtPosition(forceDispositionToken_GUID, forceDispositionTokenPosition, forceDispositionTokenRotation)
+    if forceDispositionToken_GUID then
+        placeObjectAtPosition(forceDispositionToken_GUID, forceDispositionTokenPosition, forceDispositionTokenRotation)
+    end
 end
 
 function hideForceDispositionToken()
+    if not forceDispositionToken_GUID then
+        return
+    end
     local obj = getObjectFromGUID(forceDispositionToken_GUID)
     if obj then
         obj.setPosition({forceDispositionTokenPosition[1], -5.0, forceDispositionTokenPosition[3]})
@@ -752,10 +454,6 @@ function hideForceDispositionToken()
         obj.tooltip = false
         obj.interactable = false
     end
-end
-
-function destroyForceDispositionToken()
-    destroyObjectByGUID(forceDispositionToken_GUID)
 end
 
 function placeObjectAtPosition(guid, position, rotation)
@@ -772,65 +470,11 @@ function placeObjectAtPosition(guid, position, rotation)
     obj.interactable = true
 end
 
-function destroyMapContainers()
-    local mapContainerGUIDs = {
-        "03286d",
-        "ca7711",
-        "cd649d",
-        "bf09bd",
-        "9a7c3c",
-        "3c8a1b",
-        "3c1373",
-        "8395b2",
-        "8a7c7a",
-        "4bb528",
-    }
-
-    for _, guid in ipairs(mapContainerGUIDs) do
-        destroyObjectByGUID(guid)
-    end
-end
-
 function destroyObjectByGUID(guid)
     local obj = getObjectFromGUID(guid)
     if obj then
         destroyObject(obj)
     end
-end
-
-function confirmSizeGame()
-    spawnInteractiveObject()
-    confirmSizeMat()
-    -- Table of GUIDs and their position to show on board
-    -- bascially to hide certain objects that are controlled by the control board
-    local guidPositions = {
-        ["03286d"] = 0.776464939,
-        ["ca7711"] = 0.776464939,
-        ["cd649d"] = 0.776464939,
-        ["9a7c3c"] = 0.776464939,
-        ["bf09bd"] = 0.776464939,
-        ["8a7c7a"] = 1.19999981,
-        ["3c8a1b"] = 1.19999981,
-        ["3c1373"] = 1.19999981,
-        ["8395b2"] = 1.19999981,
-        ["4bb528"] = 1.19999981
-    }
-    self.createButton(clearAllDiceBtn)
-
-    -- Iterate over each GUID and set the new height
-    for guid, newPosY in pairs(guidPositions) do
-        local obj = getObjectFromGUID(guid)
-        if obj then
-            local position = obj.getPosition()
-            position.y = newPosY
-            obj.setPosition(position)
-            obj.setLock(true) -- Lock the object to prevent accidental movement
-        else
-            print("Object with GUID " .. guid .. " not found.")
-        end
-    end
-    local mfdToken = getObjectFromGUID("cda0b3")
-    destroyObject(mfdToken)
 end
 
 function confirmSizeMat()
@@ -1154,8 +798,21 @@ end
 dispositionScale = 0.4125
 dispositionArrowOffset = arrowOffset * dispositionScale
 
+dispositionButtonColors = {
+    ["Disruption"] = {0.36, 0.62, 1.00},
+    ["Priority Assets"] = {1.00, 0.92, 0.45},
+    ["Purge the Foe"] = {1.00, 0.58, 0.58},
+    ["Reconnaissance"] = {0.55, 0.95, 0.90},
+    ["Take and Hold"] = {0.38, 0.76, 0.34},
+}
+
+function getDispositionButtonColor(selectedValue)
+    return dispositionButtonColors[selectedValue] or {1, 1, 1}
+end
+
 function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunction, upFunction, locked)
     local selectedValue = dispositionValues[selectedIndex] or dispositionValues[1]
+    local selectedColor = getDispositionButtonColor(selectedValue)
     local center = self.positionToLocal({dispositionControlWorldX, dispositionControlWorldY, centerWorldZ})
     local cx, cy, cz = center.x, center.y, center.z
 
@@ -1163,7 +820,7 @@ function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunct
         label = selectedValue, click_function = "none", function_owner = self,
         position = {cx, cy, cz}, rotation = {0, 0, 0},
         height = 750 * dispositionScale, width = 6000 * dispositionScale, font_size = 400 * dispositionScale,
-        color = {1, 1, 1}, font_color = {0, 0, 0}, tooltip = label,
+        color = selectedColor, font_color = {0, 0, 0}, tooltip = label,
     })
 
     if locked then
@@ -1230,9 +887,28 @@ generateMissionWorldZ = 0.0
 missionSlots = {
     {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  4.80}},
     {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  2.55}},
+    {role = "deployment", index = 1, deckVar = "deploymentDeck_GUID", position = {83.71, 0.92,  2.85}},
+    {role = "deployment", index = 2, deckVar = "deploymentDeck_GUID", position = {83.71, 0.92, -0.10}},
+    {role = "deployment", index = 3, deckVar = "deploymentDeck_GUID", position = {83.71, 0.92, -3.05}},
     {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -2.55}},
     {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -4.80}},
 }
+
+randomDeploymentDecks = {
+    {guid = "23699d", name = "11e Deployment Zones"},
+}
+
+deploymentCardSourceDeckByGuid = {}
+deploymentCardSourceDeckByName = {}
+
+deploymentLockTargetPosition = {75.37, 1.01, 0.00}
+deploymentLockButtonWorldX = 81.65
+deploymentLockButtonWorldY = 1.00
+deploymentLockButtonOffsetX = -1.60
+deploymentLockButtonWorldZ = {[1] = 3.00, [2] = 0.10, [3] = -2.80}
+deploymentRandomPickButtonWorldX = 85.77
+deploymentRandomPickButtonWorldY = 1.00
+deploymentRandomPickButtonWorldZ = 0.10
 
 function writeGenerateMissionButton()
     local center = self.positionToLocal({generateMissionWorldX, generateMissionWorldY, generateMissionWorldZ})
@@ -1243,6 +919,36 @@ function writeGenerateMissionButton()
         color = {0, 0, 0}, font_color = {1, 1, 1},
         tooltip = "Deal each player's primary mission for the current dispositions",
     })
+    writeDeploymentLockButtons()
+    writeDeploymentRandomPickButton()
+end
+
+function writeDeploymentRandomPickButton()
+    local btn = self.positionToLocal({deploymentRandomPickButtonWorldX, deploymentRandomPickButtonWorldY, deploymentRandomPickButtonWorldZ})
+    self.createButton({
+        label = "Random Pick", click_function = "randomPickDeployment", function_owner = self,
+        position = {btn.x, btn.y, btn.z}, rotation = {0, 0, 0},
+        height = 150, width = 1208, font_size = 109,
+        color = {1, 0.86, 0.05}, font_color = {0, 0, 0},
+        tooltip = "Randomly choose one of the deployment cards",
+    })
+end
+
+function writeDeploymentLockButtons()
+    for _, slot in ipairs(missionSlots) do
+        if slot.role == "deployment" then
+            local btnZ = deploymentLockButtonWorldZ[slot.index] or slot.position[3]
+            local btn = self.positionToLocal({deploymentLockButtonWorldX, deploymentLockButtonWorldY, btnZ})
+            local targetIndex = 4 - slot.index
+            self.createButton({
+                label = "Lock-in", click_function = "lockInDeployment" .. targetIndex, function_owner = self,
+                position = {btn.x, btn.y, btn.z}, rotation = {0, 0, 0},
+                height = 130, width = 1050, font_size = 95,
+                color = {1, 0.86, 0.05}, font_color = {0, 0, 0},
+                tooltip = "Move this deployment card to the mission board",
+            })
+        end
+    end
 end
 
 function isMissionCardObject(obj)
@@ -1280,6 +986,161 @@ function getObjectsInMissionSlot(slot, zone)
     end
     return objects
 end
+
+function getDeploymentMissionSlot(index)
+    for _, slot in ipairs(missionSlots) do
+        if slot.role == "deployment" and slot.index == index then
+            return slot
+        end
+    end
+    return nil
+end
+
+function getDeploymentCardInSlot(slot, deploymentDeck)
+    local candidates = getObjectsInMissionSlot(slot, nil)
+    for _, obj in ipairs(candidates) do
+        if obj ~= deploymentDeck then
+            return obj
+        end
+    end
+    return nil
+end
+
+function rememberDeploymentCardSource(card, deckGuid)
+    if not card or not deckGuid then return end
+    local guid = card.getGUID and card.getGUID() or nil
+    if guid then
+        deploymentCardSourceDeckByGuid[guid] = deckGuid
+    end
+    local name = card.getName and card.getName() or nil
+    if name and name ~= "" then
+        deploymentCardSourceDeckByName[normalizeMissionName(name)] = deckGuid
+    end
+end
+
+function cacheDeploymentDeckContents()
+    for _, deckInfo in ipairs(randomDeploymentDecks) do
+        local deck = getObjectFromGUID(deckInfo.guid)
+        if deck and deck.getObjects then
+            for _, entry in ipairs(deck.getObjects()) do
+                if entry.guid then
+                    deploymentCardSourceDeckByGuid[entry.guid] = deckInfo.guid
+                end
+                local name = entry.nickname or entry.name
+                if name and name ~= "" then
+                    deploymentCardSourceDeckByName[normalizeMissionName(name)] = deckInfo.guid
+                end
+            end
+        end
+    end
+end
+
+function getDeploymentCardSourceDeck(card)
+    cacheDeploymentDeckContents()
+    if not card then return nil end
+
+    local guid = card.getGUID and card.getGUID() or nil
+    local deckGuid = guid and deploymentCardSourceDeckByGuid[guid] or nil
+
+    if not deckGuid and card.getName then
+        local name = card.getName()
+        deckGuid = deploymentCardSourceDeckByName[normalizeMissionName(name)]
+    end
+
+    return deckGuid and getObjectFromGUID(deckGuid) or nil
+end
+
+function returnDeploymentCardToSourceDeck(card)
+    if not card then return nil end
+
+    local sourceDeck = getDeploymentCardSourceDeck(card)
+    if sourceDeck then
+        card.locked = false
+        return sourceDeck.putObject(card) or sourceDeck
+    end
+
+    local fallbackDeck = getObjectFromGUID(Global.getVar("deploymentDeck_GUID"))
+    if fallbackDeck then
+        card.locked = false
+        return fallbackDeck.putObject(card) or fallbackDeck
+    end
+
+    return nil
+end
+
+function returnDeploymentCardsFromSlot(slot)
+    for _, obj in ipairs(getObjectsInMissionSlot(slot, nil)) do
+        returnDeploymentCardToSourceDeck(obj)
+    end
+end
+
+function returnCardsInDeploymentSlotsToDeck(includeLockedIn)
+    for _, slot in ipairs(missionSlots) do
+        if slot.role == "deployment" then
+            returnDeploymentCardsFromSlot(slot)
+        end
+    end
+
+    if includeLockedIn then
+        returnDeploymentCardsFromSlot({position = deploymentLockTargetPosition})
+    end
+end
+
+function moveDeploymentCardToLockTarget(cardToMove)
+    if not cardToMove then return end
+
+    local lockedDeploymentSlot = {position = deploymentLockTargetPosition}
+    for _, obj in ipairs(getObjectsInMissionSlot(lockedDeploymentSlot, nil)) do
+        if obj ~= cardToMove then
+            returnDeploymentCardToSourceDeck(obj)
+        end
+    end
+
+    cardToMove.locked = false
+    cardToMove.setPositionSmooth(deploymentLockTargetPosition, false, true)
+    Wait.frames(function()
+        if cardToMove then
+            cardToMove.locked = true
+        end
+    end, 30)
+end
+
+function lockInDeploymentSlot(index)
+    local slot = getDeploymentMissionSlot(index)
+    if not slot then return end
+
+    local cardToMove = getDeploymentCardInSlot(slot, nil)
+
+    if not cardToMove then
+        broadcastToAll("No deployment card found above this Lock-in button.", "Yellow")
+        return
+    end
+
+    moveDeploymentCardToLockTarget(cardToMove)
+end
+
+function randomPickDeployment()
+    local available = {}
+    for _, slot in ipairs(missionSlots) do
+        if slot.role == "deployment" then
+            local card = getDeploymentCardInSlot(slot, nil)
+            if card then
+                table.insert(available, card)
+            end
+        end
+    end
+
+    if #available == 0 then
+        broadcastToAll("No deployment cards are available for Random Pick.", "Yellow")
+        return
+    end
+
+    moveDeploymentCardToLockTarget(available[math.random(#available)])
+end
+
+function lockInDeployment1() lockInDeploymentSlot(1) end
+function lockInDeployment2() lockInDeploymentSlot(2) end
+function lockInDeployment3() lockInDeploymentSlot(3) end
 
 -- lower-cased, trimmed copy for tolerant name comparisons. Curly single quotes
 -- (U+2018/U+2019) are folded to a straight ' so "Destroyer's Wrath" matches
@@ -1333,22 +1194,20 @@ function resolvePrimaryCardGuids(deck, missionName)
     return result
 end
 
--- One-line, chat-friendly summary of what a mission resolved to.
-function describePrimaryResolution(missionName, slots)
-    local parts = {}
-    for i = 1, 2 do
-        local s = slots[i]
-        if s.source == "mission" then
-            table.insert(parts, "[" .. (s.name or "?") .. "]")
-        elseif s.source == "blank" then
-            table.insert(parts, "[" .. (s.name or "blank") .. " (blank)]")
-        else
-            table.insert(parts, "[none]")
+function resolveDeckCardByName(deck, cardName)
+    local target = normalizeMissionName(cardName)
+    if deck and deck.getObjects and target ~= "" then
+        for _, entry in ipairs(deck.getObjects()) do
+            local nick = entry.nickname or entry.name or ""
+            if normalizeMissionName(missionBaseName(nick)) == target then
+                return {guid = entry.guid, name = nick, source = "card"}
+            end
         end
     end
-    return missionName .. " -> " .. table.concat(parts, " ")
+    return {guid = nil, name = cardName, source = "missing"}
 end
 
+-- One-line, chat-friendly summary of what a mission resolved to.
 -- Look up the configured matchup for the current dispositions.
 -- Key convention: "<redIndex>_<blueIndex>" (see global.ttslua missionMatchups).
 function getCurrentMatchup()
@@ -1357,6 +1216,55 @@ function getCurrentMatchup()
     local blueIdx = normalizeDispositionIndex(blueDispositionSelected)
     local key = redIdx .. "_" .. blueIdx
     return matchups[key], key
+end
+
+function getCurrentDeploymentChoices(key)
+    local deployments = Global.getTable("missionDeploymentMatchups") or {}
+    return deployments[key] or {}
+end
+
+function copyRandomDeploymentDecks()
+    local decks = {}
+    for _, deckInfo in ipairs(randomDeploymentDecks) do
+        table.insert(decks, deckInfo)
+    end
+    return decks
+end
+
+function chooseRandomDeploymentCards(count)
+    cacheDeploymentDeckContents()
+    local choices = {}
+    local availableCards = {}
+
+    for _, deckInfo in ipairs(randomDeploymentDecks) do
+        local deck = getObjectFromGUID(deckInfo.guid)
+        local cards = deck and deck.getObjects and deck.getObjects() or {}
+        for _, card in ipairs(cards) do
+            table.insert(availableCards, {deck = deck, deckInfo = deckInfo, card = card})
+        end
+    end
+
+    while #choices < count and #availableCards > 0 do
+        local cardIndex = math.random(#availableCards)
+        local picked = table.remove(availableCards, cardIndex)
+        local deckInfo = picked.deckInfo
+        local card = picked.card
+        local name = card.nickname or card.name or deckInfo.name
+
+        deploymentCardSourceDeckByGuid[card.guid] = deckInfo.guid
+        if name and name ~= "" then
+            deploymentCardSourceDeckByName[normalizeMissionName(name)] = deckInfo.guid
+        end
+        table.insert(choices, {
+            deck = picked.deck,
+            deckGuid = deckInfo.guid,
+            deckName = deckInfo.name,
+            guid = card.guid,
+            name = name,
+        })
+    end
+
+    return choices
 end
 
 -- Deal one card per frame so repeated takeObject calls on the same deck don't
@@ -1370,6 +1278,9 @@ function dealMissionCards(placements, i)
             flip = true,
             smooth = true,
             callback_function = function(card)
+                if p.sourceDeckGuid then
+                    rememberDeploymentCardSource(card, p.sourceDeckGuid)
+                end
                 Wait.frames(function()
                     if card then card.locked = true end
                 end, 1)
@@ -1393,18 +1304,25 @@ function generateMission()
     -- 1. Recall any cards in the slots back into their source decks.
     local decksByVar = {}
     for _, slot in ipairs(missionSlots) do
-        local zone = getObjectFromGUID(Global.getVar(slot.zoneVar))
-        local deck = decksByVar[slot.deckVar] or getObjectFromGUID(Global.getVar(slot.deckVar))
-        if deck then
-            for _, obj in ipairs(getObjectsInMissionSlot(slot, zone)) do
-                if obj ~= deck then
-                    obj.locked = false
-                    deck = deck.putObject(obj) or deck
+        if slot.role == "deployment" then
+            returnDeploymentCardsFromSlot(slot)
+        else
+            local zoneGuid = slot.zoneVar and Global.getVar(slot.zoneVar) or nil
+            local zone = zoneGuid and getObjectFromGUID(zoneGuid) or nil
+            local deck = decksByVar[slot.deckVar] or getObjectFromGUID(Global.getVar(slot.deckVar))
+            if deck then
+                for _, obj in ipairs(getObjectsInMissionSlot(slot, zone)) do
+                    if obj ~= deck then
+                        obj.locked = false
+                        deck = deck.putObject(obj) or deck
+                    end
                 end
+                decksByVar[slot.deckVar] = deck
             end
-            decksByVar[slot.deckVar] = deck
         end
     end
+
+    returnDeploymentCardsFromSlot({position = deploymentLockTargetPosition})
 
     Wait.frames(function()
         -- 2. Resolve each player's primary mission cards by name.
@@ -1412,10 +1330,17 @@ function generateMission()
         local blueDeck = decksByVar["bluePrimaryDeck_GUID"] or getObjectFromGUID(Global.getVar("bluePrimaryDeck_GUID"))
         local redGuids = resolvePrimaryCardGuids(redDeck, redMission)
         local blueGuids = resolvePrimaryCardGuids(blueDeck, blueMission)
+        local deploymentChoices = chooseRandomDeploymentCards(3)
+        local deploymentNames = {}
+        for _, choice in ipairs(deploymentChoices) do
+            table.insert(deploymentNames, choice.name or choice.deckName or "Unknown")
+        end
 
-        -- Report what the matching resolved to (chat), regardless of cards existing.
-        broadcastToAll("Matchup " .. key .. "  RED: " .. describePrimaryResolution(redMission, redGuids), {1, 0.55, 0.55})
-        broadcastToAll("Matchup " .. key .. "  BLUE: " .. describePrimaryResolution(blueMission, blueGuids), {0.55, 0.7, 1})
+        -- Compact mission summary for chat and the screen notification.
+        broadcastToAll(
+            "Red Mission: " .. redMission .. ", Blue Mission: " .. blueMission .. ", Deployment Cards: " .. table.concat(deploymentNames, ", "),
+            "Yellow"
+        )
 
         -- 3. Build the ordered placement list.
 
@@ -1426,9 +1351,11 @@ function generateMission()
                 local deck = (slot.player == "Red") and redDeck or blueDeck
                 local info = guids[slot.index]
                 table.insert(placements, {deck = deck, guid = info and info.guid or nil, position = slot.position})
-            else
-                local deck = decksByVar[slot.deckVar] or getObjectFromGUID(Global.getVar(slot.deckVar))
-                table.insert(placements, {deck = deck, guid = nil, position = slot.position})
+            elseif slot.role == "deployment" then
+                local info = deploymentChoices[slot.index]
+                if info and info.guid and info.deck then
+                    table.insert(placements, {deck = info.deck, guid = info.guid, position = slot.position, sourceDeckGuid = info.deckGuid})
+                end
             end
         end
 
@@ -1896,43 +1823,6 @@ function drawCircleDeployment(drawData)
     end
 end
 
-function drawCornerQuarterCircles(radius, type)
-    local originalCircle=getObjectFromGUID(Global.getVar("quarterCircle_GUID"))
-    local mat = getObjectFromGUID(mat_GUID)
-    local lineScale = {x = 0, y = deployLineHeight, z = 0.02}
-    local x = mat.getScale().x * sizeMulti * 0.5 -- long edge
-    local z = mat.getScale().z * sizeMulti * 0.5 -- short edge
-    local cornerLocations = {
-        {position = {x, deployLineYPos, z}, rotation = {0, 270, 0}},
-        {position = {x, deployLineYPos, -z}, rotation = {0, 0, 0}},
-        {position = {-x, deployLineYPos, z}, rotation = {0, 180, 0}},
-        {position = {-x, deployLineYPos, -z}, rotation = {0, 90, 0}},
-    }
-
-    for i, location in ipairs(cornerLocations) do
-        local circleObj = originalCircle.clone()
-        if circleObj then
-            circleObj.setLock(true)
-            circleObj.interactable = false
-            circleObj.setScale({radius, deployLineHeight, radius})
-            circleObj.setPosition(location.position)
-            circleObj.setRotation(location.rotation)
-            circleObj.setColorTint("White")
-            circleObj.setGMNotes(type)
-            circleObj.setName("")
-            local blockComp = circleObj.getComponent("BoxCollider")
-            if blockComp then
-                blockComp.set("enabled", false)
-            end
-            local meshComp = circleObj.getComponent("MeshCollider")
-            if meshComp then
-                meshComp.set("enabled", false)
-            end
-            trackOverlayObject(circleObj, type)
-        end
-    end
-end
-
 function drawSteps(drawData)
     local mat = getObjectFromGUID(mat_GUID)
     local mapBase = mat.getScale().z * sizeMulti --short edge
@@ -2158,26 +2048,10 @@ function destroyDeployZones()
     nineInchOverlayGUIDs = {}
 end
 
-function disableCollidersDeployZones()
-    for _, guid in ipairs(deploymentOverlayGUIDs) do
-        local obj = getObjectFromGUID(guid)
-        if obj then
-            local blockComp = obj.getComponent("BoxCollider")
-            if blockComp then
-                blockComp.set("enabled", false)
-            end
-        end
-    end
-
-end
-
 function placeDeploy()
     destroyDeployZones()
     local data = DeployZonesData[deploySelected]
     drawDeployZone(data)
-    if data.objectivesID then
-        spawnObjectives()
-    end
     writeMenus()
 end
 
@@ -2217,293 +2091,6 @@ end
 -- OBJECTIVES MANAGER
 -- ******************
 
-objectivesData = {
-    --Chapter Approved 2025 Missions
-        {id = 101, name = "Hammer and Anvil", objectives = {
-            {type = "fixed", pos={0, objectivesOffset, 0}},
-            {type = "fromSide", pos={10, objectivesOffset, 0}},
-            {type = "fromSide", pos={-10, objectivesOffset, 0}},
-            {type = "fromSide", pos={0, objectivesOffset, 6}},
-            {type = "fromSide", pos={0, objectivesOffset, -6}}}},
-        {id = 201, name = "(I) Hammer and Anvil", objectives = {
-            {type = "fixed", pos={0, objectivesOffset, 0}},
-            {type = "fromSide", pos={14, objectivesOffset, 0}},
-            {type = "fromSide", pos={-14, objectivesOffset, 0}},
-            {type = "fromSide", pos={0, objectivesOffset, 8}},
-            {type = "fromSide", pos={0, objectivesOffset, -8}}}},
-        {id = 102, name = "Dawn of War", objectives = {
-            {type = "fixed", pos={0, objectivesOffset, 0}},
-            {type = "fromSide", pos={10, objectivesOffset, 0}},
-            {type = "fromSide", pos={-10, objectivesOffset, 0}},
-            {type = "fromSide", pos={0, objectivesOffset, 6}},
-            {type = "fromSide", pos={0, objectivesOffset, -6}}}},
-        {id = 202, name = "(I) Dawn of War", objectives = {
-            {type = "fixed", pos={0, objectivesOffset, 0}},
-            {type = "fromSide", pos={14, objectivesOffset, 0}},
-            {type = "fromSide", pos={-14, objectivesOffset, 0}},
-            {type = "fromSide", pos={0, objectivesOffset, 8}},
-            {type = "fromSide", pos={0, objectivesOffset, -8}}}},
-        {id = 103, name = "Sweeping Engagement", objectives = {
-            {type = "fixed", pos={0, objectivesOffset, 0}},
-            {type = "fromSide", pos={18, objectivesOffset, 6}},
-            {type = "fromSide", pos={-18, objectivesOffset, -6}},
-            {type = "fromSide", pos={10, objectivesOffset, -18}},
-            {type = "fromSide", pos={-10, objectivesOffset, 18}}}},
-        {id = 203, name = "(I) Sweeping Engagement", objectives = {
-            {type = "fixed", pos={0, objectivesOffset, 0}},
-            {type = "fromSide", pos={20, objectivesOffset, 8}},
-            {type = "fromSide", pos={-20, objectivesOffset, -8}},
-            {type = "fromSide", pos={14, objectivesOffset, -18}},
-            {type = "fromSide", pos={-14, objectivesOffset, 18}}}},
-        {id = 104, name = "Search and Destroy", objectives = {
-            {type = "fixed", pos={0, objectivesOffset, 0}},
-            {type = "fromSide", pos={14, objectivesOffset, 10}},
-            {type = "fromSide", pos={-14, objectivesOffset, -10}},
-            {type = "fromSide", pos={14, objectivesOffset, -10}},
-            {type = "fromSide", pos={-14, objectivesOffset, 10}}}},
-        {id = 204, name = "(I) Search and Destroy", objectives = {
-            {type = "fixed", pos={0, objectivesOffset, 0}},
-            {type = "fromSide", pos={16, objectivesOffset, 12}},
-            {type = "fromSide", pos={-16, objectivesOffset, -12}},
-            {type = "fromSide", pos={16, objectivesOffset, -12}},
-            {type = "fromSide", pos={-16, objectivesOffset, 12}}}},
-        {id = 105, name = "Crucible of Battle", objectives = {
-            {type = "fixed", pos={0, objectivesOffset, 0}},
-            {type = "fromSide", pos={14, objectivesOffset, 10}},
-            {type = "fromSide", pos={-14, objectivesOffset, -10}},
-            {type = "fromSide", pos={20, objectivesOffset, -8}},
-            {type = "fromSide", pos={-20, objectivesOffset, 8}}}},
-        {id = 205, name = "(I) Crucible of Battle", objectives = {
-            {type = "fixed", pos={0, objectivesOffset, 0}},
-            {type = "fromSide", pos={16, objectivesOffset, 12}},
-            {type = "fromSide", pos={-16, objectivesOffset, -12}},
-            {type = "fromSide", pos={22, objectivesOffset, -10}},
-            {type = "fromSide", pos={-22, objectivesOffset, 10}}}},
-        {id = 106, name = "Tipping Point", objectives = {
-            {type = "fixed", pos={0, objectivesOffset, 0}},
-            {type = "fromSide", pos={14, objectivesOffset, 10}},
-            {type = "fromSide", pos={-14, objectivesOffset, -10}},
-            {type = "fromSide", pos={22, objectivesOffset, -8}},
-            {type = "fromSide", pos={-22, objectivesOffset, 8}}}},
-        {id = 206, name = "(I) Tipping Point", objectives = {
-            {type = "fixed", pos={0, objectivesOffset, 0}},
-            {type = "fromSide", pos={16, objectivesOffset, 14}},
-            {type = "fromSide", pos={-16, objectivesOffset, -14}},
-            {type = "fromSide", pos={22, objectivesOffset, -10}},
-            {type = "fromSide", pos={-22, objectivesOffset, 10}}}},
-     --Hidden Supplies variants
-        {id = 107, name = "Hammer and Anvil (HS)", objectives = {
-            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={10, objectivesOffset, 0}},
-            {type = "fromSide", pos={-10, objectivesOffset, 0}},
-            {type = "fromSide", pos={0, objectivesOffset, 6}},
-            {type = "fromSide", pos={0, objectivesOffset, -6}}}},
-        {id = 207, name = "(I) Hammer and Anvil (HS)", objectives = {
-            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={14, objectivesOffset, 0}},
-            {type = "fromSide", pos={-14, objectivesOffset, 0}},
-            {type = "fromSide", pos={0, objectivesOffset, 8}},
-            {type = "fromSide", pos={0, objectivesOffset, -8}}}},
-        {id = 108, name = "Hammer and Anvil (HS2)", objectives = {
-            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={10, objectivesOffset, 0}},
-            {type = "fromSide", pos={-10, objectivesOffset, 0}},
-            {type = "fromSide", pos={0, objectivesOffset, 6}},
-            {type = "fromSide", pos={0, objectivesOffset, -6}}}},
-        {id = 208, name = "(I) Hammer and Anvil (HS2)", objectives = {
-            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={14, objectivesOffset, 0}},
-            {type = "fromSide", pos={-14, objectivesOffset, 0}},
-            {type = "fromSide", pos={0, objectivesOffset, 8}},
-            {type = "fromSide", pos={0, objectivesOffset, -8}}}},
-        {id = 109, name = "Dawn of War (HS)", objectives = {
-            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={10, objectivesOffset, 0}},
-            {type = "fromSide", pos={-10, objectivesOffset, 0}},
-            {type = "fromSide", pos={0, objectivesOffset, 6}},
-            {type = "fromSide", pos={0, objectivesOffset, -6}}}},
-        {id = 209, name = "(I) Dawn of War (HS)", objectives = {
-            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={14, objectivesOffset, 0}},
-            {type = "fromSide", pos={-14, objectivesOffset, 0}},
-            {type = "fromSide", pos={0, objectivesOffset, 8}},
-            {type = "fromSide", pos={0, objectivesOffset, -8}}}},
-        {id = 110, name = "Dawn of War (HS2)", objectives = {
-            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={10, objectivesOffset, 0}},
-            {type = "fromSide", pos={-10, objectivesOffset, 0}},
-            {type = "fromSide", pos={0, objectivesOffset, 6}},
-            {type = "fromSide", pos={0, objectivesOffset, -6}}}},
-        {id = 210, name = "(I) Dawn of War (HS2)", objectives = {
-            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={14, objectivesOffset, 0}},
-            {type = "fromSide", pos={-14, objectivesOffset, 0}},
-            {type = "fromSide", pos={0, objectivesOffset, 8}},
-            {type = "fromSide", pos={0, objectivesOffset, -8}}}},
-        {id = 111, name = "Sweeping Engagement (HS)", objectives = {
-            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={18, objectivesOffset, 6}},
-            {type = "fromSide", pos={-18, objectivesOffset, -6}},
-            {type = "fromSide", pos={10, objectivesOffset, -18}},
-            {type = "fromSide", pos={-10, objectivesOffset, 18}}}},
-        {id = 211, name = "(I) Sweeping Engagement (HS)", objectives = {
-            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={20, objectivesOffset, 8}},
-            {type = "fromSide", pos={-20, objectivesOffset, -8}},
-            {type = "fromSide", pos={14, objectivesOffset, -18}},
-            {type = "fromSide", pos={-14, objectivesOffset, 18}}}},
-        {id = 112, name = "Sweeping Engagement (HS2)", objectives = {
-            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={18, objectivesOffset, 6}},
-            {type = "fromSide", pos={-18, objectivesOffset, -6}},
-            {type = "fromSide", pos={10, objectivesOffset, -18}},
-            {type = "fromSide", pos={-10, objectivesOffset, 18}}}},
-        {id = 212, name = "(I) Sweeping Engagement (HS2)", objectives = {
-            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={20, objectivesOffset, 8}},
-            {type = "fromSide", pos={-20, objectivesOffset, -8}},
-            {type = "fromSide", pos={14, objectivesOffset, -18}},
-            {type = "fromSide", pos={-14, objectivesOffset, 18}}}},
-        {id = 113, name = "Search and Destroy (HS)", objectives = {
-            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={14, objectivesOffset, 10}},
-            {type = "fromSide", pos={-14, objectivesOffset, -10}},
-            {type = "fromSide", pos={14, objectivesOffset, -10}},
-            {type = "fromSide", pos={-14, objectivesOffset, 10}}}},
-        {id = 213, name = "(I) Search and Destroy (HS)", objectives = {
-            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={16, objectivesOffset, 12}},
-            {type = "fromSide", pos={-16, objectivesOffset, -12}},
-            {type = "fromSide", pos={16, objectivesOffset, -12}},
-            {type = "fromSide", pos={-16, objectivesOffset, 12}}}},
-        {id = 114, name = "Search and Destroy (HS2)", objectives = {
-            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={14, objectivesOffset, 10}},
-            {type = "fromSide", pos={-14, objectivesOffset, -10}},
-            {type = "fromSide", pos={14, objectivesOffset, -10}},
-            {type = "fromSide", pos={-14, objectivesOffset, 10}}}},
-        {id = 214, name = "(I) Search and Destroy (HS2)", objectives = {
-            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={16, objectivesOffset, 12}},
-            {type = "fromSide", pos={-16, objectivesOffset, -12}},
-            {type = "fromSide", pos={16, objectivesOffset, -12}},
-            {type = "fromSide", pos={-16, objectivesOffset, 12}}}},
-        {id = 115, name = "Crucible of Battle (HS)", objectives = {
-            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={14, objectivesOffset, 10}},
-            {type = "fromSide", pos={-14, objectivesOffset, -10}},
-            {type = "fromSide", pos={20, objectivesOffset, -8}},
-            {type = "fromSide", pos={-20, objectivesOffset, 8}}}},
-        {id = 215, name = "(I) Crucible of Battle (HS)", objectives = {
-            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={16, objectivesOffset, 12}},
-            {type = "fromSide", pos={-16, objectivesOffset, -12}},
-            {type = "fromSide", pos={22, objectivesOffset, -10}},
-            {type = "fromSide", pos={-22, objectivesOffset, 10}}}},
-        {id = 116, name = "Crucible of Battle (HS2)", objectives = {
-            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={14, objectivesOffset, 10}},
-            {type = "fromSide", pos={-14, objectivesOffset, -10}},
-            {type = "fromSide", pos={20, objectivesOffset, -8}},
-            {type = "fromSide", pos={-20, objectivesOffset, 8}}}},
-        {id = 216, name = "(I) Crucible of Battle (HS2)", objectives = {
-            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={16, objectivesOffset, 12}},
-            {type = "fromSide", pos={-16, objectivesOffset, -12}},
-            {type = "fromSide", pos={22, objectivesOffset, -10}},
-            {type = "fromSide", pos={-22, objectivesOffset, 10}}}},
-        {id = 117, name = "Tipping Point (HS)", objectives = {
-            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={14, objectivesOffset, 10}},
-            {type = "fromSide", pos={-14, objectivesOffset, -10}},
-            {type = "fromSide", pos={22, objectivesOffset, -8}},
-            {type = "fromSide", pos={-22, objectivesOffset, 8}}}},
-        {id = 217, name = "(I) Tipping Point (HS)", objectives = {
-            {type = "diagonal", orientation="-xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="-xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={16, objectivesOffset, 14}},
-            {type = "fromSide", pos={-16, objectivesOffset, -14}},
-            {type = "fromSide", pos={22, objectivesOffset, -10}},
-            {type = "fromSide", pos={-22, objectivesOffset, 10}}}},
-        {id = 118, name = "Tipping Point (HS2)", objectives = {
-            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={14, objectivesOffset, 10}},
-            {type = "fromSide", pos={-14, objectivesOffset, -10}},
-            {type = "fromSide", pos={22, objectivesOffset, -8}},
-            {type = "fromSide", pos={-22, objectivesOffset, 8}}}},
-        {id = 218, name = "(I) Tipping Point (HS2)", objectives = {
-            {type = "diagonal", orientation="xz", pos={6, objectivesOffset, 0}},
-            {type = "diagonal", orientation="xz", pos={-6, objectivesOffset, 0}},
-            {type = "fromSide", pos={16, objectivesOffset, 14}},
-            {type = "fromSide", pos={-16, objectivesOffset, -14}},
-            {type = "fromSide", pos={22, objectivesOffset, -10}},
-            {type = "fromSide", pos={-22, objectivesOffset, 10}}}},
-    --Combat Patrol Missions
-        {id = 22, name = "(CP) Clash of Patrols", objectives = {
-            {type = "fixed", pos={10, objectivesOffset, 0}},
-            {type = "fixed", pos={-10, objectivesOffset, 0}},
-            {type = "fixed", pos={0, objectivesOffset, 6}},
-            {type = "fixed", pos={0, objectivesOffset, -6}}}},
-        {id = 23, name = "(CP) Archeotech Recovery", objectives = {
-            {type = "fixed", pos={0, objectivesOffset, 0}},
-            {type = "fixed", pos={16, objectivesOffset, 8}},
-            {type = "fixed", pos={-16, objectivesOffset, -8}},
-            {type = "fixed", pos={8, objectivesOffset, -8}},
-            {type = "fixed", pos={-8, objectivesOffset, 8}}}},
-        {id = 24, name = "(CP) Forward Outpost", objectives = {
-            {type = "fixed", pos={16, objectivesOffset, 0}},
-            {type = "fixed", pos={-16, objectivesOffset, 0}},
-            {type = "fixed", pos={0, objectivesOffset, 8}},
-            {type = "fixed", pos={0, objectivesOffset, -8}}}},
-        {id = 25, name = "(CP) Scorched Earth", objectives = {
-            {type = "fixed", pos={10, objectivesOffset, -4}},
-            {type = "fixed", pos={-10, objectivesOffset, 4}},
-            {type = "fixed", pos={0, objectivesOffset, 6}},
-            {type = "fixed", pos={0, objectivesOffset, -6}}}},
-        {id = 26, name = "(CP) Sweeping Raid", objectives = {
-            {type = "fixed", pos={16, objectivesOffset, 6}},
-            {type = "fixed", pos={-16, objectivesOffset, -6}},
-            {type = "fixed", pos={3, objectivesOffset, -9}},
-            {type = "fixed", pos={-3, objectivesOffset, 9}}}},
-        {id = 27, name = "(CP) Display of Might", objectives = {
-            {type = "fixed", pos={14, objectivesOffset, 0}},
-            {type = "fixed", pos={-14, objectivesOffset, 0}},
-            {type = "fixed", pos={0, objectivesOffset, 8}},
-            {type = "fixed", pos={0, objectivesOffset, -8}}}},
-        {id = 28, name = "(CP) Four Corners", objectives = {}},
-        {id = 29, name = "(CP) Three Circles", objectives = {}},
-    --King of the Colosseum
-        {id = 301, name = "King of the Colosseum", objectives = {
-            {type = "fixed", pos={0, objectivesOffset, 0}},
-            {type = "fromSide", pos={18, objectivesOffset, 5.5}},
-            {type = "fromSide", pos={-18, objectivesOffset, -5.5}},
-            {type = "fromSide", pos={5.5, objectivesOffset, -18}},
-            {type = "fromSide", pos={-5.5, objectivesOffset, 18}}}},
-        {id = 0, name = "None", objectives = {}},
-    }
-
 -- 9" secondary deployment lines toggle button (teal 59decf)
 local nineInchColor = {0x59/255, 0xDE/255, 0xCF/255}
 nineFromDeployBtn = {
@@ -2523,109 +2110,11 @@ nineFromDeployBtn = {
 
 defaultObjectivesHeight=1.0
 
-function spawnObjectives()
-    destroyAllObjectives()
-    local zone = selectedDeployment()
-    if zone and zone.objectivesID then
-        for id, objectiveSet in ipairs(objectivesData) do
-            if objectiveSet.id == zone.objectivesID then
-                local spawned = nil
-                local pos={}
-                local template = getObjectFromGUID(Global.getVar("templateObjective_GUID"))
-                for i, objective in ipairs(objectiveSet.objectives) do
-                    pos={objective.pos[1], objective.pos[2], objective.pos[3]}
-                    if objectivesOffset == nil then pos[2] = 1 else pos[2] = defaultObjectivesHeight + objectivesOffset end
-                    if objective.type == "fixed" then
-                        -- no change to pos
-                    end
-                    if objective.type == "fromSide" then
-                        -- The X and Z values in pos are relative. A positive value is distance from
-                        -- one edge and a negative value is distance from the other. The value 0 is
-                        -- special and is actually absolute.
-                        local mapBase = mat.getScale().z * sizeMulti --short edge
-                        local mapHeight = mat.getScale().x * sizeMulti --long edge
-                        if pos[1] > 0 then
-                            pos[1] = (mapHeight / 2) - pos[1]
-                        elseif pos[1] < 0 then
-                            pos[1] = ((mapHeight / 2) + pos[1]) * -1
-                        end
-                        if pos[3] > 0 then
-                            pos[3] = (mapBase / 2) - pos[3]
-                        elseif pos[3] < 0 then
-                            pos[3] = ((mapBase / 2) + pos[3]) * -1
-                        end
-                    end
-                    if objective.type == "diagonal" then
-                        pos=calcDiagonalPos(objective.orientation, pos[1], pos[2])
-                    end
-                    spawned = template.clone({ position = pos })
-                    spawned.setGMNotes("objective")
-                    spawned.setPosition(pos)
-                    spawned.setRotation({0,270,180})
-                    spawned.setLock(true)
-                end
-                break
-            end
-        end
-    end
-end
-
-function calcDiagonalPos(orientation, relPosOnDiagonal, posY)
-    local posX = 0
-    local posZ = 0
-    local mat = getObjectFromGUID(mat_GUID)
-    local mapBase = mat.getScale().z * sizeMulti --short edge
-    local mapHeight = mat.getScale().x * sizeMulti --long edge
-
-
-    local edgeAngle = 0 -- angle of the line from the given map edge
-    local edgeAngleRad = 0
-    local halfTriBase = 0 -- triangle with hypotenuse that is half the line lenght
-    local halfTriHeight = 0 -- triangle with hypotenuse that is half the line lenght
-
-    edgeAngleRad = math.atan(mapBase / mapHeight)
-    edgeAngle = math.deg(edgeAngleRad)
-
-    posX=relPosOnDiagonal * math.cos(edgeAngleRad)
-    posZ=relPosOnDiagonal * math.sin(edgeAngleRad)
-    if orientation == "xz" then
-        -- default values
-    end
-    if orientation == "x-z" then
-        posZ=-posZ
-    end
-    if orientation == "-xz" then
-        posX=-posX
-    end
-    if orientation == "-x-z" then
-        posX=-posX
-        posZ=-posZ
-    end
-
-    return {posX,posY,posZ}
-end
-
 function destroyAllObjectives()
     for i, obj in ipairs(getAllObjects()) do
         if obj.getGMNotes() == "objective" then
             obj.destroy()
         end
-    end
-end
-
-function setObjectivesHeight()
-    local pos = {0,0,0}
-    local found_GUID = {}
-    for i, obj in ipairs(getAllObjects()) do
-        if obj.getGMNotes() == "objective" then
-            table.insert(found_GUID, #found_GUID+1, obj.getGUID())
-        end
-    end
-    local found= nil
-    for j, guid in ipairs(found_GUID) do
-        found=getObjectFromGUID(guid)
-        pos = found.getPosition()
-        found.setPosition({pos[1], defaultObjectivesHeight+ objectivesOffset, pos[3]})
     end
 end
 
@@ -2770,10 +2259,59 @@ function writeMenus()
     end
 end
 
+menuButtonBorderThickness = 70
+
+-- Creates a button with a border by drawing a slightly larger backing button behind it
+-- (TTS buttons have no outline property). borderColor defaults to dark grey.
+function createButtonWithBorder(params, borderColor)
+    local border = {}
+    for k, v in pairs(params) do border[k] = v end
+    border.label = ""
+    border.font_size = 1
+    border.height = (params.height or 0) + menuButtonBorderThickness
+    border.width = (params.width or 0) + menuButtonBorderThickness
+    border.color = borderColor or {0.1, 0.1, 0.1}
+    self.createButton(border)
+
+    -- Raise the real button slightly in y so it renders on top of the border.
+    local top = {}
+    for k, v in pairs(params) do top[k] = v end
+    top.position = {params.position[1], params.position[2] + 0.01, params.position[3]}
+    self.createButton(top)
+end
+
 function writeStartMenu()
     if gameMode ~= "game" then return end
-    self.createButton(startBtn)
-    self.createButton(firstPlayerBtn)
+    createButtonWithBorder(startBtn)
+    createButtonWithBorder(firstPlayerBtn)
+end
+
+matTextureButtonZ = 4.8
+matTextureButtonSpacing = 1.0
+matTextureButtonSize = 360
+matTextureBorderThickness = 70
+
+function writeMatTexturePickerMenu()
+    for i, texture in ipairs(matTextures) do
+        local offset = (i - ((#matTextures + 1) / 2)) * matTextureButtonSpacing
+        local isSelected = (i == matTextureSelected)
+        local borderColor = isSelected and {1, 1, 1} or {0.1, 0.1, 0.1}
+        -- Border: a slightly larger button rendered behind the swatch (TTS buttons have no outline).
+        self.createButton({
+            label = "", click_function = "setMatTexture" .. i, function_owner = self,
+            position = {offset, 5, matTextureButtonZ}, rotation = {0, 0, 0},
+            height = matTextureButtonSize + matTextureBorderThickness,
+            width = matTextureButtonSize + matTextureBorderThickness, font_size = 1,
+            color = borderColor, tooltip = texture.name,
+        })
+        -- Color swatch on top (raised slightly in y so it renders above the border).
+        self.createButton({
+            label = isSelected and "✓" or "", click_function = "setMatTexture" .. i, function_owner = self,
+            position = {offset, 5.01, matTextureButtonZ}, rotation = {0, 0, 0},
+            height = matTextureButtonSize, width = matTextureButtonSize, font_size = 180,
+            color = texture.color, font_color = {1, 1, 1}, tooltip = texture.name,
+        })
+    end
 end
 
 function writeDeployPickerMenu()
@@ -2788,6 +2326,7 @@ end
 
 function writeDeployMenu()
     writeDeployPickerMenu()
+    writeMatTexturePickerMenu()
     writeDispositionMenu()
     -- self.createButton(nineFromDeployBtn)
 
@@ -2806,56 +2345,8 @@ function writeIngameMenu()
     if currentPhase == #phases then
         nextPhaseBtn.label = phases[currentPhase].."\nPASS TURN"
     end
-    self.createButton(nextPhaseBtn)
-    writeDeployPickerMenu()
+    createButtonWithBorder(nextPhaseBtn)
     writeDispositionMenu(true)
-end
-
-function getContainedItems(container)
-    local contained = {}
-    local bounds = container.getBounds()
-    if not bounds then
-        return contained
-    end
-    for _, obj in ipairs(getAllObjects()) do
-        if obj ~= container then
-            local pos = obj.getPosition()
-            if pos.x > (bounds.center.x - bounds.size.x/2) and pos.x < (bounds.center.x + bounds.size.x/2) and
-               pos.z > (bounds.center.z - bounds.size.z/2) and pos.z < (bounds.center.z + bounds.size.z/2) and
-               pos.y > (bounds.center.y - bounds.size.y/2) and pos.y < (bounds.center.y + bounds.size.y/2) then
-                table.insert(contained, obj)
-            end
-        end
-    end
-    return contained
-end
-
-function getCounterValueByGuidVar(guidVarName)
-    local counterGuid = Global.getVar(guidVarName)
-    if not counterGuid then
-        return nil
-    end
-
-    local counterObj = getObjectFromGUID(counterGuid)
-    if not counterObj or not counterObj.Counter or not counterObj.Counter.getValue then
-        return nil
-    end
-
-    local ok, value = pcall(function()
-        return counterObj.Counter.getValue()
-    end)
-    if not ok then
-        return nil
-    end
-    return value
-end
-
-function getRoundNumber()
-    local round = getCounterValueByGuidVar("gameTurnCounter_GUID")
-    if round == nil then
-        return nil
-    end
-    return tonumber(round)
 end
 
 function getMissionManagerForColor(color)
@@ -2938,11 +2429,21 @@ function startGame(obj, player, alt)
         end
     end
 
+    local selectedDeployZone = DeployZonesData and DeployZonesData[deploySelected]
+    if not selectedDeployZone or selectedDeployZone.name == "No Deployment Zone" then
+        broadcastToAll("Cannot start: select a deployment zone first.", {1, 0, 0})
+        if not simulation then
+            return
+        end
+    end
+
     local secondarySummaries = prepareSecondariesForStart()
     if not secondarySummaries then
         broadcastToAll("Cannot start: one or more players need to select Tactical or exactly two Fixed secondaries.", {1, 0.75, 0})
         return
     end
+
+    returnCardsInDeploymentSlotsToDeck(false)
 
     Global.call("recordPlayers")
     inGame = true
@@ -2982,6 +2483,16 @@ function updateCpHUD()
     Global.call("setHudAttribute", {id = "CPWatch2", attr = "text", value = "CP: " .. redCpCounter.Counter.getValue()})
 end
 
+-- "Round R, <Color> Turn T" stamp shared by the turn-pass and CP-change chat
+-- messages. Uses the round counter (ee92cf) and the active player's turn counter.
+function getTurnStateLabel()
+    local roundObj = getObjectFromGUID("ee92cf")
+    local round = (roundObj and roundObj.Counter.getValue()) or 0
+    local turnCounter = (currentTurn == "Red") and redTurnCounter or blueTurnCounter
+    local turnNum = (turnCounter and turnCounter.Counter.getValue()) or 0
+    return "Round " .. round .. ", " .. currentTurn .. " Turn " .. turnNum
+end
+
 function gameNotStartedGuard()
     if inGame then return false end
     broadcastToAll("Game hasn't started!", {1, 0.5, 0})
@@ -2996,13 +2507,6 @@ local function getHudPlayerColor(player)
         return player.color
     end
     return nil
-end
-
-function hudNextPhase(player)
-    if gameNotStartedGuard() then return end
-    local playerColor = getHudPlayerColor(player)
-    if playerColor and playerColor ~= currentTurn and singlesMode ~= "singles" then return end
-    nextPhase(self, currentTurn, false)
 end
 
 function hudPassTurn(player)
@@ -3123,15 +2627,16 @@ function passTurn(obj, player_color_click, alt_click)
     end
 
     currentPhase = 1
+    local cpMessage
     if currentTurn == "Red" then
         currentTurn = "Blue"
         blueTurnCounter.call("increaseSelf")
         blueCpCounter.Counter.increment()
         if cpEveryTurn then
             redCpCounter.Counter.increment()
-            Wait.time(function() broadcastToAll("Both CPs incremented!", "White") end, 0.3)
+            cpMessage = "Both players gained a CP"
         else
-            Wait.time(function() broadcastToAll("Blue CPs incremented!", "Blue") end, 0.3)
+            cpMessage = "Blue player gained a CP"
         end
     else
         currentTurn = "Red"
@@ -3139,14 +2644,22 @@ function passTurn(obj, player_color_click, alt_click)
         redCpCounter.Counter.increment()
         if cpEveryTurn then
             blueCpCounter.Counter.increment()
-            Wait.time(function() broadcastToAll("Both CPs incremented!", "White") end, 0.3)
+            cpMessage = "Both players gained a CP"
         else
-            Wait.time(function() broadcastToAll("Red CPs incremented!", "Red") end, 0.3)
+            cpMessage = "Red player gained a CP"
         end
     end
+
+    -- Re-baseline the CP counters so their value pollers treat this automatic
+    -- turn-pass gain as the new baseline and don't also announce it as a manual
+    -- CP change (see cpCounter.ttslua).
+    redCpCounter.call("markBaseline")
+    blueCpCounter.call("markBaseline")
+
     updateCpHUD()
     updateGameStateHUD()
 
+    printToAll(getTurnStateLabel() .. " - " .. cpMessage, "Yellow")
     broadcastToAll("It's " .. currentTurn .. " Player's turn", currentTurn)
     writeMenus()
 end
@@ -3159,17 +2672,6 @@ function startCustomTurns()
         currentTurn = "Red"
     end
     passTurn(self, currentTurn, false)
-end
-
-function startBuiltinTurns()
-    if first == "Red" then
-        Turns.order = {"Red", "Blue"}
-    else
-        Turns.order = {"Blue", "Red"}
-    end
-    Turns.pass_turns = true
-    Turns.enable = false
-    Turns.enable = true
 end
 
 function togglePlyr()

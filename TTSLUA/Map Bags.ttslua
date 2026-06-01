@@ -1,4 +1,4 @@
--- FTC-GUID: 03286d,9a7c3c,cd649d,ca7711,bf09bd,7aca71,10a26a
+-- FTC-GUID: 7aca71,10a26a
 -- Utility memory bag by Directsun
 -- Version 2.5
 -- Fork of Memory Bag 2.0 by MrStump
@@ -385,7 +385,7 @@ function createMemoryActionButtons()
     local isTokenBag = (self.getGUID() == "7aca71") or (self.getGUID() == "10a26a")
     local showLabel = isTokenBag and "Show Tokens" or "Show Maps"
     local showWidth = isTokenBag and 1600 or 1400
-    local hasToolTip = isTokenBag and "Christian made me add this!!" or ""
+    local hasToolTip = isTokenBag and "Place Tokens" or ""
     self.createButton({
         label=showLabel, click_function="buttonClick_place", function_owner=self,
         position={0,0.2,-2}, rotation={0,180,0}, height=350, width=showWidth,
@@ -477,19 +477,7 @@ function rotateLocalCoordinates(desiredPos, obj)
     return {x=x, y=desiredPos.y, z=z}
 end
 
-function rotateMyCoordinates(desiredPos, obj)
-	local angle = math.rad(obj.getRotation().y)
-  local x = desiredPos.x * math.sin(angle)
-	local z = desiredPos.z * math.cos(angle)
-    return {x=x, y=desiredPos.y, z=z}
-end
-
 --Coroutine delay, in seconds
-function wait(time)
-    local start = os.time()
-    repeat coroutine.yield(0) until os.time() > start + time
-end
-
 --Duplicates a table (needed to prevent it making reference to the same objects)
 function duplicateTable(oldTable)
     local newTable = {}

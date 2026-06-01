@@ -51,12 +51,6 @@ function updateHUD()
     Global.call("setHudValue", {id = "RoundWatch", value = tostring(_lastValue)})
 end
 
-function writeButtons()
-    self.clearButtons()
-    self.createButton(continueBtn)
-    self.createButton(endBtn)
-end
-
 function gameOver()
     self.clearButtons()
     startObject.setVar("checkEnd", false)
