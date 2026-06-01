@@ -531,6 +531,33 @@ local function queuePendingSpawnRoll(player, dice)
     end, 0.5)
 end
 
+-- Coalesces rapid "Roll all dice" presses into a single roll. The selection is
+-- taken once, at fire time, via getDice(true) so dice still settling (just
+-- spawned, or falling back from a previous roll) are included instead of being
+-- skipped by the resting filter on a fast press.
+rollAllPending = { scheduled = false, player = nil }
+local rollAllDelay = 0.1
+
+local function scheduleRollAll(player)
+    rollAllPending.player = player
+    if rollAllPending.scheduled then
+        return
+    end
+    rollAllPending.scheduled = true
+    Wait.time(function()
+        local queuedPlayer = rollAllPending.player
+        rollAllPending.scheduled = false
+        rollAllPending.player = nil
+        if queuedPlayer then
+            Player[queuedPlayer].clearSelectedObjects()
+        end
+        local dice = getDice(true)
+        if #dice > 0 then
+            moveDiceToRoller(queuedPlayer or player, dice)
+        end
+    end, rollAllDelay)
+end
+
 function importOpposDice(obj, player, alt)
     -- clear existing dice
     for _, d in ipairs(getDice()) do d.destroy() end
@@ -854,7 +881,12 @@ function callLast5Rolls(obj, player, alt)
     end
 end
 
-function getDice()
+-- includeMoving: when true, dice that haven't physically settled yet (e.g. just
+-- spawned with +Nd6, or still falling back from the roller) are also returned.
+-- Used by the roll paths, which don't care about a die's current face since the
+-- roller reassigns it. Value-reading callers (row re-roll, delete, tally) leave
+-- it false so they only ever see settled faces. Held dice are always excluded.
+function getDice(includeMoving)
     local dice = {}
     local b = self.getBounds()
     local left  = b.center.x - b.size.x/2
@@ -892,7 +924,7 @@ function getDice()
     end
 
     for _, o in ipairs(getAllObjects()) do
-        if o.tag == "Dice" and o.resting then
+        if o.tag == "Dice" and (includeMoving or o.resting) and o.held_by_color == nil then
             local p = o.getPosition()
             if p.x > left and p.x < right
             and p.z > back and p.z < front
@@ -977,11 +1009,11 @@ end
 
 function RollOrSelectDice(obj, player, alt)
     if not alt then
-        Player[player].clearSelectedObjects()
         if rollMode then
-            moveDiceToRoller( player, getDice() )
+            scheduleRollAll(player)
         else
-            for i, die in ipairs(getDice()) do
+            Player[player].clearSelectedObjects()
+            for i, die in ipairs(getDice(true)) do
                 die.addToPlayerSelection(player)
             end
         end
@@ -1000,7 +1032,7 @@ end
 function RollDiceOrdered(_, player, _)
     Player[player].clearSelectedObjects()
     roller.setVar("orderedOnNextRoll", true)
-    moveDiceToRoller(player, getDice())
+    moveDiceToRoller(player, getDice(true))
 end
 
 function RollDiceOrderedGroup2(obj, player, alt)
