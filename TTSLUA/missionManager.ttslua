@@ -102,14 +102,6 @@ function updateSecondaryDeckButton()
     secondaryDeck.clearButtons()
 end
 
-function drawRedSecondary()
-    Global.call("drawRedSecondaryToFirstOpenSlot")
-end
-
-function drawBlueSecondary()
-    Global.call("drawBlueSecondaryToFirstOpenSlot")
-end
-
 function packSelected(params)
     selectedPack = params.pack
     fixedSecondaryHandSetupEnabled = params.dealFixedSecondaries == true
@@ -468,25 +460,3 @@ function getMissionManagerSecondarySlotCardPosition(zone)
     return pos
 end
 
-function shuffleAndMaybeFlipSecondaries()
-    secondaryDeck.shuffle()
-    local secondariesLockedIn = Global.getVar("LOCKED_IN_SECONDARIES") or 0
-   secondariesLockedIn = secondariesLockedIn + 1
-   Global.setVar("LOCKED_IN_SECONDARIES", secondariesLockedIn)
-
-    if #secondary1Zone.getObjects() > 0 and #secondary2Zone.getObjects() > 0 and #otherSecondary1Zone.getObjects() > 0 and #otherSecondary2Zone.getObjects() > 0 then
-        flipCardsInZone(secondary1Zone)
-        flipCardsInZone(secondary2Zone)
-        flipCardsInZone(otherSecondary1Zone)
-        flipCardsInZone(otherSecondary2Zone)
-    end
-end
-
-function flipCardsInZone(zone)
-    local objects = zone.getObjects()
-    for _,object in ipairs(objects) do
-        if object.type == "Card" then
-            object.flip()
-        end
-    end
-end

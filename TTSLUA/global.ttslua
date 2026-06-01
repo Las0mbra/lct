@@ -105,14 +105,6 @@ function setHudAttributeForColor(color, params)
     end)
 end
 
-function setHudValueForColor(color, params)
-    if not params or not params.id then return end
-    local prefix = color .. "Hud_"
-    pcall(function()
-        Global.UI.setValue(prefix .. params.id, params.value)
-    end)
-end
-
 function applyHudPreferencesForColor(color)
     local settings = ensureHudSettings(color)
     local settingsActive = settings.settingsOpen and "true" or "false"
@@ -955,19 +947,6 @@ function tagSelectedAsRed(playerColor, target)
     printToColor("Tagged selected objects as Blue", playerColor, "Blue")
   end
 
-function spawnOppositeForGUID(guid)
-    local orig = getObjectFromGUID(guid)
-    if not orig then return end
-    local data = JSON.decode(orig.getJSON())
-    data.Transform.posX = -data.Transform.posX
-    data.Transform.posZ = -data.Transform.posZ
-    data.Transform.rotY = (data.Transform.rotY + 180) % 360
-    spawnObjectJSON({
-        json = JSON.encode(data),
-        callback_function = function(obj) obj.lock() end
-    })
-end
-
 function hideMissionDeckUntilSelected(deckGUID)
     local deck = getObjectFromGUID(deckGUID)
     if not deck then return end
@@ -1216,13 +1195,6 @@ function demotePlayers()
     end
 end
 
-function promotePlayersOnConnect()  --NOT USED
-    if player_color == "Red" or player_color == "Blue"  then
-        Player["Red"].promote(true)
-        Player["Blue"].promote(true)
-    end
-end
-
 function showHideRedBlueBtn()
     if allowMenu then
         if Player.Red.seated == true then
@@ -1303,137 +1275,6 @@ function closeMenu(player, value, id)
 end
 
 backPosition={{0,0,0},{0,0,0},{0,0,0},{0,0,0}}
-function goToDiceRoller(player)
-    local matPositionOffset=12
-    local color=player.color
-    local diceMatGUID=redDiceMat_GUID
-    local i=1
-    if color == "Red" then
-        i=1
-    end
-    if color == "Orange" then
-        i=2
-    end
-    if color == "Blue" then
-        diceMatGUID = blueDiceMat_GUID
-        i=3
-        matPositionOffset=-matPositionOffset
-    end
-    if color == "Teal" then
-        diceMatGUID = blueDiceMat_GUID
-        i=4
-        matPositionOffset=-matPositionOffset
-    end
-    if Player[color].getSelectedObjects()[1] ~= nil then
-        backPosition[i]=Player[color].getSelectedObjects()[1].getPosition()
-    end
-
-    local matPos=getObjectFromGUID(diceMatGUID).getPosition()
-    matPos.x=matPos.x+matPositionOffset
-    moveCameraTo(matPos,30,color)
-end
-function goToScoreBoard(player)
-    local matPositionOffset = 0 -- Define matPositionOffset with a default value
-    local color = player.color
-    local matPos = getObjectFromGUID("06d627").getPosition()
-    matPos.x = matPos.x + matPositionOffset
-     moveCameraTo(matPos, 30, color, 90)
-end
-
-function goToSquad(player)
-    local i = 1
-    local color=player.color
-    if color == "Red" then
-        i=1
-    end
-    if color == "Orange" then
-        i=2
-    end
-    if color == "Blue" then
-        i=3
-    end
-    if color == "Teal" then
-        i=4
-    end
-    moveCameraTo(backPosition[i], 20, color)
-end
-
-function moveCameraTo(pos, dist, color, pitchOverride)
-    local rot = {0, 0, 0} -- Default rotation
-
-    if color == "Red" or color == "Orange" then
-        rot = {0, 180, 0}
-    elseif color == "Blue" or color == "Teal" then
-        rot = {0, 0, 0}
-    end
-
-    if pos[2] == 0 then
-        dist = dist + 30
-    end
-
-    local yaw = pitchOverride or rot[2]
-
-    Player[color].lookAt({
-        position = pos,
-        pitch = 90,
-        yaw = yaw,
-        distance = dist
-    })
-end
-
-function moveAllFromZoneToDeck(params)
-    local zoneObj = getObjectFromGUID(Global.getVar(params.zone .. "CardZone_GUID"))
-    local deckObj = getObjectFromGUID(missionPackData[packSelected][params.deck .. "Deck_GUID"])
-
-    local objects = zoneObj.getObjects()
-    for _,object in ipairs(objects) do
-        object.locked = false
-        deckObj.putObject(object)
-    end
-
-    deckObj.shuffle()
-end
-
-function moveOneFromDeckToZone(params)
-    local zoneObj = getObjectFromGUID(Global.getVar(params.zone .. "CardZone_GUID"))
-    local deckObj = getObjectFromGUID(Global.getVar(params.deck .. "Deck_GUID"))
-    local takeParams = {}
-    takeParams.position = zoneObj.getPosition()
-    takeParams.flip = true
-    takeParams.smooth = true
-    takeParams.callback_function = function(card)
-        Wait.frames(function()
-            card.locked = true
-        end)
-    end
-    if params["card"] then
-        takeParams.guid = params.card
-    else
-        deckObj.shuffle()
-    end
-    deckObj.takeObject(takeParams)
-end
-
-
-function moveOneFromDeckToZoneBlue(params)
-    local zoneObj = getObjectFromGUID(Global.getVar(params.zone .. "CardZone_GUID"))
-    local deckObj = getObjectFromGUID(missionPackData[packSelected][params.deck .. "Deck_GUID"])
-    local takeParams = {}
-    takeParams.position = zoneObj.getPosition()
-    takeParams.flip = true
-    takeParams.smooth = true
-    takeParams.callback_function = function(card)
-        Wait.frames(function()
-            card.locked = true
-        end)
-    end
-    if params["card"] then
-        takeParams.guid = params.card
-    else
-        deckObj.shuffle()
-    end
-    deckObj.takeObject(takeParams)
-end
 
 function getSecondaryCardZones(zoneGuids)
     local zones = {}
@@ -1449,14 +1290,6 @@ function getSecondaryCardZones(zoneGuids)
     end
 
     return zones
-end
-
-function getBlueSecondaryCardZones()
-    return getSecondaryCardZones(blueSecondaryCardZone_GUIDs)
-end
-
-function getRedSecondaryCardZones()
-    return getSecondaryCardZones(redSecondaryCardZone_GUIDs)
 end
 
 -- zone.getObjects() can miss cards that were script-moved into a slot and
@@ -1495,24 +1328,6 @@ function getCardsInSecondarySlot(zone)
     end
 
     return found
-end
-
-function getFirstOpenSecondaryCardZone(zoneGuids)
-    for _, slot in ipairs(getSecondaryCardZones(zoneGuids)) do
-        if #getCardsInSecondarySlot(slot.zone) == 0 then
-            return slot
-        end
-    end
-
-    return nil
-end
-
-function getFirstOpenBlueSecondaryCardZone()
-    return getFirstOpenSecondaryCardZone(blueSecondaryCardZone_GUIDs)
-end
-
-function getFirstOpenRedSecondaryCardZone()
-    return getFirstOpenSecondaryCardZone(redSecondaryCardZone_GUIDs)
 end
 
 function getSecondaryCardZoneByIndex(color, index)
@@ -1592,10 +1407,6 @@ function getSecondaryCardName(zone)
     end
 
     return nil
-end
-
-function getBlueSecondaryCardName(zone)
-    return getSecondaryCardName(zone)
 end
 
 function setSecondaryName(nameGuids, index, cardName)

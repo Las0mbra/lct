@@ -40,7 +40,6 @@ end
 
 -- Draw the two quarter‐lines
 function drawLines()
-    local playerSides = "None"
 
     local mat = getObjectFromGUID(mat_GUID)
     local lineScale = {x = 0, y = deployLineHeight, z = 0.02}

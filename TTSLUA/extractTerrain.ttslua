@@ -173,14 +173,6 @@ function createExtractButton()
     --self.createButton(infoBtn)
 end
 
-function createNoButtonExtract()
-    self.createButton(confirmNoBtnExtract)
-end
-
-function createYesButtonExtract()
-    self.createButton(confirmYesBtnExtract)
-end
-
 function showYNButtonsExtract()
     YNButtonsExtract = true
     writeMenu()
@@ -252,7 +244,6 @@ function extract3()
             objA.destroy()
         end
     end
-    local allObj2 = getAllObjects()
 
     deleteTable()
 

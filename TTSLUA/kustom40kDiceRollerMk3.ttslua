@@ -281,7 +281,6 @@ function onObjectEnterContainer(container, obj)
         	Wait.time(|| takeDiceOut(), 0.3)
         else
             local pos = self.getPosition()
-            local f = self.getTransformRight()
             self.takeObject({
                 position          = {pos.x+20,pos.y+50,pos.z+20},
                 smooth            = false,
@@ -311,12 +310,6 @@ function onCollisionEnter(collision_info)
             table.insert(sortedKeys, v.getGUID())
 		end
 	end
-
---[[Benchmarking code
-if resetclock ~= 1 then
-clockstart = os.clock()
-resetclock = 1
-end--]]
 
 end
 
@@ -424,10 +417,6 @@ function takeDiceOut(tab)
     end
 
 	printresultsTable()
---[[Benchmarking code
-	clockend = os.clock()
-	resetclock=0
-	print('Runtime: ' .. clockend-clockstart .. ' seconds.')--]]
 end
 
 --Function to count resultsTable for printing.

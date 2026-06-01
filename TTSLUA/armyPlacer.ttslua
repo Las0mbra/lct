@@ -60,10 +60,6 @@ function onLoad(saved_data)
     --writeMenu()
 end
 
-function armyLoaded()
-    writeMenu()
-end
-
 function writeMenu()
     self.createButton(redBtn)
     self.createButton(blueBtn)
@@ -135,36 +131,6 @@ end
 
 
 
-
-function placeToBlueOLD()
-    local mat=nil
-    local newImg=blueArmyMat
-    local armyMinis=armyZone.getObjects()
-    local newPos={}
-    for i, mini in ipairs(armyMinis) do
-            newPos={-mini.getPosition().z, mini.getPosition().y, mini.getPosition().x}
-            mini.setPosition(newPos)
-			mini.setLock(false)
-
-            if mini.getVar("BCBtype") == "armyMat" then
-                mat=mini
-                mini.setLock(true)
-            end
-    end
-    for i, mini in ipairs(armyMinis) do
-            newRot={mini.getRotation().x, mini.getRotation().y-90, mini.getRotation().z}
-            mini.setRotation(newRot)
-    end
-    armyZone.destroy()
-    if mat ~= nil and allowChangeMat then
-        local custom= mat.getCustomObject()
-        custom.image=newImg
-        mat.setCustomObject(custom)
-        mat.reload()
-    end
-
-    self.clearButtons()
-end
 
 function click_Delete()
     armyZone=spawnObject(armyZoneData)

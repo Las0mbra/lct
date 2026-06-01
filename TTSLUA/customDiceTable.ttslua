@@ -243,7 +243,6 @@ copyOthersDiceBtn = {
     scale = {0.5, 0.5, 0.5}
 }
 
-local hasObjectSaved = false
 savePositionLabel = "Save"
 saveBtn={
     label=savePositionLabel, tooltip=savePositionTip, click_function="save", function_owner=self,
@@ -427,21 +426,6 @@ local revertRollBtn = {
     font_color = {1, 1, 1}, -- White text for high contrast
     hover_color = {0.2, 0.2, 0.2, 1}, -- Dark gray when hovered
     press_color = {0.27, 0.27, 0.27, 1}, -- Slightly lighter gray when pressed
-    scale = {0.5, 0.5, 0.5}
-}
-
-local redoRollBtn = {
-    label          = "Redo Roll",
-    tooltip        = "Redo previously reverted roll",
-    click_function = "redoRoll",
-    function_owner = self,
-    position       = {-6.0, Yoffset, -0.16},
-    rotation       = { 0, 0, 0 },
-    width = 800, height = 300, font_size = 120,
-    color = {0.13, 0.13, 0.13, 1},
-    font_color = {1, 1, 1},
-    hover_color = {0.2, 0.2, 0.2, 1},
-    press_color = {0.27, 0.27, 0.27, 1},
     scale = {0.5, 0.5, 0.5}
 }
 
@@ -646,8 +630,6 @@ end
 
 
 
-local lastSpawnPosition = nil -- Keep track of the last spawned dice position
-local diceCount = 0 -- Track the number of dice spawned in the current sequence
 function storeCurrentDiceAsPreviousRoll()
     -- Build a snapshot of the current dice on the mat (positions, values, tints)
     local snapshot = {}
@@ -714,38 +696,6 @@ function revertRoll(obj, player, alt)
     previousRollData = previousRollStack[previousRollIndex] or {}
 end
 
-function redoRoll(obj, player, alt)
-    -- Move forward in the previousRollStack if possible
-    if not previousRollStack or #previousRollStack == 0 then
-        printToColor("No roll history available.", player, "Red")
-        return
-    end
-    if previousRollIndex >= #previousRollStack then
-        printToColor("No newer roll to redo.", player, "Red")
-        return
-    end
-    previousRollIndex = previousRollIndex + 1
-    local snapshot = previousRollStack[previousRollIndex]
-    if not snapshot or #snapshot == 0 then
-        printToColor("No roll data at this index.", player, "Red")
-        return
-    end
-    for _, die in ipairs(getDice()) do die.destroy() end
-    for _, data in ipairs(snapshot) do
-        local diceTypeToSpawn = "Die_6_Rounded"
-        if data.customImage then
-            diceTypeToSpawn = "Custom_Dice"
-        elseif pipColorBtn.color == "Black" then
-            diceTypeToSpawn = "Die_6"
-        end
-        local spawned = spawnObject({ type = diceTypeToSpawn, position = data.pos, rotation = data.rot })
-        if data.customImage then spawned.setCustomObject({ image = data.customImage, type = 1 }) end
-        spawned.setColorTint(data.tint)
-        spawned.setValue(data.val)
-    end
-    printToColor("Redone to roll #" .. tostring(previousRollIndex) .. " of " .. tostring(#previousRollStack), player, "Green")
-    previousRollData = previousRollStack[previousRollIndex] or {}
-end
 function moveDiceToRoller(color, dice)
     roller.call("setPlayerColor", { color = color })
     for _, die in ipairs(dice) do
@@ -758,122 +708,10 @@ end
 
 -- Evaluate a simple arithmetic expression safely (digits, + - * / and parentheses)
 -- Returns number on success, or nil + error message on failure
-local function evalSimpleExpr(expr)
-  if type(expr) ~= "string" then return nil, "invalid input" end
-  local s = expr:gsub("[xX]", "*")
-  s = s:gsub("%s+", "")
-  if s == "" then return nil, "empty" end
-  -- allow only digits, operators and parentheses
-  if s:find("[^%d%+%-%*/%(%)]") then return nil, "invalid characters" end
-
-  -- tokenize
-  local tokens = {}
-  local i, n = 1, #s
-  while i <= n do
-    local c = s:sub(i, i)
-    if c:match("%d") then
-      local j = i
-      while j <= n and s:sub(j, j):match("%d") do j = j + 1 end
-      table.insert(tokens, tonumber(s:sub(i, j - 1)))
-      i = j
-    elseif c == '-' then
-      -- handle unary minus by inserting 0 before '-'
-      local prev = tokens[#tokens]
-      local prevIsOp = (prev == nil) or (prev == '+') or (prev == '-') or (prev == '*') or (prev == '/') or (prev == '(')
-      if prevIsOp then table.insert(tokens, 0) end
-      table.insert(tokens, '-')
-      i = i + 1
-    elseif c == '+' or c == '*' or c == '/' or c == '(' or c == ')' then
-      table.insert(tokens, c)
-      i = i + 1
-    else
-      return nil, "invalid token"
-    end
-  end
-
-  -- shunting-yard to RPN
-  local output, ops = {}, {}
-  local prec = { ['+'] = 1, ['-'] = 1, ['*'] = 2, ['/'] = 2 }
-  local function isop(x) return prec[x] ~= nil end
-  for _, t in ipairs(tokens) do
-    if type(t) == 'number' then
-      table.insert(output, t)
-    elseif t == '(' then
-      table.insert(ops, t)
-    elseif t == ')' then
-      local found = false
-      while #ops > 0 do
-        local top = ops[#ops]
-        table.remove(ops)
-        if top == '(' then found = true break end
-        table.insert(output, top)
-      end
-      if not found then return nil, "mismatched parentheses" end
-    elseif isop(t) then
-      while #ops > 0 and isop(ops[#ops]) and prec[ops[#ops]] >= prec[t] do
-        table.insert(output, ops[#ops])
-        table.remove(ops)
-      end
-      table.insert(ops, t)
-    else
-      return nil, "invalid token"
-    end
-  end
-  while #ops > 0 do
-    local top = ops[#ops]
-    table.remove(ops)
-    if top == '(' then return nil, "mismatched parentheses" end
-    table.insert(output, top)
-  end
-
-  -- evaluate RPN
-  local stack = {}
-  local function pop2()
-    local b = stack[#stack]; stack[#stack] = nil
-    local a = stack[#stack]; stack[#stack] = nil
-    if a == nil or b == nil then return nil end
-    return a, b
-  end
-  for _, t in ipairs(output) do
-    if type(t) == 'number' then
-      table.insert(stack, t)
-    else
-      local a, b = pop2()
-      if a == nil then return nil, "invalid expression" end
-      if t == '+' then table.insert(stack, a + b)
-      elseif t == '-' then table.insert(stack, a - b)
-      elseif t == '*' then table.insert(stack, a * b)
-      elseif t == '/' then
-        if b == 0 then return nil, "division by zero" end
-        table.insert(stack, a / b)
-      else
-        return nil, "invalid operator"
-      end
-    end
-  end
-  if #stack ~= 1 then return nil, "invalid expression" end
-  return stack[1]
-end
-
-
-function autoRoll(obj, player, alt, numDice)
-    -- Route automated button rolls through the shared roller so face values
-    -- always come from the xoshiro-backed rollFace() path.
-    spawnDice(numDice or 1, player, true)
-end
 
 
 
 -- Reset the last spawn position and dice count when the dice area is cleared
-function resetSpawnPosition()
-    lastSpawnPosition = nil
-    diceCount = 0
-end
-
-function autoRoll2D6(obj, player, alt)
-    autoRoll(obj, player, alt, 2)
-end
-
 function callLast5Rolls(obj, player, alt)
     local r = getObjectFromGUID(rollerGUID)
     if r then
@@ -1299,28 +1137,6 @@ function spawnDice(n,player,alt)
     end
 end
 
--- function toggleSustainedHitsThreshold()
---     if sustainedHitsThreshold == 6 then
---         sustainedHitsThreshold = 5
---         self.editButton({
---             index = 35,
---             label = selectAllLabel,  -- "Sustained Hits 5+"
---             tooltip = selectAllTooltip  -- "Left-click to copy dice >= 5+. Right-click to switch to 6+."
---         })
---         print("DEBUG: Sustained Hits threshold set to 5+")
---     else
---         sustainedHitsThreshold = 6
---         -- Update button label and tooltip for 6+ threshold
---         self.editButton({
---             index = 35,
---             label = rollAllLabel,  -- "Sustained Hits 6+"
---             tooltip = rollAllTooltip  -- "Left-click to copy dice >= 6+. Right-click to switch to 5+."
---         })
---         print("DEBUG: Sustained Hits threshold set to 6+")
---     end
--- end
-
-
 function sustainedHitsAction(_, color, alt)
     -- Left-click: apply 6+. Right-click (alt): apply 5+. No toggle.
     local threshold = alt and 5 or 6
@@ -1504,54 +1320,6 @@ function restorePositionClicked(playerColor)
     end
   end
 end
-
--- function toggleFloatingIcon(playerColor, hoveredObject)
---     if not hoveredObject then return end
---     local existing = hoveredObject.getTable("floating_icon")
---     if existing and existing.obj then
---         if existing.updateID then Wait.stop(existing.updateID) end
---         existing.obj.destroy()
---         hoveredObject.setTable("floating_icon", nil)
---         return
---     end
-
---     local p = hoveredObject.getPosition()
---     local b = hoveredObject.getBounds()
---     local topY = b.center.y + b.size.y/2
---     local spawnPos = { x = p.x, y = topY + 5, z = p.z }
-
---     local icon = spawnObject({
---         type     = "Custom_Token",
---         position = spawnPos,
---         rotation = {90, 0, 0},
---         scale    = {0.6, 0.6, 0.6}
---     })
-
---     icon.setCustomObject({
---         image          = "https://steamusercontent-a.akamaihd.net/ugc/13501243924066232860/7D430689576B83A46A2669F2404B1DA70BC8998E/",
---         thickness      = 0.2,
---         merge_distance = 0.2,
---         stand_up       = false,
---         stackable      = false
---     })
-
---     icon.setLock(true)
---     Wait.frames(function()
---         Wait.frames(function()
---             local bb = hoveredObject.getBounds()
---             local newTop = bb.center.y + bb.size.y/2
---             icon.setPosition({ x = bb.center.x, y = newTop + 5, z = bb.center.z })
---         end, 2)
---     end, 1)
---     local function followObject()
---         if not hoveredObject or not icon then return end
---         local bb = hoveredObject.getBounds()
---         local top = bb.center.y + bb.size.y/2
---         icon.setPosition({ x = bb.center.x, y = top + 5, z = bb.center.z })
---     end
---     local updateID = Wait.time(followObject, 0.2, -1)
---     hoveredObject.setTable("floating_icon", { obj = icon, updateID = updateID })
--- end
 
 function onload()
     -- addHotkey("Toggle Floating Icon", toggleFloatingIcon)
@@ -2258,7 +2026,6 @@ end
 function getCircleVectorPoints(radius, baseX, baseZ, obj)
     local result = {}
     local scaleFactor = 1/obj.getScale().x
-    local rotationDegrees =  obj.getRotation().y
     local steps = 64
     local degrees,sin,cos,toRads = 360/steps, math.sin, math.cos, math.rad
 

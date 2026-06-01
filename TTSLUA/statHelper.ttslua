@@ -311,35 +311,6 @@ function spawnDicesForWeapon(weaponMapData)
 end
 
 
-function getWeaponMapNumAttacks(weaponMapData)
-  local attack = DecomposeAttackStr(weaponMapData.attack)
-  local numAttacks = attack.rawNum
-
-  -- Roll D6 dice and display each result
-  if attack.numD6 > 0 then
-    local randResult = 0
-    for i = 1, attack.numD6 do
-      local roll = math.random(6)
-      randResult = randResult + roll
-      printMessage("Rolling one D6, the value is: " .. roll)
-    end
-    numAttacks = numAttacks + randResult
-  end
-
-  -- Roll D3 dice and display each result
-  if attack.numD3 > 0 then
-    local randResult = 0
-    for i = 1, attack.numD3 do
-      local roll = math.random(3)
-      randResult = randResult + roll
-      printMessage("Rolling one D3, the value is: " .. roll)
-    end
-    numAttacks = numAttacks + randResult
-  end
-
-  return numAttacks
-end
-
 function getWeaponMapAttacks(weaponMapData)
   if weaponMapData.data.bonusAttack then
     return getBonusAttackValueForCount(weaponMapData.data.bonusAttack, weaponMapData.count)
@@ -545,12 +516,6 @@ function markPistols(weaponsData)
   end
 end
 
-function printTable(t)
-  for k,v in pairs(t) do
-    print(k)
-  end
-end
-
 function haveNonPistols(weaponsData)
   for i,v in ipairs(weaponsData) do
     if isPistol(v) == false then
@@ -701,55 +666,3 @@ end
     return s:sub(a, b - 1)
   end
 
-  function DecomposeAttackStr(attack)
-    local numD6 = 0
-    local numD3 = 0
-    local rawNum = 0
-    for i, v in ipairs(splitStr(attack, "+")) do
-      v = TrimString(v)
-      local nd6 = v:match("^([0-9]*)[dD]6$")
-      if nd6 == "" then nd6 = 1 end
-      if nd6 then
-        numD6 = numD6 + nd6
-      end
-      local nd3 = v:match("^([0-9]*)[dD]3$")
-      if nd3 == "" then nd3 = 1 end
-      if nd3 then
-        numD3 = numD3 + nd3
-      end
-      if v:match("^[0-9]+$") then
-        rawNum = rawNum + v
-      end
-    end
-    return {
-      numD6 = numD6,
-      numD3 = numD3,
-      rawNum = rawNum
-    }
-  end
-
-  function ComposeAttack(decomposedAttack)
-    local accum = {}
-    if decomposedAttack.numD6 == 1 then
-      table.insert(accum, "D6")
-    elseif decomposedAttack.numD6 > 1 then
-      table.insert(accum, tostring(decomposedAttack.numD6).."D6")
-    end
-    if decomposedAttack.numD3 == 1 then
-      table.insert(accum, "D3")
-    elseif decomposedAttack.numD3 > 1 then
-      table.insert(accum, tostring(decomposedAttack.numD3).."D3")
-    end
-    if decomposedAttack.rawNum > 0 then
-      table.insert(accum, tostring(decomposedAttack.rawNum))
-    end
-    local s = table.concat(accum, "+")
-    if s == "" then
-      s = "0"
-    end
-    return s
-  end
-
-  function CombineAttack(a1, a2)
-    return ComposeAttack(DecomposeAttackStr(a1.."+"..a2))
-  end

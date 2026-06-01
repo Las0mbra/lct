@@ -246,11 +246,6 @@ function rotateLocalCoordinates(desiredPos, obj)
 end
 
 --Coroutine delay, in seconds
-function wait(time)
-    local start = os.time()
-    repeat coroutine.yield(0) until os.time() > start + time
-end
-
 --Duplicates a table (needed to prevent it making reference to the same objects)
 function duplicateTable(oldTable)
     local newTable = {}

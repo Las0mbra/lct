@@ -237,11 +237,6 @@ function setLighting()
 end
 
 
-function setInputValues()
-    flexControl.editInput( {index=0, value=""})
-    flexControl.editInput( {index=1, value=url})
-end
-
 function updateSurfaceMat()
     local newUrl=url
     obj_surface = getObjectFromGUID(Global.getVar("mat_GUID"))

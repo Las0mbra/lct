@@ -477,19 +477,7 @@ function rotateLocalCoordinates(desiredPos, obj)
     return {x=x, y=desiredPos.y, z=z}
 end
 
-function rotateMyCoordinates(desiredPos, obj)
-	local angle = math.rad(obj.getRotation().y)
-  local x = desiredPos.x * math.sin(angle)
-	local z = desiredPos.z * math.cos(angle)
-    return {x=x, y=desiredPos.y, z=z}
-end
-
 --Coroutine delay, in seconds
-function wait(time)
-    local start = os.time()
-    repeat coroutine.yield(0) until os.time() > start + time
-end
-
 --Duplicates a table (needed to prevent it making reference to the same objects)
 function duplicateTable(oldTable)
     local newTable = {}

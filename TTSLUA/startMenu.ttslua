@@ -345,94 +345,9 @@ function sizeUpDown(increment)
 end
 
 
-function enableObjects()
-    local redCounterText = getObjectFromGUID("7ab8ca")
-    local blueCounterText = getObjectFromGUID("028baa")
-
-    if redCpCounter then
-        redCpCounter.setPosition({59.5, -1.32, 27.0})
-        redCpCounter.interactable = true
-        if redCounterText then
-            redCounterText.setValue("Player A Command Points")
-            redCounterText.setPosition({62.50006, 1.23999178, 27.0})
-        end
-    else
-        print("Red CP Counter not found!")
-    end
-
-    if blueCpCounter then
-        blueCpCounter.setPosition({59.5, -1.32, -27.0})
-        blueCpCounter.interactable = true
-        if blueCounterText then
-            blueCounterText.setValue("Player B Command Points")
-            blueCounterText.setPosition({62.50006, 1.23998809, -27.0})
-        end
-    else
-        print("Blue CP Counter not found!")
-    end
-end
-
-
-function createCounter(position, label)
-    local counter = spawnObject({
-        type = "Counter",
-        position = position,
-        scale = {1, 1, 1},
-    })
-    counter.setName(label)
-    counter.setValue(0)
-    return counter
-end
-
-function shuffleAndDealTeamCards()
-    local teamDeck = getObjectFromGUID(Global.getVar("teamDeck_GUID"))
-    teamDeck.shuffle()
-    local players = Player.getPlayers()
-    for i, player in ipairs(players) do
-        teamDeck.deal(1, player.color)
-    end
-    broadcastToAll("Teams have been randomized and dealt!", {0, 1, 0})
-end
-
-
-function placeGameTokens()
-    -- Check if the bag exists
-    local markedForDeathToken = getObjectFromGUID("cda0b3")
-    markedForDeathToken.setPosition({37.34079, 0.9, 29})
-
-    local tokenBag = getObjectFromGUID("f8ddf5")
-    if not tokenBag then
-        broadcastToAll("Error: Token bag not found (GUID: f8ddf5).", {1, 0, 0})
-        return
-    end
-
-    -- Extract the token object from the bag
-    local tokenTemplate = tokenBag.takeObject({guid = "7a8aba"})
-    if not tokenTemplate then
-        broadcastToAll("Error: Token template (GUID: 7a8aba) not found in bag.", {1, 0, 0})
-        return
-    end
-
-    -- Clean up the extracted template
-    tokenTemplate.destruct()
-end
 
 
 
-function spawnToken(position, label)
-    local token = spawnObject({
-        type = "BlockSquare",
-        position = position,
-        scale = {0.5, 0.5, 0.5},
-    })
-    token.setName(label)
-    return token
-end
-
-function setupExtraDeepStrikeMaps()
-    -- Logic to spawn and manage extra deep strike/transport maps if required
-    broadcastToAll("Extra Deep Strike Maps Enabled!", {0, 0.5, 1})
-end
 
 function confirmForSingles()
     singlesMode = "singles"
@@ -483,10 +398,6 @@ function showLegacyPrimaryDeck()
     setLegacyPrimaryDeckVisibility(true)
 end
 
-function hideLegacyPrimaryDeck()
-    setLegacyPrimaryDeckVisibility(false)
-end
-
 function destroyLegacyPrimaryDeck()
     destroyObjectByGUID(legacyPrimaryDeck_GUID)
 end
@@ -519,12 +430,6 @@ function placeStartupMapCards()
     end
 end
 
-function destroyStartupMapCards()
-    for _, card in ipairs(STARTUP_MAP_CARDS) do
-        destroyObjectByGUID(card.guid)
-    end
-end
-
 -- "Force dispositions" reference token. Shown only for the 1v1/Solo (11th ed.)
 -- modes; hidden while the size menu is up and destroyed for 10th Edition.
 forceDispositionToken_GUID = "1f38a1"
@@ -543,10 +448,6 @@ function hideForceDispositionToken()
         obj.tooltip = false
         obj.interactable = false
     end
-end
-
-function destroyForceDispositionToken()
-    destroyObjectByGUID(forceDispositionToken_GUID)
 end
 
 function placeObjectAtPosition(guid, position, rotation)
@@ -1246,35 +1147,7 @@ function resolveDeckCardByName(deck, cardName)
     return {guid = nil, name = cardName, source = "missing"}
 end
 
-function describeDeploymentResolution(names, resolved)
-    local parts = {}
-    for i, name in ipairs(names or {}) do
-        local info = resolved[i]
-        if info and info.source == "card" then
-            table.insert(parts, "[" .. (info.name or name) .. "]")
-        else
-            table.insert(parts, "[" .. tostring(name or "?") .. " missing]")
-        end
-    end
-    return table.concat(parts, " ")
-end
-
 -- One-line, chat-friendly summary of what a mission resolved to.
-function describePrimaryResolution(missionName, slots)
-    local parts = {}
-    for i = 1, 2 do
-        local s = slots[i]
-        if s.source == "mission" then
-            table.insert(parts, "[" .. (s.name or "?") .. "]")
-        elseif s.source == "blank" then
-            table.insert(parts, "[" .. (s.name or "blank") .. " (blank)]")
-        else
-            table.insert(parts, "[none]")
-        end
-    end
-    return missionName .. " -> " .. table.concat(parts, " ")
-end
-
 -- Look up the configured matchup for the current dispositions.
 -- Key convention: "<redIndex>_<blueIndex>" (see global.ttslua missionMatchups).
 function getCurrentMatchup()
@@ -1850,43 +1723,6 @@ function drawCircleDeployment(drawData)
     end
 end
 
-function drawCornerQuarterCircles(radius, type)
-    local originalCircle=getObjectFromGUID(Global.getVar("quarterCircle_GUID"))
-    local mat = getObjectFromGUID(mat_GUID)
-    local lineScale = {x = 0, y = deployLineHeight, z = 0.02}
-    local x = mat.getScale().x * sizeMulti * 0.5 -- long edge
-    local z = mat.getScale().z * sizeMulti * 0.5 -- short edge
-    local cornerLocations = {
-        {position = {x, deployLineYPos, z}, rotation = {0, 270, 0}},
-        {position = {x, deployLineYPos, -z}, rotation = {0, 0, 0}},
-        {position = {-x, deployLineYPos, z}, rotation = {0, 180, 0}},
-        {position = {-x, deployLineYPos, -z}, rotation = {0, 90, 0}},
-    }
-
-    for i, location in ipairs(cornerLocations) do
-        local circleObj = originalCircle.clone()
-        if circleObj then
-            circleObj.setLock(true)
-            circleObj.interactable = false
-            circleObj.setScale({radius, deployLineHeight, radius})
-            circleObj.setPosition(location.position)
-            circleObj.setRotation(location.rotation)
-            circleObj.setColorTint("White")
-            circleObj.setGMNotes(type)
-            circleObj.setName("")
-            local blockComp = circleObj.getComponent("BoxCollider")
-            if blockComp then
-                blockComp.set("enabled", false)
-            end
-            local meshComp = circleObj.getComponent("MeshCollider")
-            if meshComp then
-                meshComp.set("enabled", false)
-            end
-            trackOverlayObject(circleObj, type)
-        end
-    end
-end
-
 function drawSteps(drawData)
     local mat = getObjectFromGUID(mat_GUID)
     local mapBase = mat.getScale().z * sizeMulti --short edge
@@ -2112,19 +1948,6 @@ function destroyDeployZones()
     nineInchOverlayGUIDs = {}
 end
 
-function disableCollidersDeployZones()
-    for _, guid in ipairs(deploymentOverlayGUIDs) do
-        local obj = getObjectFromGUID(guid)
-        if obj then
-            local blockComp = obj.getComponent("BoxCollider")
-            if blockComp then
-                blockComp.set("enabled", false)
-            end
-        end
-    end
-
-end
-
 function placeDeploy()
     destroyDeployZones()
     local data = DeployZonesData[deploySelected]
@@ -2192,22 +2015,6 @@ function destroyAllObjectives()
         if obj.getGMNotes() == "objective" then
             obj.destroy()
         end
-    end
-end
-
-function setObjectivesHeight()
-    local pos = {0,0,0}
-    local found_GUID = {}
-    for i, obj in ipairs(getAllObjects()) do
-        if obj.getGMNotes() == "objective" then
-            table.insert(found_GUID, #found_GUID+1, obj.getGUID())
-        end
-    end
-    local found= nil
-    for j, guid in ipairs(found_GUID) do
-        found=getObjectFromGUID(guid)
-        pos = found.getPosition()
-        found.setPosition({pos[1], defaultObjectivesHeight+ objectivesOffset, pos[3]})
     end
 end
 
@@ -2442,53 +2249,6 @@ function writeIngameMenu()
     writeDispositionMenu(true)
 end
 
-function getContainedItems(container)
-    local contained = {}
-    local bounds = container.getBounds()
-    if not bounds then
-        return contained
-    end
-    for _, obj in ipairs(getAllObjects()) do
-        if obj ~= container then
-            local pos = obj.getPosition()
-            if pos.x > (bounds.center.x - bounds.size.x/2) and pos.x < (bounds.center.x + bounds.size.x/2) and
-               pos.z > (bounds.center.z - bounds.size.z/2) and pos.z < (bounds.center.z + bounds.size.z/2) and
-               pos.y > (bounds.center.y - bounds.size.y/2) and pos.y < (bounds.center.y + bounds.size.y/2) then
-                table.insert(contained, obj)
-            end
-        end
-    end
-    return contained
-end
-
-function getCounterValueByGuidVar(guidVarName)
-    local counterGuid = Global.getVar(guidVarName)
-    if not counterGuid then
-        return nil
-    end
-
-    local counterObj = getObjectFromGUID(counterGuid)
-    if not counterObj or not counterObj.Counter or not counterObj.Counter.getValue then
-        return nil
-    end
-
-    local ok, value = pcall(function()
-        return counterObj.Counter.getValue()
-    end)
-    if not ok then
-        return nil
-    end
-    return value
-end
-
-function getRoundNumber()
-    local round = getCounterValueByGuidVar("gameTurnCounter_GUID")
-    if round == nil then
-        return nil
-    end
-    return tonumber(round)
-end
-
 function getMissionManagerForColor(color)
     local guidVar = (color == "Red") and "redMissionManager_GUID" or "blueMissionManager_GUID"
     return getObjectFromGUID(Global.getVar(guidVar))
@@ -2647,13 +2407,6 @@ local function getHudPlayerColor(player)
         return player.color
     end
     return nil
-end
-
-function hudNextPhase(player)
-    if gameNotStartedGuard() then return end
-    local playerColor = getHudPlayerColor(player)
-    if playerColor and playerColor ~= currentTurn and singlesMode ~= "singles" then return end
-    nextPhase(self, currentTurn, false)
 end
 
 function hudPassTurn(player)
@@ -2819,17 +2572,6 @@ function startCustomTurns()
         currentTurn = "Red"
     end
     passTurn(self, currentTurn, false)
-end
-
-function startBuiltinTurns()
-    if first == "Red" then
-        Turns.order = {"Red", "Blue"}
-    else
-        Turns.order = {"Blue", "Red"}
-    end
-    Turns.pass_turns = true
-    Turns.enable = false
-    Turns.enable = true
 end
 
 function togglePlyr()
