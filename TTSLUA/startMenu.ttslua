@@ -101,6 +101,11 @@ function onLoad(saved_data)
             ttsDebugLog("missionPackData not available during onLoad; clearing packSelected")
         end
     end
+    if packSelected then
+        placeGameModeObjects()
+    else
+        hideGameModeObjects()
+    end
     if not gameTurnCounter then
         ttsDebugLog("gameTurnCounter not found during onLoad")
     end
@@ -414,6 +419,12 @@ STARTUP_MAP_CARDS = {
     {guid = "a982e3", pos = {-4.3929005, 0.96149874, -11.604293}, rot = {-3.5893564e-07, 270.00006, 1.4783116e-07}},  -- https://steamcommunity.com/sharedfiles/filedetails/?id=3733857840
 }
 
+GAME_MODE_OBJECTS = {
+    {guid = "9708e1", pos = {10.0, 0.961498737, 12.0}, rot = {8.96026862e-08, 1.0996102e-05, -5.56354642e-08}},
+    {guid = "e25144", pos = {10.0, 0.96, 0.0}, rot = {-2.44741951e-08, 1.09959565e-05, -1.35920985e-07}},
+    {guid = "90f9d5", pos = {10.0, 0.96, -12.0}, rot = {-2.44741951e-08, 1.09959565e-05, -1.35920985e-07}},
+}
+
 function hideStartupMapCards()
     for _, card in ipairs(STARTUP_MAP_CARDS) do
         local obj = getObjectFromGUID(card.guid)
@@ -426,9 +437,27 @@ function hideStartupMapCards()
     end
 end
 
+function hideGameModeObjects()
+    for _, entry in ipairs(GAME_MODE_OBJECTS) do
+        local obj = getObjectFromGUID(entry.guid)
+        if obj then
+            obj.setPosition({entry.pos[1], -5.0, entry.pos[3]})
+            obj.setLock(true)
+            obj.tooltip = false
+            obj.interactable = false
+        end
+    end
+end
+
 function placeStartupMapCards()
     for _, card in ipairs(STARTUP_MAP_CARDS) do
         placeObjectAtPosition(card.guid, card.pos, card.rot)
+    end
+end
+
+function placeGameModeObjects()
+    for _, entry in ipairs(GAME_MODE_OBJECTS) do
+        placeObjectAtPosition(entry.guid, entry.pos, entry.rot)
     end
 end
 
@@ -2202,6 +2231,7 @@ function selectMissionPack(packIndex)
     else
         destroyLegacyPrimaryDeck()
     end
+    placeGameModeObjects()
 
     writeMenus()
 end

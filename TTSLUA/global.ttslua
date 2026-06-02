@@ -105,6 +105,94 @@ function setHudAttributeForColor(color, params)
     end)
 end
 
+-- ===== HUD CP action row (PASS TURN / GAIN CP / USE CP) =====
+-- GAIN CP / USE CP mutate the player's own CP counter widget directly
+-- (e446f7 Red / deb9f2 Blue). The cpCounter poller then syncs the HUD CPWatch
+-- text and posts the same chat line as the overlay +/- buttons, so nothing else
+-- needs to be updated here. GAIN CP is capped at once per battle round per
+-- player; USE CP is unlimited. PASS TURN is wired straight to the mission
+-- manager's hudPassTurn (738804) in the XML, matching the ROUND badge.
+cpGainRoundUsed = cpGainRoundUsed or {}   -- player color -> battle round GAIN CP was last used
+
+function cpCounterForColor(color)
+    if color == "Red" then return getObjectFromGUID(redCPCounter_GUID) end
+    if color == "Blue" then return getObjectFromGUID(blueCPCounter_GUID) end
+    return nil
+end
+
+function currentBattleRound()
+    local roundObj = getObjectFromGUID(gameTurnCounter_GUID)
+    return (roundObj and roundObj.Counter.getValue()) or 0
+end
+
+function hudGainCP(player, value, id)
+    local color = getHudColorFromCallback(player, id)
+    if color ~= "Red" and color ~= "Blue" then return end
+    local counter = cpCounterForColor(color)
+    if not counter then return end
+    local round = currentBattleRound()
+    if cpGainRoundUsed[color] == round then
+        broadcastToColor("You can't gain more CP this round.", color, "Orange")
+        return
+    end
+    cpGainRoundUsed[color] = round
+    counter.Counter.increment()
+end
+
+function hudUseCP(player, value, id)
+    local color = getHudColorFromCallback(player, id)
+    if color ~= "Red" and color ~= "Blue" then return end
+    local counter = cpCounterForColor(color)
+    if not counter then return end
+    counter.Counter.decrement()
+end
+
+-- ===== Minimalist HUD (per player, toggled by the "-" control button) =====
+-- Minimalist mode hides the PASS/GAIN/USE CP action row (Row3) and both per-turn
+-- phase-icon strips, then resizes the panel + control column to fit. Red and Blue
+-- are independent (separate panels); Grey has no "-" button so it is never minimal.
+hudMinimalist = hudMinimalist or {}   -- player color -> bool
+
+-- Per-mode geometry. Minimalist drops the panel width by the phase-strip width and
+-- the height by the Row3 line, and shrinks the 4-button control column (and its
+-- font) so the glyphs still fit. width/height are visual estimates — tune in-game.
+local HUD_FULL = { width = "1160", height = "228", controlsH = "172", btnFont = "28", shown = "true"  }
+local HUD_MIN  = { width = "740",  height = "155", controlsH = "143", btnFont = "24", shown = "false" }
+
+-- The clock readout + its steppers (same id set the clock-hide toggle uses).
+local HUD_CLOCK_IDS = {"ClockSubPanel1", "ClockSubPanel2", "ChsStpPlus1", "ChsStpMinus1", "ChsStpPlus2", "ChsStpMinus2"}
+
+function applyMinimalistForColor(color)
+    if color ~= "Red" and color ~= "Blue" then return end
+    local minimal = hudMinimalist[color]
+    local d = minimal and HUD_MIN or HUD_FULL
+    local p = color .. "Hud_"
+    -- Minimalist always hides the clock; full mode hands it back to the player's
+    -- own clock toggle so we don't override a manually hidden clock.
+    local clockShown = (not minimal) and (not ensureHudSettings(color).clockHidden)
+    pcall(function()
+        Global.UI.setAttribute(p .. "Row3",      "active", d.shown)
+        Global.UI.setAttribute(p .. "PhaseRow1", "active", d.shown)
+        Global.UI.setAttribute(p .. "PhaseRow2", "active", d.shown)
+        for _, id in ipairs(HUD_CLOCK_IDS) do
+            Global.UI.setAttribute(p .. id, "active", clockShown and "true" or "false")
+        end
+        Global.UI.setAttribute(p .. "VPScores",  "width",  d.width)
+        Global.UI.setAttribute(p .. "VPScores",  "height", d.height)
+        Global.UI.setAttribute(color .. "HudControls", "preferredHeight", d.controlsH)
+        for _, b in ipairs({"SettingsBtn", "LockBtn", "ClockBtn", "MinusBtn"}) do
+            Global.UI.setAttribute(p .. b, "fontSize", d.btnFont)
+        end
+    end)
+end
+
+function hudToggleMinimalist(player, value, id)
+    local color = getHudColorFromCallback(player, id)
+    if color ~= "Red" and color ~= "Blue" then return end
+    hudMinimalist[color] = not hudMinimalist[color]
+    applyMinimalistForColor(color)
+end
+
 function applyHudPreferencesForColor(color)
     local settings = ensureHudSettings(color)
     local settingsActive = settings.settingsOpen and "true" or "false"

@@ -9,8 +9,8 @@ redDiscardPosition = { x = 77.04, y = 0.98, z = 16.60 }
 blueDiscardPosition = { x = 77.04, y = 0.98, z = -16.60 }
 redSecondaryBoard_GUID = "66def7"
 blueSecondaryBoard_GUID = "76200a"
-secondarySlotButtonSize = 120
-secondarySlotButtonFontSize = 80
+secondarySlotButtonSize = 180
+secondarySlotButtonFontSize = 120
 secondarySlotButtonY = 0.08
 redSecondarySlotButtonVerticalOffset = -2.15
 blueSecondarySlotButtonVerticalOffset = 2.15
@@ -132,10 +132,10 @@ playerTotal = {
 }
 
 draw1Btn = {
-    width = 120,
-    height = 120,
+    width = 180,
+    height = 180,
     label = "<<",
-    font_size = 100,
+    font_size = 150,
     click_function = 'drawSecondary1',
     function_owner = self,
     position = {1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ - secondarySlotButtonHorizontalOffset},
@@ -143,10 +143,10 @@ draw1Btn = {
     tooltip = "Draw red secondary"
 }
 draw1SingleBtn = {
-    width = 120,
-    height = 120,
+    width = 180,
+    height = 180,
     label = "<",
-    font_size = 100,
+    font_size = 150,
     click_function = 'drawSecondary1Single',
     function_owner = self,
     position = {1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ + secondarySlotButtonHorizontalOffset},
@@ -154,10 +154,10 @@ draw1SingleBtn = {
     tooltip = "Draw 1 red secondary"
 }
 draw2Btn = {
-    width = 120,
-    height = 120,
+    width = 180,
+    height = 180,
     label = ">>",
-    font_size = 100,
+    font_size = 150,
     click_function = 'drawSecondary2',
     function_owner = self,
     position = {-1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ - secondarySlotButtonHorizontalOffset},
@@ -165,10 +165,10 @@ draw2Btn = {
     tooltip = "Draw blue secondary"
 }
 draw2SingleBtn = {
-    width = 120,
-    height = 120,
+    width = 180,
+    height = 180,
     label = ">",
-    font_size = 100,
+    font_size = 150,
     click_function = 'drawSecondary2Single',
     function_owner = self,
     position = {-1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ + secondarySlotButtonHorizontalOffset},

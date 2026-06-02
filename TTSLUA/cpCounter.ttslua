@@ -9,11 +9,6 @@ function onLoad()
     _lastValue = self.Counter.getValue()
     local isP1 = (self.getGUID() == "deb9f2")
     _watchId   = isP1 and "CPWatch1" or "CPWatch2"
-    local guid    = self.getGUID()
-    local plusId  = isP1 and "CPPlus1"  or "CPPlus2"
-    local minusId = isP1 and "CPMinus1" or "CPMinus2"
-    Global.call("setHudAttribute", {id = plusId, attr = "onClick", value = guid .. "/increment"})
-    Global.call("setHudAttribute", {id = minusId, attr = "onClick", value = guid .. "/decrement"})
     Wait.time(checkValue, 0.5, -1)
 end
 

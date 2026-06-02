@@ -4,9 +4,9 @@
 mat_GUID         = Global.getVar("mat_GUID")
 deployLineHeight = 2.1
 sizeMulti        = 36
--- TODO: replace these placeholder faces with the real lit/unlit territory-line art.
-local onState  = 'https://steamusercontent-a.akamaihd.net/ugc/14485891762835782615/F479E01C933DDC55CF352B6AC2FCDDBC01275D73/'
-local offState = 'https://steamusercontent-a.akamaihd.net/ugc/18395342256881191528/F49462F67144A18AA0377B410ECDAAE1A039905B/'
+
+local onState  = 'https://steamusercontent-a.akamaihd.net/ugc/11257198619749100462/0D359C525B1F77119CA17EB4307B3882E6805C9F/'
+local offState = 'https://steamusercontent-a.akamaihd.net/ugc/13483922162153684809/EC47EBA4101B6D3127E3C94509BE9C01A426CC08/'
 
 function onLoad(saved_data)
     self.createButton({
