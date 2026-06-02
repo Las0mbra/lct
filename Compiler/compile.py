@@ -5,7 +5,7 @@ Compiles TTSLUA scripts into the TTS JSON save file.
 Usage:
     python3 compile.py            # prompts for version, writes compiled JSON
     python3 compile.py --test     # uses "test" as version, copies to TTS saves folder
-    python3 compile.py --release  # version + patch notes taken from CHANGELOG.md
+    python3 compile.py --release  # version + patch notes from CHANGELOG.md, copies to TTS saves folder
 """
 
 import argparse
@@ -46,16 +46,42 @@ def validate_json_text(json_text: str, label: str):
         sys.exit(1)
 
 
+def _windows_documents_path():
+    """Resolve the Windows Documents folder via the registry so a relocated
+    Documents (e.g. moved off C: to N:) is honored. Returns None on non-Windows
+    or if the registry value can't be read."""
+    try:
+        import winreg
+    except ImportError:
+        return None
+    key_path = r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
+    try:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path) as key:
+            value, _ = winreg.QueryValueEx(key, "Personal")
+    except OSError:
+        return None
+    return Path(os.path.expandvars(value))
+
+
 def get_tts_saves_path() -> Path:
+    # Explicit override wins so users with non-standard setups can point at
+    # whatever they want without code changes.
+    override = os.environ.get("TTS_SAVES_PATH")
+    if override:
+        return Path(override)
+
     system = platform.system()
     home = Path.home()
     if system == "Windows":
-        docs = Path(os.environ.get("USERPROFILE", str(home))) / "Documents"
+        docs = _windows_documents_path() or (
+            Path(os.environ.get("USERPROFILE", str(home))) / "Documents"
+        )
         return docs / "My Games" / "Tabletop Simulator" / "Saves"
     elif system == "Darwin":
         return home / "Library" / "Tabletop Simulator" / "Saves"
     else:
         return home / ".local" / "share" / "Tabletop Simulator" / "Saves"
+
 
 
 def inject_xml(json_lines: list, xml_file: Path):
@@ -174,7 +200,7 @@ def main():
     parser.add_argument("--test", action="store_true",
                         help="Tag as 'test' build and copy to TTS saves folder.")
     parser.add_argument("--release", action="store_true",
-                        help="Take version and patch notes from CHANGELOG.md.")
+                        help="Take version and patch notes from CHANGELOG.md and copy to TTS saves folder.")
     args = parser.parse_args()
     if args.test and args.release:
         print("ERROR: use either --test or --release, not both.")
@@ -302,8 +328,8 @@ def main():
     out_file.write_text(compiled_json, encoding="utf-8")
     print(f"\nOutput: {out_file}")
 
-    # --- Copy to TTS saves if --test ---
-    if args.test:
+    # --- Copy to TTS saves for test/release builds ---
+    if args.test or args.release:
         tts_saves = get_tts_saves_path()
         if tts_saves.exists():
             shutil.copy(out_file, tts_saves)

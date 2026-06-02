@@ -671,6 +671,63 @@
       "XmlUI": ""
     },
     {
+      "GUID": "7e7711",
+      "Name": "Custom_Token",
+      "Transform": {
+        "posX": 51.8294678,
+        "posY": 0.999999464,
+        "posZ": 26,
+        "rotX": -4.52026654e-07,
+        "rotY": 270.01593,
+        "rotZ": -1.60382342e-06,
+        "scaleX": 1.69734128,
+        "scaleY": 1,
+        "scaleZ": 1.69734128
+      },
+      "Nickname": "Interactive Buttons - Territory Line",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/11257198619749100462/0D359C525B1F77119CA17EB4307B3882E6805C9F/",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1,
+        "WidthScale": 0,
+        "CustomToken": {
+          "Thickness": 0.2,
+          "MergeDistancePixels": 15,
+          "StandUp": false,
+          "Stackable": false
+        }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
       "GUID": "d26e9c",
       "Name": "Deck",
       "Transform": {
@@ -11178,405 +11235,6 @@
       ]
     },
     {
-      "GUID": "176bc4",
-      "Name": "Infinite_Bag",
-      "Transform": {
-        "posX": 27.1678848,
-        "posY": 0.882999957,
-        "posZ": -26.8846912,
-        "rotX": -2.40224972e-06,
-        "rotY": 179.980057,
-        "rotZ": 1.4131017e-06,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "d6",
-      "Description": "",
-      "GMNotes": "",
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "MaterialIndex": -1,
-      "MeshIndex": -1,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "ContainedObjects": [
-        {
-          "GUID": "eaee5c",
-          "Name": "Die_6",
-          "Transform": {
-            "posX": -28.6795883,
-            "posY": 3.33315635,
-            "posZ": -27.1268845,
-            "rotX": 85.3196,
-            "rotY": 113.570709,
-            "rotZ": 293.821655,
-            "scaleX": 1.0999999,
-            "scaleY": 1.0999999,
-            "scaleZ": 1.0999999
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "ColorDiffuse": {
-            "r": 1.0,
-            "g": 1.0,
-            "b": 1.0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": false,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "MaterialIndex": 0,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "RotationValues": [
-            {
-              "Value": 1,
-              "Rotation": {
-                "x": -90.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            },
-            {
-              "Value": 2,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            },
-            {
-              "Value": 3,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": -90.0
-              }
-            },
-            {
-              "Value": 4,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 90.0
-              }
-            },
-            {
-              "Value": 5,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": -180.0
-              }
-            },
-            {
-              "Value": 6,
-              "Rotation": {
-                "x": 90.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "GUID": "7a3612",
-      "Name": "Infinite_Bag",
-      "Transform": {
-        "posX": 27.1678848,
-        "posY": 0.883,
-        "posZ": -28.8846912,
-        "rotX": -2.34943627e-06,
-        "rotY": 179.980057,
-        "rotZ": 1.24388248e-06,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "d6",
-      "Description": "",
-      "GMNotes": "",
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 0.9893046,
-        "b": 0.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "MaterialIndex": -1,
-      "MeshIndex": -1,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "ContainedObjects": [
-        {
-          "GUID": "62635e",
-          "Name": "Die_6",
-          "Transform": {
-            "posX": -28.8874168,
-            "posY": 3.360194,
-            "posZ": -29.0054188,
-            "rotX": 87.86128,
-            "rotY": 92.80033,
-            "rotZ": 272.983063,
-            "scaleX": 1.0999999,
-            "scaleY": 1.0999999,
-            "scaleZ": 1.0999999
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "ColorDiffuse": {
-            "r": 0.905,
-            "g": 0.898,
-            "b": 0.171999782
-          },
-          "LayoutGroupSortIndex": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": false,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "MaterialIndex": 0,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "RotationValues": [
-            {
-              "Value": 1,
-              "Rotation": {
-                "x": -90.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            },
-            {
-              "Value": 2,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            },
-            {
-              "Value": 3,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": -90.0
-              }
-            },
-            {
-              "Value": 4,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 90.0
-              }
-            },
-            {
-              "Value": 5,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": -180.0
-              }
-            },
-            {
-              "Value": 6,
-              "Rotation": {
-                "x": 90.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "GUID": "a65625",
-      "Name": "Infinite_Bag",
-      "Transform": {
-        "posX": 27.1678848,
-        "posY": 0.8830002,
-        "posZ": -30.8846912,
-        "rotX": -2.1254732e-06,
-        "rotY": 179.980057,
-        "rotZ": 1.161082e-06,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "d6",
-      "Description": "",
-      "GMNotes": "",
-      "ColorDiffuse": {
-        "r": 0.9529411,
-        "g": 0.5882353,
-        "b": 0.109786473
-      },
-      "LayoutGroupSortIndex": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "MaterialIndex": -1,
-      "MeshIndex": -1,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "ContainedObjects": [
-        {
-          "GUID": "f0619a",
-          "Name": "Die_6",
-          "Transform": {
-            "posX": -29.09013,
-            "posY": 3.36130953,
-            "posZ": -31.0309086,
-            "rotX": 88.1706161,
-            "rotY": 251.099,
-            "rotZ": 71.29628,
-            "scaleX": 1.0999999,
-            "scaleY": 1.0999999,
-            "scaleZ": 1.0999999
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "ColorDiffuse": {
-            "r": 0.9529411,
-            "g": 0.5882353,
-            "b": 0.109803729
-          },
-          "LayoutGroupSortIndex": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": false,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "MaterialIndex": 0,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "RotationValues": [
-            {
-              "Value": 1,
-              "Rotation": {
-                "x": -90.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            },
-            {
-              "Value": 2,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            },
-            {
-              "Value": 3,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": -90.0
-              }
-            },
-            {
-              "Value": 4,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 90.0
-              }
-            },
-            {
-              "Value": 5,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": -180.0
-              }
-            },
-            {
-              "Value": 6,
-              "Rotation": {
-                "x": 90.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
       "GUID": "e446f7",
       "Name": "Counter",
       "Transform": {
@@ -12977,272 +12635,6 @@
       ]
     },
     {
-      "GUID": "2ff2db",
-      "Name": "Infinite_Bag",
-      "Transform": {
-        "posX": -27.2797489,
-        "posY": 0.882998943,
-        "posZ": 30.9010525,
-        "rotX": 1.01209673e-06,
-        "rotY": -1.567229e-07,
-        "rotZ": -1.26227678e-06,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "d6",
-      "Description": "",
-      "GMNotes": "",
-      "ColorDiffuse": {
-        "r": 0.9529411,
-        "g": 0.5882353,
-        "b": 0.109786443
-      },
-      "LayoutGroupSortIndex": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "MaterialIndex": -1,
-      "MeshIndex": -1,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "ContainedObjects": [
-        {
-          "GUID": "f0619a",
-          "Name": "Die_6",
-          "Transform": {
-            "posX": -28.7778225,
-            "posY": 3.33120418,
-            "posZ": -30.7269287,
-            "rotX": 274.830444,
-            "rotY": 218.370651,
-            "rotZ": 321.607178,
-            "scaleX": 1.0999999,
-            "scaleY": 1.0999999,
-            "scaleZ": 1.0999999
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "ColorDiffuse": {
-            "r": 0.9529411,
-            "g": 0.5882353,
-            "b": 0.109803759
-          },
-          "LayoutGroupSortIndex": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": false,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "MaterialIndex": 0,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "RotationValues": [
-            {
-              "Value": 1,
-              "Rotation": {
-                "x": -90.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            },
-            {
-              "Value": 2,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            },
-            {
-              "Value": 3,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": -90.0
-              }
-            },
-            {
-              "Value": 4,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 90.0
-              }
-            },
-            {
-              "Value": 5,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": -180.0
-              }
-            },
-            {
-              "Value": 6,
-              "Rotation": {
-                "x": 90.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "GUID": "34366b",
-      "Name": "Infinite_Bag",
-      "Transform": {
-        "posX": -27.29432,
-        "posY": 0.8829989,
-        "posZ": 28.8367882,
-        "rotX": 1.36657218e-06,
-        "rotY": -2.45542111e-08,
-        "rotZ": -1.00673162e-06,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "d6",
-      "Description": "",
-      "GMNotes": "",
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 0.9893046,
-        "b": 0.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "MaterialIndex": -1,
-      "MeshIndex": -1,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "ContainedObjects": [
-        {
-          "GUID": "62635e",
-          "Name": "Die_6",
-          "Transform": {
-            "posX": -28.7497482,
-            "posY": 3.34589863,
-            "posZ": -28.9829369,
-            "rotX": 274.080627,
-            "rotY": 265.925171,
-            "rotZ": 274.086853,
-            "scaleX": 1.0999999,
-            "scaleY": 1.0999999,
-            "scaleZ": 1.0999999
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "ColorDiffuse": {
-            "r": 0.905,
-            "g": 0.898,
-            "b": 0.171999812
-          },
-          "LayoutGroupSortIndex": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": false,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "MaterialIndex": 0,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "RotationValues": [
-            {
-              "Value": 1,
-              "Rotation": {
-                "x": -90.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            },
-            {
-              "Value": 2,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            },
-            {
-              "Value": 3,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": -90.0
-              }
-            },
-            {
-              "Value": 4,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 90.0
-              }
-            },
-            {
-              "Value": 5,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": -180.0
-              }
-            },
-            {
-              "Value": 6,
-              "Rotation": {
-                "x": 90.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
       "GUID": "4c054e",
       "Name": "Infinite_Bag",
       "Transform": {
@@ -13343,139 +12735,6 @@
             "AngularDrag": 0.1,
             "UseGravity": true
           },
-          "RotationValues": [
-            {
-              "Value": 1,
-              "Rotation": {
-                "x": -90.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            },
-            {
-              "Value": 2,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            },
-            {
-              "Value": 3,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": -90.0
-              }
-            },
-            {
-              "Value": 4,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 90.0
-              }
-            },
-            {
-              "Value": 5,
-              "Rotation": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": -180.0
-              }
-            },
-            {
-              "Value": 6,
-              "Rotation": {
-                "x": 90.0,
-                "y": 0.0,
-                "z": 0.0
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "GUID": "791e47",
-      "Name": "Infinite_Bag",
-      "Transform": {
-        "posX": -27.3154125,
-        "posY": 0.882999,
-        "posZ": 26.7128983,
-        "rotX": 1.72849661e-06,
-        "rotY": 5.78522368e-08,
-        "rotZ": -6.31328533e-07,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "d6",
-      "Description": "",
-      "GMNotes": "",
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "MaterialIndex": -1,
-      "MeshIndex": -1,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "ContainedObjects": [
-        {
-          "GUID": "eaee5c",
-          "Name": "Die_6",
-          "Transform": {
-            "posX": -28.6412468,
-            "posY": 3.32665229,
-            "posZ": -27.1558266,
-            "rotX": 274.9115,
-            "rotY": 295.949951,
-            "rotZ": 243.944885,
-            "scaleX": 1.0999999,
-            "scaleY": 1.0999999,
-            "scaleZ": 1.0999999
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "",
-          "ColorDiffuse": {
-            "r": 1.0,
-            "g": 1.0,
-            "b": 1.0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": false,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "MaterialIndex": 0,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
           "RotationValues": [
             {
               "Value": 1,
@@ -33069,182 +32328,6 @@
       ]
     },
     {
-      "GUID": "5ffe2d",
-      "Name": "Custom_Model_Infinite_Bag",
-      "Transform": {
-        "posX": -33.5568,
-        "posY": 0.9712,
-        "posZ": -29.6594,
-        "rotX": 0.0,
-        "rotY": 180.0,
-        "rotZ": 0.0,
-        "scaleX": 1.49859047,
-        "scaleY": 0.0999999046,
-        "scaleZ": 1.48707628
-      },
-      "Nickname": "Sticky",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0,
-        "a": 0.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": false,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "MaterialIndex": -1,
-      "MeshIndex": -1,
-      "CustomMesh": {
-        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071990826/9AD455F2CBAEC01B2CBCDDB8B6DC4CE48D14B545/",
-        "DiffuseURL": "",
-        "NormalURL": "",
-        "ColliderURL": "",
-        "Convex": true,
-        "MaterialIndex": 0,
-        "TypeIndex": 7,
-        "CastShadows": true
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "ContainedObjects": [
-        {
-          "GUID": "9a7bb8",
-          "Name": "Custom_Token",
-          "Transform": {
-            "posX": 6.90143776,
-            "posY": 1.15506816,
-            "posZ": 0.06696348,
-            "rotX": 359.981476,
-            "rotY": 0.09863897,
-            "rotZ": 359.9417,
-            "scaleX": 0.4,
-            "scaleY": 1.0,
-            "scaleZ": 0.4
-          },
-          "Nickname": "Sticky Objective",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 1.0,
-            "g": 1.0,
-            "b": 1.0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/9889214191909046360/8E0C5B1C0C517D9B927B4669911BB7D0012D3DD8/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomToken": {
-              "Thickness": 0.1,
-              "MergeDistancePixels": 25.0,
-              "StandUp": false,
-              "Stackable": false
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        }
-      ],
-      "ChildObjects": [
-        {
-          "GUID": "33310e",
-          "Name": "Custom_Token",
-          "Transform": {
-            "posX": -9.051438e-08,
-            "posY": 1.371037e-09,
-            "posZ": 0.0008590325,
-            "rotX": -1.54989835e-15,
-            "rotY": 9.40901941e-07,
-            "rotZ": -1.01777751e-13,
-            "scaleX": 0.266917467,
-            "scaleY": 10.00001,
-            "scaleZ": 0.2689842
-          },
-          "Nickname": "Sticky Objective",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 1.0,
-            "g": 1.0,
-            "b": 1.0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": true,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/9889214191909046360/8E0C5B1C0C517D9B927B4669911BB7D0012D3DD8/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomToken": {
-              "Thickness": 0.1,
-              "MergeDistancePixels": 25.0,
-              "StandUp": false,
-              "Stackable": false
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        }
-      ]
-    },
-    {
       "GUID": "972ea3",
       "Name": "Custom_Model_Infinite_Bag",
       "Transform": {
@@ -34460,182 +33543,6 @@
           "Hands": true,
           "CustomImage": {
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/12797935947743606673/903AF9047018A6522851D4BD1D27BE087670355F/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomToken": {
-              "Thickness": 0.1,
-              "MergeDistancePixels": 25.0,
-              "StandUp": false,
-              "Stackable": false
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        }
-      ]
-    },
-    {
-      "GUID": "765ebb",
-      "Name": "Custom_Model_Infinite_Bag",
-      "Transform": {
-        "posX": 33.5568,
-        "posY": 0.9712,
-        "posZ": 29.6594,
-        "rotX": 0.0,
-        "rotY": 0.0,
-        "rotZ": 0.0,
-        "scaleX": 1.49859047,
-        "scaleY": 0.0999999046,
-        "scaleZ": 1.48707628
-      },
-      "Nickname": "Sticky",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0,
-        "a": 0.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": false,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "MaterialIndex": -1,
-      "MeshIndex": -1,
-      "CustomMesh": {
-        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071990826/9AD455F2CBAEC01B2CBCDDB8B6DC4CE48D14B545/",
-        "DiffuseURL": "",
-        "NormalURL": "",
-        "ColliderURL": "",
-        "Convex": true,
-        "MaterialIndex": 0,
-        "TypeIndex": 7,
-        "CastShadows": true
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "ContainedObjects": [
-        {
-          "GUID": "9a7bb8",
-          "Name": "Custom_Token",
-          "Transform": {
-            "posX": 6.90143776,
-            "posY": 1.15506816,
-            "posZ": 0.06696348,
-            "rotX": 359.981476,
-            "rotY": 0.09863897,
-            "rotZ": 359.9417,
-            "scaleX": 0.4,
-            "scaleY": 1.0,
-            "scaleZ": 0.4
-          },
-          "Nickname": "Sticky Objective",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 1.0,
-            "g": 1.0,
-            "b": 1.0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/9889214191909046360/8E0C5B1C0C517D9B927B4669911BB7D0012D3DD8/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomToken": {
-              "Thickness": 0.1,
-              "MergeDistancePixels": 25.0,
-              "StandUp": false,
-              "Stackable": false
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        }
-      ],
-      "ChildObjects": [
-        {
-          "GUID": "33310e",
-          "Name": "Custom_Token",
-          "Transform": {
-            "posX": -9.051438e-08,
-            "posY": 1.371037e-09,
-            "posZ": 0.0008590325,
-            "rotX": -1.54989835e-15,
-            "rotY": 9.40901941e-07,
-            "rotZ": -1.01777751e-13,
-            "scaleX": 0.266917467,
-            "scaleY": 10.00001,
-            "scaleZ": 0.2689842
-          },
-          "Nickname": "Sticky Objective",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 1.0,
-            "g": 1.0,
-            "b": 1.0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": true,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/9889214191909046360/8E0C5B1C0C517D9B927B4669911BB7D0012D3DD8/",
             "ImageSecondaryURL": "",
             "ImageScalar": 1.0,
             "WidthScale": 0.0,
@@ -36821,6 +35728,793 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "Interactable": false
+    },
+    {
+      "GUID": "04d13e",
+      "Name": "Custom_Model_Infinite_Bag",
+      "Transform": {
+        "posX": -33.49,
+        "posY": 0.9712507,
+        "posZ": -29.64,
+        "rotX": -1.45493857e-06,
+        "rotY": 180.000168,
+        "rotZ": 3.89686278e-07,
+        "scaleX": 1.4891777,
+        "scaleY": 0.100000143,
+        "scaleZ": 1.494169
+      },
+      "Nickname": "Objective Secured Blue",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071990826/9AD455F2CBAEC01B2CBCDDB8B6DC4CE48D14B545/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 7,
+        "CastShadows": true
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "15aef7",
+          "Name": "Custom_Token",
+          "Transform": {
+            "posX": -6.32778454,
+            "posY": 1.15470326,
+            "posZ": -0.29321298,
+            "rotX": 359.968018,
+            "rotY": 359.9876,
+            "rotZ": 0.0388016552,
+            "scaleX": 0.4,
+            "scaleY": 1.0,
+            "scaleZ": 0.4
+          },
+          "Nickname": "Action",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/11352460978447891118/62EF7A790806A7CF61423057137E1B2FD605774F/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomToken": {
+              "Thickness": 0.1,
+              "MergeDistancePixels": 25.0,
+              "StandUp": false,
+              "Stackable": false
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ],
+      "ChildObjects": [
+        {
+          "GUID": "ce188e",
+          "Name": "Custom_Token",
+          "Transform": {
+            "posX": 9.541519e-16,
+            "posY": 1.19209119e-06,
+            "posZ": -3.09435133e-15,
+            "rotX": -1.7746499e-13,
+            "rotY": 4.37892459e-06,
+            "rotZ": -1.5266663e-13,
+            "scaleX": 0.268604636,
+            "scaleY": 9.999986,
+            "scaleZ": 0.267707348
+          },
+          "Nickname": "Action",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/11352460978447891118/62EF7A790806A7CF61423057137E1B2FD605774F/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomToken": {
+              "Thickness": 0.1,
+              "MergeDistancePixels": 25.0,
+              "StandUp": false,
+              "Stackable": false
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ]
+    },
+    {
+      "GUID": "1b3488",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": 26.5,
+        "posY": 0.8999999,
+        "posZ": -26.88,
+        "rotX": -1.8904816e-06,
+        "rotY": 180.0,
+        "rotZ": 9.06704e-07,
+        "scaleX": 0.400000453,
+        "scaleY": 1.0,
+        "scaleZ": 0.400000453
+      },
+      "Nickname": "LOS Marker",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.2431367,
+        "g": 0.413105369,
+        "b": 0.5921568
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13376451442283060784/E6B5BCEBA80DB1641F736098EA5F70EC08D56D54/",
+        "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/12811589728186538638/FA25D370D87B409273E4BBC8FD674C1DCE9DCF7B/",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 2,
+          "Thickness": 0.144999981,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "-- LOS marker by kvt\r\n--Based on: Ruler Plus - Inches - by Giulianno Bessa \"illugion\"\r\n--Made for Tabletop Simulator API 03/2026\r\n\r\n--::::::::::Initialization::::::::::\r\nfunction onLoad()\r\n    --Toggles between on and off (1 and -1)\r\n    toggleMeasure = -1;\r\n\r\n    \r\n    --Properties start as null, and are filled as a player first interacts with the marker\r\n    targetObj = nil;\r\n    playerColor = nil;\r\n    lineColor   = nil;\r\n\r\n    pointA = nil;\r\n    pointB = nil;\r\n    \r\n    --Reset any changed object properties\r\n    --Sets sticky to false, to be able to get picked from under another object\r\n    self.sticky = false;\r\n\r\n    --Sets the snap point (doesn't matter much)\r\n    self.setSnapPoints({\r\n        {\r\n            position = {0,0,0},\r\n            rotation = {0,0,0},\r\n            rotation_snap = false\r\n        },\r\n    });\r\n    \r\n    --Clear lines if we have any (important when the marker is copy/pasted)\r\n    self.setVectorLines({});\r\nend\r\n\r\n--::::::::::Toggle on + target selection::::::::::\r\n--The first player to hover over the object owns it. This helps prevent another player who's grabbing unrelated stuff from accidentally picking the target.\r\nfunction onObjectHover(color, object)\r\n    if object == self and playerColor == nil then\r\n        playerColor = color;\r\n        lineColor = color;\r\n    end\r\nend\r\n\r\n--Picking up any 'LOS Marker' makes any primed markers permanently pick that one as their target.\r\nfunction onObjectPickUp(color, pickedObj)\r\n    if playerColor != nil and color == playerColor then\r\n        --If not, turns off the toggle and selects the picked object\r\n        if pickedObj != nil and pickedObj != self and pickedObj.getName() == \"LOS Marker\" and toggleMeasure == -1 then\r\n            targetObj = pickedObj;\r\n            pointA = self.getPosition();\r\n            toggleMeasure = 1;\r\n        end\r\n    end\r\nend\r\n\r\n\r\n\r\nfunction onUpdate()\r\n    if toggleMeasure == 1 then\r\n        --Keep the line origin up-to-date\r\n        if self.resting == false then\r\n            pointA = self.getPosition();\r\n        end\r\n\r\n        --Keep the line target up-to-date (or remove it if the target object is gone)\r\n        if targetObj != nil and targetObj.isDestroyed() == false then\r\n            pointB = targetObj.getPosition();\r\n        else\r\n            pointB = nil;\r\n            destroyObject(self);\r\n        end\r\n\r\n        --::::::::::Drawing lines::::::::::\r\n        if pointB != nil and (targetObj.resting == false) then\r\n            if targetObj.is_face_down == false and self.is_face_down == false then\r\n                --Line along the floor\r\n                self.setVectorLines({\r\n                    {\r\n                        points    = { self.positionToLocal(pointA) + Vector(0, 0.105, 0), --Most ruins footprint models are 0.1\" in TTS\r\n                                       self.positionToLocal(pointB + Vector(0, 0.105, 0))},\r\n                        color     = lineColor,\r\n                        thickness = 0.1\r\n                    },\r\n                })\r\n            else\r\n                --If face-down, LOS wall instead\r\n                targetLocal = self.positionToLocal(pointB);\r\n                \r\n                self.setVectorLines({\r\n                    {\r\n                        points    = { self.positionToLocal(pointA) + Vector(0, 0.0, 0),\r\n                                       {0,0,Vector.distance(pointA,pointB) / self.getScale()[1]}},\r\n                        color     = lineColor,\r\n                        thickness = 10,\r\n                        rotation  = {0,targetLocal:heading('y'),90}\r\n                    },\r\n                })\r\n            end\r\n        end\r\n        --Workaround for vector lines disappearing after you draw too many: while self is moving, we can assume our partner marker is drawing a line to us. This lets us at least double how long you can spend adjusting lines\r\n        if pointB != nil and self.resting == false and targetObj.resting == true then\r\n            self.setVectorLines({});\r\n        end\r\n    end\r\nend\r\n",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "GUID": "546598",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": -26.4999981,
+        "posY": 0.8999989,
+        "posZ": 26.71,
+        "rotX": -1.21254675e-06,
+        "rotY": 179.9999,
+        "rotZ": 4.747182e-08,
+        "scaleX": 0.400000453,
+        "scaleY": 1.0,
+        "scaleZ": 0.400000453
+      },
+      "Nickname": "LOS Marker",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.6,
+        "g": 0.258823454,
+        "b": 0.207843035
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/16735905279385456366/B1137EF6C357F8A9B33B4184B43127BCEFAD5503/",
+        "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/14420754366898081421/B1A31322589A699CC23A6A574331C22CE611FC76/",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 2,
+          "Thickness": 0.144999981,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "-- LOS marker by kvt\r\n--Based on: Ruler Plus - Inches - by Giulianno Bessa \"illugion\"\r\n--Made for Tabletop Simulator API 03/2026\r\n\r\n--::::::::::Initialization::::::::::\r\nfunction onLoad()\r\n    --Toggles between on and off (1 and -1)\r\n    toggleMeasure = -1;\r\n\r\n    \r\n    --Properties start as null, and are filled as a player first interacts with the marker\r\n    targetObj = nil;\r\n    playerColor = nil;\r\n    lineColor   = nil;\r\n\r\n    pointA = nil;\r\n    pointB = nil;\r\n    \r\n    --Reset any changed object properties\r\n    --Sets sticky to false, to be able to get picked from under another object\r\n    self.sticky = false;\r\n\r\n    --Sets the snap point (doesn't matter much)\r\n    self.setSnapPoints({\r\n        {\r\n            position = {0,0,0},\r\n            rotation = {0,0,0},\r\n            rotation_snap = false\r\n        },\r\n    });\r\n    \r\n    --Clear lines if we have any (important when the marker is copy/pasted)\r\n    self.setVectorLines({});\r\nend\r\n\r\n--::::::::::Toggle on + target selection::::::::::\r\n--The first player to hover over the object owns it. This helps prevent another player who's grabbing unrelated stuff from accidentally picking the target.\r\nfunction onObjectHover(color, object)\r\n    if object == self and playerColor == nil then\r\n        playerColor = color;\r\n        lineColor = color;\r\n    end\r\nend\r\n\r\n--Picking up any 'LOS Marker' makes any primed markers permanently pick that one as their target.\r\nfunction onObjectPickUp(color, pickedObj)\r\n    if playerColor != nil and color == playerColor then\r\n        --If not, turns off the toggle and selects the picked object\r\n        if pickedObj != nil and pickedObj != self and pickedObj.getName() == \"LOS Marker\" and toggleMeasure == -1 then\r\n            targetObj = pickedObj;\r\n            pointA = self.getPosition();\r\n            toggleMeasure = 1;\r\n        end\r\n    end\r\nend\r\n\r\n\r\n\r\nfunction onUpdate()\r\n    if toggleMeasure == 1 then\r\n        --Keep the line origin up-to-date\r\n        if self.resting == false then\r\n            pointA = self.getPosition();\r\n        end\r\n\r\n        --Keep the line target up-to-date (or remove it if the target object is gone)\r\n        if targetObj != nil and targetObj.isDestroyed() == false then\r\n            pointB = targetObj.getPosition();\r\n        else\r\n            pointB = nil;\r\n            destroyObject(self);\r\n        end\r\n\r\n        --::::::::::Drawing lines::::::::::\r\n        if pointB != nil and (targetObj.resting == false) then\r\n            if targetObj.is_face_down == false and self.is_face_down == false then\r\n                --Line along the floor\r\n                self.setVectorLines({\r\n                    {\r\n                        points    = { self.positionToLocal(pointA) + Vector(0, 0.105, 0), --Most ruins footprint models are 0.1\" in TTS\r\n                                       self.positionToLocal(pointB + Vector(0, 0.105, 0))},\r\n                        color     = lineColor,\r\n                        thickness = 0.1\r\n                    },\r\n                })\r\n            else\r\n                --If face-down, LOS wall instead\r\n                targetLocal = self.positionToLocal(pointB);\r\n                \r\n                self.setVectorLines({\r\n                    {\r\n                        points    = { self.positionToLocal(pointA) + Vector(0, 0.0, 0),\r\n                                       {0,0,Vector.distance(pointA,pointB) / self.getScale()[1]}},\r\n                        color     = lineColor,\r\n                        thickness = 10,\r\n                        rotation  = {0,targetLocal:heading('y'),90}\r\n                    },\r\n                })\r\n            end\r\n        end\r\n        --Workaround for vector lines disappearing after you draw too many: while self is moving, we can assume our partner marker is drawing a line to us. This lets us at least double how long you can spend adjusting lines\r\n        if pointB != nil and self.resting == false and targetObj.resting == true then\r\n            self.setVectorLines({});\r\n        end\r\n    end\r\nend\r\n",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "GUID": "90f9d5",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": 10.0,
+        "posY": -5.0,
+        "posZ": -12.0,
+        "rotX": -2.44741951e-08,
+        "rotY": 1.09959565e-05,
+        "rotZ": -1.35920985e-07,
+        "scaleX": 2.199999,
+        "scaleY": 1.0,
+        "scaleZ": 2.199999
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": false,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/15899221406418625082/7A5008F3D23D0F040B4CAF9CEDB694458B9CDCEF/",
+        "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/15899221406418625082/7A5008F3D23D0F040B4CAF9CEDB694458B9CDCEF/",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 0,
+          "Thickness": 0.1,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "9708e1",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": 10.0,
+        "posY": -5.0,
+        "posZ": 12.0,
+        "rotX": 8.96026862e-08,
+        "rotY": 1.0996102e-05,
+        "rotZ": -5.56354642e-08,
+        "scaleX": 2.199999,
+        "scaleY": 1.0,
+        "scaleZ": 2.199999
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": false,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/18332650369612935315/C219DE04AC36230E90901161393EA54660837F49/",
+        "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/18332650369612935315/C219DE04AC36230E90901161393EA54660837F49/",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 0,
+          "Thickness": 0.1,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "b1625c",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": 26.5,
+        "posY": 0.900000036,
+        "posZ": -30.88,
+        "rotX": -1.60228e-06,
+        "rotY": 179.999969,
+        "rotZ": 7.3111255e-07,
+        "scaleX": 0.400000453,
+        "scaleY": 1.0,
+        "scaleZ": 0.400000453
+      },
+      "Nickname": "Blue LOS Marker by Kvothe",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.2431367,
+        "g": 0.413105369,
+        "b": 0.5921568
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13376451442283060784/E6B5BCEBA80DB1641F736098EA5F70EC08D56D54/",
+        "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/12811589728186538638/FA25D370D87B409273E4BBC8FD674C1DCE9DCF7B/",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 2,
+          "Thickness": 0.144999981,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "-- LOS marker by kvt\r\n--Based on: Ruler Plus - Inches - by Giulianno Bessa \"illugion\"\r\n--Made for Tabletop Simulator API 03/2026\r\n\r\n--::::::::::Initialization::::::::::\r\nfunction onLoad()\r\n    --Toggles between on and off (1 and -1)\r\n    toggleMeasure = -1;\r\n\r\n    \r\n    --Properties start as null, and are filled as a player first interacts with the marker\r\n    targetObj = nil;\r\n    playerColor = nil;\r\n    lineColor   = nil;\r\n\r\n    pointA = nil;\r\n    pointB = nil;\r\n    \r\n    --Reset any changed object properties\r\n    --Sets sticky to false, to be able to get picked from under another object\r\n    self.sticky = false;\r\n\r\n    --Sets the snap point (doesn't matter much)\r\n    self.setSnapPoints({\r\n        {\r\n            position = {0,0,0},\r\n            rotation = {0,0,0},\r\n            rotation_snap = false\r\n        },\r\n    });\r\n    \r\n    --Clear lines if we have any (important when the marker is copy/pasted)\r\n    self.setVectorLines({});\r\nend\r\n\r\n--::::::::::Toggle on + target selection::::::::::\r\n--The first player to hover over the object owns it. This helps prevent another player who's grabbing unrelated stuff from accidentally picking the target.\r\nfunction onObjectHover(color, object)\r\n    if object == self and playerColor == nil then\r\n        playerColor = color;\r\n        lineColor = color;\r\n    end\r\nend\r\n\r\n--Picking up any 'LOS Marker' makes any primed markers permanently pick that one as their target.\r\nfunction onObjectPickUp(color, pickedObj)\r\n    if playerColor != nil and color == playerColor then\r\n        --If not, turns off the toggle and selects the picked object\r\n        if pickedObj != nil and pickedObj != self and pickedObj.getName() == \"LOS Marker\" and toggleMeasure == -1 then\r\n            targetObj = pickedObj;\r\n            pointA = self.getPosition();\r\n            toggleMeasure = 1;\r\n        end\r\n    end\r\nend\r\n\r\n\r\n\r\nfunction onUpdate()\r\n    if toggleMeasure == 1 then\r\n        --Keep the line origin up-to-date\r\n        if self.resting == false then\r\n            pointA = self.getPosition();\r\n        end\r\n\r\n        --Keep the line target up-to-date (or remove it if the target object is gone)\r\n        if targetObj != nil and targetObj.isDestroyed() == false then\r\n            pointB = targetObj.getPosition();\r\n        else\r\n            pointB = nil;\r\n            destroyObject(self);\r\n        end\r\n\r\n        --::::::::::Drawing lines::::::::::\r\n        if pointB != nil and (targetObj.resting == false) then\r\n            if targetObj.is_face_down == false and self.is_face_down == false then\r\n                --Line along the floor\r\n                self.setVectorLines({\r\n                    {\r\n                        points    = { self.positionToLocal(pointA) + Vector(0, 0.105, 0), --Most ruins footprint models are 0.1\" in TTS\r\n                                       self.positionToLocal(pointB + Vector(0, 0.105, 0))},\r\n                        color     = lineColor,\r\n                        thickness = 0.1\r\n                    },\r\n                })\r\n            else\r\n                --If face-down, LOS wall instead\r\n                targetLocal = self.positionToLocal(pointB);\r\n                \r\n                self.setVectorLines({\r\n                    {\r\n                        points    = { self.positionToLocal(pointA) + Vector(0, 0.0, 0),\r\n                                       {0,0,Vector.distance(pointA,pointB) / self.getScale()[1]}},\r\n                        color     = lineColor,\r\n                        thickness = 10,\r\n                        rotation  = {0,targetLocal:heading('y'),90}\r\n                    },\r\n                })\r\n            end\r\n        end\r\n        --Workaround for vector lines disappearing after you draw too many: while self is moving, we can assume our partner marker is drawing a line to us. This lets us at least double how long you can spend adjusting lines\r\n        if pointB != nil and self.resting == false and targetObj.resting == true then\r\n            self.setVectorLines({});\r\n        end\r\n    end\r\nend\r\n",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "GUID": "ca16c5",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": -26.4999981,
+        "posY": 0.8999988,
+        "posZ": 30.77,
+        "rotX": -2.06491927e-06,
+        "rotY": 179.9999,
+        "rotZ": 4.78081063e-07,
+        "scaleX": 0.400000453,
+        "scaleY": 1.0,
+        "scaleZ": 0.400000453
+      },
+      "Nickname": "LOS Marker",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.6,
+        "g": 0.258823454,
+        "b": 0.207843035
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/16735905279385456366/B1137EF6C357F8A9B33B4184B43127BCEFAD5503/",
+        "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/14420754366898081421/B1A31322589A699CC23A6A574331C22CE611FC76/",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 2,
+          "Thickness": 0.144999981,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "-- LOS marker by kvt\r\n--Based on: Ruler Plus - Inches - by Giulianno Bessa \"illugion\"\r\n--Made for Tabletop Simulator API 03/2026\r\n\r\n--::::::::::Initialization::::::::::\r\nfunction onLoad()\r\n    --Toggles between on and off (1 and -1)\r\n    toggleMeasure = -1;\r\n\r\n    \r\n    --Properties start as null, and are filled as a player first interacts with the marker\r\n    targetObj = nil;\r\n    playerColor = nil;\r\n    lineColor   = nil;\r\n\r\n    pointA = nil;\r\n    pointB = nil;\r\n    \r\n    --Reset any changed object properties\r\n    --Sets sticky to false, to be able to get picked from under another object\r\n    self.sticky = false;\r\n\r\n    --Sets the snap point (doesn't matter much)\r\n    self.setSnapPoints({\r\n        {\r\n            position = {0,0,0},\r\n            rotation = {0,0,0},\r\n            rotation_snap = false\r\n        },\r\n    });\r\n    \r\n    --Clear lines if we have any (important when the marker is copy/pasted)\r\n    self.setVectorLines({});\r\nend\r\n\r\n--::::::::::Toggle on + target selection::::::::::\r\n--The first player to hover over the object owns it. This helps prevent another player who's grabbing unrelated stuff from accidentally picking the target.\r\nfunction onObjectHover(color, object)\r\n    if object == self and playerColor == nil then\r\n        playerColor = color;\r\n        lineColor = color;\r\n    end\r\nend\r\n\r\n--Picking up any 'LOS Marker' makes any primed markers permanently pick that one as their target.\r\nfunction onObjectPickUp(color, pickedObj)\r\n    if playerColor != nil and color == playerColor then\r\n        --If not, turns off the toggle and selects the picked object\r\n        if pickedObj != nil and pickedObj != self and pickedObj.getName() == \"LOS Marker\" and toggleMeasure == -1 then\r\n            targetObj = pickedObj;\r\n            pointA = self.getPosition();\r\n            toggleMeasure = 1;\r\n        end\r\n    end\r\nend\r\n\r\n\r\n\r\nfunction onUpdate()\r\n    if toggleMeasure == 1 then\r\n        --Keep the line origin up-to-date\r\n        if self.resting == false then\r\n            pointA = self.getPosition();\r\n        end\r\n\r\n        --Keep the line target up-to-date (or remove it if the target object is gone)\r\n        if targetObj != nil and targetObj.isDestroyed() == false then\r\n            pointB = targetObj.getPosition();\r\n        else\r\n            pointB = nil;\r\n            destroyObject(self);\r\n        end\r\n\r\n        --::::::::::Drawing lines::::::::::\r\n        if pointB != nil and (targetObj.resting == false) then\r\n            if targetObj.is_face_down == false and self.is_face_down == false then\r\n                --Line along the floor\r\n                self.setVectorLines({\r\n                    {\r\n                        points    = { self.positionToLocal(pointA) + Vector(0, 0.105, 0), --Most ruins footprint models are 0.1\" in TTS\r\n                                       self.positionToLocal(pointB + Vector(0, 0.105, 0))},\r\n                        color     = lineColor,\r\n                        thickness = 0.1\r\n                    },\r\n                })\r\n            else\r\n                --If face-down, LOS wall instead\r\n                targetLocal = self.positionToLocal(pointB);\r\n                \r\n                self.setVectorLines({\r\n                    {\r\n                        points    = { self.positionToLocal(pointA) + Vector(0, 0.0, 0),\r\n                                       {0,0,Vector.distance(pointA,pointB) / self.getScale()[1]}},\r\n                        color     = lineColor,\r\n                        thickness = 10,\r\n                        rotation  = {0,targetLocal:heading('y'),90}\r\n                    },\r\n                })\r\n            end\r\n        end\r\n        --Workaround for vector lines disappearing after you draw too many: while self is moving, we can assume our partner marker is drawing a line to us. This lets us at least double how long you can spend adjusting lines\r\n        if pointB != nil and self.resting == false and targetObj.resting == true then\r\n            self.setVectorLines({});\r\n        end\r\n    end\r\nend\r\n",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "GUID": "e25144",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": 10.0,
+        "posY": -5.0,
+        "posZ": 0.0,
+        "rotX": -2.44741951e-08,
+        "rotY": 1.09959565e-05,
+        "rotZ": -1.35920985e-07,
+        "scaleX": 2.199999,
+        "scaleY": 1.0,
+        "scaleZ": 2.199999
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": false,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/16549370177720367298/B1782EF83B619DF6EEAC0C330FEA66156FCE17B0/",
+        "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/16549370177720367298/B1782EF83B619DF6EEAC0C330FEA66156FCE17B0/",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 0,
+          "Thickness": 0.1,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "e87880",
+      "Name": "Custom_Model_Infinite_Bag",
+      "Transform": {
+        "posX": 33.56,
+        "posY": 0.971248448,
+        "posZ": 29.66,
+        "rotX": 1.54399061e-06,
+        "rotY": -3.58573343e-05,
+        "rotZ": -6.217054e-07,
+        "scaleX": 1.49354553,
+        "scaleY": 0.100000024,
+        "scaleZ": 1.492312
+      },
+      "Nickname": "Objective Secured Red",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1666858152071990826/9AD455F2CBAEC01B2CBCDDB8B6DC4CE48D14B545/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 7,
+        "CastShadows": true
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "2c52f5",
+          "Name": "Custom_Token",
+          "Transform": {
+            "posX": -10.3997707,
+            "posY": 1.15461946,
+            "posZ": -0.648617864,
+            "rotX": 359.9297,
+            "rotY": 359.8922,
+            "rotZ": 0.063860245,
+            "scaleX": 0.4,
+            "scaleY": 1.0,
+            "scaleZ": 0.4
+          },
+          "Nickname": "Action",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/10043779973316567924/E03A1C9E8F12CB37047F1DA3849DCC92E0BA308A/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomToken": {
+              "Thickness": 0.1,
+              "MergeDistancePixels": 25.0,
+              "StandUp": false,
+              "Stackable": false
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ],
+      "ChildObjects": [
+        {
+          "GUID": "64bb3f",
+          "Name": "Custom_Token",
+          "Transform": {
+            "posX": 5.279314e-07,
+            "posY": 1.19087224e-06,
+            "posZ": -0.00083333184,
+            "rotX": -4.431034e-13,
+            "rotY": 8.220906e-06,
+            "rotZ": -8.14222e-13,
+            "scaleX": 0.267819136,
+            "scaleY": 9.999997,
+            "scaleZ": 0.268040538
+          },
+          "Nickname": "Action",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/10043779973316567924/E03A1C9E8F12CB37047F1DA3849DCC92E0BA308A/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomToken": {
+              "Thickness": 0.1,
+              "MergeDistancePixels": 25.0,
+              "StandUp": false,
+              "Stackable": false
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ]
     }
   ]
 }

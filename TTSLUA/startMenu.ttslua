@@ -101,6 +101,11 @@ function onLoad(saved_data)
             ttsDebugLog("missionPackData not available during onLoad; clearing packSelected")
         end
     end
+    if packSelected then
+        placeGameModeObjects()
+    else
+        hideGameModeObjects()
+    end
     if not gameTurnCounter then
         ttsDebugLog("gameTurnCounter not found during onLoad")
     end
@@ -414,6 +419,12 @@ STARTUP_MAP_CARDS = {
     {guid = "a982e3", pos = {-4.3929005, 0.96149874, -11.604293}, rot = {-3.5893564e-07, 270.00006, 1.4783116e-07}},  -- https://steamcommunity.com/sharedfiles/filedetails/?id=3733857840
 }
 
+GAME_MODE_OBJECTS = {
+    {guid = "9708e1", pos = {10.0, 0.961498737, 12.0}, rot = {8.96026862e-08, 1.0996102e-05, -5.56354642e-08}},
+    {guid = "e25144", pos = {10.0, 0.96, 0.0}, rot = {-2.44741951e-08, 1.09959565e-05, -1.35920985e-07}},
+    {guid = "90f9d5", pos = {10.0, 0.96, -12.0}, rot = {-2.44741951e-08, 1.09959565e-05, -1.35920985e-07}},
+}
+
 function hideStartupMapCards()
     for _, card in ipairs(STARTUP_MAP_CARDS) do
         local obj = getObjectFromGUID(card.guid)
@@ -426,9 +437,27 @@ function hideStartupMapCards()
     end
 end
 
+function hideGameModeObjects()
+    for _, entry in ipairs(GAME_MODE_OBJECTS) do
+        local obj = getObjectFromGUID(entry.guid)
+        if obj then
+            obj.setPosition({entry.pos[1], -5.0, entry.pos[3]})
+            obj.setLock(true)
+            obj.tooltip = false
+            obj.interactable = false
+        end
+    end
+end
+
 function placeStartupMapCards()
     for _, card in ipairs(STARTUP_MAP_CARDS) do
         placeObjectAtPosition(card.guid, card.pos, card.rot)
+    end
+end
+
+function placeGameModeObjects()
+    for _, entry in ipairs(GAME_MODE_OBJECTS) do
+        placeObjectAtPosition(entry.guid, entry.pos, entry.rot)
     end
 end
 
@@ -757,6 +786,7 @@ defaultDeployHeight=2
 deployOffset = 0
 deploymentOverlayGUIDs = {}
 nineInchOverlayGUIDs = {}
+territoryOverlayGUIDs = {}
 
 secondRowOffset= 1.2
 deployHeaderBtn = {
@@ -1981,6 +2011,9 @@ function getOverlayGuidStore(type)
     if type == "deployZone9" then
         return nineInchOverlayGUIDs
     end
+    if type == "territory" then
+        return territoryOverlayGUIDs
+    end
 
     return deploymentOverlayGUIDs
 end
@@ -2198,6 +2231,7 @@ function selectMissionPack(packIndex)
     else
         destroyLegacyPrimaryDeck()
     end
+    placeGameModeObjects()
 
     writeMenus()
 end
@@ -2699,6 +2733,129 @@ function showHideIngameDeployment()
         Global.setVar("interactiveButtonDeploymentZones", 1)
         if selectedDeploymentSpawnsOverlay() then
             destroyDeployZones()
+        end
+    end
+end
+
+-- Territory divider line (toggle + helpers)
+-- The territory divider is the single centre line that splits the battlefield
+-- into each player's half. Its orientation is derived from the currently
+-- selected deployment zone so it always matches the chosen mission.
+territoryLineColor = "Yellow"
+
+function showHideTerritoryLine()
+    local state = Global.getVar("interactiveButtonTerritoryLine")
+    if state == 1 then -- place
+        Global.setVar("interactiveButtonTerritoryLine", 2)
+        drawTerritoryLine()
+    else -- recall
+        Global.setVar("interactiveButtonTerritoryLine", 1)
+        destroyTerritoryLine()
+    end
+end
+
+function destroyTerritoryLine()
+    destroyTrackedOverlayObjects(territoryOverlayGUIDs)
+    territoryOverlayGUIDs = {}
+end
+
+-- Returns the first non-circle draw spec of the selected deployment, which
+-- carries the type/position the divider orientation is derived from.
+function territoryReferenceEntry(zone)
+    if not zone or not zone.draw then return nil end
+    if zone.draw.type == "none" then return nil end
+    for _, d in ipairs(zone.draw) do
+        if d.type ~= "circle" and d.type ~= "circleInZone" and d.type ~= "circleDeployment" then
+            return d
+        end
+    end
+    return zone.draw[1]
+end
+
+-- Distance of a stepped DZ's boundary from the table centre, for one step.
+-- `halfEdge` is the half-length of the edge the `fromSide` value is measured from.
+function stepBoundaryFromCentre(step, halfEdge)
+    if step.fromCenter then
+        return step.fromCenter
+    end
+    return halfEdge - (step.fromSide or 0)
+end
+
+-- Length of a centre-crossing line at angle `thetaDeg` (0 = +X, 90 = +Z),
+-- clipped to the battlefield rectangle with half-extents hx (X) and hz (Z).
+function territoryChordLength(thetaDeg, hx, hz)
+    local r = math.rad(thetaDeg)
+    local c = math.abs(math.cos(r))
+    local s = math.abs(math.sin(r))
+    local tx = (c > 1e-6) and (hx / c) or math.huge
+    local tz = (s > 1e-6) and (hz / s) or math.huge
+    return 2 * math.min(tx, tz)
+end
+
+-- The territory divider is the line through the battlefield centre joining the
+-- two perimeter points equidistant from each deployment zone. Its orientation
+-- is derived from the selected DZ; the length is the chord clipped to the table.
+function drawTerritoryLine()
+    local mat = getObjectFromGUID(mat_GUID)
+    if not mat then return end
+    local longEdge  = mat.getScale().x * sizeMulti -- along X
+    local shortEdge = mat.getScale().z * sizeMulti -- along Z
+    local hx = longEdge / 2
+    local hz = shortEdge / 2
+
+    local entry = territoryReferenceEntry(selectedDeployment())
+    local pos = entry and entry.position or "x"
+    local t   = entry and entry.type or "line"
+
+    local theta -- rot.y in degrees: 0 = along X, 90 = along Z
+
+    if t == "triangle" then
+        -- Crucible of Battle: parallel to the DZ edges, through the centre.
+        -- For 60x44 this exits the long edges 15" from centre.
+        theta = math.deg(math.atan(shortEdge / (longEdge / 2)))
+    elseif t == "quarter" then
+        -- Search and Destroy: the main corner-to-corner diagonal.
+        theta = math.deg(math.atan(shortEdge / longEdge))
+    elseif t == "stepped" and entry.steps and entry.steps[2] then
+        -- Sweeping Engagement / Tipping Point: join the edge midpoints between
+        -- the two staggered DZ boundaries.
+        -- signZ/signX carry the table's rot.y handedness so the slight tilt
+        -- leans the correct way (same handedness as the Search and Destroy fix).
+        if pos == "z" or pos == "-z" then
+            local b1 = stepBoundaryFromCentre(entry.steps[1], hz)
+            local b2 = stepBoundaryFromCentre(entry.steps[2], hz)
+            local m = (b1 - b2) / 2
+            local signZ = (pos == "z") and -1 or 1
+            theta = math.deg(math.atan((signZ * m) / hx))
+        else
+            local b1 = stepBoundaryFromCentre(entry.steps[1], hx)
+            local b2 = stepBoundaryFromCentre(entry.steps[2], hx)
+            local m = (b1 - b2) / 2
+            local signX = (pos == "x") and -1 or 1
+            if math.abs(m) < 1e-6 then
+                theta = 90
+            else
+                theta = math.deg(math.atan(hz / (signX * m)))
+            end
+        end
+    elseif pos == "z" or pos == "-z" then
+        -- Dawn of War style: divider runs along X at z = 0.
+        theta = 0
+    else
+        -- Hammer and Anvil style (and default): divider runs along Z at x = 0.
+        theta = 90
+    end
+
+    local length = territoryChordLength(theta, hx, hz)
+    spawnLine({0, deployLineYPos, 0}, {0, theta, 0},
+        {x = length, y = deployLineHeight, z = 0.02}, territoryLineColor, "territory")
+
+    -- Match the lift applied to deployment overlays so it sits at table height.
+    for _, guid in ipairs(territoryOverlayGUIDs) do
+        local found = getObjectFromGUID(guid)
+        if found then
+            local p = found.getPosition()
+            found.setPosition({p[1], defaultDeployHeight + deployOffset, p[3]})
         end
     end
 end
