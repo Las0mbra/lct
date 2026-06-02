@@ -2251,6 +2251,7 @@ armyMover = ""
 first = "Red"
 currentTurn = "Red"
 cpEveryTurn = true
+secondaryForceStartPressesRemaining = 3
 
 phases = {"Command Phase", "Movement Phase", "Shooting Phase", "Charge Phase", "Fight Phase"}
 currentPhase = 1
@@ -2399,14 +2400,16 @@ function selectedPlayersForSecondarySetup()
     return colors
 end
 
-function prepareSecondariesForStart()
+function prepareSecondariesForStart(forceStart)
     local colors = selectedPlayersForSecondarySetup()
     local summaries = {}
 
-    for _, color in ipairs(colors) do
-        local manager = getMissionManagerForColor(color)
-        if manager and not manager.call("validateSecondaries") then
-            return false
+    if not forceStart then
+        for _, color in ipairs(colors) do
+            local manager = getMissionManagerForColor(color)
+            if manager and not manager.call("validateSecondaries") then
+                return false
+            end
         end
     end
 
@@ -2414,7 +2417,7 @@ function prepareSecondariesForStart()
     for _, color in ipairs(colors) do
         local manager = getMissionManagerForColor(color)
         if manager then
-            local summaryJson = manager.call("lockInSecondaries")
+            local summaryJson = manager.call("lockInSecondaries", {force = forceStart == true})
             if not summaryJson then
                 return false
             end
@@ -2424,6 +2427,18 @@ function prepareSecondariesForStart()
     end
 
     return summaries
+end
+
+function resetSecondaryForceStartCountdown()
+    secondaryForceStartPressesRemaining = 3
+end
+
+function secondaryForceStartMessage()
+    if secondaryForceStartPressesRemaining == 1 then
+        return "Click Start Button 1 more time to Force Start the game."
+    end
+
+    return "Click Start Button " .. secondaryForceStartPressesRemaining .. " more times to Force Start the game."
 end
 
 function formatSecondarySummary(summary)
@@ -2471,11 +2486,16 @@ function startGame(obj, player, alt)
         end
     end
 
-    local secondarySummaries = prepareSecondariesForStart()
+    local forceSecondaryStart = secondaryForceStartPressesRemaining <= 0
+    local secondarySummaries = prepareSecondariesForStart(forceSecondaryStart)
     if not secondarySummaries then
         broadcastToAll("Cannot start: one or more players need to select Tactical or exactly two Fixed secondaries.", {1, 0.75, 0})
+        broadcastToAll(secondaryForceStartMessage(), {1, 0.75, 0})
+        secondaryForceStartPressesRemaining = secondaryForceStartPressesRemaining - 1
         return
     end
+
+    resetSecondaryForceStartCountdown()
 
     returnCardsInDeploymentSlotsToDeck(false)
 

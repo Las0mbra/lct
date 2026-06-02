@@ -345,12 +345,14 @@ function getSecondarySelectionSummaryJson()
     return JSON.encode(getSecondarySelectionSummary())
 end
 
-function lockInSecondaries()
+function lockInSecondaries(params)
+    local force = params and params.force == true
+
     if secondariesLockedIn then
         return getSecondarySelectionSummaryJson()
     end
 
-    if not validateSecondaries() then
+    if not force and not validateSecondaries() then
         return false
     end
 
