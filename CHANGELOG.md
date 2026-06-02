@@ -13,6 +13,12 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.5.0 
+- TOOL ADDITION :Added LOS markers by the amazing Kvothe! 
+- FEATURE: There is a button next to area denial that now handles the new show territory areas, it's based on current Deployment zone so it wont work before choosing one 
+- UI/UX: Added more options to the overlay for better readability. Now there are Pass Turn, Gain CP and Use CP buttons. There is also a new side button "-" pressing that will toggle to a more mininalistic UI. 
+- Added banners above map decks. This is still placeholder art until we get all the layout info.
+
 ## v1.4.0
 - Backend compiler improvements 
 - Added dynamic custom overlay bubble, set a hotkey and try it! 

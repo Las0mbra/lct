@@ -5,7 +5,7 @@ Compiles TTSLUA scripts into the TTS JSON save file.
 Usage:
     python3 compile.py            # prompts for version, writes compiled JSON
     python3 compile.py --test     # uses "test" as version, copies to TTS saves folder
-    python3 compile.py --release  # version + patch notes taken from CHANGELOG.md
+    python3 compile.py --release  # version + patch notes from CHANGELOG.md, copies to TTS saves folder
 """
 
 import argparse
@@ -200,7 +200,7 @@ def main():
     parser.add_argument("--test", action="store_true",
                         help="Tag as 'test' build and copy to TTS saves folder.")
     parser.add_argument("--release", action="store_true",
-                        help="Take version and patch notes from CHANGELOG.md.")
+                        help="Take version and patch notes from CHANGELOG.md and copy to TTS saves folder.")
     args = parser.parse_args()
     if args.test and args.release:
         print("ERROR: use either --test or --release, not both.")
@@ -328,8 +328,8 @@ def main():
     out_file.write_text(compiled_json, encoding="utf-8")
     print(f"\nOutput: {out_file}")
 
-    # --- Copy to TTS saves if --test ---
-    if args.test:
+    # --- Copy to TTS saves for test/release builds ---
+    if args.test or args.release:
         tts_saves = get_tts_saves_path()
         if tts_saves.exists():
             shutil.copy(out_file, tts_saves)
