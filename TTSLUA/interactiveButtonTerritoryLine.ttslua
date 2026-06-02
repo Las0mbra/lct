@@ -1,0 +1,38 @@
+-- FTC-GUID: 7e7711
+
+-- Shared variables
+mat_GUID         = Global.getVar("mat_GUID")
+deployLineHeight = 2.1
+sizeMulti        = 36
+-- TODO: replace these placeholder faces with the real lit/unlit territory-line art.
+local onState  = 'https://steamusercontent-a.akamaihd.net/ugc/14485891762835782615/F479E01C933DDC55CF352B6AC2FCDDBC01275D73/'
+local offState = 'https://steamusercontent-a.akamaihd.net/ugc/18395342256881191528/F49462F67144A18AA0377B410ECDAAE1A039905B/'
+
+function onLoad(saved_data)
+    self.createButton({
+        click_function  = "toggleTerritoryLine",
+        function_owner  = self,
+        label           = "",
+        position        = {0, 0.2, 0},
+        width           = 2000,
+        height          = 2000,
+        color           = {0, 0, 0, 0}
+    })
+end
+
+function toggleTerritoryLine()
+    local state = Global.getVar("interactiveButtonTerritoryLine")
+    local manager = getObjectFromGUID("738804")
+    manager.call("showHideTerritoryLine")
+    if state == 1 then
+        params = {
+            image = onState,
+        }
+    else
+        params = {
+            image = offState,
+        }
+    end
+    self.setCustomObject(params)
+    self.reload()
+end

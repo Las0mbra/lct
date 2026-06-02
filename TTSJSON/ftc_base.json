@@ -671,6 +671,63 @@
       "XmlUI": ""
     },
     {
+      "GUID": "7e7711",
+      "Name": "Custom_Token",
+      "Transform": {
+        "posX": 51.8294678,
+        "posY": 0.999999464,
+        "posZ": 26,
+        "rotX": -4.52026654e-07,
+        "rotY": 270.01593,
+        "rotZ": -1.60382342e-06,
+        "scaleX": 1.69734128,
+        "scaleY": 1,
+        "scaleZ": 1.69734128
+      },
+      "Nickname": "Interactive Buttons - Territory Line",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/18395342256881191528/F49462F67144A18AA0377B410ECDAAE1A039905B/",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1,
+        "WidthScale": 0,
+        "CustomToken": {
+          "Thickness": 0.2,
+          "MergeDistancePixels": 15,
+          "StandUp": false,
+          "Stackable": false
+        }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
       "GUID": "d26e9c",
       "Name": "Deck",
       "Transform": {

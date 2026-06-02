@@ -663,6 +663,7 @@ interactiveButtonTableQuarters_State = 1
 interactiveButtonAreaDenial = 1
 interactiveButtonStratReserves = 1
 interactiveButtonDeploymentZones = 1
+interactiveButtonTerritoryLine = 1
 
 
 teamModels = { Red = {}, Blue = {} }
