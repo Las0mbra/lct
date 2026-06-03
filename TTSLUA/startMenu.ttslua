@@ -423,6 +423,11 @@ GAME_MODE_OBJECTS = {
     {guid = "9708e1", pos = {-10, 0.961498737, 12.0}, rot = {8.96026862e-08, 1.0996102e-05, -5.56354642e-08}},
     {guid = "e25144", pos = {-10, 0.96, 0.0}, rot = {-2.44741951e-08, 1.09959565e-05, -1.35920985e-07}},
     {guid = "90f9d5", pos = {-10, 0.96, -12.0}, rot = {-2.44741951e-08, 1.09959565e-05, -1.35920985e-07}},
+    {guid = "6e0d78", pos = {20.939455, 0.996871352, 13.56927}, rot = {8.81163444e-08, 180.0, -1.03525615e-07}},
+    {guid = "109a6b", pos = {20.9394531, 0.9968714, -12.8266459}, rot = {3.53603831e-08, 180.0, -2.3401121e-08}},
+    {guid = "1e6711", pos = {20.9392757, 0.996871352, -6.25547457}, rot = {4.93389848e-07, 180.00264, -6.66980668e-07}},
+    {guid = "cfeba5", pos = {20.939455, 0.9968714, 0.327113152}, rot = {-1.7571665e-08, 180.0, -6.281383e-08}},
+    {guid = "eae80b", pos = {20.939455, 0.9968714, 6.957587}, rot = {-2.49072318e-08, 180.0, -7.044857e-09}},
 }
 
 function hideStartupMapCards()
@@ -809,6 +814,11 @@ deployDownBtn = {
     position = { -arrowOffset, 5, 3}, rotation = {0, 0, 0}, height = 750, width = 800,
     font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
+objectivesBtn = {
+    index = 1, label = "Objectives", click_function = "placeObjectives", function_owner = self,
+    position = { arrowOffset + 2.6, 5, 3}, rotation = {0, 0, 0}, height = 750, width = 2400,
+    font_size = 250, color = {0.2, 0.5, 0.2}, font_color = {1, 1, 1}
+}
 
 dispositionControlWorldX = 35.0
 ingameDispositionControlWorldX = 80.0
@@ -919,17 +929,177 @@ generateMissionWorldZ = 0.0
 missionSlots = {
     {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  4.80}},
     {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  2.55}},
-    {role = "deployment", index = 1, deckVar = "deploymentDeck_GUID", position = {38.71, 0.92,  2.85}},
+    {role = "deployment", index = 1, deckVar = "deploymentDeck_GUID", position = {38.71, 0.92,  4.25}},
     {role = "deployment", index = 2, deckVar = "deploymentDeck_GUID", position = {38.71, 0.92, -0.10}},
-    {role = "deployment", index = 3, deckVar = "deploymentDeck_GUID", position = {38.71, 0.92, -3.05}},
+    {role = "deployment", index = 3, deckVar = "deploymentDeck_GUID", position = {38.71, 0.92, -4.45}},
     {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -2.55}},
     {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -4.80}},
 }
 
-randomDeploymentDecks = {
-    {guid = "23699d", name = "11e Deployment Zones"},
+deploymentMatrixDecks = {
+    ["5_5"] = {
+        guid = "6e0d78", name = "Take and Hold vs Take and Hold",
+        cards = {
+            {guid = "c1d1af", name = "TnH vs TnH 1 - TP"},
+            {guid = "1d5da4", name = "TnH vs TnH 2 - DoW"},
+            {guid = "63cf7e", name = "TnH vs TnH 3 - SnD"},
+        },
+    },
+    ["5_2"] = {
+        guid = "eae80b", name = "Take and Hold vs Priority Assets",
+        cards = {
+            {guid = "51d1d5", name = "TnH vs PA 1 - CoB"},
+            {guid = "2f68ac", name = "TnH vs PA 2 - HnA"},
+            {guid = "b579e0", name = "TnH vs PA 3 - DoW"},
+        },
+    },
+    ["2_5"] = {
+        guid = "eae80b", name = "Take and Hold vs Priority Assets",
+        cards = {
+            {guid = "51d1d5", name = "TnH vs PA 1 - CoB"},
+            {guid = "2f68ac", name = "TnH vs PA 2 - HnA"},
+            {guid = "b579e0", name = "TnH vs PA 3 - DoW"},
+        },
+    },
+    ["5_1"] = {
+        guid = "cfeba5", name = "Take and Hold vs Disruption",
+        cards = {
+            {guid = "4b68d2", name = "TnH vs Dis 1 - SE"},
+            {guid = "33ad91", name = "TnH vs Dis 2 - CoB"},
+            {guid = "b7a5fe", name = "TnH vs Dis 3 - HnA"},
+        },
+    },
+    ["1_5"] = {
+        guid = "cfeba5", name = "Take and Hold vs Disruption",
+        cards = {
+            {guid = "4b68d2", name = "TnH vs Dis 1 - SE"},
+            {guid = "33ad91", name = "TnH vs Dis 2 - CoB"},
+            {guid = "b7a5fe", name = "TnH vs Dis 3 - HnA"},
+        },
+    },
+    ["5_3"] = {
+        guid = "1e6711", name = "Take and Hold vs Purge the Foe",
+        cards = {
+            {guid = "4ed3a4", name = "TnH vs PtF 1 - SE"},
+            {guid = "e58b87", name = "TnH vs PtF 2 - SnD"},
+            {guid = "7f30d9", name = "TnH vs PtF 3 - HnA"},
+        },
+    },
+    ["3_5"] = {
+        guid = "1e6711", name = "Take and Hold vs Purge the Foe",
+        cards = {
+            {guid = "4ed3a4", name = "TnH vs PtF 1 - SE"},
+            {guid = "e58b87", name = "TnH vs PtF 2 - SnD"},
+            {guid = "7f30d9", name = "TnH vs PtF 3 - HnA"},
+        },
+    },
+    ["5_4"] = {
+        guid = "109a6b", name = "Take and Hold vs Reconnaissance",
+        cards = {
+            {guid = "a21b0a", name = "TnH vs Rec 1 - TP"},
+            {guid = "f0406d", name = "TnH vs Rec 2 - DoW"},
+            {guid = "e4072b", name = "TnH vs Rec 3 - SnD"},
+        },
+    },
+    ["4_5"] = {
+        guid = "109a6b", name = "Take and Hold vs Reconnaissance",
+        cards = {
+            {guid = "a21b0a", name = "TnH vs Rec 1 - TP"},
+            {guid = "f0406d", name = "TnH vs Rec 2 - DoW"},
+            {guid = "e4072b", name = "TnH vs Rec 3 - SnD"},
+        },
+    },
 }
 
+randomDeploymentDecks = {
+    {
+        guid = "6e0d78", name = "Take and Hold vs Take and Hold",
+        cards = {
+            {guid = "c1d1af", name = "TnH vs TnH 1 - TP"},
+            {guid = "1d5da4", name = "TnH vs TnH 2 - DoW"},
+            {guid = "63cf7e", name = "TnH vs TnH 3 - SnD"},
+        },
+    },
+    {
+        guid = "eae80b", name = "Take and Hold vs Priority Assets",
+        cards = {
+            {guid = "51d1d5", name = "TnH vs PA 1 - CoB"},
+            {guid = "2f68ac", name = "TnH vs PA 2 - HnA"},
+            {guid = "b579e0", name = "TnH vs PA 3 - DoW"},
+        },
+    },
+    {
+        guid = "cfeba5", name = "Take and Hold vs Disruption",
+        cards = {
+            {guid = "4b68d2", name = "TnH vs Dis 1 - SE"},
+            {guid = "33ad91", name = "TnH vs Dis 2 - CoB"},
+            {guid = "b7a5fe", name = "TnH vs Dis 3 - HnA"},
+        },
+    },
+    {
+        guid = "1e6711", name = "Take and Hold vs Purge the Foe",
+        cards = {
+            {guid = "4ed3a4", name = "TnH vs PtF 1 - SE"},
+            {guid = "e58b87", name = "TnH vs PtF 2 - SnD"},
+            {guid = "7f30d9", name = "TnH vs PtF 3 - HnA"},
+        },
+    },
+    {
+        guid = "109a6b", name = "Take and Hold vs Reconnaissance",
+        cards = {
+            {guid = "a21b0a", name = "TnH vs Rec 1 - TP"},
+            {guid = "f0406d", name = "TnH vs Rec 2 - DoW"},
+            {guid = "e4072b", name = "TnH vs Rec 3 - SnD"},
+        },
+    },
+    {
+        guid = "eaf123", name = "Hammer and Anvil Layout 1 Deck",
+        cards = {
+            {guid = "7acc14", name = "Hammer & Anvil 1 - Izar"},
+            {guid = "5dfa4b", name = "Hammer & Anvil 1 - Team Belgium"},
+            {guid = "379a13", name = "Hammer & Anvil 1 - LCT"},
+            {guid = "37c795", name = "Hammer & Anvil 1 - BTTF"},
+        },
+    },
+    {
+        guid = "d90d6b", name = "Hammer & Anvil Layout 2 Deck",
+        cards = {
+            {guid = "44fbfa", name = "Hammer & Anvil 2 - Team Belgium"},
+            {guid = "d2c833", name = "Hammer & Anvil 2 - LCT"},
+        },
+    },
+    {
+        guid = "b5a38c", name = "Crucible Layout 1 Deck",
+        cards = {
+            {guid = "0b5585", name = "Crucible 1 - Izar"},
+            {guid = "b1f36c", name = "Crucible 1 - LCT"},
+            {guid = "ea3734", name = "Crucible 1 - Team Belgium"},
+        },
+    },
+    {
+        guid = "6e78c9", name = "Crucible Layout 2 Deck",
+        cards = {
+            {guid = "6b4fac", name = "Crucible 2 - BTTF"},
+            {guid = "818419", name = "crucible 2"},
+            {guid = "cdb74b", name = "Crucible 2 - LCT"},
+        },
+    },
+    {
+        guid = "44b223", name = "Search & Destroy Layout 1 Deck",
+        cards = {
+            {guid = "ae7e54", name = "Search & Destroy 1 - Team Belgium"},
+            {guid = "6a044f", name = "Search & Destroy 1 -BTTF"},
+            {guid = "ce4ea2", name = "Search & Destroy 1 - LCT"},
+        },
+    },
+    {
+        guid = "5bea3b", name = "Search & Destroy Layout 2 Deck",
+        cards = {
+            {guid = "c1d6c9", name = "Search & Destroy 2 - LCT"},
+            {guid = "810a07", name = "Search & Destroy 2 - Team Belgium"},
+        },
+    },
+}
 deploymentCardSourceDeckByGuid = {}
 deploymentCardSourceDeckByName = {}
 
@@ -938,9 +1108,9 @@ deploymentLockButtonWorldX = 36.65
 deploymentLockButtonWorldY = 1.00
 deploymentLockButtonOffsetX = -1.60
 deploymentLockButtonWorldZ = {[1] = 3.00, [2] = 0.10, [3] = -2.80}
-deploymentRandomPickButtonWorldX = 40.77
+deploymentRandomPickButtonWorldX = 38.71
 deploymentRandomPickButtonWorldY = 1.00
-deploymentRandomPickButtonWorldZ = 0.10
+deploymentRandomPickButtonWorldZ = -0.10
 
 function writeGenerateMissionButton()
     local center = self.positionToLocal({generateMissionWorldX, generateMissionWorldY, generateMissionWorldZ})
@@ -951,7 +1121,6 @@ function writeGenerateMissionButton()
         color = {0, 0, 0}, font_color = {1, 1, 1},
         tooltip = "Deal each player's primary mission for the current dispositions",
     })
-    writeDeploymentLockButtons()
     writeDeploymentRandomPickButton()
 end
 
@@ -960,7 +1129,7 @@ function writeDeploymentRandomPickButton()
     self.createButton({
         label = "Random Pick", click_function = "randomPickDeployment", function_owner = self,
         position = {btn.x, btn.y, btn.z}, rotation = {0, 0, 0},
-        height = 150, width = 1208, font_size = 109,
+        height = 300, width = 2416, font_size = 218,
         color = {1, 0.86, 0.05}, font_color = {0, 0, 0},
         tooltip = "Randomly choose one of the deployment cards",
     })
@@ -1052,6 +1221,16 @@ end
 
 function cacheDeploymentDeckContents()
     for _, deckInfo in ipairs(randomDeploymentDecks) do
+        for _, entry in ipairs(deckInfo.cards or {}) do
+            if entry.guid then
+                deploymentCardSourceDeckByGuid[entry.guid] = deckInfo.guid
+            end
+            local name = entry.nickname or entry.name
+            if name and name ~= "" then
+                deploymentCardSourceDeckByName[normalizeMissionName(name)] = deckInfo.guid
+            end
+        end
+
         local deck = getObjectFromGUID(deckInfo.guid)
         if deck and deck.getObjects then
             for _, entry in ipairs(deck.getObjects()) do
@@ -1104,6 +1283,79 @@ function returnDeploymentCardsFromSlot(slot)
     for _, obj in ipairs(getObjectsInMissionSlot(slot, nil)) do
         returnDeploymentCardToSourceDeck(obj)
     end
+end
+
+function selectedDeploymentCardGuidSet(choices)
+    local selected = {}
+    for _, choice in ipairs(choices or {}) do
+        if choice.guid then
+            selected[choice.guid] = true
+        end
+    end
+    return selected
+end
+
+function deploymentDeckHomeByGuid(deckGuid)
+    for _, entry in ipairs(GAME_MODE_OBJECTS) do
+        if entry.guid == deckGuid then
+            return entry
+        end
+    end
+    for _, entry in ipairs(STARTUP_MAP_CARDS) do
+        if entry.guid == deckGuid then
+            return entry
+        end
+    end
+    return nil
+end
+
+function returnDeploymentCardHome(card, returnCounts)
+    if not card then return end
+    cacheDeploymentDeckContents()
+
+    local cardGuid = card.getGUID and card.getGUID() or nil
+    local sourceGuid = cardGuid and deploymentCardSourceDeckByGuid[cardGuid] or nil
+
+    card.locked = false
+    card.tooltip = true
+    card.interactable = true
+
+    local home = sourceGuid and deploymentDeckHomeByGuid(sourceGuid) or nil
+    if home then
+        local count = returnCounts[sourceGuid] or 0
+        returnCounts[sourceGuid] = count + 1
+        card.setPosition({home.pos[1] + (0.38 * (count + 1)), home.pos[2], home.pos[3] + (0.28 * (count + 1))})
+        card.setRotation(home.rot or {0, 180, 0})
+        card.setLock(false)
+    else
+        returnDeploymentCardToSourceDeck(card)
+    end
+end
+
+function clearDeploymentSlotForChoices(slot, selectedGuids, returnCounts)
+    for _, obj in ipairs(getObjectsInMissionSlot(slot, nil)) do
+        local guid = obj.getGUID and obj.getGUID() or nil
+        if guid and selectedGuids[guid] then
+            obj.locked = false
+            obj.tooltip = true
+            obj.interactable = true
+        elseif guid and deploymentCardSourceDeckByGuid[guid] then
+            returnDeploymentCardHome(obj, returnCounts)
+        else
+            returnDeploymentCardToSourceDeck(obj)
+        end
+    end
+end
+
+function clearDeploymentSlotsForChoices(choices)
+    local selectedGuids = selectedDeploymentCardGuidSet(choices)
+    local returnCounts = {}
+    for _, slot in ipairs(missionSlots) do
+        if slot.role == "deployment" then
+            clearDeploymentSlotForChoices(slot, selectedGuids, returnCounts)
+        end
+    end
+    clearDeploymentSlotForChoices({position = deploymentLockTargetPosition}, selectedGuids, returnCounts)
 end
 
 function returnCardsInDeploymentSlotsToDeck(includeLockedIn)
@@ -1167,7 +1419,17 @@ function randomPickDeployment()
         return
     end
 
-    moveDeploymentCardToLockTarget(available[math.random(#available)])
+    local keepIndex = math.random(#available)
+    local returnCounts = {}
+    for i, card in ipairs(available) do
+        if i == keepIndex then
+            card.tooltip = true
+            card.interactable = true
+            card.locked = true
+        else
+            returnDeploymentCardHome(card, returnCounts)
+        end
+    end
 end
 
 function lockInDeployment1() lockInDeploymentSlot(1) end
@@ -1251,8 +1513,7 @@ function getCurrentMatchup()
 end
 
 function getCurrentDeploymentChoices(key)
-    local deployments = Global.getTable("missionDeploymentMatchups") or {}
-    return deployments[key] or {}
+    return deploymentMatrixDecks[key]
 end
 
 function copyRandomDeploymentDecks()
@@ -1263,6 +1524,48 @@ function copyRandomDeploymentDecks()
     return decks
 end
 
+function chooseDeploymentCardsFromDeckInfo(deckInfo, count)
+    cacheDeploymentDeckContents()
+    local choices = {}
+    local deck = deckInfo and getObjectFromGUID(deckInfo.guid) or nil
+    local cards = deckInfo and deckInfo.cards or nil
+
+    if not cards then
+        cards = deck and deck.getObjects and deck.getObjects() or {}
+    end
+
+    for _, card in ipairs(cards) do
+        if #choices >= count then
+            break
+        end
+
+        local name = card.nickname or card.name or deckInfo.name
+        deploymentCardSourceDeckByGuid[card.guid] = deckInfo.guid
+        if name and name ~= "" then
+            deploymentCardSourceDeckByName[normalizeMissionName(name)] = deckInfo.guid
+        end
+        table.insert(choices, {
+            deck = deck,
+            deckGuid = deckInfo.guid,
+            deckName = deckInfo.name,
+            guid = card.guid,
+            name = name,
+        })
+    end
+
+    return choices
+end
+
+function chooseDeploymentCardsForMatchup(key, count)
+    local deckInfo = getCurrentDeploymentChoices(key)
+    if deckInfo then
+        return chooseDeploymentCardsFromDeckInfo(deckInfo, count), false
+    end
+
+    broadcastToAll("Missing dispotition data, using placeholder missions", "Yellow")
+    return chooseRandomDeploymentCards(count), true
+end
+
 function chooseRandomDeploymentCards(count)
     cacheDeploymentDeckContents()
     local choices = {}
@@ -1270,7 +1573,7 @@ function chooseRandomDeploymentCards(count)
 
     for _, deckInfo in ipairs(randomDeploymentDecks) do
         local deck = getObjectFromGUID(deckInfo.guid)
-        local cards = deck and deck.getObjects and deck.getObjects() or {}
+        local cards = deckInfo.cards or (deck and deck.getObjects and deck.getObjects() or {})
         for _, card in ipairs(cards) do
             table.insert(availableCards, {deck = deck, deckInfo = deckInfo, card = card})
         end
@@ -1299,46 +1602,134 @@ function chooseRandomDeploymentCards(count)
     return choices
 end
 
--- Deal one card per frame so repeated takeObject calls on the same deck don't
--- collide within a single frame. guid == nil means "draw the top card".
-function dealMissionCards(placements, i)
-    if i > #placements then return end
-    local p = placements[i]
-    if p.deck then
+function finishPlacedMissionCard(card, placement)
+    if not card then return end
+
+    if placement.sourceDeckGuid then
+        rememberDeploymentCardSource(card, placement.sourceDeckGuid)
+    end
+
+    if placement.flip == false and card.is_face_down then
+        card.flip()
+    end
+
+    card.tooltip = true
+    card.interactable = true
+
+    Wait.frames(function()
+        if card then card.locked = placement.lock ~= false end
+    end, 1)
+end
+
+function moveExistingMissionCard(card, placement)
+    card.locked = false
+    card.setPositionSmooth(placement.position, false, true)
+    finishPlacedMissionCard(card, placement)
+end
+
+function releaseGenerateMissionCooldown()
+    Wait.time(function() generateMissionCooldownActive = false end, generateMissionCooldownSeconds)
+end
+
+-- Locate a card by GUID whether it is loose in the world or has been merged
+-- back into a deck. Returns (looseCard, containerDeck):
+--   looseCard ~= nil  -> the card is loose; move it directly.
+--   containerDeck ~= nil -> the card lives inside that deck; take it by GUID.
+-- Both nil means the GUID is gone entirely. This is what keeps Generate Mission
+-- working after Random Pick: returned cards that TTS recombines into a new deck
+-- (with a fresh deck GUID) become invisible to getObjectFromGUID, so we have to
+-- scan deck contents to find them again.
+function findDeploymentCard(guid)
+    if not guid then return nil, nil end
+    local obj = getObjectFromGUID(guid)
+    if obj then return obj, nil end
+    for _, candidate in ipairs(getAllObjects()) do
+        if candidate.tag == "Deck" and candidate.getObjects then
+            for _, entry in ipairs(candidate.getObjects()) do
+                if entry.guid == guid then
+                    return nil, candidate
+                end
+            end
+        end
+    end
+    return nil, nil
+end
+
+-- Place a single mission card described by a placement. guid == nil means
+-- "draw the top card from p.deck" (used for primary slots with no exact card).
+function placeMissionCardFromGuid(p)
+    local loose, container = nil, nil
+    if p.guid then
+        loose, container = findDeploymentCard(p.guid)
+    end
+
+    -- Already in the world (loose card, or a tiny deck TTS collapsed into its
+    -- last card): just move it.
+    if loose then
+        moveExistingMissionCard(loose, p)
+        return
+    end
+    if not container and p.deck and p.deck.tag == "Card" then
+        moveExistingMissionCard(p.deck, p)
+        return
+    end
+
+    -- Otherwise take it out of whichever deck holds it: the deck we found it in
+    -- (preferred, survives recombination) or the originally chosen deck.
+    local sourceDeck = container or p.deck
+    if sourceDeck and sourceDeck.takeObject then
         local params = {
             position = p.position,
-            flip = true,
+            flip = p.flip ~= false,
             smooth = true,
             callback_function = function(card)
-                if p.sourceDeckGuid then
-                    rememberDeploymentCardSource(card, p.sourceDeckGuid)
-                end
-                Wait.frames(function()
-                    if card then card.locked = true end
-                end, 1)
+                finishPlacedMissionCard(card, p)
             end,
         }
         if p.guid then params.guid = p.guid end
-        pcall(function() p.deck.takeObject(params) end)
+        pcall(function() sourceDeck.takeObject(params) end)
+    end
+end
+
+-- Deal one card per frame so repeated takeObject calls on the same deck don't
+-- collide within a single frame. Each placement is wrapped in pcall so a single
+-- failure can never strand the cooldown: we always advance to the next card and
+-- the base case always releases the cooldown.
+function dealMissionCards(placements, i)
+    if i > #placements then
+        releaseGenerateMissionCooldown()
+        return
+    end
+    local ok, err = pcall(function() placeMissionCardFromGuid(placements[i]) end)
+    if not ok then
+        print("dealMissionCards placement " .. tostring(i) .. " failed: " .. tostring(err))
     end
     Wait.frames(function() dealMissionCards(placements, i + 1) end, 1)
 end
 
+generateMissionCooldownActive = false
+
+generateMissionCooldownSeconds = 0.6
+
 function generateMission()
+    if generateMissionCooldownActive then
+        return
+    end
+    generateMissionCooldownActive = true
+
+    local setupOk, setupErr = pcall(function()
+
     local placeholder = Global.getVar("PLACEHOLDER_MISSION") or "Blank Primary"
     local matchup, key = getCurrentMatchup()
-    if not matchup then
-        broadcastToAll("No mission matchup configured for " .. key .. " - dealing blanks.", {1, 0.6, 0.2})
-    end
     local redMission = (matchup and matchup.red) or placeholder
     local blueMission = (matchup and matchup.blue) or placeholder
 
-    -- 1. Recall any cards in the slots back into their source decks.
+    -- 1. Recall primary mission cards. Deployment cards are cleared after
+    -- the next deployment choices are known, because their tiny source decks
+    -- can collapse after a full 3-card draw.
     local decksByVar = {}
     for _, slot in ipairs(missionSlots) do
-        if slot.role == "deployment" then
-            returnDeploymentCardsFromSlot(slot)
-        else
+        if slot.role ~= "deployment" then
             local zoneGuid = slot.zoneVar and Global.getVar(slot.zoneVar) or nil
             local zone = zoneGuid and getObjectFromGUID(zoneGuid) or nil
             local deck = decksByVar[slot.deckVar] or getObjectFromGUID(Global.getVar(slot.deckVar))
@@ -1354,45 +1745,46 @@ function generateMission()
         end
     end
 
-    returnDeploymentCardsFromSlot({position = deploymentLockTargetPosition})
-
     Wait.frames(function()
-        -- 2. Resolve each player's primary mission cards by name.
-        local redDeck = decksByVar["redPrimaryDeck_GUID"] or getObjectFromGUID(Global.getVar("redPrimaryDeck_GUID"))
-        local blueDeck = decksByVar["bluePrimaryDeck_GUID"] or getObjectFromGUID(Global.getVar("bluePrimaryDeck_GUID"))
-        local redGuids = resolvePrimaryCardGuids(redDeck, redMission)
-        local blueGuids = resolvePrimaryCardGuids(blueDeck, blueMission)
-        local deploymentChoices = chooseRandomDeploymentCards(3)
-        local deploymentNames = {}
-        for _, choice in ipairs(deploymentChoices) do
-            table.insert(deploymentNames, choice.name or choice.deckName or "Unknown")
-        end
+        local ok, err = pcall(function()
+            -- 2. Resolve each player's primary mission cards by name.
+            local redDeck = decksByVar["redPrimaryDeck_GUID"] or getObjectFromGUID(Global.getVar("redPrimaryDeck_GUID"))
+            local blueDeck = decksByVar["bluePrimaryDeck_GUID"] or getObjectFromGUID(Global.getVar("bluePrimaryDeck_GUID"))
+            local redGuids = resolvePrimaryCardGuids(redDeck, redMission)
+            local blueGuids = resolvePrimaryCardGuids(blueDeck, blueMission)
+            local deploymentChoices = chooseDeploymentCardsForMatchup(key, 3)
+            clearDeploymentSlotsForChoices(deploymentChoices)
+            -- 3. Build the ordered placement list.
 
-        -- Compact mission summary for chat and the screen notification.
-        broadcastToAll(
-            "Red Mission: " .. redMission .. ", Blue Mission: " .. blueMission .. ", Deployment Cards: " .. table.concat(deploymentNames, ", "),
-            "Yellow"
-        )
-
-        -- 3. Build the ordered placement list.
-
-        local placements = {}
-        for _, slot in ipairs(missionSlots) do
-            if slot.role == "primary" then
-                local guids = (slot.player == "Red") and redGuids or blueGuids
-                local deck = (slot.player == "Red") and redDeck or blueDeck
-                local info = guids[slot.index]
-                table.insert(placements, {deck = deck, guid = info and info.guid or nil, position = slot.position})
-            elseif slot.role == "deployment" then
-                local info = deploymentChoices[slot.index]
-                if info and info.guid and info.deck then
-                    table.insert(placements, {deck = info.deck, guid = info.guid, position = slot.position, sourceDeckGuid = info.deckGuid})
+            local placements = {}
+            for _, slot in ipairs(missionSlots) do
+                if slot.role == "primary" then
+                    local guids = (slot.player == "Red") and redGuids or blueGuids
+                    local deck = (slot.player == "Red") and redDeck or blueDeck
+                    local info = guids[slot.index]
+                    table.insert(placements, {deck = deck, guid = info and info.guid or nil, position = slot.position})
+                elseif slot.role == "deployment" then
+                    local info = deploymentChoices[slot.index]
+                    if info and info.guid then
+                        table.insert(placements, {deck = info.deck, guid = info.guid, position = slot.position, sourceDeckGuid = info.deckGuid, flip = false, lock = true})
+                    end
                 end
             end
+
+            dealMissionCards(placements, 1)
+        end)
+        if not ok then
+            print("Generate Mission failed: " .. tostring(err))
+            releaseGenerateMissionCooldown()
         end
 
-        dealMissionCards(placements, 1)
     end, 2)
+
+    end)
+    if not setupOk then
+        print("Generate Mission setup failed: " .. tostring(setupErr))
+        releaseGenerateMissionCooldown()
+    end
 end
 
 function drawDeployZone(zone)
@@ -2145,6 +2537,123 @@ nineFromDeployBtn = {
 
 defaultObjectivesHeight=1.0
 
+-- PROTOTYPE: place objective markers on top of any object carrying an objective tag.
+-- Each tag maps to a marker template GUID and the state that template should be set to.
+--   ce6213: state 1 = central/triangle/neutral marker
+--   8272eb: state 1 = blue home, state 2 = red home
+objectiveTokenYOffset = 0.2  -- extra lift above the tagged object's top
+objectiveMinY = 1.5          -- floor so a marker never ends up under the table surface
+objectiveDebug = true        -- prints computed spawn positions to the console
+-- rotY (optional) overrides only the Y rotation of the placed marker; the
+-- model's existing X/Z tilt is preserved. Omit it to keep the template default.
+objectiveMarkerByTag = {
+    obj_central   = {guid = "ce6213", state = 1},
+    obj_triangle  = {guid = "ce6213", state = 1},
+    obj_neutral   = {guid = "ce6213", state = 1},
+    obj_home_blue = {guid = "8272eb", state = 1, rotY = 270},
+    obj_home_red  = {guid = "8272eb", state = 2, rotY = 90},
+}
+-- Stable iteration order so an object matching multiple tags resolves deterministically.
+objectiveTagOrder = {"obj_central", "obj_triangle", "obj_neutral", "obj_home_blue", "obj_home_red"}
+
+function placeObjectives()
+    destroyAllObjectives()
+
+    -- Resolve each candidate object to its first-matching objective tag.
+    local triangleTargets = {}
+    local placements = {}  -- {target = obj, tag = "..."}
+    for _, target in ipairs(getAllObjects()) do
+        if target.getGMNotes() ~= "objective" then
+            for _, tag in ipairs(objectiveTagOrder) do
+                if target.hasTag(tag) then
+                    if tag == "obj_triangle" then
+                        table.insert(triangleTargets, target)
+                    else
+                        table.insert(placements, {target = target, tag = tag})
+                    end
+                    break  -- one marker per object
+                end
+            end
+        end
+    end
+
+    local placed = 0
+
+    -- Edge case: exactly two obj_triangle objects collapse to a single neutral
+    -- marker placed at the midpoint between where the two markers would have gone.
+    -- Any other count (0, 1, 3+) falls back to one marker per object.
+    if #triangleTargets == 2 then
+        local p1 = objectiveMarkerPosition(triangleTargets[1])
+        local p2 = objectiveMarkerPosition(triangleTargets[2])
+        local mid = {x = (p1.x + p2.x) / 2, y = math.max((p1.y + p2.y) / 2, objectiveMinY), z = (p1.z + p2.z) / 2}
+        local m = objectiveMarkerByTag.obj_neutral
+        if objectiveDebug then
+            print(string.format("[objectives] 2x obj_triangle -> single neutral marker at midpoint (%.2f, %.2f, %.2f)", mid.x, mid.y, mid.z))
+        end
+        if spawnObjectiveMarkerAt(m.guid, m.state, mid, m.rotY) then
+            placed = placed + 1
+        end
+    else
+        for _, target in ipairs(triangleTargets) do
+            table.insert(placements, {target = target, tag = "obj_triangle"})
+        end
+    end
+
+    for _, pl in ipairs(placements) do
+        local marker = objectiveMarkerByTag[pl.tag]
+        if spawnObjectiveMarkerAt(marker.guid, marker.state, objectiveMarkerPosition(pl.target), marker.rotY) then
+            placed = placed + 1
+        end
+    end
+
+    broadcastToAll(placed .. " objective(s) placed", {0.25, 1, 0.25})
+end
+
+-- Position a marker should sit at for a given target: horizontal center of the
+-- target's bounds, on top of it, floored so it never ends up under the table.
+function objectiveMarkerPosition(target)
+    local b = target.getBounds()
+    return {
+        x = b.center.x,
+        y = math.max(b.center.y + b.size.y / 2 + objectiveTokenYOffset, objectiveMinY),
+        z = b.center.z,
+    }
+end
+
+-- Clones the template at pos, sets it to the requested state, then locks/tags
+-- the resulting object. setState swaps in a different object (with its own
+-- GMNotes and lock), so the final transform/lock/tag happen AFTER it settles.
+function spawnObjectiveMarkerAt(templateGUID, state, pos, rotY)
+    local template = getObjectFromGUID(templateGUID)
+    if not template then
+        broadcastToAll("Objective template (" .. templateGUID .. ") not found.", {1, 0.25, 0.25})
+        return false
+    end
+
+    local copy = template.clone({position = pos})
+    Wait.frames(function()
+        local marker = copy
+        if state and marker.getStateId() ~= state then
+            marker = marker.setState(state)
+        end
+        Wait.frames(function()
+            marker.setPositionSmooth(pos, false, true)
+            if rotY then
+                local r = marker.getRotation()
+                marker.setRotation({r.x, rotY, r.z})
+            end
+            marker.setLock(true)
+            marker.setGMNotes("objective")
+            if objectiveDebug then
+                local p = marker.getPosition()
+                print(string.format("[objectives] placed %s (template %s state %s) final pos (%.2f, %.2f, %.2f)",
+                    marker.getGUID(), templateGUID, tostring(state), p.x, p.y, p.z))
+            end
+        end, 2)
+    end, 2)
+    return true
+end
+
 function destroyAllObjectives()
     for i, obj in ipairs(getAllObjects()) do
         if obj.getGMNotes() == "objective" then
@@ -2359,6 +2868,7 @@ function writeDeployPickerMenu()
     self.createButton(deployBtn)
     self.createButton(deployUpBtn)
     self.createButton(deployDownBtn)
+    self.createButton(objectivesBtn)
 end
 
 function writeDeployMenu()
