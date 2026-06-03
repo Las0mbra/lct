@@ -35919,7 +35919,7 @@
         "scaleY": 1.0,
         "scaleZ": 0.400000453
       },
-      "Nickname": "LOS Marker",
+      "Nickname": "Blue LOS Marker",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
@@ -35985,7 +35985,7 @@
         "scaleY": 1.0,
         "scaleZ": 0.400000453
       },
-      "Nickname": "LOS Marker",
+      "Nickname": "Red LOS Marker",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
@@ -36165,7 +36165,7 @@
         "scaleY": 1.0,
         "scaleZ": 0.400000453
       },
-      "Nickname": "Blue LOS Marker by Kvothe",
+      "Nickname": "Blue LOS Marker",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
@@ -36231,7 +36231,7 @@
         "scaleY": 1.0,
         "scaleZ": 0.400000453
       },
-      "Nickname": "LOS Marker",
+      "Nickname": "Red LOS Marker",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
