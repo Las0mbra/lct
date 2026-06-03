@@ -4,8 +4,8 @@
 mat_GUID         = Global.getVar("mat_GUID")
 deployLineHeight = 2.1
 sizeMulti        = 36
-local onState = 'https://steamusercontent-a.akamaihd.net/ugc/11888931357205845979/07DA5D6924B1019561DD4092059BB77E610FCE97/'
-local offState = 'https://steamusercontent-a.akamaihd.net/ugc/12421361260522229723/78E272C33806C96301F5535D72EB4445E06E586F/'
+local visibleState = 'https://steamusercontent-a.akamaihd.net/ugc/11888931357205845979/07DA5D6924B1019561DD4092059BB77E610FCE97/'
+local hiddenState = 'https://steamusercontent-a.akamaihd.net/ugc/12421361260522229723/78E272C33806C96301F5535D72EB4445E06E586F/'
 
 function onLoad(saved_data)
     self.createButton({
@@ -20,18 +20,16 @@ function onLoad(saved_data)
 end
 
 function toggleQuarters()
-    local state = Global.getVar("interactiveButtonDeploymentZones")
     local manager = getObjectFromGUID("738804")
     manager.call("showHideIngameDeployment")
-    if state == 1 then
-        params = {
-            image = onState,
-        }
-    else
-        params = {
-            image = offState,
-        }
-    end
+    syncDeploymentZoneButtonImage()
+end
+
+function syncDeploymentZoneButtonImage()
+    local state = Global.getVar("interactiveButtonDeploymentZones")
+    local params = {
+        image = state == 1 and hiddenState or visibleState,
+    }
     self.setCustomObject(params)
     self.reload()
 end

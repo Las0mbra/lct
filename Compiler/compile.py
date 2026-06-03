@@ -24,6 +24,7 @@ JSON_NAME  = "ftc_base"
 XML_NAME   = "ftc_base_ui"
 CHANGELOG  = SCRIPT_DIR.parent / "CHANGELOG.md"
 GLOBAL_LUA = "global.ttslua"
+DISABLED_LUA = {"statsHelperv2.ttslua"}
 
 REGEX_LUA_GUID       = re.compile(r'([0-9a-f]{6})')
 REGEX_JSON_GUID      = re.compile(r'"GUID": "(.*)"')
@@ -129,7 +130,8 @@ def collect_lua_files() -> list:
     """Return [global.ttslua, ...all other .ttslua files recursively sorted]."""
     global_file = PATH_LUA / GLOBAL_LUA
     others = sorted(
-        f for f in PATH_LUA.rglob("*.ttslua") if f.name != GLOBAL_LUA
+        f for f in PATH_LUA.rglob("*.ttslua")
+        if f.name != GLOBAL_LUA and f.name not in DISABLED_LUA
     )
     return [global_file] + others
 

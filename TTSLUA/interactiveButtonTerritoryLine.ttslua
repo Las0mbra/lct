@@ -5,8 +5,8 @@ mat_GUID         = Global.getVar("mat_GUID")
 deployLineHeight = 2.1
 sizeMulti        = 36
 
-local onState  = 'https://steamusercontent-a.akamaihd.net/ugc/11257198619749100462/0D359C525B1F77119CA17EB4307B3882E6805C9F/'
-local offState = 'https://steamusercontent-a.akamaihd.net/ugc/13483922162153684809/EC47EBA4101B6D3127E3C94509BE9C01A426CC08/'
+local noLineState = 'https://steamusercontent-a.akamaihd.net/ugc/11257198619749100462/0D359C525B1F77119CA17EB4307B3882E6805C9F/'
+local lineOnState = 'https://steamusercontent-a.akamaihd.net/ugc/13483922162153684809/EC47EBA4101B6D3127E3C94509BE9C01A426CC08/'
 
 function onLoad(saved_data)
     self.createButton({
@@ -21,18 +21,16 @@ function onLoad(saved_data)
 end
 
 function toggleTerritoryLine()
-    local state = Global.getVar("interactiveButtonTerritoryLine")
     local manager = getObjectFromGUID("738804")
     manager.call("showHideTerritoryLine")
-    if state == 1 then
-        params = {
-            image = onState,
-        }
-    else
-        params = {
-            image = offState,
-        }
-    end
+    syncTerritoryLineButtonImage()
+end
+
+function syncTerritoryLineButtonImage()
+    local state = Global.getVar("interactiveButtonTerritoryLine")
+    local params = {
+        image = state == 1 and noLineState or lineOnState,
+    }
     self.setCustomObject(params)
     self.reload()
 end
