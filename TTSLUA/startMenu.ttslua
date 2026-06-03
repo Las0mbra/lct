@@ -2501,6 +2501,7 @@ function startGame(obj, player, alt)
 
     Global.call("recordPlayers")
     inGame = true
+    hideDeploymentZonesForGameStart()
 
     local scoresheet = getObjectFromGUID(Global.getVar("scoresheet_GUID"))
     scoresheet.call("startGame")
@@ -2740,6 +2741,16 @@ function togglePlyr()
         first = "Red"
     end
     writeMenus()
+end
+
+function hideDeploymentZonesForGameStart()
+    Global.setVar("interactiveButtonDeploymentZones", 1)
+    destroyDeployZones()
+
+    local button = getObjectFromGUID("8aba11")
+    if button then
+        button.call("syncDeploymentZoneButtonImage")
+    end
 end
 
 function showHideIngameDeployment()
