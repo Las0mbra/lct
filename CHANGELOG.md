@@ -13,6 +13,12 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.5.2
+- QOL: Deployment zones are now disabled when game starts. 
+- Fix: Territory button wasn't synced before.
+- Fix: Reverted to old stats helper from Ricu
+- Fix: Fixed a bug with LOS markers that weren't able to separate markers from different players.
+
 ## v1.5.1 
 - TOOL ADDITION :Added LOS markers by the amazing Kvothe! 
 - FEATURE: There is a button next to area denial that now handles the new show territory areas, it's based on current Deployment zone so it wont work before choosing one 
