@@ -34091,7 +34091,7 @@
       "GUID": "eaf123",
       "Name": "Deck",
       "Transform": {
-        "posX": 5.0,
+        "posX": -15,
         "posY": -5.0,
         "posZ": 14.5,
         "rotX": 0,
@@ -34415,7 +34415,7 @@
       "GUID": "d90d6b",
       "Name": "Deck",
       "Transform": {
-        "posX": 5.0,
+        "posX": -15,
         "posY": -5.0,
         "posZ": 9.5,
         "rotX": 0,
@@ -34603,7 +34603,7 @@
       "GUID": "b5a38c",
       "Name": "Deck",
       "Transform": {
-        "posX": 5.0,
+        "posX": -15,
         "posY": -5.0,
         "posZ": 2.5,
         "rotX": 0,
@@ -34859,7 +34859,7 @@
       "GUID": "6e78c9",
       "Name": "Deck",
       "Transform": {
-        "posX": 1.5,
+        "posX": -18.5,
         "posY": -5.0,
         "posZ": 1.5,
         "rotX": 0,
@@ -35115,7 +35115,7 @@
       "GUID": "44b223",
       "Name": "Deck",
       "Transform": {
-        "posX": 5.0,
+        "posX": -15,
         "posY": -5.0,
         "posZ": -9.5,
         "rotX": 0,
@@ -35371,7 +35371,7 @@
       "GUID": "5bea3b",
       "Name": "Deck",
       "Transform": {
-        "posX": 5.0,
+        "posX": -15,
         "posY": -5.0,
         "posZ": -14.5,
         "rotX": 0,
@@ -35559,7 +35559,7 @@
       "GUID": "6713e1",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -4.39290047,
+        "posX": -24.39290047,
         "posY": -5.0,
         "posZ": 11.8957014,
         "rotX": 5.37794733e-08,
@@ -35617,7 +35617,7 @@
       "GUID": "fc2507",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -4.3929,
+        "posX": -24.3929,
         "posY": -5.0,
         "posZ": 0.1457061,
         "rotX": 5.371441e-08,
@@ -35675,7 +35675,7 @@
       "GUID": "a982e3",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -4.39290047,
+        "posX": -24.39290047,
         "posY": -5.0,
         "posZ": -11.6042929,
         "rotX": -3.58935637e-07,
@@ -36041,7 +36041,7 @@
       "GUID": "90f9d5",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 10.0,
+        "posX": -10,
         "posY": -5.0,
         "posZ": -12.0,
         "rotX": -2.44741951e-08,
@@ -36098,7 +36098,7 @@
       "GUID": "9708e1",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 10.0,
+        "posX": -10,
         "posY": -5.0,
         "posZ": 12.0,
         "rotX": 8.96026862e-08,
@@ -36287,7 +36287,7 @@
       "GUID": "e25144",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 10.0,
+        "posX": -10,
         "posY": -5.0,
         "posZ": 0.0,
         "rotX": -2.44741951e-08,
