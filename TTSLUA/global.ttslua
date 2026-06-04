@@ -795,6 +795,9 @@ MISSION_PACK_PARIAH_NEXUS = 1
 GAME_VERSION = "DEV"   -- @@LCT_VERSION@@
 GAME_PATCH = "DEV"     -- @@LCT_PATCH@@
 GAME_CHANGELOG = {}    -- @@LCT_CHANGELOG@@
+-- Build-wide debug switch. The compiler stamps this true for `--test` builds and
+-- false for `--release`. Other object scripts read it with Global.getVar("DEBUG").
+DEBUG = true   -- @@LCT_DEBUG@@
 LOCKED_IN_SECONDARIES = 0
 packSelected = nil
 missionPackData = {

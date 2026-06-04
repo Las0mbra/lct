@@ -159,12 +159,13 @@ def parse_changelog(path: Path):
     return version, notes
 
 
-def stamp_global(lua_text: str, version: str, patch: str, notes: list) -> str:
-    """Rewrite the GAME_VERSION / GAME_PATCH / GAME_CHANGELOG markers in global.ttslua.
+def stamp_global(lua_text: str, version: str, patch: str, notes: list, debug: bool) -> str:
+    """Rewrite the GAME_VERSION / GAME_PATCH / GAME_CHANGELOG / DEBUG markers in global.ttslua.
 
     version : build stamp ("test" or the release version) — drives chat + save name.
     patch   : latest CHANGELOG version — shown on the splash overlay.
     notes   : latest CHANGELOG bullets — shown on the splash overlay.
+    debug   : build-wide debug switch — true for --test, false otherwise.
     """
     note_literal = "{" + ", ".join(json.dumps(n) for n in notes) + "}"
     replacements = [
@@ -174,6 +175,8 @@ def stamp_global(lua_text: str, version: str, patch: str, notes: list) -> str:
          f"GAME_PATCH = {json.dumps(patch or 'DEV')}   -- @@LCT_PATCH@@"),
         (r"^.*--\s*@@LCT_CHANGELOG@@.*$",
          f"GAME_CHANGELOG = {note_literal}   -- @@LCT_CHANGELOG@@"),
+        (r"^.*--\s*@@LCT_DEBUG@@.*$",
+         f"DEBUG = {'true' if debug else 'false'}   -- @@LCT_DEBUG@@"),
     ]
     for pattern, repl in replacements:
         lua_text, count = re.subn(pattern, repl, lua_text, count=1, flags=re.M)
@@ -284,9 +287,11 @@ def main():
     # --- Inject global.ttslua into the first LuaScript slot ---
     # Stamp the player-facing version + patch notes into the Global script as it
     # is injected; the source file on disk is left untouched.
+    # Debug build switch: on for --test, off for --release and prompted builds.
+    debug_enabled = args.test
     print("Injecting global.ttslua... ", end="")
     global_text = stamp_global(
-        lua_files[0].read_text(encoding="utf-8"), version, patch, changelog_notes
+        lua_files[0].read_text(encoding="utf-8"), version, patch, changelog_notes, debug_enabled
     )
     inject_lua_into_line(json_lines, json_lua_line_idxs[0], global_text)
     print("Done.")

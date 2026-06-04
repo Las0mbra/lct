@@ -414,11 +414,11 @@ STARTUP_MAP_CARDS = {
 }
 
 GAME_MODE_OBJECTS = {
-    {guid = "6e0d78", pos = {20.939455, 0.996871352, 13.56927}, rot = {8.81163444e-08, 180.0, -1.03525615e-07}},
-    {guid = "109a6b", pos = {20.9394531, 0.9968714, -12.8266459}, rot = {3.53603831e-08, 180.0, -2.3401121e-08}},
-    {guid = "1e6711", pos = {20.9392757, 0.996871352, -6.25547457}, rot = {4.93389848e-07, 180.00264, -6.66980668e-07}},
-    {guid = "cfeba5", pos = {20.939455, 0.9968714, 0.327113152}, rot = {-1.7571665e-08, 180.0, -6.281383e-08}},
-    {guid = "eae80b", pos = {20.939455, 0.9968714, 6.957587}, rot = {-2.49072318e-08, 180.0, -7.044857e-09}},
+    {guid = "6e0d78", pos = {10.939455, 0.996871352, 13.56927}, rot = {8.81163444e-08, 180.0, -1.03525615e-07}},
+    {guid = "109a6b", pos = {10.9394531, 0.9968714, -12.8266459}, rot = {3.53603831e-08, 180.0, -2.3401121e-08}},
+    {guid = "1e6711", pos = {10.9392757, 0.996871352, -6.25547457}, rot = {4.93389848e-07, 180.00264, -6.66980668e-07}},
+    {guid = "cfeba5", pos = {10.939455, 0.9968714, 0.327113152}, rot = {-1.7571665e-08, 180.0, -6.281383e-08}},
+    {guid = "eae80b", pos = {10.939455, 0.9968714, 6.957587}, rot = {-2.49072318e-08, 180.0, -7.044857e-09}},
 }
 
 function hideStartupMapCards()
@@ -824,6 +824,8 @@ end
 dispositionScale = 0.4125
 dispositionButtonHeight = 562.5
 dispositionButtonWidth = 4500
+ingameDispositionButtonHeight = dispositionButtonHeight * 0.8
+ingameDispositionButtonWidth = dispositionButtonWidth * 0.67
 dispositionArrowHeight = 562.5
 dispositionArrowWidth = 600
 dispositionArrowFontSize = 300
@@ -846,12 +848,14 @@ function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunct
     local selectedValue = dispositionValues[selectedIndex] or dispositionValues[1]
     local selectedColor = getDispositionButtonColor(selectedValue)
     local worldX = locked and ingameDispositionControlWorldX or dispositionControlWorldX
+    local buttonHeight = locked and ingameDispositionButtonHeight or dispositionButtonHeight
+    local buttonWidth = locked and ingameDispositionButtonWidth or dispositionButtonWidth
     local center = self.positionToLocal({worldX, dispositionControlWorldY, centerWorldZ})
     local cx, cy, cz = center.x, center.y, center.z
     self.createButton({
         label = selectedValue, click_function = "none", function_owner = self,
         position = {cx, cy, cz}, rotation = {0, 0, 0},
-        height = dispositionButtonHeight, width = dispositionButtonWidth, font_size = dispositionButtonFontSize,
+        height = buttonHeight, width = buttonWidth, font_size = dispositionButtonFontSize,
         color = selectedColor, font_color = {0, 0, 0}, tooltip = label,
     })
 
@@ -919,9 +923,9 @@ generateMissionWorldZ = 0.0
 missionSlots = {
     {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  4.80}},
     {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  2.55}},
-    {role = "deployment", index = 1, deckVar = "deploymentDeck_GUID", position = {38.71, 0.92,  5.83}},
-    {role = "deployment", index = 2, deckVar = "deploymentDeck_GUID", position = {38.71, 0.92, -0.10}},
-    {role = "deployment", index = 3, deckVar = "deploymentDeck_GUID", position = {38.71, 0.92, -6.03}},
+    {role = "deployment", index = 1, deckVar = "deploymentDeck_GUID", position = {23.71, 1.00,  5.83}},
+    {role = "deployment", index = 2, deckVar = "deploymentDeck_GUID", position = {23.71, 1.00, -0.10}},
+    {role = "deployment", index = 3, deckVar = "deploymentDeck_GUID", position = {23.71, 1.00, -6.03}},
     {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -2.55}},
     {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -4.80}},
 }
@@ -2504,8 +2508,9 @@ defaultObjectivesHeight=1.0
 -- Each tag maps to a marker template GUID and the state that template should be set to.
 --   ce6213: state 1 = central/triangle/neutral marker
 --   8272eb: state 2 = blue home, state 1 = red home
-objectiveSpawnY = 1.03       -- fixed table height every placed objective token (and its states) sits at
-objectiveDebug = true        -- prints computed spawn positions to the console
+objectiveSpawnY = 1.03       -- fallback height (table surface) used only if the downward raycast hits nothing
+objectiveTopOffset = 0.1     -- how far above the detected surface a marker sits
+objectiveDebug = Global.getVar("DEBUG") == true  -- build-wide debug flag (true on --test builds)
 -- rotY (optional) overrides only the Y rotation of the placed marker; the
 -- model's existing X/Z tilt is preserved. Omit it to keep the template default.
 objectiveMarkerByTag = {
@@ -2547,7 +2552,8 @@ function placeObjectives()
     if #triangleTargets == 2 then
         local p1 = objectiveMarkerPosition(triangleTargets[1])
         local p2 = objectiveMarkerPosition(triangleTargets[2])
-        local mid = {x = (p1.x + p2.x) / 2, y = objectiveSpawnY, z = (p1.z + p2.z) / 2}
+        local mx, mz = (p1.x + p2.x) / 2, (p1.z + p2.z) / 2
+        local mid = {x = mx, y = objectiveSurfaceY(mx, mz), z = mz}
         local m = objectiveMarkerByTag.obj_neutral
         if objectiveDebug then
             print(string.format("[objectives] 2x obj_triangle -> single neutral marker at midpoint (%.2f, %.2f, %.2f)", mid.x, mid.y, mid.z))
@@ -2571,13 +2577,37 @@ function placeObjectives()
     broadcastToAll(placed .. " objective(s) placed", {0.25, 1, 0.25})
 end
 
+-- Casts a ray straight down through (x, z) and returns the height just above the
+-- highest surface there (terrain, mat, etc.), so markers sit on top of terrain of
+-- any height instead of a fixed Y that buries them under taller pieces. Other
+-- objective markers are ignored so a marker never stacks on one already placed.
+-- Falls back to the table height if the ray hits nothing.
+function objectiveSurfaceY(x, z)
+    local hits = Physics.cast({
+        origin = {x = x, y = 50, z = z},
+        direction = {x = 0, y = -1, z = 0},
+        type = 1,
+        max_distance = 100,
+    })
+    local surfaceY = nil
+    for _, hit in ipairs(hits) do
+        local obj = hit.hit_object
+        if not (obj and obj.getGMNotes() == "objective") then
+            if surfaceY == nil or hit.point.y > surfaceY then
+                surfaceY = hit.point.y
+            end
+        end
+    end
+    return (surfaceY or objectiveSpawnY) + objectiveTopOffset
+end
+
 -- Position a marker should sit at for a given target: horizontal center of the
--- target's bounds, at a fixed table height so every token (in any state) lines up.
+-- target's bounds, lifted onto whatever surface is actually there at that point.
 function objectiveMarkerPosition(target)
     local b = target.getBounds()
     return {
         x = b.center.x,
-        y = objectiveSpawnY,
+        y = objectiveSurfaceY(b.center.x, b.center.z),
         z = b.center.z,
     }
 end
@@ -2593,16 +2623,30 @@ function spawnObjectiveMarkerAt(templateGUID, state, pos, rotY)
     end
 
     local copy = template.clone({position = pos})
+    if not copy then
+        broadcastToAll("Failed to clone objective template (" .. templateGUID .. ").", {1, 0.25, 0.25})
+        return false
+    end
+    -- Lock the clone right away. The template is unlocked, so an unlocked clone
+    -- would fall through the table during the frame waits below; worse, setState
+    -- destroys-and-respawns the object, and if it's mid-fall the new object can be
+    -- lost before we reposition it (this is why state-changed markers went missing).
+    copy.setLock(true)
+
     Wait.frames(function()
         local marker = copy
         if state and marker.getStateId() ~= state then
+            -- setState returns a NEW object in the target state (with its own lock
+            -- and GMNotes); from here on operate only on that returned reference.
             marker = marker.setState(state)
         end
         Wait.frames(function()
-            -- Teleport (not setPositionSmooth): a smooth glide is async, and the
-            -- setLock below would freeze the token mid-flight — below the table,
-            -- since an unlocked clone falls during these frame waits. An instant
-            -- setPosition guarantees it lands exactly at the requested height.
+            if marker == nil then
+                broadcastToAll("Objective marker (template " .. templateGUID .. ") was lost during setState.", {1, 0.25, 0.25})
+                return
+            end
+            -- Instant setPosition (not smooth): a smooth glide is async and setLock
+            -- would freeze the token mid-flight. This guarantees it lands at pos.
             if rotY then
                 local r = marker.getRotation()
                 marker.setRotation({r.x, rotY, r.z})
