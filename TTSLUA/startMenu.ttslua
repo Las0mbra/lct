@@ -805,7 +805,7 @@ deployDownBtn = {
     position = { -arrowOffset, 5, 3}, rotation = {0, 0, 0}, height = 750, width = 800,
     font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
-dispositionControlWorldX = 33.75
+dispositionControlWorldX = 36.50
 ingameDispositionControlWorldX = 80.0
 blueDispositionControlWorldZ = 12.1
 redDispositionControlWorldZ = -12.1
@@ -913,7 +913,7 @@ function redDispositionDown()
     updateDispositionSelection("Red", -1)
 end
 
-generateMissionWorldX = 34.60
+generateMissionWorldX = 35.60
 generateMissionWorldY = 1.0
 generateMissionWorldZ = 0.0
 
@@ -1055,7 +1055,7 @@ deploymentLockButtonWorldX = 36.65
 deploymentLockButtonWorldY = 1.00
 deploymentLockButtonOffsetX = -1.60
 deploymentLockButtonWorldZ = {[1] = 3.00, [2] = 0.10, [3] = -2.80}
-deploymentRandomPickButtonWorldX = 31.00
+deploymentRandomPickButtonWorldX = 32.00
 deploymentRandomPickButtonWorldY = 1.00
 deploymentRandomPickButtonWorldZ = -0.10
 
@@ -1075,7 +1075,7 @@ end
 function writeDeploymentRandomPickButton()
     local btn = self.positionToLocal({deploymentRandomPickButtonWorldX, deploymentRandomPickButtonWorldY, deploymentRandomPickButtonWorldZ})
     self.createButton({
-        label = "Random Mission", click_function = "randomMission", function_owner = self,
+        label = "Random Layout", click_function = "randomMission", function_owner = self,
         position = {btn.x, btn.y, btn.z}, rotation = {0, 0, 0},
         height = 375, width = 4500, font_size = 340,
         color = {1, 0.86, 0.05}, font_color = {0, 0, 0},
