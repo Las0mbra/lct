@@ -704,6 +704,9 @@ end
 
 function moveDiceToRoller(color, dice)
     roller.call("setPlayerColor", { color = color })
+    -- Re-rolled dice are no longer lethal hits; drop them from lethal tracking so
+    -- a later "clear mat" can't reach back and destroy them wherever they end up.
+    forgetLethalHitsForDice(dice)
     for _, die in ipairs(dice) do
         roller.call("setLastHolder", { obj = die, color = color })
         roller.putObject(die)
@@ -1151,75 +1154,37 @@ function spawnStatsDice(params)
     spawnDice(params.n, params.player, params.alt)
 end
 
+-- Sustained hits = one extra attack per hit of `threshold`+. The dice on the mat
+-- ARE the roll, so we operate on the current mat dice directly. This replaced an
+-- earlier scheme that matched against a stored snapshot by value+tint+position,
+-- which was fragile to physics drift and a post-roll timing race and could either
+-- mass-clone everything or silently under-count.
+local function collectSustainedDice(threshold)
+    local dice, positions = {}, {}
+    for _, die in ipairs(getDice()) do
+        if die.getValue() >= threshold then
+            table.insert(dice, die)
+            table.insert(positions, die.getPosition())
+        end
+    end
+    return dice, positions
+end
+
+local function cloneSustainedDice(dice, positions)
+    local directionMultiplier = (currentMat == "Blue") and 1 or -1
+    for i, die in ipairs(dice) do
+        local p = positions[i]
+        p.x = p.x + (8.5 * directionMultiplier)
+        die.clone({position = p, snap_to_grid = false})
+    end
+    return #dice
+end
+
 function sustainedHitsAction(_, color, alt)
     -- Left-click: apply 6+. Right-click (alt): apply 5+. No toggle.
     local threshold = alt and 5 or 6
-    local diceToClone = {}
-
-    -- Helper: compare positions (x,z) with small epsilon
-    local function near_pos(a, b, eps)
-        eps = eps or 0.5
-        if not a or not b then return false end
-        local dx = a.x - b.x
-        local dz = a.z - b.z
-        return (dx*dx + dz*dz) <= (eps*eps)
-    end
-
-    -- Helper: compare color tint approximately
-    local function near_tint(a, b, eps)
-        eps = eps or 0.05
-        if not a or not b then return false end
-        return math.abs(a[1]-b[1]) <= eps and math.abs(a[2]-b[2]) <= eps and math.abs(a[3]-b[3]) <= eps
-    end
-
-    -- Match previous roll entries to current dice by value + tint + approximate position
-    if previousRollData and #previousRollData > 0 then
-        local prevCandidates = {}
-        for _, d in ipairs(previousRollData) do
-            if d.val >= threshold then
-                table.insert(prevCandidates, d)
-            end
-        end
-
-        if #prevCandidates > 0 then
-            local currentDice = getDice()
-            local used = {}
-            for _, prev in ipairs(prevCandidates) do
-                for i, die in ipairs(currentDice) do
-                    if not used[i] and die.getValue() == prev.val then
-                        local tint_ok = near_tint(die.getColorTint(), prev.tint)
-                        local pos_ok = near_pos(die.getPosition(), prev.pos)
-                        if tint_ok and pos_ok then
-                            table.insert(diceToClone, die)
-                            used[i] = true
-                            break
-                        end
-                    end
-                end
-            end
-        end
-    end
-
-    -- Fallback: if we didn't collect any by roll-matching, fall back to global behavior
-    if #diceToClone == 0 then
-        for _, die in ipairs(getDice()) do
-            if die.getValue() >= threshold then
-                table.insert(diceToClone, die)
-            end
-        end
-        printToAll("Warning: No previous roll match found — duplicated all current dice >= " .. threshold .. "+", {1,0.5,0.2})
-    end
-
-    local directionMultiplier = (currentMat == "Blue") and 1 or -1
-    local count = 0
-    for index, die in ipairs(diceToClone) do
-        local p = die.getPosition()
-        p.x = p.x + (8.5 * directionMultiplier)
-        die.clone({position = p, snap_to_grid = false})
-        count = count + 1
-    end
-
-    -- Log for all players
+    local dice, positions = collectSustainedDice(threshold)
+    local count = cloneSustainedDice(dice, positions)
     printToAll("Sustained Hits duplicated: " .. tostring(count) .. " (threshold " .. tostring(threshold) .. "+)")
 end
 
@@ -1228,71 +1193,12 @@ end
 function sustainedLethalHitsAction(_, color, alt)
     -- Left-click: apply 6+. Right-click: apply 5+. No toggle.
     local threshold = alt and 5 or 6
-    local sixPositions = {}
-    local sixDice = {}
-
-    local function near_pos(a, b, eps)
-        eps = eps or 0.5
-        if not a or not b then return false end
-        local dx = a.x - b.x
-        local dz = a.z - b.z
-        return (dx*dx + dz*dz) <= (eps*eps)
-    end
-    local function near_tint(a, b, eps)
-        eps = eps or 0.05
-        if not a or not b then return false end
-        return math.abs(a[1]-b[1]) <= eps and math.abs(a[2]-b[2]) <= eps and math.abs(a[3]-b[3]) <= eps
-    end
-
-    if previousRollData and #previousRollData > 0 then
-        local prevCandidates = {}
-        for _, d in ipairs(previousRollData) do
-            if d.val >= threshold then
-                table.insert(prevCandidates, d)
-            end
-        end
-        if #prevCandidates > 0 then
-            local currentDice = getDice()
-            local used = {}
-            for _, prev in ipairs(prevCandidates) do
-                for i, die in ipairs(currentDice) do
-                    if not used[i] and die.getValue() == prev.val then
-                        local tint_ok = near_tint(die.getColorTint(), prev.tint)
-                        local pos_ok = near_pos(die.getPosition(), prev.pos)
-                        if tint_ok and pos_ok then
-                            table.insert(sixDice, die)
-                            table.insert(sixPositions, die.getPosition())
-                            used[i] = true
-                            break
-                        end
-                    end
-                end
-            end
-        end
-    end
-
-    -- Fallback to global selection if none matched
-    if #sixDice == 0 then
-        for _, die in ipairs(getDice()) do
-            if die.getValue() >= threshold then
-                table.insert(sixDice, die)
-                table.insert(sixPositions, die.getPosition())
-            end
-        end
-        printToAll("Warning: No previous roll match found — duplicated all current dice >= " .. threshold .. "+", {1,0.5,0.2})
-    end
-
-    -- Move lethal hits using same left/right semantics
+    -- Capture the dice and their mat positions BEFORE lethalHitsAction moves them
+    -- off to the lethal zone, then clone at those saved positions so the sustained
+    -- extra-attack dice stay on the mat while the originals go to the lethal zone.
+    local dice, positions = collectSustainedDice(threshold)
     lethalHitsAction('sustainedAndLethal', color, alt)
-
-    local directionMultiplier = (currentMat == "Blue") and 1 or -1
-    local count = 0
-    for i, die in ipairs(sixDice) do
-        local p = sixPositions[i]
-        p.x = p.x + (8.5 * directionMultiplier)
-        die.clone({position = p, snap_to_grid = false})
-        count = count + 1
-    end
+    local count = cloneSustainedDice(dice, positions)
     printToAll("Sustained & Lethal duplicated: " .. tostring(count) .. " (threshold " .. tostring(threshold) .. "+)")
 end
 
@@ -1535,14 +1441,17 @@ function moveLethalHits(isSustainedAndLethal)
     local movedCount = 0
     for _, die in ipairs(getDice()) do
         if die.getValue() >= threshold then
-            if not originalPositions[die.getGUID()] then
-                originalPositions[die.getGUID()] = die.getPosition()
-            end
-            die.setPosition({
+            local parked = {
                 x = start.x + (currentCol * lethalSpacing * directionMultiplier),
                 y = start.y,
                 z = start.z + (currentRow * lethalSpacing),
-            })
+            }
+            -- Remember where we parked it (not where it came from) so cleanup can
+            -- tell whether the die is still in the lethal zone or has been dragged
+            -- away (back onto the mat / below it). Always refresh in case the die
+            -- was re-parked into a new slot.
+            originalPositions[die.getGUID()] = parked
+            die.setPosition(parked)
             movedCount = movedCount + 1
             currentCol = currentCol + 1
             if currentCol >= lethalRowLimit then
@@ -1555,15 +1464,50 @@ function moveLethalHits(isSustainedAndLethal)
     return movedCount
 end
 
+-- True when a die is still sitting where we parked it in the lethal zone.
+-- Compared on x/z only (physics can nudge y); eps comfortably below the 1.1
+-- park spacing so a die in its own slot matches but one dragged away does not.
+local function isStillParked(curPos, parkedPos)
+    if not curPos or not parkedPos then return false end
+    local dx = curPos.x - parkedPos.x
+    local dz = curPos.z - parkedPos.z
+    return (dx*dx + dz*dz) <= (0.75 * 0.75)
+end
+
 function cleanupLethalHits()
-    for guid, _ in pairs(originalPositions) do
+    -- Only destroy dice that are STILL in the lethal parking zone. A die that was
+    -- tagged lethal but has since been dragged back onto the mat or below it is no
+    -- longer ours to delete here: on-mat dice are handled by the clearDiceX that
+    -- runs right after this in clearDiceAll, and off-mat dice should survive.
+    for guid, parkedPos in pairs(originalPositions) do
         local die = getObjectFromGUID(guid)
-        if die then die.destruct() end
+        if die and isStillParked(die.getPosition(), parkedPos) then
+            die.destruct()
+        end
     end
     originalPositions = {}
     for mat, t in pairs(lethalTextDisplays) do
         if t then t.destruct() end
         lethalTextDisplays[mat] = nil
+    end
+end
+
+-- Stop tracking dice as lethal hits once they are sent back to the roller to be
+-- re-rolled. Without this their GUIDs would linger in originalPositions and keep
+-- inflating the lethal count even though they are no longer in the lethal zone.
+function forgetLethalHitsForDice(dice)
+    local changed = false
+    for _, die in ipairs(dice) do
+        local guid = die.getGUID()
+        if originalPositions[guid] then
+            originalPositions[guid] = nil
+            changed = true
+        end
+    end
+    if changed and lethalTextDisplays[currentMat] then
+        local total = 0
+        for _ in pairs(originalPositions) do total = total + 1 end
+        updateLethalTextDisplay(currentMat, total)
     end
 end
 

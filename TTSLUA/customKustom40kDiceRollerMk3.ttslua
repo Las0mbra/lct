@@ -244,13 +244,18 @@ end
 function onObjectEnterContainer(container, obj)
     if container == self then
         if obj.tag == "Dice" then
-            collision_info = {collision_object = obj}
-            onCollisionEnter(collision_info)
+            -- Defer the face-detection scan (getAllObjects over the whole scene)
+            -- to the debounced drain so it runs ONCE per batch instead of once per
+            -- die. onCollisionEnter rebuilds its tables from scratch anyway, so only
+            -- the final pre-drain scan matters; doing it per-die made a "roll all"
+            -- of N dice do N full-table scans -- the main source of roller lag.
+            lastEnteredDie = obj
             if takeDiceOutPendingId then
                 Wait.stop(takeDiceOutPendingId)
             end
             takeDiceOutPendingId = Wait.time(function()
                 takeDiceOutPendingId = nil
+                onCollisionEnter({collision_object = lastEnteredDie})
                 takeDiceOut()
             end, takeDiceOutDelay)
         else

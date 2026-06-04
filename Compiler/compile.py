@@ -24,7 +24,11 @@ JSON_NAME  = "ftc_base"
 XML_NAME   = "ftc_base_ui"
 CHANGELOG  = SCRIPT_DIR.parent / "CHANGELOG.md"
 GLOBAL_LUA = "global.ttslua"
-DISABLED_LUA = {"statsHelperv2.ttslua"}
+# kustom40kDiceRollerMk3.ttslua is the legacy math.random roller for the orphaned
+# beae28/4e0e0b bags hidden under the table. It's replaced by the xoshiro
+# customKustom40kDiceRollerMk3.ttslua; keeping it out of the build stops the weak
+# RNG code from running and re-seeding the process-global C rand() on every load.
+DISABLED_LUA = {"statsHelperv2.ttslua", "kustom40kDiceRollerMk3.ttslua"}
 
 REGEX_LUA_GUID       = re.compile(r'([0-9a-f]{6})')
 REGEX_JSON_GUID      = re.compile(r'"GUID": "(.*)"')
