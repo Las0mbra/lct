@@ -1,0 +1,36 @@
+-- FTC-GUID: 15d652
+
+local onState  = 'https://steamusercontent-a.akamaihd.net/ugc/15473991661851235143/8834767C61229AE6ED0741E4051392B6D4922AE5/'
+local offState = 'https://steamusercontent-a.akamaihd.net/ugc/12364072905194764916/7393E6D304AF9BA29D630698A289034B55690BFD/'
+
+function onLoad(saved_data)
+    self.createButton({
+        click_function  = "toggleObjectives",
+        function_owner  = self,
+        label           = "",
+        position        = {0, 0.2, 0},
+        width           = 2000,
+        height          = 2000,
+        color           = {0, 0, 0, 0}
+    })
+end
+
+function toggleObjectives()
+    local manager = getObjectFromGUID("738804")
+    local state = Global.getVar("interactiveButtonShowObjectives")
+    if state == 1 then -- place
+        Global.setVar("interactiveButtonShowObjectives", 2)
+        manager.call("placeObjectives")
+        params = {
+            image = onState,
+        }
+    else -- recall
+        Global.setVar("interactiveButtonShowObjectives", 1)
+        manager.call("destroyAllObjectives")
+        params = {
+            image = offState,
+        }
+    end
+    self.setCustomObject(params)
+    self.reload()
+end
