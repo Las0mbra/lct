@@ -806,10 +806,13 @@ deployDownBtn = {
     font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
 dispositionControlWorldX = 36.50
-ingameDispositionControlWorldX = 80.0
+ingameDispositionControlWorldX = 80
 blueDispositionControlWorldZ = 12.1
 redDispositionControlWorldZ = -12.1
+ingameBlueDispositionControlWorldZ = -11.1186075
+ingameRedDispositionControlWorldZ = 11.1186075
 dispositionControlWorldY = 1.0
+ingameDispositionControlWorldY = 1.0
 
 function normalizeDispositionIndex(index)
     if index > #dispositionValues then
@@ -824,12 +827,13 @@ end
 dispositionScale = 0.4125
 dispositionButtonHeight = 562.5
 dispositionButtonWidth = 4500
-ingameDispositionButtonHeight = dispositionButtonHeight * 0.8
-ingameDispositionButtonWidth = dispositionButtonWidth * 0.67
+ingameDispositionButtonHeight = dispositionButtonHeight * 0.595
+ingameDispositionButtonWidth = dispositionButtonWidth * 0.80
 dispositionArrowHeight = 562.5
 dispositionArrowWidth = 600
 dispositionArrowFontSize = 300
 dispositionButtonFontSize = 380
+ingameDispositionButtonFontSize = dispositionButtonFontSize * 0.5625
 dispositionArrowOffset = 5.75
 
 dispositionButtonColors = {
@@ -848,14 +852,22 @@ function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunct
     local selectedValue = dispositionValues[selectedIndex] or dispositionValues[1]
     local selectedColor = getDispositionButtonColor(selectedValue)
     local worldX = locked and ingameDispositionControlWorldX or dispositionControlWorldX
+    local worldZ = centerWorldZ
+    if locked and label == "Blue Disposition" then
+        worldZ = ingameBlueDispositionControlWorldZ
+    elseif locked and label == "Red Disposition" then
+        worldZ = ingameRedDispositionControlWorldZ
+    end
     local buttonHeight = locked and ingameDispositionButtonHeight or dispositionButtonHeight
     local buttonWidth = locked and ingameDispositionButtonWidth or dispositionButtonWidth
-    local center = self.positionToLocal({worldX, dispositionControlWorldY, centerWorldZ})
+    local buttonFontSize = locked and ingameDispositionButtonFontSize or dispositionButtonFontSize
+    local worldY = locked and ingameDispositionControlWorldY or dispositionControlWorldY
+    local center = self.positionToLocal({worldX, worldY, worldZ})
     local cx, cy, cz = center.x, center.y, center.z
     self.createButton({
         label = selectedValue, click_function = "none", function_owner = self,
         position = {cx, cy, cz}, rotation = {0, 0, 0},
-        height = buttonHeight, width = buttonWidth, font_size = dispositionButtonFontSize,
+        height = buttonHeight, width = buttonWidth, font_size = buttonFontSize,
         color = selectedColor, font_color = {0, 0, 0}, tooltip = label,
     })
 
@@ -921,13 +933,13 @@ generateMissionWorldZ = 0.0
 -- (player + index decide which mission card lands here). Red is the +Z pair,
 -- blue the -Z pair (see the deck/zone notes in global.ttslua).
 missionSlots = {
-    {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  4.80}},
-    {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  2.55}},
+    {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  4.80}, displayPosition = {32.60, 0.92,  14.23}, displayScale = {1.5, 1.0, 1.5}},
+    {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  2.55}, displayPosition = {32.59, 0.92,  10.20}, displayScale = {1.5, 1.0, 1.5}},
     {role = "deployment", index = 1, deckVar = "deploymentDeck_GUID", position = {23.71, 1.00,  5.83}},
     {role = "deployment", index = 2, deckVar = "deploymentDeck_GUID", position = {23.71, 1.00, -0.10}},
     {role = "deployment", index = 3, deckVar = "deploymentDeck_GUID", position = {23.71, 1.00, -6.03}},
-    {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -2.55}},
-    {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -4.80}},
+    {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -2.55}, displayPosition = {32.59, 0.92, -10.20}, displayScale = {1.5, 1.0, 1.5}},
+    {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -4.80}, displayPosition = {32.60, 0.92, -14.23}, displayScale = {1.5, 1.0, 1.5}},
 }
 
 deploymentMatrixDecks = {
@@ -1110,6 +1122,13 @@ function addMissionSlotObject(objectsByGuid, obj)
     end
 end
 
+function missionSlotPositionMatches(slot, pos, target)
+    return target and
+        math.abs(pos.x - target[1]) < 1.6 and
+        math.abs(pos.z - target[3]) < 1.2 and
+        pos.y > 0.5 and pos.y < 3.0
+end
+
 function getObjectsInMissionSlot(slot, zone)
     local objectsByGuid = {}
     if zone then
@@ -1121,9 +1140,8 @@ function getObjectsInMissionSlot(slot, zone)
     for _, obj in ipairs(getAllObjects()) do
         if isMissionCardObject(obj) then
             local pos = obj.getPosition()
-            if math.abs(pos.x - slot.position[1]) < 1.6 and
-               math.abs(pos.z - slot.position[3]) < 1.2 and
-               pos.y > 0.5 and pos.y < 3.0 then
+            if missionSlotPositionMatches(slot, pos, slot.position) or
+               missionSlotPositionMatches(slot, pos, slot.displayPosition) then
                 addMissionSlotObject(objectsByGuid, obj)
             end
         end
@@ -1320,6 +1338,21 @@ function returnCardsInDeploymentSlotsToDeck(includeLockedIn)
     end
 end
 
+function movePrimaryMissionCardsToIngameSlots()
+    for _, slot in ipairs(missionSlots) do
+        if slot.role == "primary" then
+            for _, obj in ipairs(getObjectsInMissionSlot(slot, nil)) do
+                obj.locked = false
+                obj.setScale({1.0, 1.0, 1.0})
+                obj.setPositionSmooth(slot.position, false, true)
+                Wait.frames(function()
+                    if obj then obj.locked = true end
+                end, 1)
+            end
+        end
+    end
+end
+
 function moveDeploymentCardToLockTarget(cardToMove)
     if not cardToMove then return end
 
@@ -1382,24 +1415,35 @@ end
 -- Returns { {guid, name, source}, {guid, name, source} } for slot 1 and 2.
 -- source is "mission" (real card found, placed by its own 1/2 suffix), "blank"
 -- ("Blank Primary 1/2" padding an empty slot), or "missing" (no card at all).
-function resolvePrimaryCardGuids(deck, missionName)
+-- extraEntries (optional): {guid=, nickname=} for cards already sitting in this
+-- player's slots. They are searched BEFORE the deck so a card that is already
+-- placed wins over its deck copy -- that lets a re-press reposition the existing
+-- card instead of recalling it to the (far-away) deck and drawing it again.
+function resolvePrimaryCardGuids(deck, missionName, extraEntries)
     local found = {}           -- found[1], found[2] = {guid, name}
     local blank = {}           -- blank[1], blank[2] = {guid, name}
     local target = normalizeMissionName(missionName)
+
+    local entries = {}
+    if extraEntries then
+        for _, e in ipairs(extraEntries) do table.insert(entries, e) end
+    end
     if deck and deck.getObjects then
-        for _, entry in ipairs(deck.getObjects()) do
-            local nick = entry.nickname or entry.name or ""
-            local low = normalizeMissionName(nick)
-            local num = tonumber(string.match(nick, "(%d)%s*$"))
-            if string.find(low, "^blank primary") then
-                if num == 1 or num == 2 then blank[num] = {guid = entry.guid, name = nick} end
-            elseif target ~= "" and normalizeMissionName(missionBaseName(nick)) == target then
-                local idx = (num == 2) and 2 or 1
-                if not found[idx] then
-                    found[idx] = {guid = entry.guid, name = nick}
-                elseif not found[3 - idx] then
-                    found[3 - idx] = {guid = entry.guid, name = nick}
-                end
+        for _, e in ipairs(deck.getObjects()) do table.insert(entries, e) end
+    end
+
+    for _, entry in ipairs(entries) do
+        local nick = entry.nickname or entry.name or ""
+        local low = normalizeMissionName(nick)
+        local num = tonumber(string.match(nick, "(%d)%s*$"))
+        if string.find(low, "^blank primary") then
+            if (num == 1 or num == 2) and not blank[num] then blank[num] = {guid = entry.guid, name = nick} end
+        elseif target ~= "" and normalizeMissionName(missionBaseName(nick)) == target then
+            local idx = (num == 2) and 2 or 1
+            if not found[idx] then
+                found[idx] = {guid = entry.guid, name = nick}
+            elseif not found[3 - idx] then
+                found[3 - idx] = {guid = entry.guid, name = nick}
             end
         end
     end
@@ -1530,6 +1574,40 @@ function chooseRandomDeploymentCards(count)
     return choices
 end
 
+-- Frames over which a card's scale is smoothly interpolated to its target, so it
+-- grows/shrinks instead of popping. Set to 0/1 for an instant snap.
+primaryResizeFrames = 12
+
+-- Smoothly lerp a card's scale to `target` over `frames`. Every TTS call is
+-- wrapped in pcall so a card destroyed mid-animation (e.g. recalled into a deck)
+-- just stops the animation instead of throwing.
+function animateCardScale(card, target, frames)
+    frames = frames or primaryResizeFrames
+    if frames < 1 then frames = 1 end
+    local startV
+    if not pcall(function() startV = card.getScale() end) or not startV then
+        pcall(function() card.setScale(target) end)
+        return
+    end
+    local sx, sy, sz = startV.x, startV.y, startV.z
+    local step = 0
+    local function tick()
+        step = step + 1
+        local t = step / frames
+        local applied = pcall(function()
+            if t >= 1 then
+                card.setScale(target)
+            else
+                card.setScale({sx + (target[1] - sx) * t, sy + (target[2] - sy) * t, sz + (target[3] - sz) * t})
+            end
+        end)
+        if applied and t < 1 then
+            Wait.frames(tick, 1)
+        end
+    end
+    Wait.frames(tick, 1)
+end
+
 function finishPlacedMissionCard(card, placement)
     if not card then return end
 
@@ -1539,6 +1617,10 @@ function finishPlacedMissionCard(card, placement)
 
     if placement.flip == false and card.is_face_down then
         card.flip()
+    end
+
+    if placement.scale then
+        animateCardScale(card, placement.scale)
     end
 
     card.tooltip = true
@@ -1552,6 +1634,7 @@ end
 function moveExistingMissionCard(card, placement)
     card.locked = false
     card.setPositionSmooth(placement.position, false, true)
+    -- scale is animated inside finishPlacedMissionCard
     finishPlacedMissionCard(card, placement)
 end
 
@@ -1651,6 +1734,7 @@ end
 generateMissionCooldownActive = false
 
 generateMissionCooldownSeconds = 0.6
+primaryMissionRecallWaitFrames = 20
 
 -- Reduce a matchup's deployment choices to a single randomly-chosen card placed
 -- in the middle slot. The sparse {[2] = choice} table is read by index in the
@@ -1660,6 +1744,41 @@ function pickRandomMissionCard(choices)
         return choices or {}
     end
     return {[2] = choices[math.random(#choices)]}
+end
+
+-- Cards already sitting in one player's primary slots. Returns two lists:
+-- resolver entries ({guid, nickname}) and the live card objects. Read BEFORE any
+-- recall so a re-press can keep cards that are still wanted.
+function placedPrimaryCardEntries(player)
+    local entries, cards, seen = {}, {}, {}
+    for _, slot in ipairs(missionSlots) do
+        if slot.role == "primary" and slot.player == player then
+            for _, obj in ipairs(getObjectsInMissionSlot(slot, nil)) do
+                if obj.tag == "Card" then
+                    local g = obj.getGUID()
+                    if not seen[g] then
+                        seen[g] = true
+                        table.insert(entries, {guid = g, nickname = obj.getName()})
+                        table.insert(cards, obj)
+                    end
+                end
+            end
+        end
+    end
+    return entries, cards
+end
+
+-- Recall only the placed cards we are NOT keeping this run (e.g. the matchup
+-- changed). Wanted cards are left in place and repositioned by the deal, which
+-- avoids the slow deck round-trip that caused the press-twice toggle.
+function recallUnwantedPrimaryCards(cards, wanted, deck)
+    if not deck then return end
+    for _, card in ipairs(cards) do
+        if not wanted[card.getGUID()] then
+            card.locked = false
+            deck.putObject(card)
+        end
+    end
 end
 
 -- Shared core for both mission buttons. deploymentMode:
@@ -1684,54 +1803,60 @@ function runMissionGeneration(deploymentMode)
     local redMission = (matchup and matchup.red) or placeholder
     local blueMission = (matchup and matchup.blue) or placeholder
 
-    -- 1. Recall primary mission cards. Deployment cards are cleared after
-    -- the next deployment choices are known, because their tiny source decks
-    -- can collapse after a full 3-card draw.
-    local decksByVar = {}
-    for _, slot in ipairs(missionSlots) do
-        if slot.role ~= "deployment" then
-            local zoneGuid = slot.zoneVar and Global.getVar(slot.zoneVar) or nil
-            local zone = zoneGuid and getObjectFromGUID(zoneGuid) or nil
-            local deck = decksByVar[slot.deckVar] or getObjectFromGUID(Global.getVar(slot.deckVar))
-            if deck then
-                for _, obj in ipairs(getObjectsInMissionSlot(slot, zone)) do
-                    if obj ~= deck then
-                        obj.locked = false
-                        deck = deck.putObject(obj) or deck
-                    end
-                end
-                decksByVar[slot.deckVar] = deck
-            end
-        end
+    local redDeck = getObjectFromGUID(Global.getVar("redPrimaryDeck_GUID"))
+    local blueDeck = getObjectFromGUID(Global.getVar("bluePrimaryDeck_GUID"))
+
+    -- 1. Resolve each player's primary cards, counting cards already in the slots
+    -- (placed entries win over the deck copy), then recall only the cards we are
+    -- not keeping. Cards we keep stay put and get repositioned by the deal.
+    local redEntries, redCards = placedPrimaryCardEntries("Red")
+    local blueEntries, blueCards = placedPrimaryCardEntries("Blue")
+
+    local redGuids = resolvePrimaryCardGuids(redDeck, redMission, redEntries)
+    local blueGuids = resolvePrimaryCardGuids(blueDeck, blueMission, blueEntries)
+
+    local wanted = {}
+    for _, g in ipairs(redGuids) do if g.guid then wanted[g.guid] = true end end
+    for _, g in ipairs(blueGuids) do if g.guid then wanted[g.guid] = true end end
+
+    recallUnwantedPrimaryCards(redCards, wanted, redDeck)
+    recallUnwantedPrimaryCards(blueCards, wanted, blueDeck)
+
+    local deploymentChoices = chooseDeploymentCardsForMatchup(key, 3)
+    if deploymentMode == "random" then
+        deploymentChoices = pickRandomMissionCard(deploymentChoices)
     end
+    clearDeploymentSlotsForChoices(deploymentChoices)
 
     Wait.frames(function()
         local ok, err = pcall(function()
-            -- 2. Resolve each player's primary mission cards by name.
-            local redDeck = decksByVar["redPrimaryDeck_GUID"] or getObjectFromGUID(Global.getVar("redPrimaryDeck_GUID"))
-            local blueDeck = decksByVar["bluePrimaryDeck_GUID"] or getObjectFromGUID(Global.getVar("bluePrimaryDeck_GUID"))
-            local redGuids = resolvePrimaryCardGuids(redDeck, redMission)
-            local blueGuids = resolvePrimaryCardGuids(blueDeck, blueMission)
-            local deploymentChoices = chooseDeploymentCardsForMatchup(key, 3)
-            if deploymentMode == "random" then
-                deploymentChoices = pickRandomMissionCard(deploymentChoices)
-            end
-            clearDeploymentSlotsForChoices(deploymentChoices)
-            -- 3. Build the ordered placement list.
-
-            local placements = {}
+            -- 2. Build the ordered placement list.
+            local primaryPlacements = {}
+            local deploymentPlacements = {}
             for _, slot in ipairs(missionSlots) do
                 if slot.role == "primary" then
                     local guids = (slot.player == "Red") and redGuids or blueGuids
                     local deck = (slot.player == "Red") and redDeck or blueDeck
                     local info = guids[slot.index]
-                    table.insert(placements, {deck = deck, guid = info and info.guid or nil, position = slot.position})
+                    local order = slot.index * 2
+                    if slot.player == "Red" then order = order - 1 end
+                    table.insert(primaryPlacements, {order = order, deck = deck, guid = info and info.guid or nil, position = slot.displayPosition or slot.position, scale = slot.displayScale})
                 elseif slot.role == "deployment" then
                     local info = deploymentChoices[slot.index]
                     if info and info.guid then
-                        table.insert(placements, {deck = info.deck, guid = info.guid, position = slot.position, sourceDeckGuid = info.deckGuid, flip = false, lock = true})
+                        table.insert(deploymentPlacements, {deck = info.deck, guid = info.guid, position = slot.position, sourceDeckGuid = info.deckGuid, flip = false, lock = true})
                     end
                 end
+            end
+
+            table.sort(primaryPlacements, function(a, b) return a.order < b.order end)
+            local placements = {}
+            for _, placement in ipairs(primaryPlacements) do
+                placement.order = nil
+                table.insert(placements, placement)
+            end
+            for _, placement in ipairs(deploymentPlacements) do
+                table.insert(placements, placement)
             end
 
             dealMissionCards(placements, 1)
@@ -1741,7 +1866,7 @@ function runMissionGeneration(deploymentMode)
             finishMissionDeal()
         end
 
-    end, 2)
+    end, primaryMissionRecallWaitFrames)
 
     end)
     if not setupOk then
@@ -3019,6 +3144,7 @@ function startGame(obj, player, alt)
     resetSecondaryForceStartCountdown()
 
     returnCardsInDeploymentSlotsToDeck(false)
+    movePrimaryMissionCardsToIngameSlots()
 
     Global.call("recordPlayers")
     inGame = true
