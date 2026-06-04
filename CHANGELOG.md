@@ -13,6 +13,13 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.6.0 
+- FEATURE: Dynamic Objective/Ruin Markers that calculates dynamically where it should be placed, cause with so many layouts and different DZones it would be a hell to manually place these onto every map and even harder to change it later. 
+- FEATURE: Mission Dispotition Take and hold Maps are in! Keep in mind other matchups remain random. 
+- UI/UX: Moved Mission Generation near the centre for better visibility. 
+- UI/UX: Added a 15'' bubble button too.
+
+
 ## v1.5.2
 - QOL: Deployment zones are now disabled when game starts. 
 - Fix: Territory button wasn't synced before.

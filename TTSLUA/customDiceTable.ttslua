@@ -332,10 +332,16 @@ measure12Btn={
     font_size=700, color='White', font_color={0,0,0}
 }
 
+measure15Btn={
+    label='15"', tooltip='Toggle 15" bubble', click_function='toggle15Bubble', function_owner=self,
+    position={-6.07, Yoffset ,-1.40}, rotation={0,0,0}, height=1000, width=1600, scale={0.1,0.1,0.1},
+    font_size=700, color='White', font_color={0,0,0}
+}
+
 -- Custom Bubble Input BG
 customBubbleInputBG = {
     label = "", click_function = "none", function_owner = self,
-    position = {-6.08, Yoffset, -1.40}, rotation = {0, 0, 0},
+    position = {-5.78, Yoffset, -1.40}, rotation = {0, 0, 0},
     width = 1100, height = 1000, font_size = 100,
     color = {0.95, 0.95, 0.95, 1},
     scale = {0.1, 0.1, 0.1}
@@ -344,7 +350,7 @@ customBubbleInputBG = {
 -- Custom Bubble Input Field
 customBubbleInput = {
     label = "Size", input_function = "setCustomBubbleSize", function_owner = self,
-    position = {-6.08, Yoffset, -1.40}, rotation = {0, 0, 0},
+    position = {-5.78, Yoffset, -1.40}, rotation = {0, 0, 0},
     width = 900, height = 800, font_size = 500, alignment = 3, scale = {0.1, 0.1, 0.1},
     color = {1, 1, 1, 1}, font_color = {0.2, 0.2, 0.2}
 }
@@ -355,7 +361,7 @@ customBubbleInput = {
 -- clears the bubbles on the selected models.
 customBubbleBtn = {
     label = "Go", tooltip = "LEFT CLICK: apply size from the box\nRIGHT CLICK: on-screen size entry (0/blank clears selected)", click_function = "applyCustomBubble", function_owner = self,
-    position = {-5.88, Yoffset, -1.40}, rotation = {0, 0, 0},
+    position = {-5.58, Yoffset, -1.40}, rotation = {0, 0, 0},
     width = 800, height = 1000, font_size = 500,
     color = {0.13, 0.13, 0.13, 1}, font_color = {1, 1, 1},
     hover_color = {0.2, 0.2, 0.2, 1},
@@ -1466,6 +1472,7 @@ function onload()
     self.createButton(measure8Btn)
     self.createButton(measure9Btn)
     self.createButton(measure12Btn)
+    self.createButton(measure15Btn)
     self.createButton(customBubbleInputBG)
     self.createInput(customBubbleInput)
     self.createButton(customBubbleBtn)
@@ -2143,6 +2150,10 @@ end
 
 function toggle12Bubble(obj, playerColor, alt)
     toggleMeasurementCircleForSelection(12.01, playerColor)
+end
+
+function toggle15Bubble(obj, playerColor, alt)
+    toggleMeasurementCircleForSelection(15, playerColor)
 end
 
 local customBubbleSize = 0
