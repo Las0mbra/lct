@@ -2370,57 +2370,97 @@ function stopCoherencyMonitor()
     Global.setVectorLines({})
 end
 
+-- Build a lightweight descriptor for a model's base: world centre, the base's
+-- two semi-radii (a along local x, b along local z, in inches) and the model's
+-- local x/z unit axes. The base is treated as an ellipse that rotates with the
+-- model -- getTransformRight()/Forward() are unit vectors of the model's local
+-- axes, so this is rotation-correct for ovals without any handedness guess.
+local function buildBaseDescriptor(o)
+    local base = determineBaseInInches(o)
+    return {
+        pos = o.getPosition(),
+        a = base.x,
+        b = base.z,
+        right = o.getTransformRight(),
+        forward = o.getTransformForward()
+    }
+end
+
+-- Radius of the descriptor's ellipse base along world unit direction (dx,dz),
+-- via the ellipse polar equation. Exact for circles and for ovals along the
+-- centre-to-centre line.
+local function baseRadiusInDir(d, dx, dz)
+    local lx = dx * d.right.x + dz * d.right.z      -- direction in local x (unit axis)
+    local lz = dx * d.forward.x + dz * d.forward.z  -- direction in local z (unit axis)
+    return 1 / math.sqrt((lx * lx) / (d.a * d.a) + (lz * lz) / (d.b * d.b))
+end
+
+-- Base-to-base (edge-to-edge) gap between two descriptors, measured along the
+-- centre-to-centre line, plus the base-edge point on each (for drawing). O(1).
+local function baseGap(d1, d2)
+    local dx, dz = d2.pos.x - d1.pos.x, d2.pos.z - d1.pos.z
+    local centre = math.sqrt(dx * dx + dz * dz)
+    if centre < 1e-6 then
+        return 0, d1.pos, d2.pos -- coincident centres
+    end
+    local ux, uz = dx / centre, dz / centre
+    local r1 = baseRadiusInDir(d1, ux, uz)
+    local r2 = baseRadiusInDir(d2, -ux, -uz)
+    local gap = centre - r1 - r2
+    if gap < 0 then gap = 0 end -- bases touching/overlapping
+    local p1 = { x = d1.pos.x + ux * r1, z = d1.pos.z + uz * r1 }
+    local p2 = { x = d2.pos.x - ux * r2, z = d2.pos.z - uz * r2 }
+    return gap, p1, p2
+end
+
 -- Recompute the breach lines and distance labels from the monitored models'
 -- live positions. Driven by a repeating Wait.time so both track the models.
+-- Distances are full base-to-base along the centre-to-centre line, using each
+-- base's directional ellipse radius so ovals (and their facing) are measured
+-- accurately; lines sit on the base edges.
 function refreshCoherencyLines()
     if not coherencyMonitorActive then return end
 
     -- Resolve the monitored set, dropping any models that were deleted.
-    -- determineBaseInInches() snaps each model to its closest real 40k base size
-    -- and returns the base radii in inches (cached on the object after the first
-    -- call); round bases have x == z, for ovals we take the larger radius as a
-    -- conservative circular approximation.
-    local model = {}
+    local desc = {}
     for _, guid in ipairs(coherencyMonitorGuids) do
         local o = getObjectFromGUID(guid)
         if o ~= nil and not o.isDestroyed() then
-            local base = determineBaseInInches(o)
-            table.insert(model, {
-                pos = o.getPosition(),
-                radius = math.max(base.x, base.z)
-            })
+            desc[#desc + 1] = buildBaseDescriptor(o)
         end
     end
 
-    if #model < 2 then
+    local n = #desc
+    if n < 2 then
         stopCoherencyMonitor()
         return
     end
 
-    -- Edge-to-edge distance between two models on the x/z plane.
-    local function edgeDist(m1, m2)
-        local dx = m1.pos.x - m2.pos.x
-        local dz = m1.pos.z - m2.pos.z
-        local d = math.sqrt(dx * dx + dz * dz) - m1.radius - m2.radius
-        if d < 0 then d = 0 end -- bases touching/overlapping
-        return d
+    -- Precompute every pairwise gap once and reuse it for both rules.
+    -- gap[i][j] = distance, cp[i][j] = closest perimeter point on base i toward j.
+    local gap, cp = {}, {}
+    for i = 1, n do gap[i] = {}; cp[i] = {} end
+    for i = 1, n do
+        for j = i + 1, n do
+            local g, pi, pj = baseGap(desc[i], desc[j])
+            gap[i][j], gap[j][i] = g, g
+            cp[i][j], cp[j][i] = pi, pj
+        end
     end
 
     local lines = {}
     local labels = {}
 
-    -- Record a breach: a coloured line between the two models plus a distance
-    -- label floating at the line's midpoint.
-    local function addBreach(m1, m2, d, color)
-        local a = {m1.pos.x, m1.pos.y + COHERENCY_LIFT, m1.pos.z}
-        local b = {m2.pos.x, m2.pos.y + COHERENCY_LIFT, m2.pos.z}
+    -- Record a breach: a coloured line between the two base-edge points plus a
+    -- distance label floating at the segment's midpoint.
+    local function addBreach(i, j, d, color)
+        local pi, pj = cp[i][j], cp[j][i]
+        local yi, yj = desc[i].pos.y, desc[j].pos.y
+        local a = {pi.x, yi + COHERENCY_LIFT, pi.z}
+        local b = {pj.x, yj + COHERENCY_LIFT, pj.z}
         table.insert(lines, { points = {a, b}, color = color, thickness = 0.15 })
         table.insert(labels, {
-            pos = {
-                (m1.pos.x + m2.pos.x) / 2,
-                (m1.pos.y + m2.pos.y) / 2 + COHERENCY_LABEL_LIFT,
-                (m1.pos.z + m2.pos.z) / 2
-            },
+            pos = {(pi.x + pj.x) / 2, (yi + yj) / 2 + COHERENCY_LABEL_LIFT, (pi.z + pj.z) / 2},
             text = string.format("%.1f\"", d),
             color = color
         })
@@ -2428,27 +2468,26 @@ function refreshCoherencyLines()
 
     -- Rule 1: every model needs at least one other model within 2" base-to-base.
     -- If none qualifies, draw to its nearest neighbour to show the gap to close.
-    for i, m in ipairs(model) do
+    for i = 1, n do
         local hasBuddy = false
         local nearest, nearestDist = nil, math.huge
-        for j, other in ipairs(model) do
+        for j = 1, n do
             if i ~= j then
-                local d = edgeDist(m, other)
+                local d = gap[i][j]
                 if d <= COHERENCY_RANGE then hasBuddy = true end
-                if d < nearestDist then nearestDist = d; nearest = other end
+                if d < nearestDist then nearestDist = d; nearest = j end
             end
         end
         if not hasBuddy and nearest then
-            addBreach(m, nearest, nearestDist, {1, 0.5, 0})
+            addBreach(i, nearest, nearestDist, {1, 0.5, 0})
         end
     end
 
     -- Rule 2: every pair of models must be within 9" base-to-base.
-    for i = 1, #model do
-        for j = i + 1, #model do
-            local d = edgeDist(model[i], model[j])
-            if d > COHERENCY_MAX then
-                addBreach(model[i], model[j], d, {1, 0, 0})
+    for i = 1, n do
+        for j = i + 1, n do
+            if gap[i][j] > COHERENCY_MAX then
+                addBreach(i, j, gap[i][j], {1, 0, 0})
             end
         end
     end
