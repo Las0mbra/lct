@@ -13,7 +13,8 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
-## v1.6.0 
+## v1.6.1
+- FIX: Fixed a dice rolling bug and weird cloning issues if both SuS & Lethals occured. 
 - FEATURE: Dynamic Objective/Ruin Markers that calculates dynamically where it should be placed, cause with so many layouts and different DZones it would be a hell to manually place these onto every map and even harder to change it later. 
 - FEATURE: Mission Dispotition Take and hold Maps are in! Keep in mind other matchups remain random. 
 - UI/UX: Moved Mission Generation near the centre for better visibility. 

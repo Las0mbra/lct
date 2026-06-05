@@ -268,25 +268,32 @@ restoreBtn={
 
 gap2Btn={
     label='1" Gap', tooltip='Arrange models with 1" spacing', click_function='arrangeModelsWith1Inch', function_owner=self,
-    position={-8.72, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=2500, scale={0.1,0.1,0.1},
+    position={-7.8, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=2500, scale={0.1,0.1,0.1},
     font_size=750, color='White', font_color={0,0,0}
 }
 
 gap1Btn={
     label='2" Gap', tooltip='Arrange models with 2" spacing', click_function='arrangeModelsWith2Inch', function_owner=self,
-    position={-8.17, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=2500, scale={0.1,0.1,0.1},
+    position={-7.27, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=2500, scale={0.1,0.1,0.1},
     font_size=750, color='White', font_color={0,0,0}
 }
 
 clearMeasureAllBtn={
     label='Clear Bubbles', tooltip='LEFT CLICK: Clear all measuring bubbles from the table\nRIGHT CLICK: Clear all measuring bubbles from highlighted objects only', click_function='clearMeasuringCircles', function_owner=self,
-    position={-7.34, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=5200, scale={0.1,0.1,0.1},
+    position={-7.45, Yoffset ,-1.65}, rotation={0,0,0}, height=1000, width=5200, scale={0.1,0.1,0.1},
     font_size=700, color='White', font_color={0,0,0}
 }
 
 clearLinesBtn={
     label='Clear Lines', tooltip='Clear all hand-drawn lines, keep measuring bubbles', click_function='clearHandDrawnLines', function_owner=self,
-    position={-6.225, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=5200, scale={0.1,0.1,0.1},
+    position={-6.35, Yoffset ,-1.65}, rotation={0,0,0}, height=1000, width=5200, scale={0.1,0.1,0.1},
+    font_size=700, color='White', font_color={0,0,0}
+}
+
+
+checkCoherencyBtn={
+    label='Coherency', tooltip='LEFT CLICK: Show coherency of selected models\n RIGHT CLICK: Toggle off lines\nDrawing new lines will be weird while this is on', click_function='checkCoherency', function_owner=self,
+    position={-6.46, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=5200, scale={0.1,0.1,0.1},
     font_size=700, color='White', font_color={0,0,0}
 }
 
@@ -1244,6 +1251,9 @@ end
 function onload()
     -- addHotkey("Toggle Floating Icon", toggleFloatingIcon)
 
+    -- Remove any coherency distance labels that leaked into the save.
+    cleanupOrphanCoherencyLabels()
+
     addHotkey("Auto 1 Inch Gap", arrangeModelsWith1Inch)
     addHotkey("Auto 2 Inch Gap", arrangeModelsWith2Inch)
     addHotkey('Save position', savePositionClicked)
@@ -1384,6 +1394,7 @@ function onload()
     self.createButton(customBubbleBtn)
     self.createButton(clearMeasureAllBtn)
     self.createButton(clearLinesBtn)
+    self.createButton(checkCoherencyBtn)
     self.createButton(gap2Btn)
     self.createButton(gap1Btn)
     self.createButton(customDiceSpawnButton)
@@ -2244,6 +2255,7 @@ end
 
 function clearHandDrawnLines(obj, playerColor, alt)
     local clearedAll = 0
+    if coherencyMonitorActive then stopCoherencyMonitor() end
     Global.setVectorLines({})
     for _, o in ipairs(getAllObjects()) do
         if o.getTable("ym-measuring-circles") == nil then
@@ -2255,4 +2267,264 @@ function clearHandDrawnLines(obj, playerColor, alt)
         end
     end
     printToAll("Cleared hand-drawn lines on "..clearedAll.." objects.", {1,1,1})
+end
+
+-- Live coherency / range monitor for a captured set of models.
+-- Measures base-to-base (edge-to-edge) on the table plane (x/z), ignoring height,
+-- and enforces two rules:
+--   * Coherency: every model must have at least one other model within 2".
+--   * Range:     every model must be within 9" of every other model.
+-- While active, a repeating timer re-reads the models' live positions and
+-- redraws the breach lines so they follow the models (and appear/disappear as
+-- breaches resolve), like the measuring bubbles. Lines are global vectors.
+--   * orange = model out of 2" coherency (drawn to its nearest model)
+--   * red    = a pair of models more than 9" apart
+coherencyMonitorActive = false
+coherencyMonitorGuids = {}
+coherencyMonitorTimer = nil
+coherencyTimeoutTimer = nil -- one-shot auto-stop timer
+coherencyLabels = {} -- pool of spawned 3DText distance labels, reused each tick
+
+local COHERENCY_RANGE = 2 -- inches, base-to-base
+local COHERENCY_MAX = 9   -- inches, base-to-base
+local COHERENCY_LIFT = 0.2 -- raise lines slightly so they sit above the bases
+local COHERENCY_LABEL_LIFT = 0.5 -- raise distance text a little above the lines
+local COHERENCY_REFRESH = 0.1 -- seconds between redraws
+local COHERENCY_TIMEOUT = 30 -- auto-stop if left on this many seconds
+local COHERENCY_LABEL_TAG = "coherencyLabel" -- GMNotes marker for sweep-on-load
+
+-- Spawn a flat, locked 3DText object to use as a floating distance label.
+-- Tagged via GMNotes so any label that leaks into a save is swept on load.
+local function spawnCoherencyLabel(pos, text, color)
+    return spawnObjectData({
+        data = {
+            Name = "3DText",
+            Transform = {
+                posX = pos[1], posY = pos[2], posZ = pos[3],
+                rotX = 90, rotY = 0, rotZ = 0,
+                scaleX = 1, scaleY = 1, scaleZ = 1
+            },
+            Text = {
+                Text = text,
+                colorstate = { r = color[1], g = color[2], b = color[3] },
+                fontSize = 32
+            },
+            Locked = true,
+            GMNotes = COHERENCY_LABEL_TAG
+        }
+    })
+end
+
+-- Destroy any coherency labels left in the world (e.g. from a save taken while
+-- the monitor was active). Identified by their GMNotes marker. Run on load.
+function cleanupOrphanCoherencyLabels()
+    for _, o in ipairs(getAllObjects()) do
+        if o.getGMNotes() == COHERENCY_LABEL_TAG then
+            destroyObject(o)
+        end
+    end
+end
+
+-- Reconcile the label pool with the requested specs ({pos, text, color}),
+-- reusing existing labels and spawning/destroying as the breach count changes.
+local function updateCoherencyLabels(specs)
+    for i, spec in ipairs(specs) do
+        local lbl = coherencyLabels[i]
+        if lbl ~= nil and not lbl.isDestroyed() then
+            lbl.setPosition(spec.pos)
+            lbl.TextTool.setValue(spec.text)
+            lbl.TextTool.setFontColor(spec.color)
+        else
+            -- Embed pos/text/color in the spawn data so the label is correct on
+            -- its first frame; later ticks update it in place.
+            coherencyLabels[i] = spawnCoherencyLabel(spec.pos, spec.text, spec.color)
+        end
+    end
+    -- Remove any surplus labels left from a previous, larger breach set.
+    for i = #coherencyLabels, #specs + 1, -1 do
+        local lbl = coherencyLabels[i]
+        if lbl ~= nil and not lbl.isDestroyed() then
+            destroyObject(lbl)
+        end
+        coherencyLabels[i] = nil
+    end
+end
+
+function stopCoherencyMonitor()
+    coherencyMonitorActive = false
+    if coherencyMonitorTimer ~= nil then
+        Wait.stop(coherencyMonitorTimer)
+        coherencyMonitorTimer = nil
+    end
+    if coherencyTimeoutTimer ~= nil then
+        Wait.stop(coherencyTimeoutTimer)
+        coherencyTimeoutTimer = nil
+    end
+    coherencyMonitorGuids = {}
+    for _, lbl in ipairs(coherencyLabels) do
+        if lbl ~= nil and not lbl.isDestroyed() then
+            destroyObject(lbl)
+        end
+    end
+    coherencyLabels = {}
+    Global.setVectorLines({})
+end
+
+-- Recompute the breach lines and distance labels from the monitored models'
+-- live positions. Driven by a repeating Wait.time so both track the models.
+function refreshCoherencyLines()
+    if not coherencyMonitorActive then return end
+
+    -- Resolve the monitored set, dropping any models that were deleted.
+    -- determineBaseInInches() snaps each model to its closest real 40k base size
+    -- and returns the base radii in inches (cached on the object after the first
+    -- call); round bases have x == z, for ovals we take the larger radius as a
+    -- conservative circular approximation.
+    local model = {}
+    for _, guid in ipairs(coherencyMonitorGuids) do
+        local o = getObjectFromGUID(guid)
+        if o ~= nil and not o.isDestroyed() then
+            local base = determineBaseInInches(o)
+            table.insert(model, {
+                pos = o.getPosition(),
+                radius = math.max(base.x, base.z)
+            })
+        end
+    end
+
+    if #model < 2 then
+        stopCoherencyMonitor()
+        return
+    end
+
+    -- Edge-to-edge distance between two models on the x/z plane.
+    local function edgeDist(m1, m2)
+        local dx = m1.pos.x - m2.pos.x
+        local dz = m1.pos.z - m2.pos.z
+        local d = math.sqrt(dx * dx + dz * dz) - m1.radius - m2.radius
+        if d < 0 then d = 0 end -- bases touching/overlapping
+        return d
+    end
+
+    local lines = {}
+    local labels = {}
+
+    -- Record a breach: a coloured line between the two models plus a distance
+    -- label floating at the line's midpoint.
+    local function addBreach(m1, m2, d, color)
+        local a = {m1.pos.x, m1.pos.y + COHERENCY_LIFT, m1.pos.z}
+        local b = {m2.pos.x, m2.pos.y + COHERENCY_LIFT, m2.pos.z}
+        table.insert(lines, { points = {a, b}, color = color, thickness = 0.15 })
+        table.insert(labels, {
+            pos = {
+                (m1.pos.x + m2.pos.x) / 2,
+                (m1.pos.y + m2.pos.y) / 2 + COHERENCY_LABEL_LIFT,
+                (m1.pos.z + m2.pos.z) / 2
+            },
+            text = string.format("%.1f\"", d),
+            color = color
+        })
+    end
+
+    -- Rule 1: every model needs at least one other model within 2" base-to-base.
+    -- If none qualifies, draw to its nearest neighbour to show the gap to close.
+    for i, m in ipairs(model) do
+        local hasBuddy = false
+        local nearest, nearestDist = nil, math.huge
+        for j, other in ipairs(model) do
+            if i ~= j then
+                local d = edgeDist(m, other)
+                if d <= COHERENCY_RANGE then hasBuddy = true end
+                if d < nearestDist then nearestDist = d; nearest = other end
+            end
+        end
+        if not hasBuddy and nearest then
+            addBreach(m, nearest, nearestDist, {1, 0.5, 0})
+        end
+    end
+
+    -- Rule 2: every pair of models must be within 9" base-to-base.
+    for i = 1, #model do
+        for j = i + 1, #model do
+            local d = edgeDist(model[i], model[j])
+            if d > COHERENCY_MAX then
+                addBreach(model[i], model[j], d, {1, 0, 0})
+            end
+        end
+    end
+
+    Global.setVectorLines(lines)
+    updateCoherencyLabels(labels)
+end
+
+-- Drive the live coherency monitor.
+--   LEFT click  -> (re)start the monitor on the player's selected models.
+--   RIGHT click -> stop it and remove the lines/labels.
+function checkCoherency(a, b, c)
+    -- Support button (a=object, b=color, c=altClick) and hotkey (a=color)
+    -- invocation, mirroring arrangeModelsWith2Inch.
+    local playerColor, alt
+    if type(a) == "string" then
+        playerColor = a       -- hotkey: no right-click concept
+        alt = false
+    else
+        playerColor = b       -- button
+        alt = c and true or false
+    end
+
+    -- Right click removes the lines (stops the monitor).
+    if alt then
+        if coherencyMonitorActive then
+            stopCoherencyMonitor()
+            if playerColor then
+                printToColor("Live coherency check OFF.", playerColor, {1, 1, 1})
+            end
+        elseif playerColor then
+            printToColor("No coherency check is running.", playerColor, {1, 1, 1})
+        end
+        return
+    end
+
+    local playerObj = Player[playerColor]
+    if not playerObj then
+        print("Player object not found for color: " .. tostring(playerColor))
+        return
+    end
+
+    local objs = playerObj.getSelectedObjects()
+    if #objs < 2 then
+        -- Leave any running monitor untouched on an empty/short selection.
+        printToColor("Select at least 2 models to check coherency.", playerColor, {1, 0.5, 0})
+        return
+    end
+
+    -- Left click (re)starts on the current selection. Stop any prior run first
+    -- so a fresh selection fully replaces the old monitored set.
+    if coherencyMonitorActive then
+        stopCoherencyMonitor()
+    end
+
+    -- Capture the monitored set by GUID so it keeps tracking these models even
+    -- after they are deselected or moved.
+    coherencyMonitorGuids = {}
+    for _, o in ipairs(objs) do
+        table.insert(coherencyMonitorGuids, o.getGUID())
+    end
+
+    coherencyMonitorActive = true
+    refreshCoherencyLines()
+    coherencyMonitorTimer = Wait.time(refreshCoherencyLines, COHERENCY_REFRESH, -1)
+
+    -- Auto-stop after COHERENCY_TIMEOUT seconds so a forgotten monitor does not
+    -- keep redrawing forever. Manual stop / restart cancels this in stopCoherencyMonitor.
+    coherencyTimeoutTimer = Wait.time(function()
+        if coherencyMonitorActive then
+            stopCoherencyMonitor()
+            if playerColor then
+                printToColor(string.format("Live coherency check auto-stopped after %ds.", COHERENCY_TIMEOUT), playerColor, {1, 1, 1})
+            end
+        end
+    end, COHERENCY_TIMEOUT)
+
+    printToColor(string.format("Live coherency check ON for %d models. Orange = out of 2\" coherency, Red = over 9\" apart. Lines follow the models; auto-stops after %ds or RIGHT-CLICK Coherency to remove them.", #objs, COHERENCY_TIMEOUT), playerColor, {0, 1, 0})
 end

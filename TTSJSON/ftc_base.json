@@ -139,7 +139,7 @@
     },
     "1": {
       "title": "Credits",
-      "body": "*******************Credits*******************\nNew Items Added in Hutbers Pack:\n\nBlackhole Trash Bin by MrStump (Fixed)\nPariah Nexus Map Loader (Maps were overwritten) by KKLORELL\nMalicious Script Check by Ziggy Stardust\n\nFlex Table (id: 1169112551)\n\nKustom 40k Dice Roller\r by BaconCatBug (id: 959360907)\n\nCamera pack by ThatRobHuman\n\nChess clock by Gizmo, MoonkeyMod and Liyarin\n\nToken graphics by Trashpanda\n\nAdditional code contributions by FChippendale\n\nLeviathan card graphics by Tyrone\n\nAdditional assets by MariusEvander\n\n",
+      "body": "Credits are on Steam page description",
       "color": "Grey",
       "visibleColor": {
         "r": 0.5,
@@ -1700,7 +1700,7 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomPDF": {
-        "PDFUrl": "https://assets.warhammer-community.com/eng_11-02_wh40k_core&key_chapter_approved_tournament_companion-fzhlwjzwf4-agxpall6br.pdf",
+        "PDFUrl": "https://steamusercontent-a.akamaihd.net/ugc/12100271967775319931/EB7F5F820F6183849575A62B78569017BDE79337/",
         "PDFPassword": "",
         "PDFPage": 0,
         "PDFPageOffset": 0
@@ -17512,627 +17512,6 @@
       ]
     },
     {
-      "GUID": "3ca4a6",
-      "Name": "Deck",
-      "Transform": {
-        "posX": 85.0,
-        "posY": -1,
-        "posZ": 5.6,
-        "rotX": 0.0,
-        "rotY": 270.0,
-        "rotZ": 180.0,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "Leviathan primary mission cards",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 0.713235259,
-        "g": 0.713235259,
-        "b": 0.713235259
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "Interactable": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": false,
-      "GridProjection": false,
-      "HideWhenFaceDown": true,
-      "Hands": false,
-      "SidewaysCard": false,
-      "DeckIDs": [
-        5500,
-        5400,
-        5300,
-        5200,
-        5800,
-        5700,
-        5900,
-        6000
-      ],
-      "CustomDeck": {
-        "55": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699592499/00146C4943E1042C5094A7D5D3A3F9605EA35955/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        },
-        "54": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2042995637126779748/F11F562A1DB80A2CEF8368421130B1634D259CEB/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        },
-        "53": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2042994105139177126/DEE9EDD8D737D9A3060BDB4E463A6C7493552C27/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        },
-        "52": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2019350432616004415/E8FE60385E148811DCDD33DB0C293A3FF654F763/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        },
-        "58": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590961/C89B7D477582844F3CF9BDB1B299888FE76030E7/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        },
-        "57": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699597042/6635B49AD0D9750A4547F081F94C04440D66FE55/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        },
-        "59": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699595204/2684911A1031AD4C4ADABF9B0C23E4527D63B35A/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        },
-        "60": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496527312635291/4829B8EE34F060C39118633FDAB6BE9EEC480A98/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "ContainedObjects": [
-        {
-          "GUID": "3ad5a3",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": -6.012298,
-            "posY": 0.913603,
-            "posZ": 50.28639,
-            "rotX": 1.61668822e-06,
-            "rotY": 359.965546,
-            "rotZ": -4.95348559e-07,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "Scorched Earth",
-          "Description": "From the second battle round, in each player\u2019s Shooting phase, the player whose turn it is can select one unit from their army that is not Battle-shocked and is eligible to shoot. Until the end of that turn, that unit is not eligible to shoot or declare a charge. At the start of its controlling player\u2019s next Command phase, if that unit is within 1\u201d of an objective marker that the player whose turn it is controls, that objective marker is burned and removed from the battlefield.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 5VP for each objective marker they control (up to 10VP per turn).\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n\r\n[b]At the end of the battle:[/b]\r\n\r\nEach player scores 5VP if one or more objective markers in No Man\u2019s Land were burned by a unit from their army, and 10VP if the objective marker in their opponent\u2019s deployment zone was burned.\r\n",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Tags": [
-            "primaryCard"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 5500,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "55": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699592499/00146C4943E1042C5094A7D5D3A3F9605EA35955/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "5444d4",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": -3.91048074,
-            "posY": 0.913602948,
-            "posZ": 50.345623,
-            "rotX": 1.59288845e-06,
-            "rotY": 359.992828,
-            "rotZ": -5.198465e-07,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "Purge the Foe",
-          "Description": "[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 4VP if they control one or more objective markers, and an extra 4VP if they control more objective markers than their opponent controls.\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n\r\n[b]In every battle round:[/b]\r\n\r\nAt the end of the battle round, each player scores 4VP if one or more enemy units were destroyed that battle round, and an extra 4VP if more enemy units than friendly units were destroyed that battle round.\r\n\r\nNote that a unit can, if it is returned to the battlefield for any reason, potentially contribute to this Primary Mission several times (assuming it is returned and subsequently destroyed several times over).\r\n",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Tags": [
-            "primaryCard"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 5400,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "54": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2042995637126779748/F11F562A1DB80A2CEF8368421130B1634D259CEB/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "f97708",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": -1.79719,
-            "posY": 0.913602948,
-            "posZ": 50.3981361,
-            "rotX": 1.6113944e-06,
-            "rotY": 0.00599929225,
-            "rotZ": -3.92823239e-07,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "Priority Targets",
-          "Description": "[b]In the second, third, fourth and fifth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 5VP for each objective marker they control (up to 10VP per turn)\r\n\r\n[b]At the end of the battle:[/b]\r\n\r\nEach player scores 5VP for each objective marker they control (up to 15VP per player).\r\n",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Tags": [
-            "primaryCard"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 5300,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "53": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2042994105139177126/DEE9EDD8D737D9A3060BDB4E463A6C7493552C27/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "44ff29",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": 0.384085953,
-            "posY": 0.913602948,
-            "posZ": 50.37604,
-            "rotX": 1.60921456e-06,
-            "rotY": 0.00507348171,
-            "rotZ": -4.06647956e-07,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "Deploy Servo-Skulls",
-          "Description": "The objective markers that start the battle in No Man\u2019s Land are servo-skulls. At the end of each turn, each of these objective markers can be moved up to 6\u201d in any direction by the player that controls it. When moving objective markers, they cannot end that move on top of any other objective marker or model, or inside impassable parts of terrain features (such as the walls of a ruin).\r\n\r\n[b]In the second, third, fourth and fifth battle rounds:[/b]\r\n\r\nAt the end of each turn, the player whose turn it is scores VP as follows:\r\n\r\n\r\n* 2VP for each servo-skull that is wholly within 12\u201d of their opponent\u2019s deployment zone.\r\n* 5VP for each servo-skull that is wholly within 6\u201d of their opponent\u2019s deployment zone.\r\n* 8VP for each servo-skull that is wholly within their opponent\u2019s deployment zone.\r\n\r\nNote that these conditions are not cumulative; if more than one applies, the player whose turn it is scores the applicable condition that carries the highest VP reward.\r\n",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Tags": [
-            "primaryCard"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 5200,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "52": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2019350432616004415/E8FE60385E148811DCDD33DB0C293A3FF654F763/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "884291",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": -12.2626295,
-            "posY": 0.913603,
-            "posZ": 50.32472,
-            "rotX": 1.668254e-06,
-            "rotY": 0.023714181,
-            "rotZ": -5.93861557e-07,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "Take and Hold",
-          "Description": "[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 5VP for each objective marker they control (up to 15VP per turn).\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Tags": [
-            "primaryCard"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 5800,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "58": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590961/C89B7D477582844F3CF9BDB1B299888FE76030E7/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "a34ae1",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": -10.2303743,
-            "posY": 0.913603,
-            "posZ": 50.31722,
-            "rotX": 1.57651311e-06,
-            "rotY": -0.00463111233,
-            "rotZ": -4.51817385e-07,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "Supply Drop",
-          "Description": "At the start of the battle, players randomly select two different objective markers in No Man\u2019s Land: the first selected is the Alpha objective, the second selected is the Omega objective. At the start of the fourth battle round, the Alpha objective is removed from the battlefield. At the start of the fifth battle round, all objective markers in No Man\u2019s Land apart from the Omega objective are also removed.\r\n\r\n[b]In the second and third battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 5VP for each objective marker they control in No Man\u2019s Land.\r\n\r\n[b]In the fourth battle round:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 8VP for each objective marker they control in No Man\u2019s Land.\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores 15VP at the end of their Command phase if they control the objective marker in No Man\u2019s Land.\r\n\r\nThe player who has the second turn scores 15VP at the end of their turn if they control the objective marker in No Man\u2019s Land.\r",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Tags": [
-            "primaryCard"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 5700,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "57": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699597042/6635B49AD0D9750A4547F081F94C04440D66FE55/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "646b49",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": -14.2559214,
-            "posY": 0.913603067,
-            "posZ": 50.29868,
-            "rotX": 1.49784307e-06,
-            "rotY": 359.787354,
-            "rotZ": -9.565257e-07,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "The Ritual",
-          "Description": "When setting up the battlefield, remove all objective markers in No Man\u2019s Land except the one closest to the centre of the battlefield.\r\n\r\nIn each player\u2019s Shooting phase, the player whose turn it is can select one unit from their army that is not Battle-shocked and is eligible to shoot. Until the end of that turn, that unit is not eligible to shoot or declare a charge. At the end of that turn, the player whose turn it is can set up one objective marker wholly within No Man\u2019s Land and within 1\u201d of that unit provided it can be set up exactly 9\u201d from one other objective marker and not within 6\u201d of any other objective marker.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores 5VP for each objective marker in No Man\u2019s Land they control (up to 15VP per turn).\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn scores VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Tags": [
-            "primaryCard"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 5900,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "59": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699595204/2684911A1031AD4C4ADABF9B0C23E4527D63B35A/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "6fc1c2",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": -16.151638,
-            "posY": 0.913603067,
-            "posZ": 50.4732323,
-            "rotX": 1.66742518e-06,
-            "rotY": 0.007908245,
-            "rotZ": -5.24853135e-07,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "Vital Ground",
-          "Description": "If you draw this and the Hidden Supplies Mission Rule card, discard this card and draw a new Primary Mission card.\r\n\r\nAfter setting up the battlefield, remove the objective marker in No Man\u2019s Land that is closest to the centre of the battlefield.\r\n\r\n[b]In the second, third and fourth battle rounds:[/b]\r\n\r\nAt the end of each Command phase, the player whose turn it is scores VP as follows:\r\n\r\n* If they control the objective marker in their own deployment zone, they score 2VP\r\n* For each objective marker in No Man\u2019s Land that they control, they score 5VP.\r\n* If they control the objective marker in their opponent\u2019s deployment zone, they score 6VP.\r\n\r\n[b]In the fifth battle round:[/b]\r\n\r\nThe player who has the first turn score VP as described above.\r\n\r\nThe player who has the second turn scores VP as described above, but does so at the end of their turn instead of at the end of their Command phase.\r\n",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Tags": [
-            "primaryCard"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 6000,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "60": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496527312635291/4829B8EE34F060C39118633FDAB6BE9EEC480A98/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699590202/6E8F08A2EEB29D55344278DAFE346411739E973E/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        }
-      ]
-    },
-    {
       "GUID": "be2cdb",
       "Name": "Custom_Assetbundle_Bag",
       "Transform": {
@@ -18302,7 +17681,6 @@
         152000,
         152100,
         152200,
-        152300,
         152400,
         147500
       ],
@@ -18388,15 +17766,7 @@
           "UniqueBack": false,
           "Type": 0
         },
-        "1523": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10376215475773939083/0F74B2A87647D7D75DC64B24097E5767D9F31666/",
-          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        },
+
         "1524": {
           "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18319401032101152713/463C110F8FF45591DD9CE6418084FC80F8B5E800/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
@@ -18899,67 +18269,7 @@
           "LuaScriptState": "",
           "XmlUI": ""
         },
-        {
-          "GUID": "4a4bae",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": -4.4735,
-            "posY": 0.9736048,
-            "posZ": 7.13475561,
-            "rotX": -3.117385e-08,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1,
-            "scaleY": 1,
-            "scaleZ": 1
-          },
-          "Nickname": "A Tempting Target",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Tags": [
-            "secondaryCard"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 152300,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "265": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10376215475773939083/0F74B2A87647D7D75DC64B24097E5767D9F31666/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
+
         {
           "GUID": "90873b",
           "Name": "CardCustom",
@@ -21710,7 +21020,7 @@
             "posX": 83.53504,
             "posY": 1.31370008,
             "posZ": -9.24628448,
-            "rotX": 5.879453E-05,
+            "rotX": 5.879453e-05,
             "rotY": 270.0003,
             "rotZ": 179.999741,
             "scaleX": 1.0,
@@ -23956,7 +23266,6 @@
         190900,
         190800,
         190700,
-        190600,
         190500,
         190400,
         190300,
@@ -24008,15 +23317,7 @@
           "UniqueBack": false,
           "Type": 0
         },
-        "1906": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13099954410402244165/71A015D57245C6ED28D4935F72690BC467F90A0F/",
-          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/12392129116301473941/3B13D7F6CE41B63201401FB0EA299BD03323270D/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        },
+
         "1905": {
           "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17815426319517627476/1388BAFC72735C211C7AB1B2005C3CF7881E3A87/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/12392129116301473941/3B13D7F6CE41B63201401FB0EA299BD03323270D/",
@@ -24371,64 +23672,7 @@
           "LuaScriptState": "",
           "XmlUI": ""
         },
-        {
-          "GUID": "c4a53b",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": 80.54003,
-            "posY": 1.0731746,
-            "posZ": -62.1262741,
-            "rotX": -0.0012740629,
-            "rotY": 270.0038,
-            "rotZ": 180.026566,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "A Tempting Target",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 190600,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1906": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13099954410402244165/71A015D57245C6ED28D4935F72690BC467F90A0F/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/12392129116301473941/3B13D7F6CE41B63201401FB0EA299BD03323270D/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
+
         {
           "GUID": "cf6b80",
           "Name": "CardCustom",
@@ -25232,7 +24476,6 @@
         190900,
         190800,
         190700,
-        190600,
         190500,
         190400,
         190300,
@@ -25284,15 +24527,7 @@
           "UniqueBack": false,
           "Type": 0
         },
-        "1906": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13099954410402244165/71A015D57245C6ED28D4935F72690BC467F90A0F/",
-          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/12392129116301473941/3B13D7F6CE41B63201401FB0EA299BD03323270D/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        },
+
         "1905": {
           "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17815426319517627476/1388BAFC72735C211C7AB1B2005C3CF7881E3A87/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/12392129116301473941/3B13D7F6CE41B63201401FB0EA299BD03323270D/",
@@ -25647,64 +24882,7 @@
           "LuaScriptState": "",
           "XmlUI": ""
         },
-        {
-          "GUID": "baac70",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": 75.3969345,
-            "posY": 1.073018,
-            "posZ": -85.38158,
-            "rotX": -0.00234467746,
-            "rotY": 269.995575,
-            "rotZ": 180.0024,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "A Tempting Target",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 190600,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1906": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13099954410402244165/71A015D57245C6ED28D4935F72690BC467F90A0F/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/12392129116301473941/3B13D7F6CE41B63201401FB0EA299BD03323270D/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
+
         {
           "GUID": "1a5964",
           "Name": "CardCustom",
@@ -29243,7 +28421,7 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomImage": {
-        "ImageURL": "https://i.imgur.com/FWaCQgD.png",
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/15637112555997115778/311B40E524534BCC017044B3EEA4737864053BFE/",
         "ImageSecondaryURL": "",
         "ImageScalar": 1.0,
         "WidthScale": 0.0,
@@ -29542,7 +28720,6 @@
         152000,
         152100,
         152200,
-        152300,
         152400,
         147500
       ],
@@ -29619,15 +28796,7 @@
           "UniqueBack": false,
           "Type": 0
         },
-        "1523": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10376215475773939083/0F74B2A87647D7D75DC64B24097E5767D9F31666/",
-          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        },
+
         "1524": {
           "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18319401032101152713/463C110F8FF45591DD9CE6418084FC80F8B5E800/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
@@ -30139,67 +29308,7 @@
           "LuaScriptState": "",
           "XmlUI": ""
         },
-        {
-          "GUID": "4a4bae",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": -4.4735,
-            "posY": 0.9736048,
-            "posZ": 7.13475561,
-            "rotX": -3.117385e-08,
-            "rotY": 180.0,
-            "rotZ": 180.0,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "A Tempting Target",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Tags": [
-            "secondaryCard"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 152300,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "265": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10376215475773939083/0F74B2A87647D7D75DC64B24097E5767D9F31666/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
+
         {
           "GUID": "90873b",
           "Name": "CardCustom",
