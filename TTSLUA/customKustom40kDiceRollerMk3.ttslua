@@ -244,18 +244,31 @@ end
 function onObjectEnterContainer(container, obj)
     if container == self then
         if obj.tag == "Dice" then
-            -- Defer the face-detection scan (getAllObjects over the whole scene)
-            -- to the debounced drain so it runs ONCE per batch instead of once per
-            -- die. onCollisionEnter rebuilds its tables from scratch anyway, so only
-            -- the final pre-drain scan matters; doing it per-die made a "roll all"
-            -- of N dice do N full-table scans -- the main source of roller lag.
-            lastEnteredDie = obj
+            -- Record THIS die's face count now, while we still hold a live Object
+            -- reference. The old code scanned the whole scene (getAllObjects) once
+            -- per die -- the main source of roller lag on a busy table. We can't
+            -- defer that scan either, because once dice settle inside the container
+            -- getAllObjects() no longer returns them, leaving faces nil and crashing
+            -- rollFace ("attempt to compare nil with number"). Reading the entering
+            -- die directly is O(1), correct, and survives both putObject and drops.
+            if not takeDiceOutPendingId then
+                diceGuidFaces = {}   -- start of a new batch
+            end
+            local guid = obj.getGUID()
+            if guid then
+                local objType = tostring(obj)
+                local faces = tonumber(string.match(objType, 'Die_(%d+).*'))
+                if faces == nil then
+                    faces = tonumber(customFace[obj.getCustomObject().type + 1])
+                end
+                diceGuidFaces[guid] = faces
+                playerColor = lastHolder[obj]
+            end
             if takeDiceOutPendingId then
                 Wait.stop(takeDiceOutPendingId)
             end
             takeDiceOutPendingId = Wait.time(function()
                 takeDiceOutPendingId = nil
-                onCollisionEnter({collision_object = lastEnteredDie})
                 takeDiceOut()
             end, takeDiceOutDelay)
         else
