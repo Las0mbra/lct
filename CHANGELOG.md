@@ -13,6 +13,14 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v.16.2
+- Removed old pdfs and added the new Core Rules with bookmarks (thanks to Bookmarkable PDF by CaptironJack) for easier navigation in game. 
+- Added an image with the new strategems 
+- All primary & secondary cards are now using the amazing card design by Shinobau https://github.com/game-datacards/missioncards 
+- Added new extra tokens (inside a memory bag) by MothmyTitania have a look! 
+- Added a new coherency button that dynamically calculates the distance between selected units. Keep in mind while it's on you can't really draw lines until you toggle it off (right click on button) or 15 seconds pass
+
+
 ## v1.6.1
 - FIX: Fixed a dice rolling bug and weird cloning issues if both SuS & Lethals occured. 
 - FEATURE: Dynamic Objective/Ruin Markers that calculates dynamically where it should be placed, cause with so many layouts and different DZones it would be a hell to manually place these onto every map and even harder to change it later. 
