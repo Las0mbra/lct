@@ -1,5 +1,7 @@
 *_compiled.json
 *.bak
+__pycache__/
+*.pyc
 .history
 .tts
 .idea

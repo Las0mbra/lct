@@ -18,6 +18,24 @@ import sys
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).parent
+sys.path.insert(0, str(SCRIPT_DIR))  # allow sibling imports when run from elsewhere
+import term
+import validate_maps
+
+# Warnings collected across the whole run so the closing summary can report them
+# in one place instead of the user having to scroll back through the log.
+WARNINGS = []
+
+
+def warn(msg: str):
+    WARNINGS.append(msg)
+    print(term.yellow(f"  WARNING: {msg}"))
+
+
+def fail(msg: str):
+    print(term.red(f"ERROR: {msg}"))
+    sys.exit(1)
+
 PATH_LUA   = SCRIPT_DIR.parent / "TTSLUA"
 PATH_JSON  = SCRIPT_DIR.parent / "TTSJSON"
 JSON_NAME  = "ftc_base"
@@ -44,11 +62,8 @@ def validate_json_text(json_text: str, label: str):
     try:
         json.loads(json_text)
     except json.JSONDecodeError as exc:
-        print(
-            f"ERROR: {label} is not valid JSON: "
-            f"{exc.msg} at line {exc.lineno}, column {exc.colno}."
-        )
-        sys.exit(1)
+        fail(f"{label} is not valid JSON: "
+             f"{exc.msg} at line {exc.lineno}, column {exc.colno}.")
 
 
 def _windows_documents_path():
@@ -105,9 +120,9 @@ def inject_xml(json_lines: list, xml_file: Path):
         # Reconstruct: prefix up to (not including) that opening quote + new encoded value + trailing comma.
         prefix = line[:m.end() - 1]
         json_lines[i] = prefix + xml_content + ","
-        print(f"  Writing to line {i + 1}. Done.")
+        print(f"  Writing to line {i + 1}. {term.green('Done.')}")
         return
-    print("WARNING: populated XmlUI line not found in JSON — XML not injected.")
+    warn("populated XmlUI line not found in JSON — XML not injected.")
 
 
 def inject_lua_into_line(json_lines: list, line_idx: int, lua_text: str):
@@ -185,7 +200,7 @@ def stamp_global(lua_text: str, version: str, patch: str, notes: list, debug: bo
     for pattern, repl in replacements:
         lua_text, count = re.subn(pattern, repl, lua_text, count=1, flags=re.M)
         if count != 1:
-            print(f"WARNING: marker {pattern!r} not found in global.ttslua — not injected.")
+            warn(f"marker {pattern!r} not found in global.ttslua — not injected.")
     return lua_text
 
 
@@ -210,20 +225,38 @@ def main():
                         help="Tag as 'test' build and copy to TTS saves folder.")
     parser.add_argument("--release", action="store_true",
                         help="Take version and patch notes from CHANGELOG.md and copy to TTS saves folder.")
+    parser.add_argument("--no-validate", action="store_true",
+                        help="Skip the map-card whitelist/terrain validation gate.")
     args = parser.parse_args()
     if args.test and args.release:
-        print("ERROR: use either --test or --release, not both.")
-        sys.exit(1)
+        fail("use either --test or --release, not both.")
 
     json_file = PATH_JSON / f"{JSON_NAME}.json"
     if not json_file.exists():
-        print(f"ERROR: {json_file} not found. Ending compilation.")
-        sys.exit(1)
+        fail(f"{json_file} not found. Ending compilation.")
 
     print(f"Validating {json_file.name}... ", end="")
     json_text = json_file.read_text(encoding="utf-8")
     validate_json_text(json_text, json_file.name)
-    print("Done.")
+    print(term.green("Done."))
+
+    # --- Validate the baked-in map cards before doing any work --------------
+    # The cards' Clear/Load wipe keeps a hard-coded GUID whitelist; a drifted
+    # card can delete the mats. Gate the build on it (errors abort), unless the
+    # user is mid-fix and opted out. Warnings never block.
+    val_issues, val_ctx = [], None
+    if not args.no_validate:
+        save = json.loads(json_text)
+        val_issues, val_ctx = validate_maps.validate(save.get("ObjectStates", []))
+        print(term.cyan(f"Validating {len(val_ctx.cards)} map cards..."))
+        n_err, _ = validate_maps.report(val_issues, val_ctx)
+        WARNINGS.extend(
+            f"map card: {i.message} [{i.where}]"
+            for i in val_issues if i.level == validate_maps.WARN
+        )
+        if n_err:
+            fail(f"{n_err} map-card validation error(s). "
+                 f"Fix them or re-run with --no-validate to bypass.")
 
     # The latest CHANGELOG entry (top section) always drives the splash overlay,
     # for both test and release builds.
@@ -231,14 +264,13 @@ def main():
     if patch:
         print(f"Latest patch from {CHANGELOG.name}: {patch} ({len(changelog_notes)} notes).")
     else:
-        print(f"WARNING: no '## vX.Y.Z' entry found in {CHANGELOG.name} — splash not updated.")
+        warn(f"no '## vX.Y.Z' entry found in {CHANGELOG.name} — splash not updated.")
 
     if args.test:
         version = "test"
     elif args.release:
         if not patch:
-            print(f"ERROR: --release needs a '## vX.Y.Z' entry at the top of {CHANGELOG.name}.")
-            sys.exit(1)
+            fail(f"--release needs a '## vX.Y.Z' entry at the top of {CHANGELOG.name}.")
         version = patch
     else:
         version = input("Version number (leave blank for none): ").strip()
@@ -252,14 +284,12 @@ def main():
     for idx in range(1, len(lua_files)):
         f = lua_files[idx]
         if not f.exists():
-            print(f"ERROR: {f} not found. Ending compilation.")
-            sys.exit(1)
+            fail(f"{f} not found. Ending compilation.")
         print(f"Scanning {f.name}... ", end="")
         first_line = f.read_text(encoding="utf-8").splitlines()[0]
         matches = REGEX_LUA_GUID.findall(first_line)
         if not matches:
-            print("no GUIDs found! Ending compilation.")
-            sys.exit(1)
+            fail(f"no GUIDs found in {f.name}! Ending compilation.")
         print(f"GUIDs: {', '.join(matches)}")
         for guid in matches:
             lua_guids.append((guid, idx))
@@ -283,8 +313,7 @@ def main():
     # --- Inject ftc_base_ui.xml into the top-level XmlUI field ---
     xml_file = PATH_JSON / f"{XML_NAME}.xml"
     if not xml_file.exists():
-        print(f"ERROR: {xml_file} not found. Ending compilation.")
-        sys.exit(1)
+        fail(f"{xml_file} not found. Ending compilation.")
     print(f"Injecting {xml_file.name}... ", end="")
     inject_xml(json_lines, xml_file)
 
@@ -298,7 +327,7 @@ def main():
         lua_files[0].read_text(encoding="utf-8"), version, patch, changelog_notes, debug_enabled
     )
     inject_lua_into_line(json_lines, json_lua_line_idxs[0], global_text)
-    print("Done.")
+    print(term.green("Done."))
 
     # --- Inject each object script by matching GUIDs ---
     for find_guid, file_idx in lua_guids:
@@ -312,18 +341,16 @@ def main():
                     (idx for idx in json_lua_line_idxs if idx > guid_line_idx), None
                 )
                 if lua_slot_idx is None:
-                    print(f"No LuaScript slot found after GUID {find_guid}! Ending compilation.")
-                    sys.exit(1)
+                    fail(f"No LuaScript slot found after GUID {find_guid}! Ending compilation.")
                 inject_lua_into_line(
                     json_lines, lua_slot_idx,
                     lua_files[file_idx].read_text(encoding="utf-8"),
                 )
-                print("Done.")
+                print(term.green("Done."))
                 found = True
                 break
         if not found:
-            print(f"GUID {find_guid} not found in JSON! Ending compilation.")
-            sys.exit(1)
+            fail(f"GUID {find_guid} not found in JSON! Ending compilation.")
 
     # --- Stamp version into SaveName (line 1) and GameMode (line 2) ---
     if version:
@@ -337,16 +364,60 @@ def main():
     compiled_json = "\n".join(json_lines)
     validate_json_text(compiled_json, out_name)
     out_file.write_text(compiled_json, encoding="utf-8")
-    print(f"\nOutput: {out_file}")
 
     # --- Copy to TTS saves for test/release builds ---
+    copied_to = None
     if args.test or args.release:
         tts_saves = get_tts_saves_path()
         if tts_saves.exists():
             shutil.copy(out_file, tts_saves)
-            print(f"Copied to {tts_saves}")
+            copied_to = tts_saves
         else:
-            print(f"WARNING: TTS saves folder not found at {tts_saves}. Skipping copy.")
+            warn(f"TTS saves folder not found at {tts_saves}. Skipping copy.")
+
+    print_summary(version, lua_guids, json_guid_entries, val_ctx, val_issues,
+                  out_file, copied_to)
+
+
+def print_summary(version, lua_guids, json_guid_entries, val_ctx, val_issues,
+                  out_file, copied_to):
+    """Closing one-look report: what was built, what was checked, where it went."""
+    val_errs = sum(1 for i in val_issues if i.level == validate_maps.ERROR)
+    val_warns = len(val_issues) - val_errs
+
+    if val_ctx is None:
+        validation = term.dim("skipped (--no-validate)")
+    elif val_errs:
+        validation = term.red(f"{val_errs} error(s), {val_warns} warning(s)")
+    elif val_warns:
+        validation = term.yellow(f"passed, {val_warns} warning(s)")
+    else:
+        validation = term.green(f"passed ({len(val_ctx.cards)} cards)")
+
+    rows = [
+        ("Version", version or "(none)"),
+        ("Scripts injected", f"{len(lua_guids)} object + 1 global"),
+        ("JSON GUIDs", str(len(json_guid_entries))),
+        ("Map validation", validation),
+        ("Warnings", term.yellow(str(len(WARNINGS))) if WARNINGS else "0"),
+        ("Output", str(out_file)),
+        ("Copied to", str(copied_to) if copied_to else term.dim("not copied")),
+    ]
+
+    bar = "─" * 56
+    print()
+    print(term.cyan(bar))
+    print(term.bold("  BUILD SUMMARY"))
+    print(term.cyan(bar))
+    for label, value in rows:
+        print(f"  {label:<17}: {value}")
+    if WARNINGS:
+        print(term.yellow("\n  Warnings this run:"))
+        for w in WARNINGS:
+            print(term.yellow(f"    • {w}"))
+    print(term.cyan(bar))
+    print(term.green("  ✓ Build complete.") if not WARNINGS
+          else term.yellow("  ✓ Build complete (with warnings)."))
 
 
 if __name__ == "__main__":

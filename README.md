@@ -25,4 +25,12 @@ Dynamic map generation (based on missions) is not yet implemented, but is curren
 To run the compiler via Python, execute the following from the `Compiler` folder:
 
 ```bash
-python3 compile.py --test
+python3 compile.py             # prompt for a version, write the compiled JSON
+python3 compile.py --test      # tag as "test" and copy to your TTS saves folder
+python3 compile.py --release   # take version + patch notes from CHANGELOG.md, then copy
+python3 compile.py --no-validate   # skip the map-card check gate (see below)
+```
+
+`compile.py` stitches the `TTSLUA/*.ttslua` scripts back into `TTSJSON/ftc_base.json`, stamps the version, and prints a colored build summary at the end.
+
+Every build first runs a validator over the baked-in map cards (whitelist, terrain, zone size); errors abort the build. Run it on its own with `python3 validate_maps.py`, and add new checks by decorating a function with `@check` in `validate_maps.py`.
