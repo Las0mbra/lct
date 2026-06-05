@@ -2290,7 +2290,7 @@ local COHERENCY_MAX = 9   -- inches, base-to-base
 local COHERENCY_LIFT = 0.2 -- raise lines slightly so they sit above the bases
 local COHERENCY_LABEL_LIFT = 0.5 -- raise distance text a little above the lines
 local COHERENCY_REFRESH = 0.1 -- seconds between redraws
-local COHERENCY_TIMEOUT = 30 -- auto-stop if left on this many seconds
+local COHERENCY_TIMEOUT = 15 -- auto-stop if left on this many seconds
 local COHERENCY_LABEL_TAG = "coherencyLabel" -- GMNotes marker for sweep-on-load
 
 -- Spawn a flat, locked 3DText object to use as a floating distance label.

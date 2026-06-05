@@ -809,8 +809,8 @@ dispositionControlWorldX = 36.50
 ingameDispositionControlWorldX = 80
 blueDispositionControlWorldZ = 12.1
 redDispositionControlWorldZ = -12.1
-ingameBlueDispositionControlWorldZ = -11.1186075
-ingameRedDispositionControlWorldZ = 11.1186075
+ingameBlueDispositionControlWorldZ = 11.1186075
+ingameRedDispositionControlWorldZ = -11.1186075
 dispositionControlWorldY = 1.0
 ingameDispositionControlWorldY = 1.0
 
