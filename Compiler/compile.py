@@ -145,6 +145,42 @@ def inject_lua_into_line(json_lines: list, line_idx: int, lua_text: str):
     print(f"  Writing to line {line_idx + 1}.", end=" ")
 
 
+def inject_map_card_hooks(json_lines: list) -> tuple:
+    """Inject the Load Map -> menu notification into each baked map card.
+
+    The source cards (imported from the upstream mod) carry no hook; we add it on
+    every build by rewriting the `loadMap` body in place, so a re-import can't
+    leave a card un-hooked. Returns (injected, candidates): candidates are lines
+    whose LuaScript defines `loadMap`; injected is how many we actually rewrote
+    (fewer means a signature we couldn't anchor — see the validator's warning).
+
+    Idempotent: a script already containing the hook call is skipped.
+    """
+    injected = candidates = 0
+    for i, line in enumerate(json_lines):
+        m = REGEX_JSON_LUASCRIPT_FIELD.search(line)
+        if not m:
+            continue
+        prefix, field = m.group(1), m.group(0)
+        try:
+            lua = json.loads(field[len(prefix):])  # value portion -> raw lua
+        except (json.JSONDecodeError, ValueError):
+            continue
+        if "function loadMap" not in lua:
+            continue
+        candidates += 1
+        if "onMapCardLoaded" in lua:  # already hooked
+            continue
+        new_lua, n = validate_maps.LOADMAP_SIGNATURE_RE.subn(
+            lambda mm: mm.group(0) + validate_maps.MAP_LOAD_HOOK, lua, count=1
+        )
+        if n != 1:
+            continue
+        json_lines[i] = line[:m.start()] + prefix + json.dumps(new_lua) + line[m.end():]
+        injected += 1
+    return injected, candidates
+
+
 def collect_lua_files() -> list:
     """Return [global.ttslua, ...all other .ttslua files recursively sorted]."""
     global_file = PATH_LUA / GLOBAL_LUA
@@ -352,6 +388,14 @@ def main():
         if not found:
             fail(f"GUID {find_guid} not found in JSON! Ending compilation.")
 
+    # --- Inject the Load Map hook into every baked map card ---
+    print("Injecting Load Map hooks into map cards... ", end="")
+    hooks_injected, hook_candidates = inject_map_card_hooks(json_lines)
+    print(term.green(f"{hooks_injected}/{hook_candidates} done."))
+    if hooks_injected != hook_candidates:
+        warn(f"{hook_candidates - hooks_injected} map card(s) could not be hooked "
+             f"(unexpected loadMap signature).")
+
     # --- Stamp version into SaveName (line 1) and GameMode (line 2) ---
     if version:
         print(f"\nStamping version '{version}'...")
@@ -376,11 +420,11 @@ def main():
             warn(f"TTS saves folder not found at {tts_saves}. Skipping copy.")
 
     print_summary(version, lua_guids, json_guid_entries, val_ctx, val_issues,
-                  out_file, copied_to)
+                  hooks_injected, out_file, copied_to)
 
 
 def print_summary(version, lua_guids, json_guid_entries, val_ctx, val_issues,
-                  out_file, copied_to):
+                  hooks_injected, out_file, copied_to):
     """Closing one-look report: what was built, what was checked, where it went."""
     val_errs = sum(1 for i in val_issues if i.level == validate_maps.ERROR)
     val_warns = len(val_issues) - val_errs
@@ -397,6 +441,7 @@ def print_summary(version, lua_guids, json_guid_entries, val_ctx, val_issues,
     rows = [
         ("Version", version or "(none)"),
         ("Scripts injected", f"{len(lua_guids)} object + 1 global"),
+        ("Map card hooks", f"{hooks_injected} injected"),
         ("JSON GUIDs", str(len(json_guid_entries))),
         ("Map validation", validation),
         ("Warnings", term.yellow(str(len(WARNINGS))) if WARNINGS else "0"),

@@ -2604,6 +2604,43 @@ function deployUpDown(upDown)
     placeDeploy()
 end
 
+-- Called (via obj.call) by a map card the instant its "Load Map" button is
+-- pressed -- BEFORE the card wipes itself. params = {name=, guid=}. We announce
+-- the map and auto-select the deployment zone encoded in the card's name (the
+-- suffix after the last " - " is the full zone name, e.g. "... - Tipping Point").
+function onMapCardLoaded(params)
+    local name = (params and params.name) or "?"
+    broadcastToAll("Loading map: " .. name, {0.3, 1.0, 0.3})  -- banner + chat log
+
+    local zoneName = name:match("^.*%-%s*(.-)%s*$")
+    if not zoneName or zoneName == "" then return end
+
+    -- The card's wipe spawns ~1 frame after the press and the terrain at 0.5s;
+    -- drawing the deploy lines now would just get wiped with everything else.
+    -- Defer past both so the zone survives. This is a single one-shot timer.
+    Wait.time(function() selectDeployZoneByName(zoneName) end, 0.7)
+end
+
+-- Select+draw the deployment zone whose name matches, mirroring deployUpDown.
+function selectDeployZoneByName(zoneName)
+    for i, zone in ipairs(DeployZonesData) do
+        if zone.name == zoneName then
+            deployOffset = 0
+            objectivesOffset = 0
+            deploymentPregamePlaced = true
+            if DeployZonesData[deploySelected] and DeployZonesData[deploySelected].objectivesID then
+                destroyAllObjectives()
+            end
+            deploySelected = i
+            writeMenus()
+            placeDeploy()
+            return true
+        end
+    end
+    broadcastToAll('Map "' .. zoneName .. '" has no matching deployment zone in the current size mode.', "Yellow")
+    return false
+end
+
 -- END deploy zones manager
 
 -- ******************

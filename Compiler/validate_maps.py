@@ -53,6 +53,19 @@ KEEP_GUIDS_MUST_EXIST = {"28865a", "4ee1f2"}
 # Every card is expected to honor the per-object opt-out tag.
 EXPECTED_GM_EXCLUDE = "MapExclude"
 
+# --- Compile-time "Load Map" hook -------------------------------------------
+# compile.py injects a one-liner at the top of each card's loadMap so pressing
+# Load Map notifies the menu object (738804) with the card's name/GUID. The
+# source cards stay hook-free; the hook is (re)injected on every build, so a
+# re-import from the upstream mod can't leave a card un-hooked.
+MENU_GUID = "738804"
+LOADMAP_SIGNATURE_RE = re.compile(r'function\s+loadMap\s*\([^)]*\)')
+MAP_LOAD_HOOK = (
+    '\n    do local _m = getObjectFromGUID("' + MENU_GUID + '"); '
+    'if _m then _m.call("onMapCardLoaded", '
+    '{name = self.getName(), guid = self.getGUID()}) end end'
+)
+
 # --- Model ------------------------------------------------------------------
 
 ERROR = "ERROR"
@@ -80,6 +93,7 @@ class MapCard:
         self.guid = obj.get("GUID") or "??????"
         self.name = obj.get("Nickname") or obj.get("Name") or ""
         lua = obj.get("LuaScript", "") or ""
+        self.lua = lua
 
         head, _, tail = lua.partition("objectJSONs")
         self.keep_guids = set(_KEEP_GUID_RE.findall(head))
@@ -183,6 +197,18 @@ def gm_exclude_present(ctx):
         if EXPECTED_GM_EXCLUDE not in card.gm_excludes:
             yield Issue(WARN, card.where,
                         f'wipe does not honor GM-notes "{EXPECTED_GM_EXCLUDE}" opt-out')
+
+
+@check
+def loadmap_is_hookable(ctx):
+    """compile.py injects the Load Map -> menu notification at the loadMap
+    signature. If a re-imported card changed that signature, injection would
+    silently no-op and the deployment auto-select would stop firing."""
+    for card in ctx.cards:
+        if "function loadMap" in card.lua and not LOADMAP_SIGNATURE_RE.search(card.lua):
+            yield Issue(WARN, card.where,
+                        "loadMap signature not in the expected form; "
+                        "compile-time Load Map hook will be skipped")
 
 
 # --- Runner / reporting ------------------------------------------------------
