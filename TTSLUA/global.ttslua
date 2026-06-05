@@ -683,7 +683,7 @@ missionMatchups = {
     -- Disruption (1) is red
     ["1_1"] = { red = "Outmaneuver",            blue = "Outmaneuver" },
     ["1_2"] = { red = "Locate and Deny",        blue = "Extract Relic" },
-    ["1_3"] = { red = "Delay Battle",            blue = "Punishment" },
+    ["1_3"] = { red = "Delaying Action",            blue = "Punishment" },
     ["1_4"] = { red = "Smoke and Mirrors",            blue = "Surveil the Foe" },
     ["1_5"] = { red = "Death Trap",             blue = "Determined Acquisition" },
 
@@ -695,7 +695,7 @@ missionMatchups = {
     ["2_5"] = { red = "Secure Asset",           blue = "Inescapable Dominion" },
 
     -- Purge the Foe (3) is red
-    ["3_1"] = { red = "Punishment",             blue = "Delay Battle" },
+    ["3_1"] = { red = "Punishment",             blue = "Delaying Action" },
     ["3_2"] = { red = "Destroyer's Wrath",      blue = "Vital Link" },
     ["3_3"] = { red = "Meatgrinder",            blue = "Meatgrinder" },
     ["3_4"] = { red = "Consecrate",             blue = "Triangulation" },
