@@ -13,12 +13,13 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
-## v.16.2
+## v16.2a
 - Removed old pdfs and added the new Core Rules with bookmarks (thanks to Bookmarkable PDF by CaptironJack) for easier navigation in game. 
 - Added an image with the new strategems 
 - All primary & secondary cards are now using the amazing card design by Shinobau https://github.com/game-datacards/missioncards 
 - Added new extra tokens (inside a memory bag) by MothmyTitania have a look! 
 - Added a new coherency button that dynamically calculates the distance between selected units. Keep in mind while it's on you can't really draw lines until you toggle it off (right click on button) or 15 seconds pass
+- FIX: fixed a small issue with coherency being wonky with oval based models.
 
 
 ## v1.6.1
