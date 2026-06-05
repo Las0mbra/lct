@@ -157,6 +157,15 @@ local function nextRngBounded(bound)
 end
 
 local function rollFace(faces)
+    -- Never let an unknown/invalid face count crash the roll. takeDiceOut assigns
+    -- a value to every die in one loop and only then takes them out in a second
+    -- loop, so a single throw here would strand the ENTIRE batch inside the
+    -- container (dice in, nothing out). A rare wrong face count is cosmetic;
+    -- stranded dice are a system-down event. Default anything bad to d6.
+    if type(faces) ~= "number" or faces < 1 then
+        faces = 6
+    end
+    faces = math.floor(faces)
     return nextRngBounded(faces) + 1
 end
 
@@ -366,8 +375,17 @@ function takeDiceOut(tab)
             local newXPos
             local newZPos
             if displayInRows then
-				newXPos = 0 - d12Xoffset - 20.4 + (Rows[diceGuids[key]]* data.Step)
-				newZPos = -3.17 + ((((diceGuids[key] - 1) % 6) + 1) * data.Step)
+				-- Wrap a long same-value run into stacked Z-bands instead of letting
+				-- X grow without bound and push dice off the mat (where getDice()
+				-- can no longer see them to roll/clear). First 25 per value are
+				-- placed exactly as before; each band drops 7 rows in Z (6 value
+				-- rows + 1 gap) so bands never interleave.
+				local rowColLimit = 25
+				local rowIdx  = Rows[diceGuids[key]] - 1
+				local rowBand = math.floor(rowIdx / rowColLimit)
+				local rowCol  = rowIdx % rowColLimit
+				newXPos = 0 - d12Xoffset - 20.4 + ((rowCol + 1) * data.Step)
+				newZPos = -3.17 + ((((diceGuids[key] - 1) % 6) + 1) * data.Step) + (rowBand * 7 * data.Step)
             else
 				local pos = n - 1
 				local limit = 25

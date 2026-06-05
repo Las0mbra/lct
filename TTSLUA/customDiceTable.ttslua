@@ -473,11 +473,6 @@ if self.guid == Global.getVar("blueCustomDiceMat_GUID") then
 end
 roller = getObjectFromGUID(rollerGUID)
 lastClickTimestamp = 0
-pendingSpawnRoll = {
-    dice = {},
-    scheduled = false,
-    player = nil
-}
 
 local function nowSeconds()
     if Time and Time.time then
@@ -486,52 +481,12 @@ local function nowSeconds()
     return os.clock()
 end
 
-local function queuePendingSpawnRoll(player, dice)
-    if not dice or #dice == 0 then
-        return
-    end
-
-    pendingSpawnRoll.player = player
-    for _, die in ipairs(dice) do
-        if die and die.tag == "Dice" then
-            table.insert(pendingSpawnRoll.dice, die)
-        end
-    end
-
-    if pendingSpawnRoll.scheduled then
-        return
-    end
-
-    pendingSpawnRoll.scheduled = true
-    Wait.time(function()
-        local queuedDice = pendingSpawnRoll.dice
-        local queuedPlayer = pendingSpawnRoll.player
-        pendingSpawnRoll.dice = {}
-        pendingSpawnRoll.scheduled = false
-        pendingSpawnRoll.player = nil
-
-        local diceToRoll = {}
-        local seen = {}
-        for _, die in ipairs(queuedDice) do
-            if die and die.tag == "Dice" then
-                local guid = die.getGUID()
-                if guid ~= nil and not seen[guid] then
-                    seen[guid] = true
-                    table.insert(diceToRoll, die)
-                end
-            end
-        end
-
-        if #diceToRoll > 0 then
-            moveDiceToRoller(queuedPlayer or player, diceToRoll)
-        end
-    end, 0.5)
-end
-
 -- Coalesces rapid "Roll all dice" presses into a single roll. The selection is
--- taken once, at fire time, via getDice(true) so dice still settling (just
--- spawned, or falling back from a previous roll) are included instead of being
--- skipped by the resting filter on a fast press.
+-- taken at fire time via getDice() (RESTING dice only, like the legacy table) so
+-- a fast second press can't re-grab dice that are still settling from the first
+-- roll and fling them back through the roller -- which is what made rapid Roll
+-- All "explode". Still-settling dice are simply skipped until they come to rest;
+-- press again once they have.
 rollAllPending = { scheduled = false, player = nil }
 local rollAllDelay = 0.1
 
@@ -548,7 +503,7 @@ local function scheduleRollAll(player)
         if queuedPlayer then
             Player[queuedPlayer].clearSelectedObjects()
         end
-        local dice = getDice(true)
+        local dice = getDice()
         if #dice > 0 then
             moveDiceToRoller(queuedPlayer or player, dice)
         end
@@ -740,6 +695,32 @@ end
 -- Used by the roll paths, which don't care about a die's current face since the
 -- roller reassigns it. Value-reading callers (row re-roll, delete, tally) leave
 -- it false so they only ever see settled faces. Held dice are always excluded.
+-- Bounds of the current mat's lethal-hits zone object, or nil if not found.
+-- Single source of truth: getDice() EXCLUDES dice in this box and
+-- cleanupLethalHits() DESTROYS dice in this box, so they must agree on what
+-- "in the zone" means -- otherwise a die can fall between the two (excluded
+-- from clearing, not recognised for cleanup) and become unclearable.
+local function getLethalZoneBounds()
+    local guid = (currentMat == "Red")
+        and Global.getVar("redLethalHits_GUID")
+        or   Global.getVar("blueLethalHits_GUID")
+    local zone = getObjectFromGUID(guid)
+    if not zone then return nil end
+    local lb = zone.getBounds()
+    return {
+        minx = lb.center.x - lb.size.x/2, maxx = lb.center.x + lb.size.x/2,
+        minz = lb.center.z - lb.size.z/2, maxz = lb.center.z + lb.size.z/2,
+        miny = lb.center.y - lb.size.y/2, maxy = lb.center.y + lb.size.y/2,
+    }
+end
+
+local function isInBounds(p, b)
+    return b ~= nil
+        and p.x > b.minx and p.x < b.maxx
+        and p.z > b.minz and p.z < b.maxz
+        and p.y > b.miny and p.y < b.maxy
+end
+
 function getDice(includeMoving)
     local dice = {}
     local b = self.getBounds()
@@ -760,22 +741,7 @@ function getDice(includeMoving)
         front = front - 2.9
     end
 
-    local lethalGUID = (currentMat == "Red")
-        and Global.getVar("redLethalHits_GUID")
-        or   Global.getVar("blueLethalHits_GUID")
-    local lzone = getObjectFromGUID(lethalGUID)
-    local lbound
-    if lzone then
-        local lb = lzone.getBounds()
-        lbound = {
-            minx = lb.center.x - lb.size.x/2,
-            maxx = lb.center.x + lb.size.x/2,
-            minz = lb.center.z - lb.size.z/2,
-            maxz = lb.center.z + lb.size.z/2,
-            miny = lb.center.y - lb.size.y/2,
-            maxy = lb.center.y + lb.size.y/2
-        }
-    end
+    local lbound = getLethalZoneBounds()
 
     for _, o in ipairs(getAllObjects()) do
         if o.tag == "Dice" and (includeMoving or o.resting) and o.held_by_color == nil then
@@ -783,10 +749,7 @@ function getDice(includeMoving)
             if p.x > left and p.x < right
             and p.z > back and p.z < front
             and p.y > ybot and p.y < ytop
-            and not (lbound
-                and p.x > lbound.minx and p.x < lbound.maxx
-                and p.z > lbound.minz and p.z < lbound.maxz
-                and p.y > lbound.miny and p.y < lbound.maxy)
+            and not isInBounds(p, lbound)
             then
                 table.insert(dice, o)
             end
@@ -886,7 +849,7 @@ end
 function RollDiceOrdered(_, player, _)
     Player[player].clearSelectedObjects()
     roller.setVar("orderedOnNextRoll", true)
-    moveDiceToRoller(player, getDice(true))
+    moveDiceToRoller(player, getDice())
 end
 
 function RollDiceOrderedGroup2(obj, player, alt)
@@ -1080,9 +1043,7 @@ function spawnD3(n, player, alt)
             callback_function = function(obj)
                 if selectedColor ~= nil then obj.setColorTint(selectedColor) end
                 table.insert(spawnedDice, obj)
-                if alt then
-                    queuePendingSpawnRoll(player, {obj})
-                end
+                -- Spawn-only (legacy behaviour); no auto-roll. See spawnDice.
             end
         })
         col = col + 1
@@ -1148,9 +1109,10 @@ function spawnDice(n,player,alt)
         end
         table.insert(spawnedDice, die)
     end
-    if alt then
-        queuePendingSpawnRoll(player, spawnedDice)
-    end
+    -- Spawning no longer auto-rolls (legacy behaviour): it just places dice on the
+    -- mat; the player presses Roll All to roll. This removes the spawn-and-roll
+    -- auto-pump that fed large batches straight into the roller and triggered the
+    -- re-roll loop.
 end
 
 -- Cross-object entry point for the stats board. Object.call() can only pass a
@@ -1457,11 +1419,10 @@ function moveLethalHits(isSustainedAndLethal)
                 y = start.y,
                 z = start.z + (currentRow * lethalSpacing),
             }
-            -- Remember where we parked it (not where it came from) so cleanup can
-            -- tell whether the die is still in the lethal zone or has been dragged
-            -- away (back onto the mat / below it). Always refresh in case the die
-            -- was re-parked into a new slot.
-            originalPositions[die.getGUID()] = parked
+            -- Track this die as a lethal hit. cleanupLethalHits decides whether to
+            -- destroy it by its CURRENT position (is it still in the zone?), not by
+            -- a stored slot, so we just need a truthy marker keyed by GUID here.
+            originalPositions[die.getGUID()] = true
             die.setPosition(parked)
             movedCount = movedCount + 1
             currentCol = currentCol + 1
@@ -1475,24 +1436,18 @@ function moveLethalHits(isSustainedAndLethal)
     return movedCount
 end
 
--- True when a die is still sitting where we parked it in the lethal zone.
--- Compared on x/z only (physics can nudge y); eps comfortably below the 1.1
--- park spacing so a die in its own slot matches but one dragged away does not.
-local function isStillParked(curPos, parkedPos)
-    if not curPos or not parkedPos then return false end
-    local dx = curPos.x - parkedPos.x
-    local dz = curPos.z - parkedPos.z
-    return (dx*dx + dz*dz) <= (0.75 * 0.75)
-end
-
 function cleanupLethalHits()
-    -- Only destroy dice that are STILL in the lethal parking zone. A die that was
-    -- tagged lethal but has since been dragged back onto the mat or below it is no
-    -- longer ours to delete here: on-mat dice are handled by the clearDiceX that
-    -- runs right after this in clearDiceAll, and off-mat dice should survive.
-    for guid, parkedPos in pairs(originalPositions) do
+    -- Only destroy dice that are STILL inside the lethal-hits zone -- using the
+    -- exact same bounds getDice() uses to EXCLUDE them. A die tagged lethal but
+    -- since dragged back onto the mat or below it is no longer ours to delete
+    -- here: on-mat dice are handled by the clearDiceX that runs right after this
+    -- in clearDiceAll, and off-mat dice should survive. Sharing one definition
+    -- means no die can fall between the two (excluded from clearing yet
+    -- unrecognised for cleanup) and become permanently unclearable.
+    local zone = getLethalZoneBounds()
+    for guid, _ in pairs(originalPositions) do
         local die = getObjectFromGUID(guid)
-        if die and isStillParked(die.getPosition(), parkedPos) then
+        if die and isInBounds(die.getPosition(), zone) then
             die.destruct()
         end
     end
