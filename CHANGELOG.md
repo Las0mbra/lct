@@ -13,7 +13,8 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
-## v16.2b
+## v16.2c
+- Edited the new dice roller yet again. Removed the instant dice rolling buttons but there should be better stability
 - Automatically set Deployment Zone on Map Load.
 - Additional dev tools on backend
 - Removed old pdfs and added the new Core Rules with bookmarks (thanks to Bookmarkable PDF by CaptironJack) for easier navigation in game. 
