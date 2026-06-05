@@ -1,4 +1,4 @@
--- FTC-GUID: 7aca71,10a26a
+-- FTC-GUID: 7aca71,10a26a,446a11,9d6b2f
 -- Utility memory bag by Directsun
 -- Version 2.5
 -- Fork of Memory Bag 2.0 by MrStump
@@ -382,7 +382,8 @@ end
 
 
 function createMemoryActionButtons()
-    local isTokenBag = (self.getGUID() == "7aca71") or (self.getGUID() == "10a26a")
+    local guid = self.getGUID()
+    local isTokenBag = (guid == "7aca71") or (guid == "10a26a") or (guid == "446a11") or (guid == "9d6b2f")
     local showLabel = isTokenBag and "Show Tokens" or "Show Maps"
     local showWidth = isTokenBag and 1600 or 1400
     local hasToolTip = isTokenBag and "Place Tokens" or ""
