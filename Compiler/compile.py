@@ -286,6 +286,7 @@ def main():
         val_issues, val_ctx = validate_maps.validate(save.get("ObjectStates", []))
         print(term.cyan(f"Validating {len(val_ctx.cards)} map cards..."))
         n_err, _ = validate_maps.report(val_issues, val_ctx)
+        validate_maps.report_zone_versions(val_ctx)
         WARNINGS.extend(
             f"map card: {i.message} [{i.where}]"
             for i in val_issues if i.level == validate_maps.WARN
@@ -429,6 +430,13 @@ def print_summary(version, lua_guids, json_guid_entries, val_ctx, val_issues,
     val_errs = sum(1 for i in val_issues if i.level == validate_maps.ERROR)
     val_warns = len(val_issues) - val_errs
 
+    if val_ctx is not None:
+        v2, v1 = validate_maps.split_by_zone_version(val_ctx)
+        zones = f"{len(v2)} v2 / {len(v1)} v1"
+        zones = term.yellow(zones) if v1 else term.green(zones)
+    else:
+        zones = term.dim("not checked")
+
     if val_ctx is None:
         validation = term.dim("skipped (--no-validate)")
     elif val_errs:
@@ -444,6 +452,7 @@ def print_summary(version, lua_guids, json_guid_entries, val_ctx, val_issues,
         ("Map card hooks", f"{hooks_injected} injected"),
         ("JSON GUIDs", str(len(json_guid_entries))),
         ("Map validation", validation),
+        ("Map Zones", zones),
         ("Warnings", term.yellow(str(len(WARNINGS))) if WARNINGS else "0"),
         ("Output", str(out_file)),
         ("Copied to", str(copied_to) if copied_to else term.dim("not copied")),

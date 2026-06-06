@@ -2572,6 +2572,17 @@ function placeDeploy()
     local data = DeployZonesData[deploySelected]
     drawDeployZone(data)
     writeMenus()
+    syncIngameDeploymentButton()
+end
+
+-- A deployment overlay was just (re)drawn, so keep the in-game toggle (8aba11)
+-- in sync: "showing" (2) when a real zone is on the table, "hidden" (1) for "No
+-- Deployment Zone". Without this the toggle keeps its stale value and the
+-- player's first press is wasted re-syncing instead of actually hiding the zone.
+function syncIngameDeploymentButton()
+    Global.setVar("interactiveButtonDeploymentZones", selectedDeploymentSpawnsOverlay() and 2 or 1)
+    local dzButton = getObjectFromGUID("8aba11")
+    if dzButton then dzButton.call("syncDeploymentZoneButtonImage") end
 end
 
 function deployUp()
@@ -2668,19 +2679,20 @@ defaultObjectivesHeight=1.0
 
 -- PROTOTYPE: place objective markers on top of any object carrying an objective tag.
 -- Each tag maps to a marker template GUID and the state that template should be set to.
---   ce6213: state 1 = central/triangle/neutral marker
---   8272eb: state 2 = blue home, state 1 = red home
+--   e6b8fb: state 1 = home objective (both sides; only the rotation differs)
+--   3c9b57: state 1 = central / triangle objective
+--   7fd7df: state 1 = neutral (expansion) objective
 objectiveSpawnY = 1.03       -- fallback height (table surface) used only if the downward raycast hits nothing
 objectiveTopOffset = 0.1     -- how far above the detected surface a marker sits
 objectiveDebug = Global.getVar("DEBUG") == true  -- build-wide debug flag (true on --test builds)
 -- rotY (optional) overrides only the Y rotation of the placed marker; the
 -- model's existing X/Z tilt is preserved. Omit it to keep the template default.
 objectiveMarkerByTag = {
-    obj_central   = {guid = "ce6213", state = 1},
-    obj_triangle  = {guid = "ce6213", state = 1},
-    obj_neutral   = {guid = "ce6213", state = 1},
-    obj_home_blue = {guid = "8272eb", state = 2, rotY = 270},
-    obj_home_red  = {guid = "8272eb", state = 1, rotY = 90},
+    obj_central   = {guid = "3c9b57", state = 1},
+    obj_triangle  = {guid = "3c9b57", state = 1},
+    obj_neutral   = {guid = "7fd7df", state = 1},
+    obj_home_blue = {guid = "e6b8fb", state = 1, rotY = 270},
+    obj_home_red  = {guid = "e6b8fb", state = 1, rotY = 270},
 }
 -- Stable iteration order so an object matching multiple tags resolves deterministically.
 objectiveTagOrder = {"obj_central", "obj_triangle", "obj_neutral", "obj_home_blue", "obj_home_red"}
@@ -2816,6 +2828,18 @@ function spawnObjectiveMarkerAt(templateGUID, state, pos, rotY)
             marker.setPosition(pos)
             marker.setLock(true)
             marker.setGMNotes("objective")
+            -- Pass-through but still mouse-pickable. The collider does double duty in
+            -- TTS: physics blocking AND cursor raycasts (hover tooltip / right-click
+            -- state menu). Disabling it kills both, so instead make it a *trigger* --
+            -- triggers don't block other objects yet are still hit by the mouse ray.
+            marker.use_gravity = false
+            local boxCol = marker.getComponent("BoxCollider")
+            if boxCol then boxCol.set("isTrigger", true) end
+            local meshCol = marker.getComponent("MeshCollider")
+            if meshCol then
+                meshCol.set("convex", true)  -- Unity only allows convex mesh colliders to be triggers
+                meshCol.set("isTrigger", true)
+            end
             if objectiveDebug then
                 local p = marker.getPosition()
                 print(string.format("[objectives] placed %s (template %s state %s) final pos (%.2f, %.2f, %.2f)",
@@ -2872,8 +2896,8 @@ function selectMissionPack(packIndex)
     local redSecondaryDeckGuid = Global.getVar("edition11RedSecondaryDeck_GUID")
     local blueSecondaryDeckGuid = Global.getVar("edition11BlueSecondaryDeck_GUID")
     local dealFixedSecondaries = true
-    local redFixedChoiceCardGuids = {"e9363d", "acca01", "8c62d6"}
-    local blueFixedChoiceCardGuids = {"f68853", "7d0dc0", "27bca6"}
+    local redFixedChoiceCardGuids = {"e9363d", "acca01", "8c62d6", "7fe9e4"}
+    local blueFixedChoiceCardGuids = {"f68853", "7d0dc0", "27bca6", "774b53"}
     local redTacticalCardGuidToKeep = "838a9b"
     local blueTacticalCardGuidToKeep = "a847c1"
     if legacyPrimaryDeckEnabled then

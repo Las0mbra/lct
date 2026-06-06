@@ -66,6 +66,61 @@ MAP_LOAD_HOOK = (
     '{name = self.getName(), guid = self.getGUID()}) end end'
 )
 
+# --- Map Zones v2 ------------------------------------------------------------
+# The upstream wipe (scriptzoneCallback) reads zone.getObjects() the instant the
+# scripting zone spawns -- before TTS has populated the zone with its contained
+# objects -- so the wipe often removes nothing and the player has to re-click.
+# "Map Zones v2" rewrites the callback to (a) defer detection by a couple of
+# frames so the zone is populated first, (b) keep the card itself (obj ~= self)
+# so its 0.5s terrain-spawn timer survives, and (c) tag itself with a marker so
+# we can tell v1 from v2. This is applied by the dedicated upgrade command only,
+# never by a normal compile; compile just reports who is on which version.
+MAP_ZONES_V2_MARKER = "@@MAP_ZONES_V2@@"
+# Locate the whole `function scriptzoneCallback ... end` by stopping at the next
+# top-level function (loadMap is always next in these cards).
+_NEXT_CARD_FUNC_RE = re.compile(r'function\s+(?:loadMap|clearMap|on[lL]oad)\b')
+# Single-line LuaScript field, used by the line-level in-place rewriter so the
+# rest of the 1.4MB JSON keeps its exact formatting (only the card lines change).
+LUASCRIPT_FIELD_RE = re.compile(r'("LuaScript":\s*)"(?:\\.|[^"\\])*"')
+
+
+def build_v2_callback(keep_guids) -> str:
+    """Return the canonical v2 `scriptzoneCallback` Lua text for a keep-list."""
+    keepset = ", ".join(f'["{g}"]=true' for g in sorted(keep_guids))
+    return (
+        'function scriptzoneCallback(zone) -- ' + MAP_ZONES_V2_MARKER + ' deferred detection\n'
+        '        Wait.frames(function()\n'
+        '            local keep = {' + keepset + '}\n'
+        '            for _, obj in ipairs(zone.getObjects()) do\n'
+        '                if obj ~= self and not keep[obj.getGUID()] and obj.getGMNotes() ~= "MapExclude" then\n'
+        '                    obj.destruct()\n'
+        '                end\n'
+        '            end\n'
+        '            zone.destruct()\n'
+        '        end, 2)\n'
+        '    end'
+    )
+
+
+def migrate_card_lua(lua: str):
+    """Rewrite a card's v1 scriptzoneCallback to v2. Return (new_lua, changed).
+
+    Idempotent: a card already carrying the v2 marker is returned unchanged.
+    The keep-list is preserved (union'd with the required GUIDs as a floor, so a
+    mat can never be dropped), and all formatting outside the callback is kept.
+    """
+    if "function scriptzoneCallback" not in lua or MAP_ZONES_V2_MARKER in lua:
+        return lua, False
+    start = lua.index("function scriptzoneCallback")
+    nxt = _NEXT_CARD_FUNC_RE.search(lua, start + 1)
+    if not nxt:
+        return lua, False
+    end = nxt.start()
+    old_block = lua[start:end]
+    trailing = old_block[len(old_block.rstrip()):]          # ws before next function
+    keep = set(_KEEP_GUID_RE.findall(old_block)) | set(REQUIRED_KEEP_GUIDS)
+    return lua[:start] + build_v2_callback(keep) + trailing + lua[end:], True
+
 # --- Model ------------------------------------------------------------------
 
 ERROR = "ERROR"
@@ -74,11 +129,25 @@ WARN = "WARN"
 Issue = namedtuple("Issue", ["level", "where", "message"])
 
 # A card is identified by its wipe/spawn machinery rather than by GUID, so newly
-# imported cards are picked up automatically.
+# imported cards are picked up automatically. Two keep-list forms exist: v1's
+# `getGUID() ~= "xxxxxx"` and-chain, and v2's `["xxxxxx"]=true` lookup table.
 _KEEP_GUID_RE = re.compile(r'getGUID\(\)\s*~=\s*"([0-9a-fA-F]{6})"')
+_KEEP_GUID_V2_RE = re.compile(r'\["([0-9a-fA-F]{6})"\]\s*=\s*true')
 _GM_EXCLUDE_RE = re.compile(r'getGMNotes\(\)\s*~=\s*"([^"]+)"')
 _ZONE_SCALE_RE = re.compile(r'zoneScale\s*=\s*\{([^}]*)\}')
 _TERRAIN_GUID_RE = re.compile(r'"GUID"\s*:')
+_TERRAIN_GUID_VALUE_RE = re.compile(r'"GUID"\s*:\s*"([0-9a-fA-F]{6})"')
+# Each baked terrain object is a Lua long-string [[ {json} ]] in objectJSONs.
+_OBJECTJSON_ENTRY_RE = re.compile(r'\[\[(.*?)\]\]', re.DOTALL)
+# Card name "... - Sweeping Engagement" -> "Sweeping Engagement" (mirrors the
+# Lua suffix match the Load Map auto-deploy uses).
+_NAME_SUFFIX_RE = re.compile(r'^.*-\s*(.*?)\s*$')
+
+# startMenu.ttslua holds the mission matrix and the deployment-zone names that a
+# couple of cross-checks need. Read best-effort; checks skip if it isn't found.
+STARTMENU_LUA = Path(__file__).parent.parent / "TTSLUA" / "startMenu.ttslua"
+_MATRIX_GUID_RE = re.compile(r'guid\s*=\s*"([0-9a-fA-F]{6})"')
+_DEPLOY_ZONE_NAME_RE = re.compile(r'\{name = "([^"]+)",\s*draw')
 
 
 class MapCard:
@@ -95,13 +164,20 @@ class MapCard:
         lua = obj.get("LuaScript", "") or ""
         self.lua = lua
 
+        self.zones_version = "v2" if MAP_ZONES_V2_MARKER in lua else "v1"
+
         head, _, tail = lua.partition("objectJSONs")
-        self.keep_guids = set(_KEEP_GUID_RE.findall(head))
+        self.keep_guids = (set(_KEEP_GUID_RE.findall(head))
+                           | set(_KEEP_GUID_V2_RE.findall(head)))
         self.gm_excludes = set(_GM_EXCLUDE_RE.findall(head))
         m = _ZONE_SCALE_RE.search(lua)
         self.zone_scale = re.sub(r"\s+", "", m.group(1)) if m else None
-        # Terrain pieces are counted in the blob region only.
+        # Terrain lives in the blob region only.
         self.terrain_count = len(_TERRAIN_GUID_RE.findall(tail))
+        self.terrain_guids = set(_TERRAIN_GUID_VALUE_RE.findall(tail))
+        self.terrain_entries = _OBJECTJSON_ENTRY_RE.findall(tail)
+        sm = _NAME_SUFFIX_RE.match(self.name)
+        self.suffix = sm.group(1) if sm and sm.group(1) else None
 
     @property
     def where(self) -> str:
@@ -109,9 +185,28 @@ class MapCard:
 
 
 class MapContext:
-    def __init__(self, cards, scene_guids):
+    def __init__(self, cards, scene_guids, startmenu_lua=None):
         self.cards = cards
         self.scene_guids = scene_guids
+        self.startmenu_lua = startmenu_lua
+
+    def matrix_referenced_guids(self):
+        """GUIDs referenced by startMenu's mission matrix tables, or None if the
+        lua isn't available."""
+        lua = self.startmenu_lua
+        if not lua:
+            return None
+        try:
+            seg = lua[lua.index("deploymentMatrixDecks"):lua.index("deploymentCardSourceDeckByGuid")]
+        except ValueError:
+            return None
+        return set(_MATRIX_GUID_RE.findall(seg))
+
+    def deploy_zone_names(self):
+        """All deployment-zone names defined in startMenu, or None if unavailable."""
+        if not self.startmenu_lua:
+            return None
+        return set(_DEPLOY_ZONE_NAME_RE.findall(self.startmenu_lua))
 
 
 def _is_map_card(obj) -> bool:
@@ -133,7 +228,8 @@ def build_context(object_states) -> MapContext:
                 walk(o["ContainedObjects"])
 
     walk(object_states)
-    return MapContext(cards, scene_guids)
+    startmenu = STARTMENU_LUA.read_text(encoding="utf-8") if STARTMENU_LUA.exists() else None
+    return MapContext(cards, scene_guids, startmenu)
 
 
 # --- Check registry ---------------------------------------------------------
@@ -200,6 +296,81 @@ def gm_exclude_present(ctx):
 
 
 @check
+def terrain_guid_collisions(ctx):
+    """A baked terrain piece must not reuse a whitelisted GUID (the wipe would
+    then spare that terrain, or two objects would claim the mat's GUID). A clash
+    with a live scene object is softer — TTS reassigns the GUID on spawn — but
+    still worth surfacing."""
+    for card in ctx.cards:
+        for g in sorted(card.terrain_guids):
+            if g in REQUIRED_KEEP_GUIDS:
+                yield Issue(ERROR, card.where,
+                            f"baked terrain reuses whitelisted GUID {g} ({REQUIRED_KEEP_GUIDS[g]})")
+            elif g in ctx.scene_guids:
+                yield Issue(WARN, card.where,
+                            f"baked terrain GUID {g} collides with a live scene object "
+                            "(TTS will reassign it on spawn)")
+
+
+@check
+def mission_matrix_resolves(ctx):
+    """Every GUID referenced by startMenu's mission matrix must exist, and every
+    map card should be referenced by it (else it's unreachable in-game)."""
+    refs = ctx.matrix_referenced_guids()
+    if refs is None:
+        return
+    for g in sorted(refs):
+        if g not in ctx.scene_guids:
+            yield Issue(ERROR, "startMenu matrix",
+                        f"references GUID {g} but no such deck/card exists in the save")
+    for card in ctx.cards:
+        if card.guid not in refs:
+            yield Issue(WARN, card.where,
+                        "not referenced by any deploymentMatrixDecks/randomDeploymentDecks entry")
+
+
+@check
+def name_suffix_resolves(ctx):
+    """The Load Map auto-deploy keys off the card name's ' - <zone>' suffix, so
+    that suffix must match a real deployment-zone name."""
+    zones = ctx.deploy_zone_names()
+    if zones is None:
+        return
+    for card in ctx.cards:
+        if not card.suffix:
+            yield Issue(WARN, card.where,
+                        "name has no ' - <zone>' suffix; Load Map auto-deploy will not select a zone")
+        elif card.suffix not in zones:
+            yield Issue(WARN, card.where,
+                        f'name suffix "{card.suffix}" matches no deployment zone; auto-deploy will not fire')
+
+
+@check
+def objectjsons_parseable(ctx):
+    """Each baked terrain entry must be valid JSON (a truncated/corrupt import
+    breaks Load Map), and a card far below the median piece count is suspicious."""
+    counts = sorted(len(c.terrain_entries) for c in ctx.cards)
+    median = counts[len(counts) // 2] if counts else 0
+    for card in ctx.cards:
+        bad = sum(1 for e in card.terrain_entries if not _is_json(e))
+        if bad:
+            yield Issue(ERROR, card.where,
+                        f"{bad} of {len(card.terrain_entries)} baked terrain entries are not valid JSON")
+        if median and len(card.terrain_entries) < max(1, median // 4):
+            yield Issue(WARN, card.where,
+                        f"only {len(card.terrain_entries)} terrain pieces (median {median}) "
+                        "— possible truncated import")
+
+
+def _is_json(text: str) -> bool:
+    try:
+        json.loads(text)
+        return True
+    except (json.JSONDecodeError, ValueError):
+        return False
+
+
+@check
 def loadmap_is_hookable(ctx):
     """compile.py injects the Load Map -> menu notification at the loadMap
     signature. If a re-imported card changed that signature, injection would
@@ -221,6 +392,25 @@ def validate(object_states):
         issues.extend(fn(ctx))
     issues.sort(key=lambda i: 0 if i.level == ERROR else 1)
     return issues, ctx
+
+
+def split_by_zone_version(ctx):
+    """Return (v2_cards, v1_cards) split on the Map Zones marker."""
+    v2 = [c for c in ctx.cards if c.zones_version == "v2"]
+    v1 = [c for c in ctx.cards if c.zones_version != "v2"]
+    return v2, v1
+
+
+def report_zone_versions(ctx):
+    """Print the Map Zones v1/v2 breakdown. Read-only; never fails a build."""
+    v2, v1 = split_by_zone_version(ctx)
+    total = len(ctx.cards)
+    print(f"  Map Zones: {term.green(str(len(v2)) + ' on v2')}, "
+          f"{(term.yellow if v1 else term.dim)(str(len(v1)) + ' on v1')} of {total}.")
+    if v1:
+        for c in v1:
+            print(term.yellow(f"    v1  {c.guid}  {c.name}"))
+        print(term.dim("    (run the upgrade command to migrate v1 -> v2)"))
 
 
 def report(issues, ctx) -> tuple:
@@ -247,6 +437,7 @@ def main():
     issues, ctx = validate(save.get("ObjectStates", []))
     print(term.bold(f"Validating {len(ctx.cards)} map cards in {json_file.name}..."))
     n_err, n_warn = report(issues, ctx)
+    report_zone_versions(ctx)
     print(term.dim(f"  {n_err} error(s), {n_warn} warning(s)."))
     return 1 if n_err else 0
 

@@ -35,4 +35,11 @@ python3 compile.py --no-validate   # skip the map-card check gate (see below)
 
 `compile.py` stitches the `TTSLUA/*.ttslua` scripts back into `TTSJSON/ftc_base.json`, stamps the version, and prints a colored build summary at the end.
 
-Every build first runs a validator over the baked-in map cards (whitelist, terrain, zone size); errors abort the build. Run it on its own with `python3 validate_maps.py`, and add new checks by decorating a function with `@check` in `validate_maps.py`.
+Every build first runs a validator over the baked-in map cards (whitelist, terrain, zone size, terrain-GUID collisions, mission-matrix references, name-suffix → deployment zone, terrain JSON); errors abort the build. Run it on its own with `python3 validate_maps.py`, and add new checks by decorating a function with `@check` in `validate_maps.py`.
+
+The build report also shows each map card's **Map Zones** version (v1 = original wipe, v2 = deferred wipe that loads/clears reliably). Migrating is a separate, explicit step — it is never done by a normal build:
+
+```bash
+python3 upgrade_map_zones.py            # rewrite v1 cards to v2 in ftc_base.json
+python3 upgrade_map_zones.py --dry-run  # show what would change, write nothing
+```
