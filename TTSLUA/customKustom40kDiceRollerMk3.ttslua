@@ -143,7 +143,10 @@ local function nextRngU32()
 end
 
 local function nextRngBounded(bound)
-    if bound <= 0 then
+    -- Defensive at the exact line that has crashed in the wild ("compare nil with
+    -- number"): never compare a non-number. rollFace already sanitises its input,
+    -- so this is a second, independent guarantee that this line can't throw.
+    if type(bound) ~= "number" or bound <= 0 then
         return 0
     end
 

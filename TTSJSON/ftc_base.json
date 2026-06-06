@@ -42183,48 +42183,6 @@
       "XmlUI": ""
     },
     {
-      "GUID": "021302",
-      "Name": "Counter",
-      "Transform": {
-        "posX": 40.2592964,
-        "posY": -5,
-        "posZ": 36.626152,
-        "rotX": -1.59887338e-06,
-        "rotY": 179.9915,
-        "rotZ": 4.82049245e-07,
-        "scaleX": 2.500001,
-        "scaleY": 2.500001,
-        "scaleZ": 2.500001
-      },
-      "Nickname": "Red Custom Counter",
-      "Description": "ee92cf",
-      "GMNotes": "",
-      "ColorDiffuse": {
-        "r": 0.856,
-        "g": 0.09998388,
-        "b": 0.09398384
-      },
-      "LayoutGroupSortIndex": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "Counter": {
-        "value": 0
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
       "GUID": "7e4111",
       "Name": "Counter",
       "Transform": {
