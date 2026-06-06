@@ -2683,7 +2683,8 @@ defaultObjectivesHeight=1.0
 --   3c9b57: state 1 = central / triangle objective
 --   7fd7df: state 1 = neutral (expansion) objective
 objectiveSpawnY = 1.03       -- fallback height (table surface) used only if the downward raycast hits nothing
-objectiveTopOffset = 0.1     -- how far above the detected surface a marker sits
+objectiveTopOffset = 0.1     -- spawn lift above the detected surface (before the final seat below)
+objectiveSeatClearance = 0.0 -- gap left under a seated marker; 0 = touching, bump up to avoid z-fighting
 objectiveDebug = Global.getVar("DEBUG") == true  -- build-wide debug flag (true on --test builds)
 -- rotY (optional) overrides only the Y rotation of the placed marker; the
 -- model's existing X/Z tilt is preserved. Omit it to keep the template default.
@@ -2826,6 +2827,16 @@ function spawnObjectiveMarkerAt(templateGUID, state, pos, rotY)
                 marker.setRotation({r.x, rotY, r.z})
             end
             marker.setPosition(pos)
+            -- Seat it on the surface instead of floating: measure the marker's world
+            -- bounds and drop it by the gap between its underside and the detected
+            -- surface height. Deterministic -- no physics settling, no unlock/relock.
+            local b = marker.getBounds()
+            if b then
+                local surfaceY  = pos.y - objectiveTopOffset
+                local underside = b.center.y - b.size.y / 2
+                local seatY     = pos.y + (surfaceY + objectiveSeatClearance - underside)
+                marker.setPosition({x = pos.x, y = seatY, z = pos.z})
+            end
             marker.setLock(true)
             marker.setGMNotes("objective")
             -- Pass-through but still mouse-pickable. The collider does double duty in
