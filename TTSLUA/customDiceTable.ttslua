@@ -85,31 +85,31 @@ orderedRollGroup3Btn={
 
 add1d6Btn={
     label="+ 1d6", click_function="spawnDice1", function_owner=self,
-    tooltip="Spawns 1d6 dice",
+    tooltip="Left click: Spawns 1d6\nRight click: Quick-roll 1d6 (instant)",
     position={-0.5, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={0.7,0.7,0.7}, font_color={0,0,0}
 }
 add2d6Btn={
     label="+ 2d6", click_function="spawnDice2", function_owner=self,
-    tooltip="Spawns 2d6 dice",
+    tooltip="Left click: Spawns 2d6\nRight click: Quick-roll 2d6 (instant)",
     position={-0.03, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={0.7,0.7,0.7}, font_color={0,0,0}
 }
 add3d6Btn={
     label="+ 3d6", click_function="spawnDice3", function_owner=self,
-    tooltip="Spawns 3d6 dice",
+    tooltip="Left click: Spawns 3d6\nRight click: Quick-roll 3d6 (instant)",
     position={0.44, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={0.7,0.7,0.7}, font_color={0,0,0}
 }
 add4d6Btn={
     label="+ 4d6", click_function="spawnDice4", function_owner=self,
-    tooltip="Spawns 4d6 dice",
+    tooltip="Left click: Spawns 4d6\nRight click: Quick-roll 4d6 (instant)",
     position={0.91, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={0.7,0.7,0.7}, font_color={0,0,0}
 }
 add5d6Btn={
     label="+ 5d6", click_function="spawnDice5", function_owner=self,
-    tooltip="Spawns 5d6 dice",
+    tooltip="Left click: Spawns 5d6\nRight click: Quick-roll 5d6 (instant)",
     position={1.38, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={0.7,0.7,0.7}, font_color={0,0,0}
 }
@@ -1109,10 +1109,58 @@ function spawnDice(n,player,alt)
         end
         table.insert(spawnedDice, die)
     end
-    -- Spawning no longer auto-rolls (legacy behaviour): it just places dice on the
-    -- mat; the player presses Roll All to roll. This removes the spawn-and-roll
-    -- auto-pump that fed large batches straight into the roller and triggered the
-    -- re-roll loop.
+    -- Left-click spawns only (press Roll All to roll through the bag). Right-click
+    -- (alt) on the SMALL spawners (1d6-5d6) "quick rolls": the dice are spawned
+    -- already showing values from the roller's xoshiro RNG and never enter the bag
+    -- (the legacy quick-roll trick) -- instant, and immune to the bag's
+    -- loop/strand/nil-faces failure modes. Gated to n<=5; +10/+25/+1d3 stay
+    -- spawn-only.
+    if alt and n >= 1 and n <= 5 and #spawnedDice > 0 then
+        quickRollSpawnedDice(player, spawnedDice)
+    end
+end
+
+-- Fixed palette for quick-roll dice: one colour is picked per quick-roll and
+-- shared by every die in that roll, so consecutive quick-rolls are easy to tell
+-- apart. Cosmetic only, so plain math.random is fine here (dice VALUES still use
+-- the roller's xoshiro).
+-- Red and blue are intentionally excluded: those are the players' main dice
+-- colours, so quick-roll dice stay visually distinct from them.
+local quickRollPalette = {
+    {0.95, 0.60, 0.20}, -- orange
+    {0.95, 0.85, 0.25}, -- yellow
+    {0.40, 0.80, 0.45}, -- green
+    {0.30, 0.75, 0.80}, -- teal
+    {0.65, 0.45, 0.85}, -- purple
+    {0.90, 0.55, 0.75}, -- pink
+}
+local lastQuickRollColorIndex = 0
+
+-- Set already-spawned dice to values from the roller's xoshiro stream so they
+-- appear instantly rolled, without ever entering the bag. Falls back to
+-- math.random only if the roller object can't be reached. All dice in the roll
+-- share one random palette colour.
+function quickRollSpawnedDice(player, dice)
+    local vals
+    if roller then
+        vals = roller.call("rollFacesForQuick", { n = #dice, faces = 6 })
+    end
+    -- Pick one palette colour for the whole roll, never repeating the previous
+    -- roll's colour so batches stay visually distinct.
+    local idx = math.random(#quickRollPalette)
+    if #quickRollPalette > 1 and idx == lastQuickRollColorIndex then
+        idx = (idx % #quickRollPalette) + 1
+    end
+    lastQuickRollColorIndex = idx
+    local tint = quickRollPalette[idx]
+    local total = 0
+    for i, die in ipairs(dice) do
+        local v = (vals and tonumber(vals[i])) or math.random(6)
+        die.setValue(v)
+        die.setColorTint(tint)
+        total = total + v
+    end
+    printToAll(Player[player].steam_name .. " quick-rolled " .. tostring(total) .. " on " .. #dice .. "d6", "White")
 end
 
 -- Cross-object entry point for the stats board. Object.call() can only pass a

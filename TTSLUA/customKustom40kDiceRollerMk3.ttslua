@@ -172,6 +172,20 @@ local function rollFace(faces)
     return nextRngBounded(faces) + 1
 end
 
+-- Quick-roll support for the dice table: returns n face values from THIS roller's
+-- xoshiro stream WITHOUT any die entering the bag. The table spawns dice and
+-- setValue()s them to these, so quick-rolls share the same seeded/persisted RNG as
+-- normal rolls but skip the container entirely (instant, loop/strand-proof).
+function rollFacesForQuick(params)
+    local n = math.floor(tonumber(params and params.n) or 0)
+    local faces = tonumber(params and params.faces) or 6
+    local out = {}
+    for i = 1, n do
+        out[i] = rollFace(faces)
+    end
+    return out
+end
+
 thisBoxIsBlue = (self.guid == Global.getVar("blueCustomDiceRoller_GUID")) and true or false
 
 orderedOnNextRoll = false
