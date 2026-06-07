@@ -138,7 +138,7 @@ draw1Btn = {
     font_size = 150,
     click_function = 'drawSecondary1',
     function_owner = self,
-    position = {1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ - secondarySlotButtonHorizontalOffset},
+    position = {1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ - (secondarySlotButtonHorizontalOffset * 2)},
     rotation = {0, 0, 0},
     tooltip = "Draw red secondary"
 }
@@ -149,9 +149,20 @@ draw1SingleBtn = {
     font_size = 150,
     click_function = 'drawSecondary1Single',
     function_owner = self,
-    position = {1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ + secondarySlotButtonHorizontalOffset},
+    position = {1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ},
     rotation = {0, 0, 0},
     tooltip = "Draw 1 red secondary"
+}
+sort1Btn = {
+    width = 180,
+    height = 180,
+    label = "S",
+    font_size = 150,
+    click_function = 'sortSecondary1',
+    function_owner = self,
+    position = {1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ + (secondarySlotButtonHorizontalOffset * 2)},
+    rotation = {0, 0, 0},
+    tooltip = "Sort Secondories"
 }
 draw2Btn = {
     width = 180,
@@ -160,7 +171,7 @@ draw2Btn = {
     font_size = 150,
     click_function = 'drawSecondary2',
     function_owner = self,
-    position = {-1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ - secondarySlotButtonHorizontalOffset},
+    position = {-1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ - (secondarySlotButtonHorizontalOffset * 2)},
     rotation = {0, 0, 0},
     tooltip = "Draw blue secondary"
 }
@@ -171,9 +182,20 @@ draw2SingleBtn = {
     font_size = 150,
     click_function = 'drawSecondary2Single',
     function_owner = self,
-    position = {-1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ + secondarySlotButtonHorizontalOffset},
+    position = {-1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ},
     rotation = {0, 0, 0},
     tooltip = "Draw 1 blue secondary"
+}
+sort2Btn = {
+    width = 180,
+    height = 180,
+    label = "S",
+    font_size = 150,
+    click_function = 'sortSecondary2',
+    function_owner = self,
+    position = {-1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ + (secondarySlotButtonHorizontalOffset * 2)},
+    rotation = {0, 0, 0},
+    tooltip = "Sort Secondories"
 }
 function enableSheet()
 	scoresheetActive=true
@@ -266,6 +288,7 @@ function createSecondaryDrawButtons()
     if redBoard then
         redBoard.createButton(draw1Btn)
         redBoard.createButton(draw1SingleBtn)
+        redBoard.createButton(sort1Btn)
         createSecondarySlotButtons(redBoard, "Red", {
             {1, 1.03, -3.54},
             {2, -1.60, -3.54},
@@ -282,6 +305,7 @@ function createSecondaryDrawButtons()
     if blueBoard then
         blueBoard.createButton(draw2Btn)
         blueBoard.createButton(draw2SingleBtn)
+        blueBoard.createButton(sort2Btn)
         createSecondarySlotButtons(blueBoard, "Blue", {
             {1, -1.03, -3.54},
             {2, 1.60, -3.54},
@@ -848,6 +872,10 @@ function drawSecondary1Single()
     Global.call("drawRedSecondaryToFirstOpenSlotSingle")
 end
 
+function sortSecondary1()
+    Global.call("sortSecondarySlots", {color = "Red"})
+end
+
 
 -- For Blue: draw into the first open BlueSec scripting area, up to 10 active cards.
 function drawSecondary2()
@@ -857,6 +885,10 @@ end
 -- Single-card variant: same logic as drawSecondary2 but draws exactly one card.
 function drawSecondary2Single()
     Global.call("drawBlueSecondaryToFirstOpenSlotSingle")
+end
+
+function sortSecondary2()
+    Global.call("sortSecondarySlots", {color = "Blue"})
 end
 
 function onObjectDestroyed(destroyed_obj)

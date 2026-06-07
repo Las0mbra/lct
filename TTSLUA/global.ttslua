@@ -1669,6 +1669,53 @@ function drawRedSecondaryToFirstOpenSlotSingle()
     })
 end
 
+function sortSecondarySlots(params)
+    local color = params.color
+    if secondaryDrawBusy[color] then
+        broadcastToColor("Hold on - secondary cards are still moving.", color, "Yellow")
+        return
+    end
+
+    local zoneGuids = (color == "Red") and redSecondaryCardZone_GUIDs or blueSecondaryCardZone_GUIDs
+    local zones = getSecondaryCardZones(zoneGuids)
+    local occupiedSlots = {}
+
+    for _, slot in ipairs(zones) do
+        local cards = getCardsInSecondarySlot(slot.zone)
+        if #cards > 0 then
+            occupiedSlots[#occupiedSlots + 1] = cards
+        end
+    end
+
+    local movedAny = false
+    secondaryDrawBusy[color] = true
+    for targetIndex, cards in ipairs(occupiedSlots) do
+        local targetZone = zones[targetIndex] and zones[targetIndex].zone
+        if targetZone then
+            local targetPosition = getSecondarySlotCardPosition(targetZone)
+            for _, card in ipairs(cards) do
+                local position = card.getPosition()
+                if math.abs(position.x - targetPosition.x) > 0.1 or math.abs(position.z - targetPosition.z) > 0.1 then
+                    card.locked = false
+                    card.setPositionSmooth(targetPosition, false, true)
+                    movedAny = true
+                end
+            end
+        end
+    end
+
+    Wait.time(function()
+        for targetIndex = 1, #occupiedSlots do
+            local targetZone = zones[targetIndex] and zones[targetIndex].zone
+            for _, card in ipairs(getCardsInSecondarySlot(targetZone)) do
+                card.locked = true
+            end
+        end
+        refreshSecondaryNamesForColor(color)
+        secondaryDrawBusy[color] = false
+    end, movedAny and 1.5 or 0.1)
+end
+
 function discardSecondarySlot(params)
     local color = params.color
     local zone = getSecondaryCardZoneByIndex(color, params.index)
