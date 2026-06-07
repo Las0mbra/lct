@@ -13,6 +13,12 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.6.4
+- Added updated primary/secondary cards (improved wording)
+- UI/UX changes 
+- Added Sort Secondary buttons to place secondary cards on empty spots 
+- Additional game keys and sorted them alphabetically.
+
 ## v1.6.3b
 - Improved Map Loading (this wont work with maps outside the mod)
 - Proper Objective marker graphics! Try it!

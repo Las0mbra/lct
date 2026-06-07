@@ -323,8 +323,8 @@ function writeSizeMenu()
     self.createButton(sizeBtn)
     self.createButton(sizeUpBtn)
     self.createButton(sizeDownBtn)
-    self.createButton(confirmBtn)
-    self.createButton(confirmBtn4)
+    createButtonWithBorder(confirmBtn)
+    createButtonWithBorder(confirmBtn4)
     mat.setScale(sizeData[mapSizeSelected].scale)
     mat.setPosition(positionValue)
 end
@@ -869,12 +869,13 @@ function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunct
     local worldY = locked and ingameDispositionControlWorldY or dispositionControlWorldY
     local center = self.positionToLocal({worldX, worldY, worldZ})
     local cx, cy, cz = center.x, center.y, center.z
-    self.createButton({
+    local dispositionButton = {
         label = selectedValue, click_function = "none", function_owner = self,
         position = {cx, cy, cz}, rotation = {0, 0, 0},
         height = buttonHeight, width = buttonWidth, font_size = buttonFontSize,
         color = selectedColor, font_color = {0, 0, 0}, tooltip = label,
-    })
+    }
+    createButtonWithBorder(dispositionButton)
 
     if locked then
         return
@@ -3028,7 +3029,10 @@ function createButtonWithBorder(params, borderColor)
     border.font_size = 1
     border.height = (params.height or 0) + menuButtonBorderThickness
     border.width = (params.width or 0) + menuButtonBorderThickness
-    border.color = borderColor or {0.1, 0.1, 0.1}
+    local resolvedBorderColor = borderColor or {0.1, 0.1, 0.1, 1}
+    border.color = resolvedBorderColor
+    border.hover_color = resolvedBorderColor
+    border.press_color = resolvedBorderColor
     self.createButton(border)
 
     -- Raise the real button slightly in y so it renders on top of the border.

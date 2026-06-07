@@ -162,7 +162,7 @@ sort1Btn = {
     function_owner = self,
     position = {1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ + (secondarySlotButtonHorizontalOffset * 2)},
     rotation = {0, 0, 0},
-    tooltip = "Sort Secondories"
+    tooltip = "Sort Secondaries"
 }
 draw2Btn = {
     width = 180,
@@ -195,7 +195,7 @@ sort2Btn = {
     function_owner = self,
     position = {-1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ + (secondarySlotButtonHorizontalOffset * 2)},
     rotation = {0, 0, 0},
-    tooltip = "Sort Secondories"
+    tooltip = "Sort Secondaries"
 }
 function enableSheet()
 	scoresheetActive=true

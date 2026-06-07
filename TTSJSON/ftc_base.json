@@ -59345,7 +59345,7 @@
       "Hands": false,
       "CustomMesh": {
         "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/9387960343237540759/02BFFC21FCD7BA6E98FCA87C131B7943A9D4C92A/",
-        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/14824570340863448967/60F294280F836AFAE20D3225F8D9305C37BD7ABF/",
+        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11404967222951286571/AB58D7689EA5012FE5E3A0A57347387A02367373/",
         "NormalURL": "",
         "ColliderURL": "",
         "Convex": true,
@@ -59410,7 +59410,7 @@
       "Hands": false,
       "CustomMesh": {
         "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/9387960343237540759/02BFFC21FCD7BA6E98FCA87C131B7943A9D4C92A/",
-        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/16478093450120136182/AEAB2F3ECDCB823FD5E6B95A7C9147ED9685F46B/",
+        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/16774421424188830702/B5D7ACC5A9CBFCDD5FCF24703EE0715B6A675F66/",
         "NormalURL": "",
         "ColliderURL": "",
         "Convex": true,
@@ -67888,8 +67888,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomImage": {
-        "ImageURL": "file:////home/gtsigouris/Downloads/logo_test2.png",
-        "ImageSecondaryURL": "file:////home/gtsigouris/Downloads/logo_test2.png",
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/12414923671829313225/7968C115F5B83E0577427B60EB6269BCD63307DF/",
+        "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/12414923671829313225/7968C115F5B83E0577427B60EB6269BCD63307DF/",
         "ImageScalar": 1.0,
         "WidthScale": 0.0,
         "CustomTile": {

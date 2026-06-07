@@ -1499,6 +1499,21 @@ function getSecondaryCardName(zone)
     return nil
 end
 
+function getSecondaryCardNameForColor(color, index, zone)
+    if not zone then
+        return nil
+    end
+
+    for _, object in ipairs(getCardsInSecondarySlotForColor(color, index, zone)) do
+        local name = object.getName()
+        if name and name ~= "" then
+            return name
+        end
+    end
+
+    return nil
+end
+
 function setSecondaryName(nameGuids, index, cardName)
     local labelObj = getObjectFromGUID(nameGuids[index])
     if not labelObj then
@@ -1521,21 +1536,21 @@ function setRedSecondaryName(index, cardName)
     setSecondaryName(redSecondaryName_GUIDs, index, cardName)
 end
 
-function refreshSecondaryNames(zoneGuids, nameGuids, setter)
+function refreshSecondaryNames(zoneGuids, nameGuids, setter, color)
     for index = 1, #nameGuids do
         local zoneGuid = zoneGuids[index]
         local zone = getObjectFromGUID(zoneGuid)
-        local cardName = getSecondaryCardName(zone)
+        local cardName = getSecondaryCardNameForColor(color, index, zone)
         setter(index, cardName)
     end
 end
 
 function refreshBlueSecondaryNames()
-    refreshSecondaryNames(blueSecondaryCardZone_GUIDs, blueSecondaryName_GUIDs, setBlueSecondaryName)
+    refreshSecondaryNames(blueSecondaryCardZone_GUIDs, blueSecondaryName_GUIDs, setBlueSecondaryName, "Blue")
 end
 
 function refreshRedSecondaryNames()
-    refreshSecondaryNames(redSecondaryCardZone_GUIDs, redSecondaryName_GUIDs, setRedSecondaryName)
+    refreshSecondaryNames(redSecondaryCardZone_GUIDs, redSecondaryName_GUIDs, setRedSecondaryName, "Red")
 end
 
 function refreshBlueSecondaryNamesSoon()
@@ -1546,25 +1561,125 @@ function refreshRedSecondaryNamesSoon()
     Wait.time(refreshRedSecondaryNames, 0.25)
 end
 
-function onObjectEnterScriptingZone(zone, object)
-    if isRedSecondaryCardZone(zone) then
-        refreshRedSecondaryNamesSoon()
+function getSecondaryZoneColorAndIndex(zone)
+    if not zone then
+        return nil, nil
     end
-    if isBlueSecondaryCardZone(zone) then
-        refreshBlueSecondaryNamesSoon()
+
+    local zoneGuid = zone.getGUID()
+    for index, guid in ipairs(redSecondaryCardZone_GUIDs) do
+        if zoneGuid == guid then
+            return "Red", index
+        end
+    end
+    for index, guid in ipairs(blueSecondaryCardZone_GUIDs) do
+        if zoneGuid == guid then
+            return "Blue", index
+        end
+    end
+
+    return nil, nil
+end
+
+function onObjectEnterScriptingZone(zone, object)
+    local color, index = getSecondaryZoneColorAndIndex(zone)
+    if color and isSecondaryCardObject(object) then
+        assignSecondarySlotCard(color, index, object)
+        if color == "Red" then
+            refreshRedSecondaryNamesSoon()
+        else
+            refreshBlueSecondaryNamesSoon()
+        end
     end
 end
 
 function onObjectLeaveScriptingZone(zone, object)
-    if isRedSecondaryCardZone(zone) then
-        refreshRedSecondaryNamesSoon()
+    local color, index = getSecondaryZoneColorAndIndex(zone)
+    if not color or not isSecondaryCardObject(object) then
+        return
     end
-    if isBlueSecondaryCardZone(zone) then
+
+    local assignedCard = getAssignedSecondarySlotCard(color, index)
+    if assignedCard == object then
+        clearSecondarySlotAssignment(color, index)
+    end
+
+    if color == "Red" then
+        refreshRedSecondaryNamesSoon()
+    else
         refreshBlueSecondaryNamesSoon()
     end
 end
 
 secondaryDrawBusy = {Red = false, Blue = false}
+secondarySlotAssignments = {Red = {}, Blue = {}}
+
+function isSecondaryCardObject(obj)
+    return obj and (obj.tag == "Card" or obj.tag == "Deck" or obj.type == "Card" or obj.type == "Deck")
+end
+
+function addUniqueSecondaryCard(cards, seen, obj)
+    if not isSecondaryCardObject(obj) then
+        return
+    end
+
+    local guid = obj.getGUID and obj.getGUID() or nil
+    if guid and seen[guid] then
+        return
+    end
+
+    if guid then
+        seen[guid] = true
+    end
+    cards[#cards + 1] = obj
+end
+
+function assignSecondarySlotCard(color, index, card)
+    if not color or not index or not card or not card.getGUID then
+        return
+    end
+
+    secondarySlotAssignments[color] = secondarySlotAssignments[color] or {}
+    secondarySlotAssignments[color][index] = card.getGUID()
+end
+
+function clearSecondarySlotAssignment(color, index)
+    if secondarySlotAssignments[color] then
+        secondarySlotAssignments[color][index] = nil
+    end
+end
+
+function getAssignedSecondarySlotCard(color, index)
+    local assignments = secondarySlotAssignments[color]
+    local guid = assignments and assignments[index] or nil
+    if not guid then
+        return nil
+    end
+
+    local card = getObjectFromGUID(guid)
+    if isSecondaryCardObject(card) then
+        return card
+    end
+
+    clearSecondarySlotAssignment(color, index)
+    return nil
+end
+
+function getCardsInSecondarySlotForColor(color, index, zone)
+    local cards = {}
+    local seen = {}
+    addUniqueSecondaryCard(cards, seen, getAssignedSecondarySlotCard(color, index))
+
+    for _, card in ipairs(getCardsInSecondarySlot(zone)) do
+        addUniqueSecondaryCard(cards, seen, card)
+    end
+
+    return cards
+end
+
+function clearSecondarySlotAssignmentsForColor(color)
+    secondarySlotAssignments[color] = {}
+end
 
 function drawSecondaryToFirstOpenSlot(params)
     if secondaryDrawBusy[params.color] then
@@ -1589,7 +1704,7 @@ function drawSecondaryToFirstOpenSlot(params)
     local maxCards = params.maxCards or 2
     local openSlots = {}
     for _, slot in ipairs(getSecondaryCardZones(params.zoneGuids)) do
-        if #getCardsInSecondarySlot(slot.zone) == 0 then
+        if #getCardsInSecondarySlotForColor(params.color, slot.index, slot.zone) == 0 then
             openSlots[#openSlots + 1] = slot
             if #openSlots >= maxCards then break end
         end
@@ -1604,12 +1719,14 @@ function drawSecondaryToFirstOpenSlot(params)
     deckObj.shuffle()
 
     for _, slot in ipairs(openSlots) do
+        local slotIndex = slot.index
         deckObj.takeObject({
             position = getSecondarySlotCardPosition(slot.zone),
             rotation = {x = 0, y = 270, z = 180},
             flip = true,
             smooth = true,
             callback_function = function(card)
+                assignSecondarySlotCard(params.color, slotIndex, card)
                 Wait.frames(function()
                     card.locked = true
                     params.refreshNames()
@@ -1681,7 +1798,7 @@ function sortSecondarySlots(params)
     local occupiedSlots = {}
 
     for _, slot in ipairs(zones) do
-        local cards = getCardsInSecondarySlot(slot.zone)
+        local cards = getCardsInSecondarySlotForColor(color, slot.index, slot.zone)
         if #cards > 0 then
             occupiedSlots[#occupiedSlots + 1] = cards
         end
@@ -1689,6 +1806,7 @@ function sortSecondarySlots(params)
 
     local movedAny = false
     secondaryDrawBusy[color] = true
+    clearSecondarySlotAssignmentsForColor(color)
     for targetIndex, cards in ipairs(occupiedSlots) do
         local targetZone = zones[targetIndex] and zones[targetIndex].zone
         if targetZone then
@@ -1700,6 +1818,7 @@ function sortSecondarySlots(params)
                     card.setPositionSmooth(targetPosition, false, true)
                     movedAny = true
                 end
+                assignSecondarySlotCard(color, targetIndex, card)
             end
         end
     end
@@ -1707,7 +1826,7 @@ function sortSecondarySlots(params)
     Wait.time(function()
         for targetIndex = 1, #occupiedSlots do
             local targetZone = zones[targetIndex] and zones[targetIndex].zone
-            for _, card in ipairs(getCardsInSecondarySlot(targetZone)) do
+            for _, card in ipairs(getCardsInSecondarySlotForColor(color, targetIndex, targetZone)) do
                 card.locked = true
             end
         end
@@ -1725,10 +1844,11 @@ function discardSecondarySlot(params)
     end
 
     local discardPosition = getSecondaryDiscardPosition(color)
-    for _, object in ipairs(getCardsInSecondarySlot(zone)) do
+    for _, object in ipairs(getCardsInSecondarySlotForColor(color, params.index, zone)) do
         object.locked = false
         object.setPositionSmooth(discardPosition)
     end
+    clearSecondarySlotAssignment(color, params.index)
 
     Wait.time(function() refreshSecondaryNamesForColor(color) end, 0.25)
 end
@@ -1748,11 +1868,12 @@ function recycleSecondarySlot(params)
     end
 
     local recycledAny = false
-    for _, object in ipairs(getCardsInSecondarySlot(zone)) do
+    for _, object in ipairs(getCardsInSecondarySlotForColor(color, params.index, zone)) do
         object.locked = false
         deckObj = deckObj.putObject(object) or deckObj
         recycledAny = true
     end
+    clearSecondarySlotAssignment(color, params.index)
 
     if not recycledAny then
         return
@@ -1766,6 +1887,7 @@ function recycleSecondarySlot(params)
             flip = true,
             smooth = true,
             callback_function = function(card)
+                assignSecondarySlotCard(color, params.index, card)
                 Wait.frames(function()
                     card.locked = true
                     refreshSecondaryNamesForColor(color)

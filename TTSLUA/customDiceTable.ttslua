@@ -3,6 +3,28 @@ function none()
 end
 Yoffset=0.1
 
+toolButtonBorderThickness = 70
+
+-- TTS world buttons have no outline property, so use a larger backing button.
+function createToolButtonWithBorder(params, borderColor)
+    local border = {}
+    for k, v in pairs(params) do border[k] = v end
+    border.label = ""
+    border.font_size = 1
+    border.height = (params.height or 0) + toolButtonBorderThickness
+    border.width = (params.width or 0) + toolButtonBorderThickness
+    local resolvedBorderColor = borderColor or {0.1, 0.1, 0.1, 1}
+    border.color = resolvedBorderColor
+    border.hover_color = resolvedBorderColor
+    border.press_color = resolvedBorderColor
+    self.createButton(border)
+
+    local top = {}
+    for k, v in pairs(params) do top[k] = v end
+    top.position = {params.position[1], params.position[2] + 0.01, params.position[3]}
+    self.createButton(top)
+end
+
 local currentMat
 if self.getPosition().z < 0 then
     currentMat="Blue"
@@ -216,7 +238,7 @@ susLabel = "Sustained Hits"
 susTip   = "Left-click: move dice >= 6. Right-click: move dice >= 5."
 sustainedHitsBtn={
     label=susLabel, tooltip=susTip, click_function="sustainedHitsAction", function_owner=self,
-    position={lethalButtonsOffset + 0.7, Yoffset ,1.1}, rotation={0,0,0}, height=1000, width=3800, scale={0.1,0.1,0.1},
+    position={lethalButtonsOffset + 0.705, Yoffset ,1.1}, rotation={0,0,0}, height=1000, width=3800, scale={0.1,0.1,0.1},
     font_size=500, color="White", font_color={0,0,0}
 }
 
@@ -1392,30 +1414,30 @@ function onload()
     self.createButton(customDiceBtn)
     self.createButton(add3d6Btn)
     self.createButton(add4d6Btn)
-    self.createButton(lethalHitsBtn)
-    self.createButton(sustainedHitsBtn)
-    self.createButton(sustainedLethalHitsBtn)
+    createToolButtonWithBorder(lethalHitsBtn)
+    createToolButtonWithBorder(sustainedHitsBtn)
+    createToolButtonWithBorder(sustainedLethalHitsBtn)
     self.createButton(copyOthersDiceBtn)
     self.createButton(auto2D6)
     self.createButton(revertRollBtn)  -- Add this near the end of the button creations
     self.createButton(saveBtn)
     self.createButton(restoreBtn)
-    self.createButton(measure1Btn)
-    self.createButton(measure2Btn)
-    self.createButton(measure3Btn)
-    self.createButton(measure6Btn)
-    self.createButton(measure8Btn)
-    self.createButton(measure9Btn)
-    self.createButton(measure12Btn)
-    self.createButton(measure15Btn)
+    createToolButtonWithBorder(measure1Btn)
+    createToolButtonWithBorder(measure2Btn)
+    createToolButtonWithBorder(measure3Btn)
+    createToolButtonWithBorder(measure6Btn)
+    createToolButtonWithBorder(measure8Btn)
+    createToolButtonWithBorder(measure9Btn)
+    createToolButtonWithBorder(measure12Btn)
+    createToolButtonWithBorder(measure15Btn)
     self.createButton(customBubbleInputBG)
     self.createInput(customBubbleInput)
     self.createButton(customBubbleBtn)
-    self.createButton(clearMeasureAllBtn)
-    self.createButton(clearLinesBtn)
-    self.createButton(checkCoherencyBtn)
-    self.createButton(gap2Btn)
-    self.createButton(gap1Btn)
+    createToolButtonWithBorder(clearMeasureAllBtn)
+    createToolButtonWithBorder(clearLinesBtn)
+    createToolButtonWithBorder(checkCoherencyBtn)
+    createToolButtonWithBorder(gap2Btn)
+    createToolButtonWithBorder(gap1Btn)
     self.createButton(customDiceSpawnButton)
     if self.getPosition().z < 0 then selectedColor="Blue" else selectedColor="Red" end modifyMenu(selectedColor)
 
