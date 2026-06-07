@@ -172,6 +172,24 @@ local function rollFace(faces)
     return nextRngBounded(faces) + 1
 end
 
+-- Safely resolve a die's face count from a live Object reference. Returns a
+-- number, or nil when it can't be determined (rollFace then defaults nil to d6).
+-- The custom-object branch is the historical crash site: getCustomObject() on an
+-- odd Workshop die can lack a numeric .type, and the old `customFace[type + 1]`
+-- did arithmetic on nil, which later surfaced as "attempt to compare nil with
+-- number" in nextRngBounded and stranded the whole batch. Guard every step.
+local function detectFaces(obj)
+    local faces = tonumber(string.match(tostring(obj), 'Die_(%d+).*'))
+    if faces ~= nil then
+        return faces
+    end
+    local ok, custom = pcall(function() return obj.getCustomObject() end)
+    if ok and type(custom) == "table" and type(custom.type) == "number" then
+        return tonumber(customFace[custom.type + 1])
+    end
+    return nil
+end
+
 -- Quick-roll support for the dice table: returns n face values from THIS roller's
 -- xoshiro stream WITHOUT any die entering the bag. The table spawns dice and
 -- setValue()s them to these, so quick-rolls share the same seeded/persisted RNG as
@@ -282,12 +300,7 @@ function onObjectEnterContainer(container, obj)
             end
             local guid = obj.getGUID()
             if guid then
-                local objType = tostring(obj)
-                local faces = tonumber(string.match(objType, 'Die_(%d+).*'))
-                if faces == nil then
-                    faces = tonumber(customFace[obj.getCustomObject().type + 1])
-                end
-                diceGuidFaces[guid] = faces
+                diceGuidFaces[guid] = detectFaces(obj)
                 playerColor = lastHolder[obj]
             end
             if takeDiceOutPendingId then
@@ -317,12 +330,7 @@ function onCollisionEnter(collision_info)
 
 	for k, v in ipairs(getAllObjects()) do
 		if v.tag == 'Dice' then
-			objType = tostring(v)
-			faces = tonumber(string.match(objType, 'Die_(%d+).*'))
-			if faces == nil then
-				faces = tonumber(customFace[v.getCustomObject().type + 1])
-			end
-            diceGuidFaces[v.getGUID()] = faces
+            diceGuidFaces[v.getGUID()] = detectFaces(v)
             table.insert(sortedKeys, v.getGUID())
 		end
 	end
@@ -648,10 +656,7 @@ function setValueCallback(obj, tab)
 
         obj.setValue(tab[1])
         if obj.tag == 'Dice' then
-            objType = tostring(obj)
-            callFaces = tonumber(string.match(objType, 'Die_(%d+).*'))
-            if callFaces == nil then callFaces = tonumber(customFace[obj.getCustomObject().type + 1]) end
-            diceGuidFaces[obj.getGUID()] = callFaces
+            diceGuidFaces[obj.getGUID()] = detectFaces(obj)
         end
 
         local rotValues = obj.getRotationValues()

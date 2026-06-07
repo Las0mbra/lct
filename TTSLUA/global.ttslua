@@ -1073,9 +1073,6 @@ end
 function onLoad(saved_data)
     --addHotkey("Tag Selected as Red", tagSelectedAsRed)
     --addHotkey("Tag Selected as Blue", tagSelectedAsBlue)
-    addHotkey("Custom Bubble", function(playerColor, _, _)
-        openBubbleInput({color = playerColor, mat = diceMatForColor(playerColor)})
-    end)
     Turns.enable=false
     --- load vars from saved
     if saved_data ~= "" then
