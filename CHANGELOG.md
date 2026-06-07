@@ -13,8 +13,8 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
-## v1.6.3
-- Dice rollers now reseed fresh on every load, so rolls no longer repeat the same sequence across games.
+## v1.6.3b
+- Improved Map Loading (this wont work with maps outside the mod)
 - Proper Objective marker graphics! Try it!
 - Added legacy quick roll feature if you right click dice spawn buttons in ordered manner. (This still uses the new dice rolling algorith).
 - Added engange on all fronts fixed
