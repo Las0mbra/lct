@@ -5,7 +5,8 @@
 -- This roller uses a vendored xoshiro128++ pseudorandom number generator
 -- instead of Lua 5.2 math.random. TTS is based on Lua 5.2, whose RNG maps
 -- to the host C rand() implementation, so we use an explicit 32-bit PRNG to
--- get known behavior, better auditability, and saved/restored RNG state.
+-- get known behavior and better auditability. The RNG is reseeded fresh on
+-- every load (state is never persisted) so the mod can't ship a frozen seed.
 lastRolls={}
 scaleBtn=3
 printLastBtn={
@@ -220,19 +221,19 @@ function onLoad(save_state)
 	if self.getDescription() == '' then
 		setDefaultState()
 	end
-	local saved = save_state ~= "" and JSON.decode(save_state) or nil
-	if saved and saved.rngState then
-		setRngState(saved.rngState)
-	else
-		setRngState(createSeedWords())
-	end
+	-- Always reseed on load. We deliberately ignore any persisted rngState so a
+	-- frozen seed can never be baked into the published mod's save (which would
+	-- replay the identical roll sequence every game). createSeedWords() mixes
+	-- os.time/os.clock/GUID through SplitMix, so fresh loads decorrelate.
+	setRngState(createSeedWords())
 	self.createButton(printLastBtn)
 	self.createButton(printLast5Btn)
 end
 
 --Returns description on game save.
 function onSave()
-	return JSON.encode({rngState = rngState})
+	-- Intentionally persist no RNG state: rolls reseed on every load.
+	return ""
 end
 
 --Reset description on drop if empty.

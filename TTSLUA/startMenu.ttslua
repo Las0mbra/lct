@@ -2721,7 +2721,7 @@ function placeObjectives()
 
     local placed = 0
 
-    -- Edge case: exactly two obj_triangle objects collapse to a single neutral
+    -- Edge case: exactly two obj_triangle objects collapse to a single central
     -- marker placed at the midpoint between where the two markers would have gone.
     -- Any other count (0, 1, 3+) falls back to one marker per object.
     if #triangleTargets == 2 then
@@ -2729,9 +2729,9 @@ function placeObjectives()
         local p2 = objectiveMarkerPosition(triangleTargets[2])
         local mx, mz = (p1.x + p2.x) / 2, (p1.z + p2.z) / 2
         local mid = {x = mx, y = objectiveSurfaceY(mx, mz), z = mz}
-        local m = objectiveMarkerByTag.obj_neutral
+        local m = objectiveMarkerByTag.obj_triangle
         if objectiveDebug then
-            print(string.format("[objectives] 2x obj_triangle -> single neutral marker at midpoint (%.2f, %.2f, %.2f)", mid.x, mid.y, mid.z))
+            print(string.format("[objectives] 2x obj_triangle -> single central marker at midpoint (%.2f, %.2f, %.2f)", mid.x, mid.y, mid.z))
         end
         if spawnObjectiveMarkerAt(m.guid, m.state, mid, m.rotY) then
             placed = placed + 1

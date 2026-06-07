@@ -13,6 +13,12 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.6.3
+- Dice rollers now reseed fresh on every load, so rolls no longer repeat the same sequence across games.
+- Proper Objective marker graphics! Try it!
+- Added legacy quick roll feature if you right click dice spawn buttons in ordered manner. (This still uses the new dice rolling algorith).
+- Added engange on all fronts fixed
+
 ## v16.2c
 - Edited the new dice roller yet again. Removed the instant dice rolling buttons but there should be better stability
 - Automatically set Deployment Zone on Map Load.

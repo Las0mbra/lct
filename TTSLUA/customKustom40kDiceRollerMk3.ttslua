@@ -225,16 +225,16 @@ function onLoad(save_state)
 		setDefaultState()
 	end
 
-    local saved = save_state ~= "" and JSON.decode(save_state) or nil
-    if saved and saved.rngState then
-        setRngState(saved.rngState)
-    else
-        setRngState(createSeedWords())
-    end
+    -- Always reseed on load. We deliberately ignore any persisted rngState so a
+    -- frozen seed can never be baked into the published mod's save (which would
+    -- replay the identical roll sequence every game). createSeedWords() mixes
+    -- os.time/os.clock/GUID through SplitMix, so fresh loads decorrelate.
+    setRngState(createSeedWords())
 end
 
 function onSave()
-	return JSON.encode({rngState = rngState})
+	-- Intentionally persist no RNG state: rolls reseed on every load.
+	return ""
 end
 
 function onDropped(player_color)
