@@ -3230,6 +3230,7 @@ function startGame(obj, player, alt)
     Global.call("recordPlayers")
     inGame = true
     hideDeploymentZonesForGameStart()
+    showObjectivesForGameStart()
 
     local scoresheet = getObjectFromGUID(Global.getVar("scoresheet_GUID"))
     scoresheet.call("startGame")
@@ -3478,6 +3479,15 @@ function hideDeploymentZonesForGameStart()
     local button = getObjectFromGUID("8aba11")
     if button then
         button.call("syncDeploymentZoneButtonImage")
+    end
+end
+
+function showObjectivesForGameStart()
+    local button = getObjectFromGUID("15d652")
+    if button then
+        button.call("turnObjectivesOn")
+    else
+        broadcastToAll("Could not turn objectives on: Show Objectives button not found.", {1, 0.25, 0.25})
     end
 end
 

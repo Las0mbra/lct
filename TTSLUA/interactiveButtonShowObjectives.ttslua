@@ -2,8 +2,17 @@
 
 local onState  = 'https://steamusercontent-a.akamaihd.net/ugc/15473991661851235143/8834767C61229AE6ED0741E4051392B6D4922AE5/'
 local offState = 'https://steamusercontent-a.akamaihd.net/ugc/12364072905194764916/7393E6D304AF9BA29D630698A289034B55690BFD/'
+local managerGUID = "738804"
+local clickCooldownSeconds = 0.5
+local objectivesOn = false
 
 function onLoad(saved_data)
+    if saved_data and saved_data ~= "" then
+        local loaded_data = JSON.decode(saved_data)
+        objectivesOn = loaded_data.objectivesOn == true
+    end
+    Global.setVar("interactiveButtonShowObjectives", objectivesOn and 2 or 1)
+
     self.createButton({
         click_function  = "toggleObjectives",
         function_owner  = self,
@@ -28,6 +37,12 @@ function onLoad(saved_data)
     end
 end
 
+function onSave()
+    return JSON.encode({
+        objectivesOn = objectivesOn,
+    })
+end
+
 function rngDiagnostic()
     if Global.getVar("DEBUG") ~= true then return end
     local roller = getObjectFromGUID(Global.getVar("redCustomDiceRoller_GUID"))
@@ -38,22 +53,48 @@ function rngDiagnostic()
     roller.call("debugRngCheck")
 end
 
-function toggleObjectives()
-    local manager = getObjectFromGUID("738804")
-    local state = Global.getVar("interactiveButtonShowObjectives")
-    if state == 1 then -- place
-        Global.setVar("interactiveButtonShowObjectives", 2)
+function setObjectivesVisible(visible)
+    local manager = getObjectFromGUID(managerGUID)
+    if not manager then
+        printToAll("Cannot toggle objectives: objectives manager not found.", {1, 0.25, 0.25})
+        return false
+    end
+
+    objectivesOn = visible == true
+    Global.setVar("interactiveButtonShowObjectives", objectivesOn and 2 or 1)
+
+    local params
+    if objectivesOn then
         manager.call("placeObjectives")
         params = {
             image = onState,
         }
-    else -- recall
-        Global.setVar("interactiveButtonShowObjectives", 1)
+    else
         manager.call("destroyAllObjectives")
         params = {
             image = offState,
         }
     end
+    self.script_state = onSave()
     self.setCustomObject(params)
     self.reload()
+    return true
+end
+
+function turnObjectivesOn()
+    setObjectivesVisible(true)
+end
+
+function turnObjectivesOff()
+    setObjectivesVisible(false)
+end
+
+function toggleObjectives()
+    local now = Time.time
+    local nextClickAt = Global.getVar("interactiveButtonShowObjectivesNextClickAt") or 0
+    if now < nextClickAt then return end
+
+    -- Stored globally because changing the custom-token image reloads this script.
+    Global.setVar("interactiveButtonShowObjectivesNextClickAt", now + clickCooldownSeconds)
+    setObjectivesVisible(not objectivesOn)
 end

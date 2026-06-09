@@ -753,6 +753,7 @@ interactiveButtonStratReserves = 1
 interactiveButtonDeploymentZones = 1
 interactiveButtonTerritoryLine = 1
 interactiveButtonShowObjectives = 1
+interactiveButtonShowObjectivesNextClickAt = 0
 
 
 teamModels = { Red = {}, Blue = {} }
