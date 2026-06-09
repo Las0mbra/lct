@@ -1126,12 +1126,6 @@ function onLoad(saved_data)
     applyHudPreferences()
     --startPolling()
     Wait.time(function()
-        -- Selection Highlight
-        local redHighlighter = getObjectFromGUID(RedSelectionHighlighter)
-        if redHighlighter then redHighlighter.call("onLoad") end
-        local blueHighlighter = getObjectFromGUID(BlueSelectionHighlighter)
-        if blueHighlighter then blueHighlighter.call("onLoad") end
-
         -- Stat Helper: move to active positions
         local redStatHelper = getObjectFromGUID("7c7c20")
         if redStatHelper then redStatHelper.setPosition({-4.078736, 0.87, 34.7377625}) end

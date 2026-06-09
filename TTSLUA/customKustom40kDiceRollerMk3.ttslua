@@ -409,11 +409,11 @@ function clearDataForGC(data)
     end
 end
 
-function onObjectPickedUp(playerColor, obj)
+function onObjectPickUp(playerColor, obj)
 	lastHolder[obj] = playerColor
 end
 
-function onObjectDestroyed(obj)
+function onObjectDestroy(obj)
 	lastHolder[obj] = nil
 end
 
@@ -439,7 +439,7 @@ function onSave()
 	return ""
 end
 
-function onDropped(player_color)
+function onDrop(player_color)
 	if self.getDescription() == '' then
 		setDefaultState()
 	end

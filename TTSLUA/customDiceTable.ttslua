@@ -1259,7 +1259,7 @@ function getObjectsPositionToSave(player, hoveredObject)
   if #player.getSelectedObjects() != 0 then
     return player.getSelectedObjects()
   elseif hoveredObject != nil then
-    return table.insert({}, hoveredObject)
+    return {hoveredObject}
   end
   return nil
 end

@@ -320,6 +320,12 @@ function createSecondaryDrawButtons()
 end
 
 function onload(save_data)
+	startGameObj = getObjectFromGUID(Global.getVar("startMenu_GUID"))
+	secondary11ZoneObj = getObjectFromGUID(Global.getVar("secondary11CardZone_GUID"))
+	secondary12ZoneObj = getObjectFromGUID(Global.getVar("secondary12CardZone_GUID"))
+	secondary21ZoneObj = getObjectFromGUID(Global.getVar("secondary21CardZone_GUID"))
+	secondary22ZoneObj = getObjectFromGUID(Global.getVar("secondary22CardZone_GUID"))
+
 	if save_data ~= "" then
 		local data = JSON.decode(save_data)
 		if data then
@@ -891,7 +897,7 @@ function sortSecondary2()
     Global.call("sortSecondarySlots", {color = "Blue"})
 end
 
-function onObjectDestroyed(destroyed_obj)
+function onObjectDestroy(destroyed_obj)
     -- Check if a fixed Red secondary clone was deleted
     if fixedSecondaryCard1_Red and fixedSecondaryCard1_Red == destroyed_obj then
         fixedSecondaryCard1_Red = nil

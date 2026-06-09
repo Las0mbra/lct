@@ -48,7 +48,7 @@ CLOCK_PILL_PASSIVE_TEXT        = "#FFFFFF40"
 
 -- Original Vars
 
-TimerID  = ""     Colons      = true
+clockWaitId = nil  Colons      = true
 holding  = false  holdTime    = 0
 holding_1= false hold_1Time  = 0
 holding_2= false hold_2Time  = 0
@@ -84,8 +84,10 @@ end
 
 function onDestroy()
 	onSave()
-    Timer.destroy(TimerID)
-    TimerID=""
+    if clockWaitId then
+        Wait.stop(clockWaitId)
+        clockWaitId = nil
+    end
 end
 
 function onLoad(json)
@@ -109,12 +111,12 @@ function onLoad(json)
 			end
 		end
 		return true
-	end)
+	end, 10, changeButtonColors)
 
     DisplayClock(1, data.seconds_1)
     DisplayClock(2, data.seconds_2)
-    TimerID = "Gizmo_ChessClock_"..os.time()
-    Timer.create({identifier=TimerID, function_name="Tick", delay=RESOLUTION, repetitions=0})
+    ensureChessStopwatchUI()
+    clockWaitId = Wait.time(Tick, RESOLUTION, -1)
 	end
 
 
@@ -845,7 +847,7 @@ end
 	    return {(tmpDigits[1]*3600)+(tmpDigits[2]*600)+(tmpDigits[3]*60)+(tmpDigits[4]*10)+tmpDigits[5], (tmpDigits[6]*3600)+(tmpDigits[7]*600)+(tmpDigits[8]*60)+(tmpDigits[9]*10)+tmpDigits[10]}
 	end
 	function Ding()
-	    Timer.create({identifier=os.time(), function_name="Dong", delay=0.025, repetitions=50})
+	    Wait.time(Dong, 0.025, 50)
 	end
 	function Dong()
 	    pos = self.getPosition()
@@ -931,7 +933,6 @@ function SubTime2() data.seconds_2 = math.max(0, data.seconds_2 - 300); DisplayC
 
 -- Calculates numbers for UI clock
 function DisplayUIClock(which) -- which 1,2
-	ensureChessStopwatchUI()
 	local clockString = string.format("%02d:%02d:%02d", math.floor(hours), math.floor(minutes), math.floor(secs))
 
 	Global.call("setHudAttribute", {id = "ChsStpWatch"..which, attr = "text", value = clockString})

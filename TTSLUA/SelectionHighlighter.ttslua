@@ -3,44 +3,42 @@
 -- This script highlights objects in green when they are selected by a player.
 local selectedObjects = {}
 local checkInterval = 0.1
+local checkWaitId = nil
+local activeHighlighterGuid = "27de4f"
 
 function onLoad()
---    ---- Just destroy it (if it exists). If it doesn't exist, TTS won't error out.
-    Timer.destroy("checkSelections")
---    --
---    ---- Wait 30 frames, then move ourselves below the table
+    if self.getGUID() ~= activeHighlighterGuid then
+        self.interactable = false
+        return
+    end
+
     Wait.frames(function()
---    --    self.setPosition({-5, -5, -5})
-    --    self.setLock(true)
         self.interactable = false
     end, 30)
---
-    -- Create the timer
-    Timer.create({
-        identifier    = "checkSelections",
-        function_name = "checkSelections",
-        delay         = checkInterval,
-        repetitions   = 0
-    })
+
+    checkWaitId = Wait.time(checkSelections, checkInterval, -1)
 end
 
-function getHighlightColorForPlayer(playerColor)
-    local colorMapping = {
-        Red = {1, 0, 0}, -- Red
-        Blue = {0, 0, 1}, -- Blue
-        Green = {0, 1, 0}, -- Green
-        Yellow = {1, 1, 0}, -- Yellow
-        Purple = {0.5, 0, 0.5}, -- Purple
-        Orange = {1, 0.5, 0}, -- Orange
-        White = {1, 1, 1}, -- White
-        Black = {0, 0, 0} -- Black
-    }
+local colorMapping = {
+    Red = {1, 0, 0},
+    Blue = {0, 0, 1},
+    Green = {0, 1, 0},
+    Yellow = {1, 1, 0},
+    Purple = {0.5, 0, 0.5},
+    Orange = {1, 0.5, 0},
+    White = {1, 1, 1},
+    Black = {0, 0, 0}
+}
 
-    return colorMapping[playerColor] or {0.5, 0.5, 0.5} -- Default to gray if color not found
+function getHighlightColorForPlayer(playerColor)
+    return colorMapping[playerColor] or {0.5, 0.5, 0.5}
 end
 
 function onDestroy()
-    Timer.destroy("checkSelections")
+    if checkWaitId then
+        Wait.stop(checkWaitId)
+        checkWaitId = nil
+    end
     clearAllHighlights()
 end
 
