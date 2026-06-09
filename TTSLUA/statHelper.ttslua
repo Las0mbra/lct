@@ -7,6 +7,8 @@ spawnedDiceCount = 0
 savedPositions = {}
 spawnPosition = nil
 customDieData = nil
+useCustomTrayDice = false
+activeCustomTrayDiceConfig = false
 
 function onSave()
   return JSON.encode({
@@ -22,6 +24,7 @@ function onLoad(data)
   self.addContextMenuItem("Reset Spawn Position", onResetSpawnPositionClicked)
   self.addContextMenuItem("Version", onVersionClicked)
   restoreSavedData(data)
+  setupStatsHelperTopRow()
 end
 
 function restoreSavedData(data)
@@ -36,6 +39,94 @@ function restoreSavedData(data)
   end
 end
 
+function setupStatsHelperTopRow()
+  local ui = self.UI.getXmlTable()
+  if not ui or not ui[2] or not ui[2].children or not ui[2].children[1] then
+    return
+  end
+  ui[2].children[1].children = {
+    {
+      tag = "Button",
+      attributes = {
+        text = "Show weapon stats",
+        onClick = "onCountClicked",
+        fontSize = "60",
+        preferredWidth = "1800",
+        preferredHeight = "100"
+      }
+    },
+    {
+      tag = "Button",
+      attributes = {
+        text = customTrayDiceToggleText(),
+        id = "CustomTrayDiceToggle",
+        onClick = "toggleCustomTrayDice",
+        fontSize = "36",
+        preferredWidth = "450",
+        preferredHeight = "100",
+        color = customTrayDiceToggleColor(),
+        textColor = "#000000"
+      }
+    }
+  }
+  self.UI.setXmlTable(ui)
+end
+
+function customTrayDiceToggleText()
+  return useCustomTrayDice and "☑ Custom Dice" or "☐ Custom Dice"
+end
+
+function customTrayDiceToggleColor()
+  return useCustomTrayDice and "#38C172" or "#FFFFFF"
+end
+
+function toggleCustomTrayDice(player, value, id)
+  useCustomTrayDice = not useCustomTrayDice
+  self.UI.setAttribute("CustomTrayDiceToggle", "color", customTrayDiceToggleColor())
+  self.UI.setAttribute("CustomTrayDiceToggle", "text", customTrayDiceToggleText())
+end
+
+function getCustomTrayDiceConfig()
+  if activeCustomTrayDiceConfig ~= false then
+    return activeCustomTrayDiceConfig
+  end
+  return readCustomTrayDiceConfig()
+end
+
+function readCustomTrayDiceConfig()
+  if not useCustomTrayDice then return nil end
+  local mat = getStatsHelperCustomDiceMat()
+  if not mat then return nil end
+  return copyCustomTrayDiceConfig(mat.call("getStatsHelperDiceConfig"))
+end
+
+function copyCustomTrayDiceConfig(config)
+  if type(config) ~= "table" then return nil end
+  return {
+    diceType = config.diceType,
+    selectedColor = copyColorValue(config.selectedColor),
+    customDiceImage = config.customDiceImage
+  }
+end
+
+function copyColorValue(value)
+  if type(value) ~= "table" then return value end
+  return {value[1], value[2], value[3], value[4]}
+end
+
+function getStatsHelperCustomDiceMat()
+  local guid
+  if self.getGUID() == "7c7c20" then
+    guid = Global.getVar("redCustomDiceMat_GUID")
+  elseif self.getGUID() == "b7ac7a" then
+    guid = Global.getVar("blueCustomDiceMat_GUID")
+  elseif self.getPosition().z > 0 then
+    guid = Global.getVar("redCustomDiceMat_GUID")
+  else
+    guid = Global.getVar("blueCustomDiceMat_GUID")
+  end
+  return guid and getObjectFromGUID(guid) or nil
+end
 
 function onResetSpawnPositionClicked()
   spawnPosition = nil
@@ -215,6 +306,8 @@ function spawnDices(count, color, weaponName, offset, ap, strength, dmg, melta, 
   local ratioX = math.cos(math.rad(self.getRotation()[2]))
   local ratioY = math.sin(math.rad(self.getRotation()[2]))
   local rowSize = 20
+  local previousTrayDiceConfig = activeCustomTrayDiceConfig
+  activeCustomTrayDiceConfig = readCustomTrayDiceConfig()
   for i = 1, count do
     local column = (i + offset - 1) % rowSize + 1
     local row = math.ceil((i + offset) / rowSize)
@@ -249,27 +342,38 @@ function spawnDices(count, color, weaponName, offset, ap, strength, dmg, melta, 
     })
     setDieCustomObject(die)
   end
+  activeCustomTrayDiceConfig = previousTrayDiceConfig
 end
 
 function setDieCustomObject(die)
+  local trayConfig = getCustomTrayDiceConfig()
+  if trayConfig and trayConfig.customDiceImage then
+    die.setCustomObject({ image = trayConfig.customDiceImage, type = 1 })
+    return
+  end
   if customDieData and customDieData.image then
-    die.setCustomObject({
-      image = customDieData.image,
-      type = 1
-    })
+    die.setCustomObject({ image = customDieData.image, type = 1 })
   end
 end
 
 function setDieTint(die, color)
+  local trayConfig = getCustomTrayDiceConfig()
+  if trayConfig and trayConfig.selectedColor then
+    die.setColorTint(trayConfig.selectedColor)
+    return
+  end
   local customTint = customDieData and customDieData.colorTint
   die.setColorTint(customTint or color)
 end
 
 function getDiceType()
+  local trayConfig = getCustomTrayDiceConfig()
+  if trayConfig and trayConfig.diceType then
+    return trayConfig.diceType
+  end
   if customDieData and customDieData.image then
     return "Custom_Dice"
   end
-
   return "Die_6"
 end
 

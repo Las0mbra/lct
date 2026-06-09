@@ -128,7 +128,7 @@
   "TabStates": {
     "0": {
       "title": "Gaming instructions",
-      "body": "SETTING UP THE GAME\r\n\r\nWhen loading or connecting choose your seat in the shown menu.\r\n\r\nAdditive load a terrain save file for FTC Gaming Template v2.0 or above, the map and the mat background will be placed. Confirm it or remove if you want to change with another map. In the table control menu (on one of the table legs) there is a button to erase all but the table in the gaming area, in case you wrongly confirmed. This button erases already placed armies and other things too.\r\n\r\nYou can then import your army. If you import one made with the FTC Army Builder v2.0 or above (you can find it in the workshop) just additive load the save file and use the buttons to place the army on your side or remove it if you want to change it. Make sure that nobody loads a new army until the previous one is placed or deleted to prevent physics spaz.\r\n\r\nUse the menu on the top of the gaming mat to place the chosen deployment areas and objectives for the chosen mission. If terrain is interfering with the deployment zones or objectives, you can use the + and - buttons to raise or lower them.\r\n\r\n\r\nSTARTING THE GAME\r\n\r\nDeploy the armies as per the rules for the mission you are playing. Select the starting player with the toggle button, and when you are ready, start the game with the clearly marked button. Turns will be automatically taken in the chosen order, and the battle-forged CP will be automatically added each turn.\r\n\r\nDuring the game you can re-show and re-hide the selected deployment zones by clicking on the corresponding buttons placed near the top of battle mat. There are also buttons to show table quarters, Engage zones, Strategic Reserves zones, and to show 3\" and 6\" distances from the center. You also can use buttons on the upper left to go easily to dice roller and back (select a model first to go back to it)\r\n\r\nYou can save and load your game at any point of the game or setup. When loading a save file of a started game, the players will be automatically placed in the seats they had when they started to play.\r\n\r\n\r\nPLAYING THE GAME\r\n\r\nObjective markers have multiple states. The default state (1) provides a mat showing both the marker and the control radius. State 2 shows you the marker itself. State 3 provides a 3\" cylinder so you can easily check range. States 4 and 5 are the same as state 1 but in red and blue, useful for highlighting control or sticky control.\r\n\r\nTo roll dice simply drop them into the small cardboard box, it will roll them and place them in order on the rolling mat. The rolling mat will display the results along with the total dice rolled. Also present are buttons to spawn dice of 4 colors, to select them and to delete them. Near each row of dice are present buttons to delete or re-roll dice rows, left click affects only that row, right click affects that row plus all the lower (-). If you click the \" - / + \" button, the next right click will delete/re-roll that row plus all the higher dice instead. Use the description of the small box to change your preferences and the behavior of the tool. You can also switch between re-rolling and selecting. There's also buttons to roll dice showing you what order they were rolled in, useful for Feel No Pain rolls, and a button to mark whatever die is currently on the mat as the die to spawn copies of, useful if you've got a custom (e.g. faction) die you'd like to use.\r\n\r\nYou can find a set of useful generic tokens at the head of the table, copy them and use them as you see fit.\r\n\r\nActivation tokens: an interactive token can be placed near each unit to keep track of which ones have acted in each phase. Green means that the unit has to act; red that it has already acted. To change the state, just click on the coloured button. All the tokens are reset automatically at each phase/turn change. You can manually reset them by clicking on any \"Reset Activation tokens\" button. With the token selected, you can use the Numpad1 and Numpad2 to lower/raise the position of the button.\r\n\r\nWound trackers: an interactive token can be placed near each model to keep track of its remaining wounds. To reduce the number left click on the button, to increase it right click. With the token selected you can use the Numpad1 and Numpad2 to lower/raise the position of the button.\r\n\r\nThe counters are self explanatory; the player's turn and the battle round ones are automatic, you don't need to update them manually. The victory ones will reflect the value of the score sheet if you use it.\r\n\r\nIf you want to use the chess clock, you can pass the time to your opponent by clicking on the time shown on the top-right of the UI. Alternatively, you can press keypad 7 if you're red, or 9 if you're blue.\r\n\r\n\r\nMISCELLANEOUS\r\n\r\nThe battle mat is a modified \"Flex Table\" (by MrStump) with fixed dimensions. You can change the background of the mat by clicking on the white button on one of the legs and paste the URL of the image.\r\n\r\nYou can store URLs in memory by adding them individually so you can recall them easily if you want to make a local version with stored images. An improvement in version 2 is that you now only need to provide the image of the battle mat itself, you don\u2019t need to edit a massive image containing the felt part. For best results, use an image with the correct ratio!\r\n\r\nReport any bugs at https://github.com/hutber/tts-map-base/issues\r\n",
+      "body": "SETTING UP THE GAME\r\n\r\nWhen loading or connecting choose your seat in the shown menu.\r\n\r\nAdditive load a terrain save file for FTC Gaming Template v2.0 or above, the map and the mat background will be placed. Confirm it or remove if you want to change with another map. In the table control menu (on one of the table legs) there is a button to erase all but the table in the gaming area, in case you wrongly confirmed. This button erases already placed armies and other things too.\r\n\r\nYou can then import your army. If you import one made with the FTC Army Builder v2.0 or above (you can find it in the workshop) just additive load the save file and use the buttons to place the army on your side or remove it if you want to change it. Make sure that nobody loads a new army until the previous one is placed or deleted to prevent physics spaz.\r\n\r\nUse the menu on the top of the gaming mat to place the chosen deployment areas and objectives for the chosen mission. If terrain is interfering with the deployment zones or objectives, you can use the + and - buttons to raise or lower them.\r\n\r\n\r\nSTARTING THE GAME\r\n\r\nDeploy the armies as per the rules for the mission you are playing. Select the starting player with the toggle button, and when you are ready, start the game with the clearly marked button. Turns will be automatically taken in the chosen order, and the battle-forged CP will be automatically added each turn.\r\n\r\nDuring the game you can re-show and re-hide the selected deployment zones by clicking on the corresponding buttons placed near the top of battle mat. There are also buttons to show table quarters, Engage zones, Strategic Reserves zones, and to show 3\" and 6\" distances from the center. You also can use buttons on the upper left to go easily to dice roller and back (select a model first to go back to it)\r\n\r\nYou can save and load your game at any point of the game or setup. When loading a save file of a started game, the players will be automatically placed in the seats they had when they started to play.\r\n\r\n\r\nPLAYING THE GAME\r\n\r\nObjective markers have multiple states. The default state (1) provides a mat showing both the marker and the control radius. State 2 shows you the marker itself. State 3 provides a 3\" cylinder so you can easily check range. States 4 and 5 are the same as state 1 but in red and blue, useful for highlighting control or sticky control.\r\n\r\nTo roll dice simply drop them into the small cardboard box, it will roll them and place them in order on the rolling mat. The rolling mat will display the results along with the total dice rolled. Also present are buttons to spawn dice of 4 colors, to select them and to delete them. Near each row of dice are present buttons to delete or re-roll dice rows, left click affects only that row, right click affects that row plus all the lower (-). If you click the \" - / + \" button, the next right click will delete/re-roll that row plus all the higher dice instead. Use the description of the small box to change your preferences and the behavior of the tool. You can also switch between re-rolling and selecting. There's also buttons to roll dice showing you what order they were rolled in, useful for Feel No Pain rolls, and a button to mark whatever die is currently on the mat as the die to spawn copies of, useful if you've got a custom (e.g. faction) die you'd like to use.\r\n\r\nYou can find a set of useful generic tokens at the head of the table, copy them and use them as you see fit.\r\n\r\nActivation tokens: an interactive token can be placed near each unit to keep track of which ones have acted in each phase. Green means that the unit has to act; red that it has already acted. To change the state, just click on the coloured button. All the tokens are reset automatically at each phase/turn change. You can manually reset them by clicking on any \"Reset Activation tokens\" button. With the token selected, you can use the Numpad1 and Numpad2 to lower/raise the position of the button.\r\n\r\nWound trackers: an interactive token can be placed near each model to keep track of its remaining wounds. To reduce the number left click on the button, to increase it right click. With the token selected you can use the Numpad1 and Numpad2 to lower/raise the position of the button.\r\n\r\nThe counters are self explanatory; the player's turn and the battle round ones are automatic, you don't need to update them manually. The victory ones will reflect the value of the score sheet if you use it.\r\n\r\nIf you want to use the chess clock, you can pass the time to your opponent by clicking on the time shown on the top-right of the UI. Alternatively, you can press keypad 7 if you're red, or 9 if you're blue.\r\n\r\n\r\nMISCELLANEOUS\r\n\r\nThe battle mat is a modified \"Flex Table\" (by MrStump) with fixed dimensions. You can change the background of the mat by clicking on the white button on one of the legs and paste the URL of the image.\r\n\r\nYou can store URLs in memory by adding them individually so you can recall them easily if you want to make a local version with stored images. An improvement in version 2 is that you now only need to provide the image of the battle mat itself, you don’t need to edit a massive image containing the felt part. For best results, use an image with the correct ratio!\r\n\r\nReport any bugs at https://github.com/hutber/tts-map-base/issues\r\n",
       "color": "Grey",
       "visibleColor": {
         "r": 0.5,
@@ -338,7 +338,7 @@
       "Hands": false,
       "LuaScript": "",
       "LuaScriptState": "",
-      "XmlUI": "<Defaults>\r\n  <Text fontSize = \"70\" resizeTextForBestFit = \"true\"></Text>\r\n  <Text class = \"Header\" color = \"#c4be45\" fontSize = \"70\" resizeTextForBestFit = \"false\"></Text>\r\n  <Button fontSize = \"70\" preferredWidth = \"200\" preferredHeight = \"200\"></Button>\r\n</Defaults>\r\n<VerticalLayout position = \"-10.125 0.5 -10\" width = \"2250\" childForceExpandHeight = \"false\" childForceExpandWidth = \"false\" childAlignment = \"MiddleCenter\">\r\n  <HorizontalLayout preferredHeight = \"100\" childForceExpandHeight = \"false\" childForceExpandWidth = \"false\" childAlignment = \"MiddleCenter\">\r\n    <Button fontSize = \"60\" preferredWidth = \"2250\" preferredHeight = \"100\" onClick = \"onCountClicked\">Show weapon stats</Button>\r\n  </HorizontalLayout>\r\n  <TableLayout preferredHeight = \"150\" preferredWidth = \"2250\" columnWidths = \"600 800 200 350 350\" rowBackgroundColor = \"#888888\" >\r\n    <Row preferredHeight = \"130\">\r\n      <Cell><Text class = \"Header\">Name</Text></Cell>\r\n      <Cell><Text class = \"Header\">Stats</Text></Cell>\r\n      <Cell><Text class = \"Header\">Count</Text></Cell>\r\n      <Cell><Text class = \"Header\">Attacks</Text></Cell>\r\n      <Cell><Text class = \"Header\">Range</Text></Cell>\r\n    </Row>\r\n  </TableLayout>\r\n  <TableLayout preferredHeight = \"150\" preferredWidth = \"2250\" columnWidths = \"600 800 200 350 350\" rowBackgroundColor = \"#CCCCCC\">\r\n  </TableLayout>\r\n</VerticalLayout>"
+      "XmlUI": "<Defaults>\r\n  <Text fontSize = \"70\" resizeTextForBestFit = \"true\"></Text>\r\n  <Text class = \"Header\" color = \"#c4be45\" fontSize = \"70\" resizeTextForBestFit = \"false\"></Text>\r\n  <Button fontSize = \"70\" preferredWidth = \"200\" preferredHeight = \"200\"></Button>\r\n</Defaults>\r\n<VerticalLayout position = \"-10.125 0.5 -10\" width = \"2250\" childForceExpandHeight = \"false\" childForceExpandWidth = \"false\" childAlignment = \"MiddleCenter\">\r\n  <HorizontalLayout preferredHeight = \"100\" childForceExpandHeight = \"false\" childForceExpandWidth = \"false\" childAlignment = \"MiddleCenter\">\r\n    <Button fontSize = \"60\" preferredWidth = \"1800\" preferredHeight = \"100\" onClick = \"onCountClicked\">Show weapon stats</Button>\r\n    <Button id = \"CustomTrayDiceToggle\" fontSize = \"36\" preferredWidth = \"450\" preferredHeight = \"100\" onClick = \"toggleCustomTrayDice\" color = \"#FFFFFF\" textColor = \"#000000\">☐ Custom Dice</Button>\r\n  </HorizontalLayout>\r\n  <TableLayout preferredHeight = \"150\" preferredWidth = \"2250\" columnWidths = \"600 800 200 350 350\" rowBackgroundColor = \"#888888\" >\r\n    <Row preferredHeight = \"130\">\r\n      <Cell><Text class = \"Header\">Name</Text></Cell>\r\n      <Cell><Text class = \"Header\">Stats</Text></Cell>\r\n      <Cell><Text class = \"Header\">Count</Text></Cell>\r\n      <Cell><Text class = \"Header\">Attacks</Text></Cell>\r\n      <Cell><Text class = \"Header\">Range</Text></Cell>\r\n    </Row>\r\n  </TableLayout>\r\n  <TableLayout preferredHeight = \"150\" preferredWidth = \"2250\" columnWidths = \"600 800 200 350 350\" rowBackgroundColor = \"#CCCCCC\">\r\n  </TableLayout>\r\n</VerticalLayout>"
     },
     {
       "GUID": "b7ac7a",
@@ -384,7 +384,7 @@
       "Hands": false,
       "LuaScript": "",
       "LuaScriptState": "",
-      "XmlUI": "<Defaults>\r\n  <Text fontSize = \"70\" resizeTextForBestFit = \"true\"></Text>\r\n  <Text class = \"Header\" color = \"#c4be45\" fontSize = \"70\" resizeTextForBestFit = \"false\"></Text>\r\n  <Button fontSize = \"70\" preferredWidth = \"200\" preferredHeight = \"200\"></Button>\r\n</Defaults>\r\n<VerticalLayout position = \"-10.125 0 -10\" width = \"2250\" childForceExpandHeight = \"false\" childForceExpandWidth = \"false\" childAlignment = \"MiddleCenter\">\r\n  <HorizontalLayout preferredHeight = \"100\" childForceExpandHeight = \"false\" childForceExpandWidth = \"false\" childAlignment = \"MiddleCenter\">\r\n    <Button fontSize = \"60\" preferredWidth = \"2250\" preferredHeight = \"100\" onClick = \"onCountClicked\">Show weapon stats</Button>\r\n  </HorizontalLayout>\r\n  <TableLayout preferredHeight = \"150\" preferredWidth = \"2250\" columnWidths = \"600 800 200 350 350\" rowBackgroundColor = \"#888888\" >\r\n    <Row preferredHeight = \"130\">\r\n      <Cell><Text class = \"Header\">Name</Text></Cell>\r\n      <Cell><Text class = \"Header\">Stats</Text></Cell>\r\n      <Cell><Text class = \"Header\">Count</Text></Cell>\r\n      <Cell><Text class = \"Header\">Attacks</Text></Cell>\r\n      <Cell><Text class = \"Header\">Range</Text></Cell>\r\n    </Row>\r\n  </TableLayout>\r\n  <TableLayout preferredHeight = \"150\" preferredWidth = \"2250\" columnWidths = \"600 800 200 350 350\" rowBackgroundColor = \"#CCCCCC\">\r\n  </TableLayout>\r\n</VerticalLayout>"
+      "XmlUI": "<Defaults>\r\n  <Text fontSize = \"70\" resizeTextForBestFit = \"true\"></Text>\r\n  <Text class = \"Header\" color = \"#c4be45\" fontSize = \"70\" resizeTextForBestFit = \"false\"></Text>\r\n  <Button fontSize = \"70\" preferredWidth = \"200\" preferredHeight = \"200\"></Button>\r\n</Defaults>\r\n<VerticalLayout position = \"-10.125 0 -10\" width = \"2250\" childForceExpandHeight = \"false\" childForceExpandWidth = \"false\" childAlignment = \"MiddleCenter\">\r\n  <HorizontalLayout preferredHeight = \"100\" childForceExpandHeight = \"false\" childForceExpandWidth = \"false\" childAlignment = \"MiddleCenter\">\r\n    <Button fontSize = \"60\" preferredWidth = \"1800\" preferredHeight = \"100\" onClick = \"onCountClicked\">Show weapon stats</Button>\r\n    <Button id = \"CustomTrayDiceToggle\" fontSize = \"36\" preferredWidth = \"450\" preferredHeight = \"100\" onClick = \"toggleCustomTrayDice\" color = \"#FFFFFF\" textColor = \"#000000\">☐ Custom Dice</Button>\r\n  </HorizontalLayout>\r\n  <TableLayout preferredHeight = \"150\" preferredWidth = \"2250\" columnWidths = \"600 800 200 350 350\" rowBackgroundColor = \"#888888\" >\r\n    <Row preferredHeight = \"130\">\r\n      <Cell><Text class = \"Header\">Name</Text></Cell>\r\n      <Cell><Text class = \"Header\">Stats</Text></Cell>\r\n      <Cell><Text class = \"Header\">Count</Text></Cell>\r\n      <Cell><Text class = \"Header\">Attacks</Text></Cell>\r\n      <Cell><Text class = \"Header\">Range</Text></Cell>\r\n    </Row>\r\n  </TableLayout>\r\n  <TableLayout preferredHeight = \"150\" preferredWidth = \"2250\" columnWidths = \"600 800 200 350 350\" rowBackgroundColor = \"#CCCCCC\">\r\n  </TableLayout>\r\n</VerticalLayout>"
     },
     {
       "GUID": "8c71ab",
@@ -47052,7 +47052,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "A Tempting Target",
-          "Description": "When this Secondary Mission card is drawn, your opponent must select one objective marker in No Man\u2019s Land.\r\n\r\nAt the end of your turn, if you control that selected objective marker, this Secondary Mission is achieved and you score 5VP.\r",
+          "Description": "When this Secondary Mission card is drawn, your opponent must select one objective marker in No Man’s Land.\r\n\r\nAt the end of your turn, if you control that selected objective marker, this Secondary Mission is achieved and you score 5VP.\r",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -47113,7 +47113,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Capture Enemy Outpost",
-          "Description": "At the end of your turn, if you control one or more objective markers in your opponent\u2019s deployment zone, this Secondary Mission is achieved and you score 8VP.",
+          "Description": "At the end of your turn, if you control one or more objective markers in your opponent’s deployment zone, this Secondary Mission is achieved and you score 8VP.",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -47174,7 +47174,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Area Denial",
-          "Description": "At the end of your turn, if one or more units from your army (excluding Battle-shocked units) are wholly within 6\u201d of the centre of the battlefield, and there are no enemy units wholly within 6\u201d of the centre of the battlefield, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf, at the end of your turn, there are one or more enemy units wholly within 6\u201d of the centre of the battlefield, but there are no enemy units within 3\u201d of the centre of the battlefield, then this Secondary Mission is still achieved, but in this instance you score 3VP instead of 5VP.\r\n",
+          "Description": "At the end of your turn, if one or more units from your army (excluding Battle-shocked units) are wholly within 6” of the centre of the battlefield, and there are no enemy units wholly within 6” of the centre of the battlefield, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf, at the end of your turn, there are one or more enemy units wholly within 6” of the centre of the battlefield, but there are no enemy units within 3” of the centre of the battlefield, then this Secondary Mission is still achieved, but in this instance you score 3VP instead of 5VP.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -47235,7 +47235,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Defend Stronghold",
-          "Description": "At the end of your opponent\u2019s turn, or at the end of the battle (whichever comes first), if you control one or more objective markers in your own deployment zone, this Secondary Mission is achieved and you score 3VP.\r\n\r\nThis Secondary Mission cannot be achieved during the first battle round. If you randomly drew this Secondary Mission card during the first battle round, draw a new Secondary Mission card and shuffle this Secondary Mission card back into your Secondary Mission deck.\r\n",
+          "Description": "At the end of your opponent’s turn, or at the end of the battle (whichever comes first), if you control one or more objective markers in your own deployment zone, this Secondary Mission is achieved and you score 3VP.\r\n\r\nThis Secondary Mission cannot be achieved during the first battle round. If you randomly drew this Secondary Mission card during the first battle round, draw a new Secondary Mission card and shuffle this Secondary Mission card back into your Secondary Mission deck.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -47296,7 +47296,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Extend Battle Lines",
-          "Description": "At the end of your turn, if you control one or more objective markers in your own deployment zone and you also control one or more objective markers in No Man\u2019s Land, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf you only have one unit remaining in your army, then this Secondary Mission is instead achieved at the end of your turn if that unit controls one objective marker in No Man\u2019s Land, but in this instance you score 2VP instead of 5VP.\r\n",
+          "Description": "At the end of your turn, if you control one or more objective markers in your own deployment zone and you also control one or more objective markers in No Man’s Land, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf you only have one unit remaining in your army, then this Secondary Mission is instead achieved at the end of your turn if that unit controls one objective marker in No Man’s Land, but in this instance you score 2VP instead of 5VP.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -47357,7 +47357,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Investigate Signals",
-          "Description": "In your Shooting phase, you can select one or more units from your army that are not Battle-shocked and are eligible to shoot. Until the end of your turn, the units you selected are not eligible to shoot or declare a charge.\r\n\r\nAt the end of your turn, each corner of the battlefield that has one or more of these selected units wholly within 9\u201d of it is scanned by your army.\r\n\r\nIf one or more corners are scanned by your army, this Secondary Mission is achieved and you score 2VP for each corner scanned by your army this turn.\r\n",
+          "Description": "In your Shooting phase, you can select one or more units from your army that are not Battle-shocked and are eligible to shoot. Until the end of your turn, the units you selected are not eligible to shoot or declare a charge.\r\n\r\nAt the end of your turn, each corner of the battlefield that has one or more of these selected units wholly within 9” of it is scanned by your army.\r\n\r\nIf one or more corners are scanned by your army, this Secondary Mission is achieved and you score 2VP for each corner scanned by your army this turn.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -47540,7 +47540,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Secure No Man's Land",
-          "Description": "At the end of your turn, if you control two or more objective markers in No Man\u2019s Land, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf, at the end of your turn, you only control one objective marker in No Man\u2019s Land, this Secondary Mission is still achieved, but in this instance you score 2VP instead of 5VP.\r",
+          "Description": "At the end of your turn, if you control two or more objective markers in No Man’s Land, this Secondary Mission is achieved and you score 5VP.\r\n\r\nIf, at the end of your turn, you only control one objective marker in No Man’s Land, this Secondary Mission is still achieved, but in this instance you score 2VP instead of 5VP.\r",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -47727,7 +47727,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Assassination",
-          "Description": "If you are using Fixed Missions, then while this Secondary Mission is active, each time an enemy [b]CHARACTER[/b] model is destroyed, you score 4VP. \r\n\r\nIf you are using Tactical Missions, then at the end of the turn, if either of the conditions below are satisfied, this Secondary Mission is achieved and you score 5VP:\r\n\r\n* One or more enemy [b]CHARACTER[/b] units were destroyed during this turn.\r\n* All [b]CHARACTER[/b] units from your opponent\u2019s Army Roster have been destroyed during the battle.\r\n\r\nNote that if you are using Tactical Missions, this Secondary MIssion is achieved even if such a unit was destroyed and then subsequently resurrected for any reason.\r\n",
+          "Description": "If you are using Fixed Missions, then while this Secondary Mission is active, each time an enemy [b]CHARACTER[/b] model is destroyed, you score 4VP. \r\n\r\nIf you are using Tactical Missions, then at the end of the turn, if either of the conditions below are satisfied, this Secondary Mission is achieved and you score 5VP:\r\n\r\n* One or more enemy [b]CHARACTER[/b] units were destroyed during this turn.\r\n* All [b]CHARACTER[/b] units from your opponent’s Army Roster have been destroyed during the battle.\r\n\r\nNote that if you are using Tactical Missions, this Secondary MIssion is achieved even if such a unit was destroyed and then subsequently resurrected for any reason.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -47788,7 +47788,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Behind Enemy Lines",
-          "Description": "At the end of your turn, if two or more units from your army (excluding [b]AIRCRAFT[/b]) are wholly within your opponent\u2019s deployment zone, this secondary mission is achieved and you score 4VP (or 5VP if you are using Tactical Missions).\r\n\r\nIf, at the end of your turn, only one unit from your army (excluding [b]AIRCRAFT[/b]) is wholly within your opponent\u2019s deployment zone, then this Secondary Mission is still achieved, but in this instance you score 3VP instead of 4VP (or instead of 5VP).\r\n",
+          "Description": "At the end of your turn, if two or more units from your army (excluding [b]AIRCRAFT[/b]) are wholly within your opponent’s deployment zone, this secondary mission is achieved and you score 4VP (or 5VP if you are using Tactical Missions).\r\n\r\nIf, at the end of your turn, only one unit from your army (excluding [b]AIRCRAFT[/b]) is wholly within your opponent’s deployment zone, then this Secondary Mission is still achieved, but in this instance you score 3VP instead of 4VP (or instead of 5VP).\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -47971,7 +47971,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Engage On All Fronts",
-          "Description": "At the end of your turn, if you have one or more qualifying units (see below) from your army wholly within three or more different table quarters, and those units are all more than 3\u201d away from any other table quarter, this Secondary Mission is achieved and you score 4VP if you have qualifying units in four different table quarters, or 2VP if you have qualifying units in three different table quarters.\r\n\r\nWhile a unit is Battle-shocked, it is not a qualifying unit.\r\n\r\nIf, when you draw this Secondary Mission card, you only have one or two qualifying units remaining in your army, you can discard this Secondary Mission card and draw a new Secondary mission card.\r\n\r\nIf you are using Tactical Missions, then when this Secondary Mission is achieved you score an extra 1VP (for a maximum of 5VP).\r\n",
+          "Description": "At the end of your turn, if you have one or more qualifying units (see below) from your army wholly within three or more different table quarters, and those units are all more than 3” away from any other table quarter, this Secondary Mission is achieved and you score 4VP if you have qualifying units in four different table quarters, or 2VP if you have qualifying units in three different table quarters.\r\n\r\nWhile a unit is Battle-shocked, it is not a qualifying unit.\r\n\r\nIf, when you draw this Secondary Mission card, you only have one or two qualifying units remaining in your army, you can discard this Secondary Mission card and draw a new Secondary mission card.\r\n\r\nIf you are using Tactical Missions, then when this Secondary Mission is achieved you score an extra 1VP (for a maximum of 5VP).\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -48093,7 +48093,7 @@
             "scaleZ": 1.0
           },
           "Nickname": "Deploy Teleport Homer",
-          "Description": "In your Shooting phase, you can select one unit from your army that is not Battle-shocked and is eligible to shoot. Until the end of your turn, that unit is not eligible to shoot or declare a charge. \r\n\r\nAt the end of your turn, if that unit is within your opponent\u2019s deployment zone, or within 6\u201d of the centre of the battlefield, it deploys a teleport homer at that location, this Secondary Mission is achieved and you score a number of VP depending on where the teleport homer was deployed, as follows:\r\n\r\nCentre of battlefield = 3VP\r\n\r\nOpponent\u2019s deployment zone = 4VP if you are using Fixed Missions, or 5VP if you are using Tactical Missions.\r\n",
+          "Description": "In your Shooting phase, you can select one unit from your army that is not Battle-shocked and is eligible to shoot. Until the end of your turn, that unit is not eligible to shoot or declare a charge. \r\n\r\nAt the end of your turn, if that unit is within your opponent’s deployment zone, or within 6” of the centre of the battlefield, it deploys a teleport homer at that location, this Secondary Mission is achieved and you score a number of VP depending on where the teleport homer was deployed, as follows:\r\n\r\nCentre of battlefield = 3VP\r\n\r\nOpponent’s deployment zone = 4VP if you are using Fixed Missions, or 5VP if you are using Tactical Missions.\r\n",
           "GMNotes": "",
           "AltLookAngle": {
             "x": 0.0,
@@ -48396,7 +48396,6 @@
           "UniqueBack": false,
           "Type": 0
         },
-
         "1524": {
           "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18319401032101152713/463C110F8FF45591DD9CE6418084FC80F8B5E800/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
@@ -48899,7 +48898,6 @@
           "LuaScriptState": "",
           "XmlUI": ""
         },
-
         {
           "GUID": "90873b",
           "Name": "CardCustom",
@@ -53957,7 +53955,6 @@
           "UniqueBack": false,
           "Type": 0
         },
-
         "1905": {
           "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/16936859416234446566/2FA00249B092B5F74C469ED8355A7A7683731AA9/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/12392129116301473941/3B13D7F6CE41B63201401FB0EA299BD03323270D/",
@@ -54087,7 +54084,7 @@
             "posX": 76.86056,
             "posY": 1.131137,
             "posZ": 8.320268,
-            "rotX": -3.18751631E-06,
+            "rotX": -3.18751631e-06,
             "rotY": 269.999847,
             "rotZ": 179.999756,
             "scaleX": 1.0,
@@ -54370,7 +54367,6 @@
           "LuaScriptState": "",
           "XmlUI": ""
         },
-
         {
           "GUID": "cf6b80",
           "Name": "CardCustom",
@@ -55235,7 +55231,6 @@
           "UniqueBack": false,
           "Type": 0
         },
-
         "1905": {
           "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/16936859416234446566/2FA00249B092B5F74C469ED8355A7A7683731AA9/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/12392129116301473941/3B13D7F6CE41B63201401FB0EA299BD03323270D/",
@@ -55648,7 +55643,6 @@
           "LuaScriptState": "",
           "XmlUI": ""
         },
-
         {
           "GUID": "1a5964",
           "Name": "CardCustom",
@@ -59562,7 +59556,6 @@
           "UniqueBack": false,
           "Type": 0
         },
-
         "1524": {
           "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18319401032101152713/463C110F8FF45591DD9CE6418084FC80F8B5E800/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/17801021975631056595/BCFAF42935766E2E8990738EECB161793D5566D3/",
@@ -60074,7 +60067,6 @@
           "LuaScriptState": "",
           "XmlUI": ""
         },
-
         {
           "GUID": "90873b",
           "Name": "CardCustom",

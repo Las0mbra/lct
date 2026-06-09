@@ -64,7 +64,7 @@ function setupStatsHelperTopRow()
         text = "Show weapon stats",
         onClick = "onCountClicked",
         fontSize = "60",
-        preferredWidth = "1912",
+        preferredWidth = "1800",
         preferredHeight = "100"
       }
     },
@@ -75,7 +75,7 @@ function setupStatsHelperTopRow()
         id = "CustomTrayDiceToggle",
         onClick = "toggleCustomTrayDice",
         fontSize = "36",
-        preferredWidth = "338",
+        preferredWidth = "450",
         preferredHeight = "100",
         color = customTrayDiceToggleColor(),
         textColor = "#000000"
@@ -117,7 +117,7 @@ function createHeaderCell(text)
 end
 
 function customTrayDiceToggleText()
-  return useCustomTrayDice and "Custom Dice On" or "Custom Dice Off"
+  return useCustomTrayDice and "☑ Custom Dice" or "☐ Custom Dice"
 end
 
 function customTrayDiceToggleColor()
@@ -126,7 +126,8 @@ end
 
 function toggleCustomTrayDice(player, value, id)
   useCustomTrayDice = not useCustomTrayDice
-  setupStatsHelperTopRow()
+  self.UI.setAttribute("CustomTrayDiceToggle", "color", customTrayDiceToggleColor())
+  self.UI.setAttribute("CustomTrayDiceToggle", "text", customTrayDiceToggleText())
 end
 
 
