@@ -503,16 +503,19 @@ local function nowSeconds()
     return os.clock()
 end
 
--- Coalesces rapid "Roll all dice" presses into a single roll. The selection is
--- taken at fire time via getDice() (RESTING dice only, like the legacy table) so
--- a fast second press can't re-grab dice that are still settling from the first
--- roll and fling them back through the roller -- which is what made rapid Roll
--- All "explode". Still-settling dice are simply skipped until they come to rest;
--- press again once they have.
+-- Ignore Roll All presses for 0.5 seconds after an accepted press, then coalesce
+-- the accepted press for 0.1 seconds before scanning resting dice.
 rollAllPending = { scheduled = false, player = nil }
 local rollAllDelay = 0.1
+local rollAllCooldown = 0.5
+local lastRollAllTimestamp = -math.huge
 
 local function scheduleRollAll(player)
+    local currentTime = nowSeconds()
+    if currentTime - lastRollAllTimestamp < rollAllCooldown then
+        return
+    end
+    lastRollAllTimestamp = currentTime
     rollAllPending.player = player
     if rollAllPending.scheduled then
         return
@@ -687,16 +690,26 @@ function revertRoll(obj, player, alt)
 end
 
 function moveDiceToRoller(color, dice)
+    if #dice == 0 then return false end
     roller.call("setPlayerColor", { color = color })
+    local rollId = roller.call("beginRollBatch", {
+        color = color,
+        count = #dice,
+    })
+    if not rollId then
+        printToAll("Dice roller busy: roll was not started. No dice were moved.", {1, 0.5, 0})
+        return false
+    end
     -- Re-rolled dice are no longer lethal hits; drop them from lethal tracking so
     -- a later "clear mat" can't reach back and destroy them wherever they end up.
     forgetLethalHitsForDice(dice)
     for _, die in ipairs(dice) do
-        roller.call("setLastHolder", { obj = die, color = color })
+        roller.call("setLastHolder", { obj = die, color = color, rollId = rollId })
         roller.putObject(die)
     end
 
     storeCurrentDiceAsPreviousRoll()
+    return true
 end
 
 -- Evaluate a simple arithmetic expression safely (digits, + - * / and parentheses)

@@ -8,7 +8,6 @@
 -- get known behavior, better auditability, and saved/restored RNG state.
 lastRolls={}
 scaleBtn=3
-rolledFaces = {}
 
 function printLast()
 	printResults(1)
@@ -23,11 +22,7 @@ end
 ver = 'BCB-2022-12-30'
 lastHolder = {}
 customFace = {4, 6, 8, 10, 12, 20}
-diceGuidFaces = {}
-sortedKeys = {}
-resultsTable = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 resultsTotal = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-seedCounter = 0
 rngState = nil
 
 local UINT32 = 4294967296
@@ -309,11 +304,95 @@ thisBoxIsBlue = isBlueRoller()
 orderedOnNextRoll = false
 groupSizeOnNextRoll = 1
 
--- Coalesces takeDiceOut across many dice arrivals (e.g. "Roll all dice" with
--- 50+ dice). Each arrival resets the timer; the drain fires once,
--- takeDiceOutDelay seconds after the last die enters the container.
-local takeDiceOutPendingId = nil
 local takeDiceOutDelay = 0.1
+local nextRollBatchId = 0
+local activeRollBatch = nil
+local requestedPlayerColor = nil
+local ejectedDiceCount = 0
+local ejectedDiceNoticeTimer = nil
+
+local function createRollBatch(params, manual)
+    params = params or {}
+    nextRollBatchId = nextRollBatchId + 1
+    return {
+        id = nextRollBatchId,
+        playerColor = params.color or requestedPlayerColor,
+        expectedCount = tonumber(params.count),
+        ordered = params.ordered == true or orderedOnNextRoll == true,
+        groupSize = math.max(1, math.floor(tonumber(params.groupSize) or groupSizeOnNextRoll or 1)),
+        dice = {},
+        count = 0,
+        manual = manual == true,
+        phase = "collecting",
+        drainTimer = nil,
+        timeoutTimer = nil,
+        pendingCallbacks = 0,
+        extractionScheduled = false,
+    }
+end
+
+local function releaseRollLock(batch)
+    if activeRollBatch ~= batch then return end
+    if batch.drainTimer then
+        Wait.stop(batch.drainTimer)
+        batch.drainTimer = nil
+    end
+    if batch.timeoutTimer then
+        Wait.stop(batch.timeoutTimer)
+        batch.timeoutTimer = nil
+    end
+    activeRollBatch = nil
+end
+
+local function startRollLock(params, manual)
+    if activeRollBatch then return nil end
+    local batch = createRollBatch(params, manual)
+    activeRollBatch = batch
+    orderedOnNextRoll = false
+    groupSizeOnNextRoll = 1
+    batch.timeoutTimer = Wait.time(function()
+        if activeRollBatch == batch then
+            printToAll("Dice roller safety timeout released a stuck roll.", {1, 0.6, 0})
+            releaseRollLock(batch)
+        end
+    end, 15)
+    return batch
+end
+
+function beginRollBatch(params)
+    local batch = startRollLock(params, false)
+    if not batch then
+        -- These options belonged to the rejected roll, not the next accepted one.
+        orderedOnNextRoll = false
+        groupSizeOnNextRoll = 1
+    end
+    return batch and batch.id or false
+end
+
+local function announceEjectedDice()
+    ejectedDiceNoticeTimer = nil
+    if ejectedDiceCount == 0 then return end
+    local noun = ejectedDiceCount == 1 and "die was" or "dice were"
+    local msg = "Dice roller busy: " .. ejectedDiceCount .. " unexpected "
+        .. noun .. " ejected. Please roll them again."
+    printToAll(msg, {1, 0.5, 0})
+    broadcastToAll(msg, {1, 0.5, 0})
+    ejectedDiceCount = 0
+end
+
+local function ejectBusyDie(guid)
+    local pos = self.getPosition()
+    self.takeObject({
+        guid = guid,
+        position = {pos.x + 12, pos.y + 5, pos.z + 12},
+        smooth = false,
+    })
+    ejectedDiceCount = ejectedDiceCount + 1
+    if ejectedDiceNoticeTimer then
+        Wait.stop(ejectedDiceNoticeTimer)
+    end
+    ejectedDiceNoticeTimer = Wait.time(announceEjectedDice, 0.2)
+end
 
 objectToPlaceDiceOnGUID = thisBoxIsBlue and Global.getVar("blueCustomDiceMat_GUID") or Global.getVar("redCustomDiceMat_GUID")
 objectToPlaceDiceOn = getObjectFromGUID(objectToPlaceDiceOnGUID)
@@ -393,28 +472,58 @@ end
 function onObjectEnterContainer(container, obj)
     if container == self then
         if obj.tag == "Dice" then
-            -- Record THIS die's face count now, while we still hold a live Object
-            -- reference. The old code scanned the whole scene (getAllObjects) once
-            -- per die -- the main source of roller lag on a busy table. We can't
-            -- defer that scan either, because once dice settle inside the container
-            -- getAllObjects() no longer returns them, leaving faces nil and crashing
-            -- rollFace ("attempt to compare nil with number"). Reading the entering
-            -- die directly is O(1), correct, and survives both putObject and drops.
-            if not takeDiceOutPendingId then
-                diceGuidFaces = {}   -- start of a new batch
-            end
             local guid = obj.getGUID()
-            if guid then
-                diceGuidFaces[guid] = detectFaces(obj)
-                playerColor = lastHolder[obj]
+            if not guid then return end
+
+            local holder = lastHolder[obj]
+            local holderColor = type(holder) == "table" and holder.color or holder
+            local rollId = type(holder) == "table" and holder.rollId or nil
+            local batch = activeRollBatch
+            local belongsToActiveRoll = batch and rollId == batch.id
+
+            if batch and batch.phase ~= "collecting" then
+                ejectBusyDie(guid)
+                return
+            elseif batch and not belongsToActiveRoll then
+                if not batch.manual or batch.phase ~= "collecting" then
+                    ejectBusyDie(guid)
+                    return
+                end
+            elseif not batch then
+                if rollId then
+                    -- A scripted die arrived after its roll already drained or
+                    -- timed out. Never reinterpret it as a new manual roll.
+                    ejectBusyDie(guid)
+                    return
+                end
+                batch = startRollLock({color = holderColor}, true)
             end
-            if takeDiceOutPendingId then
-                Wait.stop(takeDiceOutPendingId)
+
+            if not batch.dice[guid] then
+                batch.count = batch.count + 1
             end
-            takeDiceOutPendingId = Wait.time(function()
-                takeDiceOutPendingId = nil
-                takeDiceOut()
-            end, takeDiceOutDelay)
+            batch.dice[guid] = {
+                faces = detectFaces(obj),
+                name = obj.getName(),
+            }
+            if not batch.playerColor then
+                batch.playerColor = holderColor
+            end
+
+            if batch.drainTimer then
+                Wait.stop(batch.drainTimer)
+            end
+            local complete = batch.expectedCount and batch.count >= batch.expectedCount
+            batch.drainTimer = Wait.time(function()
+                batch.drainTimer = nil
+                if activeRollBatch ~= batch then return end
+                batch.phase = "processing"
+                local ok, err = pcall(takeDiceOut, batch)
+                if not ok then
+                    printToAll("Dice roll failed: " .. tostring(err), {1, 0.4, 0.4})
+                    releaseRollLock(batch)
+                end
+            end, complete and takeDiceOutDelay or 1)
         else
             local pos = self.getPosition()
             self.takeObject({
@@ -426,22 +535,11 @@ function onObjectEnterContainer(container, obj)
 end
 
 function onCollisionEnter(collision_info)
-	playerColor = lastHolder[collision_info.collision_object]
-	if collision_info.collision_object.getGUID() == nil then return end
-    clearDataForGC(diceGuidFaces)
-    clearDataForGC(sortedKeys)
-	diceGuidFaces = {}
-	sortedKeys = {}
-
-	for k, v in ipairs(getAllObjects()) do
-		if v.tag == 'Dice' then
-            diceGuidFaces[v.getGUID()] = detectFaces(v)
-            table.insert(sortedKeys, v.getGUID())
-		end
-	end
+    -- Container entry owns batching. Collision events may occur while another
+    -- roll is draining, so they must never clear or rewrite roll state.
 end
 
-function takeDiceOut(tab)
+function takeDiceOut(batch)
 	local data = JSON.decode(self.getDescription())
 	if data == nil then
 		setDefaultState()
@@ -482,22 +580,25 @@ function takeDiceOut(tab)
         printToAll("[DBG-RNG] probe(raw%6): " .. probeStr, {0.6, 0.6, 1})
     end
 
-    clearDataForGC(diceGuids)
-	diceGuids = {}
+    local diceGuids = {}
     local dbgTotal = 0
     local dbgNilFaces = 0
     local dbgValCounts = {}
     local dbgFaceSample = ""   -- face counts for first 5 dice
     local dbgGuidSample = ""   -- guids for first 5 dice (last 4 chars)
     local dbgSampleCount = 0
-	for k, v in pairs(self.getObjects()) do
-		faces = diceGuidFaces[v.guid]
-		if v.name =="BCB-D3" then
-			faces=3
-		end
-		r = rollFace(faces)
-		diceGuids[v.guid] = r
-        if debugEnabled then
+    local objs = {}
+	for _, v in pairs(self.getObjects()) do
+        local dieMeta = batch.dice[v.guid]
+        if dieMeta then
+            table.insert(objs, v)
+            local faces = dieMeta.faces
+            if dieMeta.name == "BCB-D3" then
+                faces = 3
+            end
+            local r = rollFace(faces)
+            diceGuids[v.guid] = r
+	        if debugEnabled then
             driftCheckPending = driftCheckPending + 1
             driftCheckTotal   = driftCheckTotal   + 1
             dbgTotal = dbgTotal + 1
@@ -508,7 +609,8 @@ function takeDiceOut(tab)
                 dbgFaceSample = dbgFaceSample .. tostring(faces) .. " "
                 local g = tostring(v.guid or "?")
                 dbgGuidSample = dbgGuidSample .. string.sub(g, -4) .. " "
-            end
+	            end
+	        end
         end
 	end
     if debugEnabled then
@@ -523,41 +625,38 @@ function takeDiceOut(tab)
         printToAll("[DBG] dist=" .. dbgDist, {0.7, 0.7, 1})
     end
 
-	local ordered = orderedOnNextRoll
-	orderedOnNextRoll = false
-	local groupSize = groupSizeOnNextRoll
-	groupSizeOnNextRoll = 1
+	local ordered = batch.ordered
+	local groupSize = batch.groupSize
 
-	local objs = self.getObjects()
 	local position = objectToPlaceDiceOn.getPosition()
-	rotation = objectToPlaceDiceOn.getRotation()
+	local rotation = objectToPlaceDiceOn.getRotation()
 	local displayInRows = true
 	if data.Rows == 'no' then displayInRows = false end
 	if ordered then displayInRows = false end
 	local sortType = data.SortNoRows
 	if ordered then sortType = "none" end
-	sortedKeys = sortByVal(diceGuids, sortType)
-    clearDataForGC(Rows)
-	Rows = {}
-	n = 1
+	local sortedKeys = sortByVal(diceGuids, sortType)
+	local Rows = {}
+	local n = 1
+    local batchResults = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	for _, key in pairs(sortedKeys) do
 		if diceGuids[key] == math.floor(diceGuids[key]) then
-			resultsTable[diceGuids[key]] = resultsTable[diceGuids[key]] + 1
+			batchResults[diceGuids[key]] = batchResults[diceGuids[key]] + 1
             resultsTotal[diceGuids[key]] = resultsTotal[diceGuids[key]] + 1
 		end
 
-    	if hasGuid(objs, key) then
-    		if Rows[diceGuids[key]] == nil then
-    			Rows[diceGuids[key]] = 0
-    		end
-    		Rows[diceGuids[key]] = Rows[diceGuids[key]] + 1
-    		params = {}
-    		params.guid = key
-    		local d12Xoffset=0
-    		if diceGuids[key]>6 then
-    			 d12Xoffset=-24
-    		end
+        if hasGuid(objs, key) then
+            if Rows[diceGuids[key]] == nil then
+                Rows[diceGuids[key]] = 0
+            end
+            Rows[diceGuids[key]] = Rows[diceGuids[key]] + 1
+            local params = {}
+            params.guid = key
+            local d12Xoffset=0
+            if diceGuids[key]>6 then
+                d12Xoffset=-24
+            end
 
             local newXPos
             local newZPos
@@ -583,8 +682,8 @@ function takeDiceOut(tab)
 					local remainder = limit % (step * maxGroups)
 					limit = limit - remainder
 				end
-				row = math.floor(pos / limit) + 1
-				col = pos % limit
+				local row = math.floor(pos / limit) + 1
+				local col = pos % limit
 				newXPos = 0 - 15.0 + (col * data.Step)
 				newZPos = -3.17 + (row * data.Step)
             end
@@ -597,21 +696,26 @@ function takeDiceOut(tab)
                                    + (newZPos* math.cos((0 + rotation.y) * 0.0174532))
 			}
             params.rotation = rotation
-    		params.callback = 'setValueCallback'
-    		params.params = {diceGuids[key]}
-    		params.smooth = false
-    		if data.SmoothDice == 'yes' then params.smooth = true end
+            params.callback = 'setValueCallback'
+            params.params = {diceGuids[key], batch.id}
+            params.smooth = false
+            if data.SmoothDice == 'yes' then params.smooth = true end
 
-    		self.takeObject(params)
-    		n = n + 1
-    	end
+            batch.pendingCallbacks = batch.pendingCallbacks + 1
+            self.takeObject(params)
+            n = n + 1
+        end
     end
 
-	printresultsTable()
+    batch.extractionScheduled = true
+	printresultsTable(batchResults, batch.playerColor)
     Wait.time(function()
         -- "objectToPlaceDiceOn" is your dice-mat object
         objectToPlaceDiceOn.call("storeCurrentDiceAsPreviousRoll")
     end, 1)
+    if batch.pendingCallbacks == 0 then
+        releaseRollLock(batch)
+    end
 end
 
 function sum(t)
@@ -623,14 +727,26 @@ function sum(t)
 end
 
 function setPlayerColor(params)
-    playerColor = params.color
+    requestedPlayerColor = params.color
 end
 
 function setLastHolder(params)
-    lastHolder[params.obj] = params.color
+    lastHolder[params.obj] = {
+        color = params.color,
+        rollId = tonumber(params.rollId),
+    }
 end
 
-function printresultsTable()
+function finishRollCallback(rollId)
+    local batch = activeRollBatch
+    if not batch or batch.id ~= tonumber(rollId) then return end
+    batch.pendingCallbacks = math.max(0, batch.pendingCallbacks - 1)
+    if batch.extractionScheduled and batch.pendingCallbacks == 0 then
+        releaseRollLock(batch)
+    end
+end
+
+function printresultsTable(batchResults, batchPlayerColor)
     local data = JSON.decode(self.getDescription())
     local description = {
         'Ones.', 'Twos.', 'Threes.', 'Fours.', 'Fives.', 'Sixes.',
@@ -643,43 +759,33 @@ function printresultsTable()
     local color = {1,1,1}
 
     -- Build a chat message about the results
-for dieFace, numRolled in ipairs(resultsTable) do
+for dieFace, numRolled in ipairs(batchResults) do
     if numRolled > 0 then
         msg = msg .. numRolled .. ' ' .. description[dieFace] .. ' '
     end
 end
 
--- NEW / ADDED logic to populate rolledFaces
-for dieFace, numRolled in ipairs(resultsTable) do
-    for i=1, numRolled do
-        table.insert(rolledFaces, dieFace)
-    end
-end
-
     local time = '[' .. os.date("%H") .. ':' .. os.date("%M") .. ':' .. os.date("%S") .. ' UTC] '
-    if playerColor == nil then
+    if batchPlayerColor == nil then
         msg = time .. '~UNKNOWN PLAYER~ rolls:\n' .. msg .. '*******************************************************'
     else
-        msg = time .. Player[playerColor].steam_name .. ' rolls:\n' .. msg .. '*******************************************************'
-        color = stringColorToRGB(playerColor)
+        local player = Player[batchPlayerColor]
+        local playerName = player and player.steam_name or batchPlayerColor
+        msg = time .. playerName .. ' rolls:\n' .. msg .. '*******************************************************'
+        color = stringColorToRGB(batchPlayerColor)
     end
 
     local rolltorecord = {msg = msg, color = color}
-    if sum(resultsTable) > 0 then
+    if sum(batchResults) > 0 then
         if #lastRolls >= 5 then
             table.remove(lastRolls, 1)
         end
         table.insert(lastRolls, #lastRolls + 1, rolltorecord)
     end
 
-    if sum(resultsTable) > 0 and data.Results == 'yes' then
+    if sum(batchResults) > 0 and data.Results == 'yes' then
         printToAll(msg, color)
         broadcastToAll(msg, color)
-    end
-
-    -- Reset our per-roll resultsTable for the next batch
-    for k,v in ipairs(resultsTable) do
-        resultsTable[k] = 0
     end
 end
 
@@ -843,12 +949,10 @@ function setValueCallback(obj, tab)
 
         local scripted = tab[1]
         obj.setValue(scripted)
-        if obj.tag == 'Dice' then
-            diceGuidFaces[obj.getGUID()] = detectFaces(obj)
-        end
 
         local rotValues = obj.getRotationValues()
 	    obj.setRotation(rotValues[scripted].rotation + Vector(0, 180.0 + objectToPlaceDiceOn.getRotation()[2], 0))
+        finishRollCallback(tab[2])
 
         if isDebugBuild() then
             Wait.condition(
