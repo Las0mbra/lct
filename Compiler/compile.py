@@ -420,12 +420,12 @@ def main():
         else:
             warn(f"TTS saves folder not found at {tts_saves}. Skipping copy.")
 
-    print_summary(version, lua_guids, json_guid_entries, val_ctx, val_issues,
-                  hooks_injected, out_file, copied_to)
+    print_summary(version, debug_enabled, lua_guids, json_guid_entries, val_ctx,
+                  val_issues, hooks_injected, out_file, copied_to)
 
 
-def print_summary(version, lua_guids, json_guid_entries, val_ctx, val_issues,
-                  hooks_injected, out_file, copied_to):
+def print_summary(version, debug_enabled, lua_guids, json_guid_entries, val_ctx,
+                  val_issues, hooks_injected, out_file, copied_to):
     """Closing one-look report: what was built, what was checked, where it went."""
     val_errs = sum(1 for i in val_issues if i.level == validate_maps.ERROR)
     val_warns = len(val_issues) - val_errs
@@ -448,6 +448,7 @@ def print_summary(version, lua_guids, json_guid_entries, val_ctx, val_issues,
 
     rows = [
         ("Version", version or "(none)"),
+        ("Debug diagnostics", term.yellow("enabled") if debug_enabled else "disabled"),
         ("Scripts injected", f"{len(lua_guids)} object + 1 global"),
         ("Map card hooks", f"{hooks_injected} injected"),
         ("JSON GUIDs", str(len(json_guid_entries))),

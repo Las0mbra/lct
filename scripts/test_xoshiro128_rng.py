@@ -45,20 +45,60 @@ EXPECTED_D6 = [
 
 LUA_HARNESS = textwrap.dedent(
     r"""
-    local bit = bit32 or bit
-    assert(bit, "Requires bit32 or bit library")
-
-    local function lrotate(x, n)
-        if bit.lrotate then
-            return bit.lrotate(x, n)
+    local UINT32 = 4294967296
+    local xorNibble = {}
+    for a = 0, 15 do
+        xorNibble[a] = {}
+        for b = 0, 15 do
+            local x, y, value, place = a, b, 0, 1
+            for _ = 1, 4 do
+                if (x % 2) ~= (y % 2) then value = value + place end
+                x = math.floor(x / 2)
+                y = math.floor(y / 2)
+                place = place * 2
+            end
+            xorNibble[a][b] = value
         end
-        if bit.rol then
-            return bit.rol(x, n)
-        end
-        error("No rotate-left implementation available")
     end
 
-    local UINT32 = 4294967296
+    local function u32(value)
+        return math.floor(tonumber(value) or 0) % UINT32
+    end
+
+    local function xorTwo32(a, b)
+        a, b = u32(a), u32(b)
+        local value, place = 0, 1
+        for _ = 1, 8 do
+            value = value + xorNibble[a % 16][b % 16] * place
+            a = math.floor(a / 16)
+            b = math.floor(b / 16)
+            place = place * 16
+        end
+        return value
+    end
+
+    local function xor32(...)
+        local value = 0
+        for i = 1, select("#", ...) do
+            value = xorTwo32(value, select(i, ...))
+        end
+        return value
+    end
+
+    local function rshift32(value, amount)
+        return math.floor(u32(value) / (2 ^ amount))
+    end
+
+    local function lshift32(value, amount)
+        return (u32(value) * (2 ^ amount)) % UINT32
+    end
+
+    local function lrotate32(value, amount)
+        value = u32(value)
+        amount = amount % 32
+        if amount == 0 then return value end
+        return (lshift32(value, amount) + rshift32(value, 32 - amount)) % UINT32
+    end
 
     local rngState = {1, 2, 3, 4}
 
@@ -77,15 +117,15 @@ LUA_HARNESS = textwrap.dedent(
         local s2 = rngState[3]
         local s3 = rngState[4]
 
-        local result = (lrotate((s0 + s3) % UINT32, 7) + s0) % UINT32
-        local t = bit.lshift(s1, 9)
+        local result = (lrotate32((s0 + s3) % UINT32, 7) + s0) % UINT32
+        local t = lshift32(s1, 9)
 
-        s2 = bit.bxor(s2, s0)
-        s3 = bit.bxor(s3, s1)
-        s1 = bit.bxor(s1, s2)
-        s0 = bit.bxor(s0, s3)
-        s2 = bit.bxor(s2, t)
-        s3 = lrotate(s3, 11)
+        s2 = xor32(s2, s0)
+        s3 = xor32(s3, s1)
+        s1 = xor32(s1, s2)
+        s0 = xor32(s0, s3)
+        s2 = xor32(s2, t)
+        s3 = lrotate32(s3, 11)
 
         rngState[1] = s0
         rngState[2] = s1
@@ -139,6 +179,22 @@ LUA_HARNESS = textwrap.dedent(
         end
         return values
     end
+
+    local function hasUsableStateWords(state)
+        if type(state) ~= "table" then return false end
+        local nonZero = 0
+        for i = 1, 4 do
+            local value = tonumber(state[i])
+            if value == nil then return false end
+            if u32(value) ~= 0 then nonZero = nonZero + 1 end
+        end
+        return nonZero >= 2
+    end
+
+    print("STATE_HEALTH " .. csv({
+        hasUsableStateWords({1, 2, 3, 4}) and 1 or 0,
+        hasUsableStateWords({0, 0, 1020716019, 0}) and 1 or 0
+    }))
 
     setRngState({1, 2, 3, 4})
     local seq = {}
@@ -249,7 +305,7 @@ def run_lua_harness(lua_bin: str) -> dict[str, list[int]]:
     parsed: dict[str, list[int]] = {}
     for line in proc.stdout.splitlines():
         key, values = line.split(" ", 1)
-        parsed[key] = [int(v) for v in values.split(",") if v]
+        parsed[key] = [int(float(v)) for v in values.split(",") if v]
     return parsed
 
 
@@ -287,6 +343,7 @@ def main() -> int:
     assert_range("D20 range", lua_results["D20RANGE"], 1, 20)
 
     assert_equal("Resume sequence", lua_results["RESUME_A"], lua_results["RESUME_B"])
+    assert_equal("Sparse-state rejection", lua_results["STATE_HEALTH"], [1, 0])
 
     z3 = max_abs_zscore(lua_results["COUNTS3"])
     z6 = max_abs_zscore(lua_results["COUNTS6"])
@@ -303,6 +360,7 @@ def main() -> int:
     print("Exact-sequence checks: PASS")
     print("Range checks: PASS")
     print("Resume/state checks: PASS")
+    print("Sparse-state regression check: PASS")
     print(f"Distribution sanity: PASS (max |z| d3={z3:.2f}, d6={z6:.2f}, d20={z20:.2f})")
     return 0
 
