@@ -13,7 +13,8 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
-## v1.6.4
+## v1.6.4b
+- Fixed Dice Roller issue on red side. 
 - Added updated primary/secondary cards (improved wording)
 - UI/UX changes 
 - Added Sort Secondary buttons to place secondary cards on empty spots 
