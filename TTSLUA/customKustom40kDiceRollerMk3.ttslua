@@ -305,6 +305,7 @@ orderedOnNextRoll = false
 groupSizeOnNextRoll = 1
 
 local takeDiceOutDelay = 0.1
+local collectDiceDelay = 0.5
 local nextRollBatchId = 0
 local activeRollBatch = nil
 local requestedPlayerColor = nil
@@ -523,7 +524,7 @@ function onObjectEnterContainer(container, obj)
                     printToAll("Dice roll failed: " .. tostring(err), {1, 0.4, 0.4})
                     releaseRollLock(batch)
                 end
-            end, complete and takeDiceOutDelay or 1)
+            end, complete and takeDiceOutDelay or collectDiceDelay)
         else
             local pos = self.getPosition()
             self.takeObject({

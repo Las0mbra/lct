@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 from typing import Callable
 
 
-COLLECT_DELAY = 1.0
+COLLECT_DELAY = 0.5
 COMPLETE_DELAY = 0.1
 SAFETY_TIMEOUT = 15.0
 
