@@ -305,7 +305,7 @@ orderedOnNextRoll = false
 groupSizeOnNextRoll = 1
 
 local takeDiceOutDelay = 0.1
-local collectDiceDelay = 0.5
+local collectDiceDelay = 0.2
 local nextRollBatchId = 0
 local activeRollBatch = nil
 local requestedPlayerColor = nil
