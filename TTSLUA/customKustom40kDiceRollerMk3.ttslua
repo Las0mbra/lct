@@ -34,6 +34,13 @@ local function isDebugBuild()
     return ok and enabled == true
 end
 
+local function nowSeconds()
+    if Time and Time.time then
+        return Time.time
+    end
+    return os.clock()
+end
+
 -- TTS's bit32 implementation can enter a broken state where xor/shift/rotate
 -- return incorrect values until the game is reloaded. That corrupts xoshiro's
 -- state and can make every die produce the same face. These arithmetic helpers
@@ -329,6 +336,8 @@ local function createRollBatch(params, manual)
         timeoutTimer = nil,
         pendingCallbacks = 0,
         extractionScheduled = false,
+        startedAt = nowSeconds(),
+        processingAt = nil,
     }
 end
 
@@ -341,6 +350,18 @@ local function releaseRollLock(batch)
     if batch.timeoutTimer then
         Wait.stop(batch.timeoutTimer)
         batch.timeoutTimer = nil
+    end
+    if isDebugBuild() then
+        local finishedAt = nowSeconds()
+        local processingAt = batch.processingAt or finishedAt
+        printToAll(string.format(
+            "[DBG-TIMER] bag roll #%d dice=%d collect=%.3fs process=%.3fs total=%.3fs",
+            batch.id,
+            batch.count,
+            math.max(0, processingAt - batch.startedAt),
+            math.max(0, finishedAt - processingAt),
+            math.max(0, finishedAt - batch.startedAt)
+        ), {0.6, 0.8, 1})
     end
     activeRollBatch = nil
 end
@@ -519,6 +540,7 @@ function onObjectEnterContainer(container, obj)
                 batch.drainTimer = nil
                 if activeRollBatch ~= batch then return end
                 batch.phase = "processing"
+                batch.processingAt = nowSeconds()
                 local ok, err = pcall(takeDiceOut, batch)
                 if not ok then
                     printToAll("Dice roll failed: " .. tostring(err), {1, 0.4, 0.4})

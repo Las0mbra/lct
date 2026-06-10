@@ -503,11 +503,11 @@ local function nowSeconds()
     return os.clock()
 end
 
--- Ignore Roll All presses for 0.5 seconds after an accepted press, then coalesce
+-- Ignore Roll All presses for 0.2 seconds after an accepted press, then coalesce
 -- the accepted press for 0.1 seconds before scanning resting dice.
 rollAllPending = { scheduled = false, player = nil }
 local rollAllDelay = 0.1
-local rollAllCooldown = 0.5
+local rollAllCooldown = 0.2
 local lastRollAllTimestamp = -math.huge
 
 local function scheduleRollAll(player)
