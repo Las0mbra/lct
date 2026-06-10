@@ -24,7 +24,7 @@ Dynamic map generation (based on missions) is not yet implemented, but is curren
 
 ## Development
 
-To run the compiler via Python, execute the following from the `Compiler` folder:
+To run the compiler via Python, execute the following from the `scripts` folder:
 
 ```bash
 python3 compile.py             # prompt for a version, write the compiled JSON
@@ -33,7 +33,7 @@ python3 compile.py --release   # take version + patch notes from CHANGELOG.md, t
 python3 compile.py --no-validate   # skip the map-card check gate (see below)
 ```
 
-`compile.py` stitches the `TTSLUA/*.ttslua` scripts back into `TTSJSON/ftc_base.json`, stamps the version, and prints a colored build summary at the end.
+`compile.py` stitches the `TTSLUA/*.ttslua` scripts back into `TTSJSON/ftc_base.json`, stamps the version, and writes `lct_base_<version>_compiled.json` into the `builds` folder, printing a colored build summary at the end.
 
 Every build first runs a validator over the baked-in map cards (whitelist, terrain, zone size, terrain-GUID collisions, mission-matrix references, name-suffix → deployment zone, terrain JSON); errors abort the build. Run it on its own with `python3 validate_maps.py`, and add new checks by decorating a function with `@check` in `validate_maps.py`.
 
