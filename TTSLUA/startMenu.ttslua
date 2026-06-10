@@ -3238,7 +3238,6 @@ function startGame(obj, player, alt)
     startCustomTurns()
     broadcastToAll(phases[currentPhase], "Yellow")
     announceSecondarySelections(secondarySummaries)
-    resetActivationTokens()
     Notes.setNotes("")
     writeMenus()
     updateGameStateHUD()
@@ -3249,14 +3248,6 @@ function startGameDisabled()
     broadcastToAll("Choose game mode first", {1, 0.75, 0})
 end
 
-
-function resetActivationTokens()
-    for i, obj in ipairs(getAllObjects()) do
-        if obj.getVar("BCBtype") == "ActivationToken" then
-            obj.call("resetAlredyActed")
-        end
-    end
-end
 
 function newRoundStarted()
     updateGameStateHUD()
@@ -3384,7 +3375,6 @@ function updateGameStateHUD()
 end
 
 function nextPhase(obj, player_color_click, alt_click)
-    resetActivationTokens()
     if alt_click then
         passTurn(obj, player_color_click, alt_click)
         return
