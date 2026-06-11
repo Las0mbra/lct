@@ -9,12 +9,15 @@ redDiscardPosition = { x = 77.04, y = 0.98, z = 16.60 }
 blueDiscardPosition = { x = 77.04, y = 0.98, z = -16.60 }
 redSecondaryBoard_GUID = "66def7"
 blueSecondaryBoard_GUID = "76200a"
-secondarySlotButtonSize = 180
-secondarySlotButtonFontSize = 120
+secondarySlotButtonSize = 162
+secondarySlotButtonFontSize = 108
 secondarySlotButtonY = 0.08
 redSecondarySlotButtonVerticalOffset = -2.15
 blueSecondarySlotButtonVerticalOffset = 2.15
 secondarySlotButtonHorizontalOffset = 0.46
+secondaryButtonSize = 162
+secondaryButtonFontSize = 135
+secondaryButtonColor = {1, 1, 1} -- white
 -- Centre line the draw buttons are arranged around. The double-draw button sits
 -- on the discard-side offset and the single-draw button on the recycle-side
 -- offset, mirroring the ✘/♻ slot button pairs.
@@ -132,69 +135,75 @@ playerTotal = {
 }
 
 draw1Btn = {
-    width = 180,
-    height = 180,
+    width = secondaryButtonSize,
+    height = secondaryButtonSize,
     label = "<<",
-    font_size = 150,
+    font_size = secondaryButtonFontSize,
     click_function = 'drawSecondary1',
     function_owner = self,
     position = {1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ - (secondarySlotButtonHorizontalOffset * 2)},
     rotation = {0, 0, 0},
+    color = secondaryButtonColor,
     tooltip = "Draw red secondary"
 }
 draw1SingleBtn = {
-    width = 180,
-    height = 180,
+    width = secondaryButtonSize,
+    height = secondaryButtonSize,
     label = "<",
-    font_size = 150,
+    font_size = secondaryButtonFontSize,
     click_function = 'drawSecondary1Single',
     function_owner = self,
     position = {1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ},
     rotation = {0, 0, 0},
+    color = secondaryButtonColor,
     tooltip = "Draw 1 red secondary"
 }
 sort1Btn = {
-    width = 180,
-    height = 180,
+    width = secondaryButtonSize,
+    height = secondaryButtonSize,
     label = "S",
-    font_size = 150,
+    font_size = secondaryButtonFontSize,
     click_function = 'sortSecondary1',
     function_owner = self,
     position = {1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ + (secondarySlotButtonHorizontalOffset * 2)},
     rotation = {0, 0, 0},
+    color = secondaryButtonColor,
     tooltip = "Sort Secondaries"
 }
 draw2Btn = {
-    width = 180,
-    height = 180,
+    width = secondaryButtonSize,
+    height = secondaryButtonSize,
     label = ">>",
-    font_size = 150,
+    font_size = secondaryButtonFontSize,
     click_function = 'drawSecondary2',
     function_owner = self,
     position = {-1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ - (secondarySlotButtonHorizontalOffset * 2)},
     rotation = {0, 0, 0},
+    color = secondaryButtonColor,
     tooltip = "Draw blue secondary"
 }
 draw2SingleBtn = {
-    width = 180,
-    height = 180,
+    width = secondaryButtonSize,
+    height = secondaryButtonSize,
     label = ">",
-    font_size = 150,
+    font_size = secondaryButtonFontSize,
     click_function = 'drawSecondary2Single',
     function_owner = self,
     position = {-1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ},
     rotation = {0, 0, 0},
+    color = secondaryButtonColor,
     tooltip = "Draw 1 blue secondary"
 }
 sort2Btn = {
-    width = 180,
-    height = 180,
+    width = secondaryButtonSize,
+    height = secondaryButtonSize,
     label = "S",
-    font_size = 150,
+    font_size = secondaryButtonFontSize,
     click_function = 'sortSecondary2',
     function_owner = self,
     position = {-1.53, secondarySlotButtonY, secondaryDrawButtonCenterZ + (secondarySlotButtonHorizontalOffset * 2)},
     rotation = {0, 0, 0},
+    color = secondaryButtonColor,
     tooltip = "Sort Secondaries"
 }
 function enableSheet()
@@ -259,6 +268,7 @@ function createSecondarySlotButton(board, color, index, labelX, labelZ)
         width = secondarySlotButtonSize,
         height = secondarySlotButtonSize,
         font_size = secondarySlotButtonFontSize,
+        color = secondaryButtonColor,
         tooltip = "Discard secondary " .. index,
     })
     board.createButton({
@@ -270,6 +280,7 @@ function createSecondarySlotButton(board, color, index, labelX, labelZ)
         width = secondarySlotButtonSize,
         height = secondarySlotButtonSize,
         font_size = secondarySlotButtonFontSize,
+        color = secondaryButtonColor,
         tooltip = "Recycle secondary " .. index,
     })
 end
