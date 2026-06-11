@@ -81,11 +81,11 @@ PRIMARY_SECONDARY_GAP_Z = 0.2  -- extra spacing nudged onto the secondary column
 
 playerOneTitle = {
 	index = 0,
-	width = 2550,
+	width = 2225,
 	height = 425,
 	label = "Player 1",
 	click_function = 'p1',
-	font_size = 340,
+	font_size = 310,
 	function_owner = self,
 	position = {-6.85, -0.05, -2.95},
 	rotation = {0, 90, 180},
@@ -93,11 +93,11 @@ playerOneTitle = {
 }
 playerTwoTitle = {
 	index = 1,
-	width = 2550,
+	width = 2225,
 	height = 425,
 	label = "Player 2",
 	click_function = 'p2',
-	font_size = 340,
+	font_size = 310,
 	function_owner = self,
 	position = {-6.85, -0.05, 2.95},
 	rotation = {0, 90, 180},

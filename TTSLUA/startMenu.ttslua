@@ -939,13 +939,13 @@ generateMissionWorldZ = 0.0
 -- (player + index decide which mission card lands here). Red is the +Z pair,
 -- blue the -Z pair (see the deck/zone notes in global.ttslua).
 missionSlots = {
-    {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  4.80}, displayPosition = {32.60, 0.92,  14.23}, displayScale = {1.5, 1.0, 1.5}},
+    {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  4.67}, displayPosition = {32.60, 0.92,  14.23}, displayScale = {1.5, 1.0, 1.5}},
     {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  2.55}, displayPosition = {32.59, 0.92,  10.20}, displayScale = {1.5, 1.0, 1.5}},
     {role = "deployment", index = 1, deckVar = "deploymentDeck_GUID", position = {23.71, 1.00,  5.83}},
     {role = "deployment", index = 2, deckVar = "deploymentDeck_GUID", position = {23.71, 1.00, -0.10}},
     {role = "deployment", index = 3, deckVar = "deploymentDeck_GUID", position = {23.71, 1.00, -6.03}},
     {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -2.55}, displayPosition = {32.59, 0.92, -10.20}, displayScale = {1.5, 1.0, 1.5}},
-    {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -4.80}, displayPosition = {32.60, 0.92, -14.23}, displayScale = {1.5, 1.0, 1.5}},
+    {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -4.67}, displayPosition = {32.60, 0.92, -14.23}, displayScale = {1.5, 1.0, 1.5}},
 }
 
 deploymentMatrixDecks = {
