@@ -88,6 +88,9 @@ end
 
 function updateForSelectedPack()
     missionPackData = Global.getTable("missionPackData")[selectedPack]
+    if not missionPackData then
+        return
+    end
     secondaryDeck = getObjectFromGUID(missionPackData[string.lower(playerColor) .. "SecondaryDeck_GUID"])
 
     self.clearButtons()
@@ -109,6 +112,9 @@ function packSelected(params)
     tacticalCardGuidToKeep = params.tacticalCardGuidToKeep
     updateForSelectedPack()
 
+    if not secondaryDeck then
+        return
+    end
     secondaryDeck.setPosition(secondaryDeckPosition)
     secondaryDeck.setName(playerColor .. " secondary mission cards")
     secondaryDeck.locked = false
@@ -136,6 +142,9 @@ function tryDealFixedSecondaries()
         else
             ensureLegacyTacticalSecondaries()
             local fixedDeck = getObjectFromGUID(missionPackData.fixedSecondaryDeck_GUID)
+            if not fixedDeck then
+                return
+            end
             local newFixedDeck = fixedDeck.clone({position = fixedDeck.getPosition()})
             newFixedDeck.deal(fixedDeck.getQuantity(), playerColor)
             Wait.time(flipTacticalSecondariesFaceDown, 1)

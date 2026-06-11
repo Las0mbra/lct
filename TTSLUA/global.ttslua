@@ -319,8 +319,15 @@ function scheduleScoringOverlayRefreshLoop()
         return
     end
     scoringOverlayRefreshScheduled = true
-    Wait.time(function()
+    -- Cancel any stale handle before scheduling a fresh tick so timers can never
+    -- accumulate if this loop is ever (re)started out of band.
+    if scoringOverlayRefreshTimer then
+        Wait.stop(scoringOverlayRefreshTimer)
+        scoringOverlayRefreshTimer = nil
+    end
+    scoringOverlayRefreshTimer = Wait.time(function()
         scoringOverlayRefreshScheduled = false
+        scoringOverlayRefreshTimer = nil
         if not isAnyScoringOverlayOpen() then
             return
         end
@@ -358,11 +365,13 @@ function getRemainingDeckSecondaryNames(color)
     return names
 end
 
-function getDiscardedSecondaryNames(color)
+-- `objects` is an optional pre-fetched getAllObjects() list so a single scan can
+-- serve both colors (the scoring overlay refresh calls this for Red and Blue).
+function getDiscardedSecondaryNames(color, objects)
     local pos = getSecondaryDiscardPosition(color)
     if not pos then return {} end
     local names = {}
-    for _, obj in ipairs(getAllObjects()) do
+    for _, obj in ipairs(objects or getAllObjects()) do
         local tag = obj.tag
         if tag == "Card" or tag == "Deck" then
             local objPos = obj.getPosition()
@@ -420,8 +429,10 @@ function refreshScoringOverlay()
 
     local redActive = getActiveSecondaryNames("Red")
     local blueActive = getActiveSecondaryNames("Blue")
-    local redDiscard = getDiscardedSecondaryNames("Red")
-    local blueDiscard = getDiscardedSecondaryNames("Blue")
+    -- Scan the whole scene once and reuse it for both discard piles.
+    local allObjects = getAllObjects()
+    local redDiscard = getDiscardedSecondaryNames("Red", allObjects)
+    local blueDiscard = getDiscardedSecondaryNames("Blue", allObjects)
     local redDeck = getRemainingDeckSecondaryNames("Red")
     local blueDeck = getRemainingDeckSecondaryNames("Blue")
 

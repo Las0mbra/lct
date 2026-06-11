@@ -4,12 +4,20 @@
 
 local _lastValue = nil
 local _watchId   = nil
+local _timerId   = nil
 
 function onLoad()
     _lastValue = self.Counter.getValue()
     local isP1 = (self.getGUID() == "deb9f2")
     _watchId   = isP1 and "CPWatch1" or "CPWatch2"
-    Wait.time(checkValue, 0.5, -1)
+    _timerId   = Wait.time(checkValue, 0.5, -1)
+end
+
+function onDestroy()
+    if _timerId then
+        Wait.stop(_timerId)
+        _timerId = nil
+    end
 end
 
 function checkValue()

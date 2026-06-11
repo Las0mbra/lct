@@ -81,9 +81,24 @@ function onUpdate()
     if pointB == nil or targetObj.resting ~= false then
         if pointB ~= nil and self.resting == false and targetObj.resting == true then
             self.setVectorLines({})
+            lastRenderA, lastRenderB = nil, nil
         end
         return
     end
+
+    -- Skip the rebuild when nothing that affects the line geometry has changed.
+    -- onUpdate fires every frame; while a model is merely held still (resting is
+    -- false but the position is identical frame-to-frame) this avoids redundant
+    -- setVectorLines() calls.
+    local faceState = (targetObj.is_face_down and 1 or 0) + (self.is_face_down and 2 or 0)
+    if lastRenderA ~= nil and lastRenderB ~= nil and lastFaceState == faceState
+        and Vector.distance(pointA, lastRenderA) < 1e-4
+        and Vector.distance(pointB, lastRenderB) < 1e-4 then
+        return
+    end
+    lastRenderA = pointA
+    lastRenderB = pointB
+    lastFaceState = faceState
 
     if targetObj.is_face_down == false and self.is_face_down == false then
         self.setVectorLines({

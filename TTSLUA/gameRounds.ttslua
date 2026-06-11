@@ -1,5 +1,6 @@
 -- FTC-GUID: ee92cf
 local _lastValue = nil
+local _timerId   = nil
 
 titleBtn={
     index=1, label="Game rounds", click_function="none", function_owner=self,
@@ -29,7 +30,14 @@ function onLoad()
     scoreSheet=getObjectFromGUID(Global.getVar("scoreSheet_GUID"))
     _lastValue = self.Counter.getValue()
     updateHUD()
-    Wait.time(checkValue, 0.5, -1)
+    _timerId = Wait.time(checkValue, 0.5, -1)
+end
+
+function onDestroy()
+    if _timerId then
+        Wait.stop(_timerId)
+        _timerId = nil
+    end
 end
 
 function checkValue()

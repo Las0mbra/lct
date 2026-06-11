@@ -2338,6 +2338,7 @@ local COHERENCY_LIFT = 0.2 -- raise lines slightly so they sit above the bases
 local COHERENCY_LABEL_LIFT = 0.5 -- raise distance text a little above the lines
 local COHERENCY_REFRESH = 0.1 -- seconds between redraws
 local COHERENCY_TIMEOUT = 15 -- auto-stop if left on this many seconds
+local COHERENCY_MAX_MODELS = 30 -- refuse to monitor larger selections (O(n^2) at 4Hz)
 local COHERENCY_LABEL_TAG = "coherencyLabel" -- GMNotes marker for sweep-on-load
 
 -- Spawn a flat, locked 3DText object to use as a floating distance label.
@@ -2581,6 +2582,13 @@ function checkCoherency(a, b, c)
     if #objs < 2 then
         -- Leave any running monitor untouched on an empty/short selection.
         printToColor("Select at least 2 models to check coherency.", playerColor, {1, 0.5, 0})
+        return
+    end
+
+    -- The monitor is O(n^2) per redraw; refuse oversized selections so a whole-army
+    -- box-select can't stall the table. Leave any running monitor untouched.
+    if #objs > COHERENCY_MAX_MODELS then
+        broadcastToColor(string.format("Coherency check skipped: %d models selected (max %d). Select a single unit.", #objs, COHERENCY_MAX_MODELS), playerColor, {1, 0.3, 0.3})
         return
     end
 

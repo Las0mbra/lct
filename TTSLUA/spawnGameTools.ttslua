@@ -86,6 +86,9 @@ function hideShowArmy(color, hideShow)
         zoneData.position.hide.z = -zoneData.position.hide.z
         zoneData.position.show.z = -zoneData.position.show.z
     end
+    if not hiddenZone[color] then
+        return
+    end
     hiddenZone[color].setPosition(zoneData.position[hideIndex])
     hiddenZone[color].setScale(zoneData.scale[hideIndex])
     hiddenZone[color].setRotation({0,0,0})

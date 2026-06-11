@@ -2,7 +2,7 @@
 
 -- This script highlights objects in green when they are selected by a player.
 local selectedObjects = {}
-local checkInterval = 0.1
+local checkInterval = 0.25
 local checkWaitId = nil
 local activeHighlighterGuid = "27de4f"
 

@@ -109,10 +109,14 @@ confirmNoBtnMirror={
 function assignVariables()
     table=getObjectFromGUID(Global.getVar("table_GUID"))
     mat=getObjectFromGUID(Global.getVar("mat_GUID"))
-    mat.setPosition({0,mat.getPosition().y,mat.getPosition().z})
+    if mat then
+        mat.setPosition({0,mat.getPosition().y,mat.getPosition().z})
+    end
     matUrlDisplay=getObjectFromGUID(Global.getVar("matURLDisplay_GUID"))
     Wait.frames(hideOther, 5)
-    matUrlDisplay.setPosition({185,-6,0})
+    if matUrlDisplay then
+        matUrlDisplay.setPosition({185,-6,0})
+    end
     flexControl=getObjectFromGUID(Global.getVar("flexControl_GUID"))
     YNButtonsExtract=false
     YNButtonsDelete=false
