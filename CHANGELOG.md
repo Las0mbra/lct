@@ -13,6 +13,12 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.6.5 
+- UI: New board art 
+- UI: Added Gain CP boards 
+- UI: There is now an "X" button in the overlay to hide it. You can show it again if you press "Show/Hide" button.
+- Code: Improved dice roller performance and trimmed legacy code yet again. 
+
 ## v1.6.4b
 - Fixed Dice Roller issue on red side. 
 - Added updated primary/secondary cards (improved wording)
