@@ -156,8 +156,8 @@ hudMinimalist = hudMinimalist or {}   -- player color -> bool
 -- Per-mode geometry. Minimalist drops the panel width by the phase-strip width and
 -- the height by the Row3 line, and shrinks the 4-button control column (and its
 -- font) so the glyphs still fit. width/height are visual estimates — tune in-game.
-local HUD_FULL = { width = "1160", height = "228", controlsH = "172", btnFont = "28", shown = "true"  }
-local HUD_MIN  = { width = "740",  height = "155", controlsH = "143", btnFont = "24", shown = "false" }
+local HUD_FULL = { width = "1216", height = "228", mainWidth = "1160", mainHeight = "228", controlsH = "172", btnFont = "28", shown = "true"  }
+local HUD_MIN  = { width = "740",  height = "155", mainWidth = "740",  mainHeight = "155", controlsH = "143", btnFont = "24", shown = "false" }
 
 -- The clock readout + its steppers (same id set the clock-hide toggle uses).
 local HUD_CLOCK_IDS = {"ClockSubPanel1", "ClockSubPanel2", "ChsStpPlus1", "ChsStpMinus1", "ChsStpPlus2", "ChsStpMinus2"}
@@ -174,11 +174,16 @@ function applyMinimalistForColor(color)
         Global.UI.setAttribute(p .. "Row3",      "active", d.shown)
         Global.UI.setAttribute(p .. "PhaseRow1", "active", d.shown)
         Global.UI.setAttribute(p .. "PhaseRow2", "active", d.shown)
+        Global.UI.setAttribute(p .. "RightControls", "active", d.shown)
         for _, id in ipairs(HUD_CLOCK_IDS) do
             Global.UI.setAttribute(p .. id, "active", clockShown and "true" or "false")
         end
         Global.UI.setAttribute(p .. "VPScores",  "width",  d.width)
         Global.UI.setAttribute(p .. "VPScores",  "height", d.height)
+        Global.UI.setAttribute(p .. "MainPanel", "preferredWidth",  d.mainWidth)
+        Global.UI.setAttribute(p .. "MainPanel", "minWidth",        d.mainWidth)
+        Global.UI.setAttribute(p .. "MainPanel", "preferredHeight", d.mainHeight)
+        Global.UI.setAttribute(p .. "MainPanel", "minHeight",       d.mainHeight)
         Global.UI.setAttribute(color .. "HudControls", "preferredHeight", d.controlsH)
         for _, b in ipairs({"SettingsBtn", "LockBtn", "ClockBtn", "MinusBtn"}) do
             Global.UI.setAttribute(p .. b, "fontSize", d.btnFont)
@@ -461,7 +466,7 @@ end
 
 function toggleHudOverlayForColor(params)
     local color = params and params.color or "Blue"
-    if color ~= "Red" and color ~= "Blue" then
+    if color ~= "Red" and color ~= "Blue" and color ~= "Grey" then
         color = "Blue"
     end
     local settings = ensureHudSettings(color)
@@ -469,6 +474,15 @@ function toggleHudOverlayForColor(params)
     if not settings.hudVisible then
         settings.settingsOpen = false
     end
+    applyHudPreferencesForColor(color)
+end
+
+function hudHideOverlay(player, value, id)
+    local color = getHudColorFromCallback(player, id)
+    if color ~= "Red" and color ~= "Blue" and color ~= "Grey" then return end
+    local settings = ensureHudSettings(color)
+    settings.hudVisible = false
+    settings.settingsOpen = false
     applyHudPreferencesForColor(color)
 end
 

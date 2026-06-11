@@ -1003,10 +1003,10 @@ function spawnDice1(obj, player, alt)
     spawnDice(1,player,alt)
 end
 function getHudOverlayColorForThisMat()
-    if self.guid == Global.getVar("redCustomDiceMat_GUID") then
+    if self.getGUID() == Global.getVar("redCustomDiceMat_GUID") then
         return "Red"
     end
-    if self.guid == Global.getVar("blueCustomDiceMat_GUID") then
+    if self.getGUID() == Global.getVar("blueCustomDiceMat_GUID") then
         return "Blue"
     end
     return nil
@@ -1340,7 +1340,7 @@ function onload()
         Global.call("hotkeyToggleScoringOverlay", { playerColor = playerColor })
     end)
     addHotkey("Show/Hide UI", function(playerColor, _, _)
-        if playerColor ~= "Red" and playerColor ~= "Blue" then return end
+        if playerColor ~= "Red" and playerColor ~= "Blue" and playerColor ~= "Grey" then return end
         Global.call("toggleHudOverlayForColor", { color = playerColor })
     end)
     addHotkey("Toggle 1 Inch Measurment Circle", function(playerColor, target)

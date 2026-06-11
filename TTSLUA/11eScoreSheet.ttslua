@@ -50,7 +50,7 @@ BTN_L_IX_PLUS = 2
 BTN_L_IX_MINUS = 3
 
 -- Tooltips[player, k-index]
-tooltips = {{"Sum", "Primary", "Secondary"},{"Sum", "Primary", "Secondary"}}
+tooltips = {{"Sum", "Secondary", "Primary"},{"Sum", "Secondary", "Primary"}}
 TURN_SUM_CENTER_SHIFT = 0.38
 
 -- player, round, k-index (turn sum, primary, secondary)
@@ -116,7 +116,7 @@ playerTotal = {
 		click_function = 'nothing',
 		font_size = 500,
 		function_owner = self,
-		position = {SCORE_TOTAL_X, -0.05, -1.00},
+		position = {SCORE_TOTAL_X, -0.05, -1.50},
 		rotation = {0, 90, 180},
 		tooltip = "Player 1"
 	},
@@ -128,7 +128,7 @@ playerTotal = {
 		click_function = 'nothing',
 		font_size = 500,
 		function_owner = self,
-		position = {SCORE_TOTAL_X, -0.05, 0.95},
+		position = {SCORE_TOTAL_X, -0.05, 1.40},
 		rotation = {0, 90, 180},
 		tooltip = "Player 2"
 	}

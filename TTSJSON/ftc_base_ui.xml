@@ -49,7 +49,9 @@
   <Button text="X" fontSize="24" textColor="#FFFFFF" color="#B52020" width="44" height="44" roundEdges="true" outline="#2a2a4aCC" outlineSize="3" offsetXY="242 140" onClick="closeBubbleOverlay" tooltip="Close"/>
 </Panel>
 
-<Panel id="RedHud_VPScores" visibility="Red" active="true" scale="0.43 0.43 0.43" width="1160" height="228" rectAlignment="UpperRight" offsetXY="-290 -72" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="RedHud_VPScores" visibility="Red" active="true" scale="0.43 0.43 0.43" width="1216" height="228" rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+  <HorizontalLayout spacing="6" padding="0" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="UpperLeft">
+  <Panel id="RedHud_MainPanel" flexibleWidth="0" preferredWidth="1160" minWidth="1160" preferredHeight="228" minHeight="228" flexibleHeight="0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3">
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleLeft">
     <VerticalLayout id="RedHudControls" flexibleWidth="0" preferredWidth="54" preferredHeight="172" flexibleHeight="0" spacing="4">
       <Button id="RedHud_SettingsBtn" text="⚙" fontSize="28" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleSettings" tooltip="Settings"/>
@@ -126,9 +128,17 @@
     </Panel>
     </VerticalLayout>
   </HorizontalLayout>
+  </Panel>
+  </HorizontalLayout>
+    <Panel id="RedHud_RightControls" active="true" width="50" height="68" rectAlignment="UpperRight" offsetXY="0 -7" color="rgba(0,0,0,0)">
+      <Button id="RedHud_HideBtn" text="X" fontSize="28" fontStyle="Bold" textColor="#FFFFFF" color="#FF5A5A" width="50" height="68" roundEdges="true" outline="#FFB3B3" outlineSize="2" onClick="hudHideOverlay" tooltip="Hide UI"/>
+    </Panel>
 </Panel>
-<Panel id="BlueHud_VPScores" visibility="Blue" active="true" scale="0.43 0.43 0.43" width="1160" height="228"
-rectAlignment="UpperRight" offsetXY="-290 -72" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+
+<Panel id="BlueHud_VPScores" visibility="Blue" active="true" scale="0.43 0.43 0.43" width="1216" height="228"
+rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+  <HorizontalLayout spacing="6" padding="0" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="UpperLeft">
+  <Panel id="BlueHud_MainPanel" flexibleWidth="0" preferredWidth="1160" minWidth="1160" preferredHeight="228" minHeight="228" flexibleHeight="0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3">
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleLeft">
     <VerticalLayout id="BlueHudControls" flexibleWidth="0" preferredWidth="54" preferredHeight="172" flexibleHeight="0" spacing="4">
       <Button id="BlueHud_SettingsBtn" text="⚙" fontSize="28" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleSettings" tooltip="Settings"/>
@@ -205,9 +215,16 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="#0D0D1AE6" outline="#2a2a4
     </Panel>
     </VerticalLayout>
   </HorizontalLayout>
+  </Panel>
+  </HorizontalLayout>
+    <Panel id="BlueHud_RightControls" active="true" width="50" height="68" rectAlignment="UpperRight" offsetXY="0 -7" color="rgba(0,0,0,0)">
+      <Button id="BlueHud_HideBtn" text="X" fontSize="28" fontStyle="Bold" textColor="#FFFFFF" color="#FF5A5A" width="50" height="68" roundEdges="true" outline="#FFB3B3" outlineSize="2" onClick="hudHideOverlay" tooltip="Hide UI"/>
+    </Panel>
 </Panel>
 
-<Panel id="GreyHud_VPScores" visibility="Grey" active="true" scale="0.43 0.43 0.43" width="1160" height="155" rectAlignment="UpperRight" offsetXY="-290 -72" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="GreyHud_VPScores" visibility="Grey" active="true" scale="0.43 0.43 0.43" width="1216" height="155" rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+  <HorizontalLayout spacing="6" padding="0" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="UpperLeft">
+  <Panel id="GreyHud_MainPanel" flexibleWidth="0" preferredWidth="1160" minWidth="1160" preferredHeight="155" minHeight="155" flexibleHeight="0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3">
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false">
     <VerticalLayout id="GreyHudControls" flexibleWidth="0" preferredWidth="54" spacing="4">
       <Button id="GreyHud_SettingsBtn" text="⚙" fontSize="28" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleSettings" tooltip="Settings"/>
@@ -272,6 +289,11 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="#0D0D1AE6" outline="#2a2a4
     </Panel>
   </VerticalLayout>
   </HorizontalLayout>
+  </Panel>
+  </HorizontalLayout>
+    <Panel id="GreyHud_RightControls" active="true" width="50" height="68" rectAlignment="UpperRight" offsetXY="0 -7" color="rgba(0,0,0,0)">
+      <Button id="GreyHud_HideBtn" text="X" fontSize="28" fontStyle="Bold" textColor="#FFFFFF" color="#FF5A5A" width="50" height="68" roundEdges="true" outline="#FFB3B3" outlineSize="2" onClick="hudHideOverlay" tooltip="Hide UI"/>
+    </Panel>
 </Panel>
 
 <Panel id="RedHud_Settings" visibility="Red" active="false" scale="0.43 0.43 0.43" width="420" height="245" rectAlignment="UpperRight" offsetXY="-270 -175" color="#0D0D1AF2" outline="#2a2a4a" outlineSize="3" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
