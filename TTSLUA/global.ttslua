@@ -125,18 +125,27 @@ function currentBattleRound()
     return (roundObj and roundObj.Counter.getValue()) or 0
 end
 
-function hudGainCP(player, value, id)
-    local color = getHudColorFromCallback(player, id)
-    if color ~= "Red" and color ~= "Blue" then return end
+-- Shared GAIN CP logic. Used by both the HUD overlay button (hudGainCP) and the
+-- physical "Gain CP" tokens (59c35a Red / 46b855 Blue). Because both paths read
+-- and write the same cpGainRoundUsed table here, the once-per-battle-round cap is
+-- shared: gaining via either the token or the overlay locks out the other for the
+-- rest of that round. Returns true if a CP was granted.
+function gainCPForColor(color)
+    if color ~= "Red" and color ~= "Blue" then return false end
     local counter = cpCounterForColor(color)
-    if not counter then return end
+    if not counter then return false end
     local round = currentBattleRound()
     if cpGainRoundUsed[color] == round then
         broadcastToColor("You can't gain more CP this round.", color, "Orange")
-        return
+        return false
     end
     cpGainRoundUsed[color] = round
     counter.Counter.increment()
+    return true
+end
+
+function hudGainCP(player, value, id)
+    gainCPForColor(getHudColorFromCallback(player, id))
 end
 
 function hudUseCP(player, value, id)

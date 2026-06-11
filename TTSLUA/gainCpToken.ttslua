@@ -1,0 +1,37 @@
+-- FTC-GUID: 59c35a,46b855
+-- Physical "Gain CP" tokens. Clicking the token grants that player one CP for
+-- the current battle round, deferring to Global.gainCPForColor so it behaves
+-- exactly like the HUD overlay "Gain CP" button and shares the same
+-- once-per-battle-round cap (gaining via the token or the overlay locks out the
+-- other for the rest of that round).
+--   59c35a = Red (Gain CP Red), 46b855 = Blue (Gain CP Blue).
+
+local _color = nil
+
+function onLoad()
+    _color = (self.getGUID() == "46b855") and "Blue" or "Red"
+    -- Invisible hit area covering the token face; the model's own texture is the
+    -- visible "Gain CP" label, so the button itself draws nothing.
+    self.createButton({
+        click_function = "onGainCP",
+        function_owner = self,
+        tooltip        = "Gain CP",
+        label          = "",
+        position       = {0, 0.2, 0},
+        rotation       = {0, 0, 0},
+        width          = 1400,
+        height         = 1400,
+        font_size      = 100,
+        color          = {0, 0, 0, 0},
+    })
+end
+
+-- TTS passes the clicking player's seat color as the second arg. Only that
+-- player may use their own token: Blue can't press the Red token and vice versa.
+function onGainCP(obj, clickColor)
+    if clickColor ~= _color then
+        broadcastToColor("That's the " .. _color .. " player's Gain CP button.", clickColor, "Orange")
+        return
+    end
+    Global.call("gainCPForColor", _color)
+end
