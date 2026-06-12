@@ -280,8 +280,13 @@ def main():
     val_issues, val_ctx = [], None
     if not args.no_validate:
         save = json.loads(json_text)
-        val_issues, val_ctx = validate_maps.validate(save.get("ObjectStates", []))
-        print(term.cyan(f"Validating {len(val_ctx.cards)} map cards..."))
+        require_map_tags = args.test or args.release
+        val_issues, val_ctx = validate_maps.validate(
+            save.get("ObjectStates", []), require_map_tags=require_map_tags
+        )
+        print(term.cyan(f"Validating {len(val_ctx.cards)} manifest-listed map cards..."))
+        if require_map_tags:
+            print(term.cyan("  Enforcing publishing tags: map + map_crt*"))
         n_err, _ = validate_maps.report(val_issues, val_ctx)
         validate_maps.report_zone_versions(val_ctx)
         WARNINGS.extend(

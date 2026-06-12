@@ -58963,61 +58963,6 @@
       "XmlUI": ""
     },
     {
-      "GUID": "16e026",
-      "Name": "3DText",
-      "Transform": {
-        "posX": -43.92384,
-        "posY": 0.9611351,
-        "posZ": 0.227881491,
-        "rotX": 90.0,
-        "rotY": 90.3805847,
-        "rotZ": 0.0,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "Text": {
-        "Text": "https://discord.gg/EWCchNjqwG",
-        "OwnerSteamID": 76561198047190655,
-        "colorstate": {
-          "r": 1.0,
-          "g": 1.0,
-          "b": 1.0
-        },
-        "fontSize": 64
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
       "GUID": "6f0823",
       "Name": "go_game_piece_black",
       "Transform": {
@@ -64936,6 +64881,10 @@
           "Nickname": "TnH vs TnH 1 - Tipping Point",
           "Description": "",
           "GMNotes": "",
+          "Tags": [
+            "map",
+            "map_crt_belgium"
+          ],
           "AltLookAngle": {
             "x": 0.0,
             "y": 0.0,
@@ -64994,6 +64943,10 @@
           "Nickname": "TnH vs TnH 2 - Dawn of War",
           "Description": "",
           "GMNotes": "",
+          "Tags": [
+            "map",
+            "map_crt_belgium"
+          ],
           "AltLookAngle": {
             "x": 0.0,
             "y": 0.0,
@@ -65052,6 +65005,10 @@
           "Nickname": "TnH vs TnH 3 - Search and Destroy",
           "Description": "",
           "GMNotes": "",
+          "Tags": [
+            "map",
+            "map_crt_belgium"
+          ],
           "AltLookAngle": {
             "x": 0.0,
             "y": 0.0,
@@ -65192,6 +65149,10 @@
           "Nickname": "TnH vs Rec 3 - Search and Destroy",
           "Description": "",
           "GMNotes": "",
+          "Tags": [
+            "map",
+            "map_crt_belgium"
+          ],
           "AltLookAngle": {
             "x": 0.0,
             "y": 0.0,
@@ -65250,6 +65211,10 @@
           "Nickname": "TnH vs Rec 2 - Dawn of War",
           "Description": "",
           "GMNotes": "",
+          "Tags": [
+            "map",
+            "map_crt_belgium"
+          ],
           "AltLookAngle": {
             "x": 0.0,
             "y": 0.0,
@@ -65308,6 +65273,10 @@
           "Nickname": "TnH vs Rec 1 - Tipping Point",
           "Description": "",
           "GMNotes": "",
+          "Tags": [
+            "map",
+            "map_crt_belgium"
+          ],
           "AltLookAngle": {
             "x": 0.0,
             "y": 0.0,
@@ -65448,6 +65417,10 @@
           "Nickname": "TnH vs PtF 3 - Hammer and Anvil",
           "Description": "",
           "GMNotes": "",
+          "Tags": [
+            "map",
+            "map_crt_belgium"
+          ],
           "AltLookAngle": {
             "x": 0.0,
             "y": 0.0,
@@ -65506,6 +65479,10 @@
           "Nickname": "TnH vs PtF 2 - Search and Destroy",
           "Description": "",
           "GMNotes": "",
+          "Tags": [
+            "map",
+            "map_crt_belgium"
+          ],
           "AltLookAngle": {
             "x": 0.0,
             "y": 0.0,
@@ -65564,6 +65541,10 @@
           "Nickname": "TnH vs PtF 1 - Sweeping Engagement",
           "Description": "",
           "GMNotes": "",
+          "Tags": [
+            "map",
+            "map_crt_belgium"
+          ],
           "AltLookAngle": {
             "x": 0.0,
             "y": 0.0,
@@ -65704,6 +65685,10 @@
           "Nickname": "TnH vs Dis 3 - Hammer and Anvil",
           "Description": "",
           "GMNotes": "",
+          "Tags": [
+            "map",
+            "map_crt_belgium"
+          ],
           "AltLookAngle": {
             "x": 0.0,
             "y": 0.0,
@@ -65762,6 +65747,10 @@
           "Nickname": "TnH vs Dis 2 - Crucible of Battle",
           "Description": "",
           "GMNotes": "",
+          "Tags": [
+            "map",
+            "map_crt_belgium"
+          ],
           "AltLookAngle": {
             "x": 0.0,
             "y": 0.0,
@@ -65820,6 +65809,10 @@
           "Nickname": "TnH vs Dis 1 - Sweeping Engagement",
           "Description": "",
           "GMNotes": "",
+          "Tags": [
+            "map",
+            "map_crt_belgium"
+          ],
           "AltLookAngle": {
             "x": 0.0,
             "y": 0.0,
@@ -65960,6 +65953,10 @@
           "Nickname": "TnH vs PA 3 - Dawn of War",
           "Description": "",
           "GMNotes": "",
+          "Tags": [
+            "map",
+            "map_crt_belgium"
+          ],
           "AltLookAngle": {
             "x": 0.0,
             "y": 0.0,
@@ -66018,6 +66015,10 @@
           "Nickname": "TnH vs PA 2 - Hammer and Anvil",
           "Description": "",
           "GMNotes": "",
+          "Tags": [
+            "map",
+            "map_crt_belgium"
+          ],
           "AltLookAngle": {
             "x": 0.0,
             "y": 0.0,
@@ -66076,6 +66077,10 @@
           "Nickname": "TnH vs PA 1 - Crucible of Battle",
           "Description": "",
           "GMNotes": "",
+          "Tags": [
+            "map",
+            "map_crt_belgium"
+          ],
           "AltLookAngle": {
             "x": 0.0,
             "y": 0.0,

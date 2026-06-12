@@ -22,6 +22,8 @@ Run standalone:  python3 validate_maps.py
 Or import:       issues, ctx = validate(object_states)
 """
 
+import argparse
+import csv
 import json
 import re
 import sys
@@ -146,6 +148,11 @@ _NAME_SUFFIX_RE = re.compile(r'^.*-\s*(.*?)\s*$')
 # startMenu.ttslua holds the mission matrix and the deployment-zone names that a
 # couple of cross-checks need. Read best-effort; checks skip if it isn't found.
 STARTMENU_LUA = Path(__file__).parent.parent / "TTSLUA" / "startMenu.ttslua"
+MAP_MANIFEST = Path(__file__).parent.parent / "TTSJSON" / "map_manifest.csv"
+MAP_MANIFEST_COLUMNS = {"deck_guid", "deck_name", "card_guid", "card_name"}
+REQUIRED_MAP_TAG = "map"
+MAP_CREATOR_TAG_PREFIX = "map_crt"
+_GUID_RE = re.compile(r"^[0-9a-fA-F]{6}$")
 _MATRIX_GUID_RE = re.compile(r'guid\s*=\s*"([0-9a-fA-F]{6})"')
 _DEPLOY_ZONE_NAME_RE = re.compile(r'\{name = "([^"]+)",\s*draw')
 
@@ -158,9 +165,11 @@ class MapCard:
     a terrain piece's own GUID can never be mistaken for a whitelist entry.
     """
 
-    def __init__(self, obj):
+    def __init__(self, obj, deck_guid=None):
         self.guid = obj.get("GUID") or "??????"
         self.name = obj.get("Nickname") or obj.get("Name") or ""
+        self.deck_guid = deck_guid
+        self.tags = list(obj.get("Tags") or [])
         lua = obj.get("LuaScript", "") or ""
         self.lua = lua
 
@@ -185,10 +194,14 @@ class MapCard:
 
 
 class MapContext:
-    def __init__(self, cards, scene_guids, startmenu_lua=None):
+    def __init__(self, cards, scene_guids, startmenu_lua=None, inventory_issues=None,
+                 require_map_tags=False, manifest_path=MAP_MANIFEST):
         self.cards = cards
         self.scene_guids = scene_guids
         self.startmenu_lua = startmenu_lua
+        self.inventory_issues = inventory_issues or []
+        self.require_map_tags = require_map_tags
+        self.manifest_path = manifest_path
 
     def matrix_referenced_guids(self):
         """GUIDs referenced by startMenu's mission matrix tables, or None if the
@@ -214,22 +227,91 @@ def _is_map_card(obj) -> bool:
     return "scriptzoneCallback" in lua or "function loadMap" in lua
 
 
-def build_context(object_states) -> MapContext:
-    cards, scene_guids = [], set()
+def load_map_manifest(path=MAP_MANIFEST):
+    """Return (rows, issues) from the authoritative map deck/card CSV."""
+    path = Path(path)
+    if not path.exists():
+        return [], [Issue(ERROR, "map manifest", f"missing {path}")]
 
-    def walk(objs):
+    rows, issues, seen_cards = [], [], set()
+    with path.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        missing = MAP_MANIFEST_COLUMNS - set(reader.fieldnames or [])
+        if missing:
+            return [], [Issue(ERROR, "map manifest",
+                              f"missing column(s): {', '.join(sorted(missing))}")]
+        for line_no, raw in enumerate(reader, 2):
+            row = {key: (raw.get(key) or "").strip() for key in MAP_MANIFEST_COLUMNS}
+            where = f"map manifest line {line_no}"
+            if not _GUID_RE.fullmatch(row["deck_guid"]):
+                issues.append(Issue(ERROR, where, f"invalid deck_guid {row['deck_guid']!r}"))
+            if not _GUID_RE.fullmatch(row["card_guid"]):
+                issues.append(Issue(ERROR, where, f"invalid card_guid {row['card_guid']!r}"))
+            if row["card_guid"] in seen_cards:
+                issues.append(Issue(ERROR, where,
+                                    f"duplicate card_guid {row['card_guid']}"))
+            seen_cards.add(row["card_guid"])
+            rows.append(row)
+    return rows, issues
+
+
+def build_context(object_states, require_map_tags=False, manifest_path=MAP_MANIFEST) -> MapContext:
+    scene_guids, objects_by_guid, detected_cards = set(), {}, {}
+
+    def walk(objs, parent_deck_guid=None):
         for o in objs:
             g = o.get("GUID")
             if g:
                 scene_guids.add(g)
+                objects_by_guid.setdefault(g, []).append((o, parent_deck_guid))
             if _is_map_card(o):
-                cards.append(MapCard(o))
+                detected_cards[g] = MapCard(o, parent_deck_guid)
             if "ContainedObjects" in o:
-                walk(o["ContainedObjects"])
+                child_parent = g if o.get("Name") == "Deck" else parent_deck_guid
+                walk(o["ContainedObjects"], child_parent)
 
     walk(object_states)
+    manifest_rows, inventory_issues = load_map_manifest(manifest_path)
+    cards, manifest_card_guids = [], set()
+
+    for row in manifest_rows:
+        deck_guid, card_guid = row["deck_guid"], row["card_guid"]
+        manifest_card_guids.add(card_guid)
+        deck_matches = objects_by_guid.get(deck_guid, [])
+        if not deck_matches:
+            inventory_issues.append(Issue(ERROR, "map manifest",
+                                          f"deck {deck_guid} is missing from the save"))
+        elif not any(obj.get("Name") == "Deck" for obj, _ in deck_matches):
+            inventory_issues.append(Issue(ERROR, "map manifest",
+                                          f"deck {deck_guid} is not a Deck object"))
+
+        card = detected_cards.get(card_guid)
+        if not card:
+            inventory_issues.append(Issue(ERROR, "map manifest",
+                                          f"map card {card_guid} is missing or has no map loader script"))
+            continue
+        cards.append(card)
+        if card.deck_guid != deck_guid:
+            inventory_issues.append(Issue(ERROR, card.where,
+                                          f"manifest assigns it to deck {deck_guid}, "
+                                          f"but save contains it in {card.deck_guid or 'no deck'}"))
+        if row["card_name"] and card.name != row["card_name"]:
+            inventory_issues.append(Issue(WARN, card.where,
+                                          f"manifest card_name is {row['card_name']!r}"))
+        deck_obj = deck_matches[0][0] if deck_matches else None
+        deck_name = (deck_obj.get("Nickname") or deck_obj.get("Name") or "") if deck_obj else ""
+        if row["deck_name"] and deck_name and deck_name != row["deck_name"]:
+            inventory_issues.append(Issue(WARN, f"deck {deck_guid} {deck_name!r}",
+                                          f"manifest deck_name is {row['deck_name']!r}"))
+
+    for guid, card in detected_cards.items():
+        if guid not in manifest_card_guids:
+            inventory_issues.append(Issue(ERROR, card.where,
+                                          "map card exists in the save but is missing from map_manifest.csv"))
+
     startmenu = STARTMENU_LUA.read_text(encoding="utf-8") if STARTMENU_LUA.exists() else None
-    return MapContext(cards, scene_guids, startmenu)
+    return MapContext(cards, scene_guids, startmenu, inventory_issues,
+                      require_map_tags, Path(manifest_path))
 
 
 # --- Check registry ---------------------------------------------------------
@@ -240,6 +322,29 @@ CHECKS = []
 def check(fn):
     CHECKS.append(fn)
     return fn
+
+
+@check
+def manifest_inventory_consistent(ctx):
+    """The CSV is authoritative and must match the map decks/cards in the save."""
+    yield from ctx.inventory_issues
+
+
+@check
+def publishing_tags_present(ctx):
+    """Test/release builds require the generic map tag and a creator tag."""
+    if not ctx.require_map_tags:
+        return
+    for card in ctx.cards:
+        missing = []
+        if REQUIRED_MAP_TAG not in card.tags:
+            missing.append(REQUIRED_MAP_TAG)
+        if not any(tag.startswith(MAP_CREATOR_TAG_PREFIX) for tag in card.tags):
+            missing.append(MAP_CREATOR_TAG_PREFIX + "*")
+        if missing:
+            yield Issue(ERROR, card.where,
+                        f"missing required publishing tag(s): {', '.join(missing)}; "
+                        f"current tags: {card.tags}")
 
 
 @check
@@ -384,9 +489,9 @@ def loadmap_is_hookable(ctx):
 
 # --- Runner / reporting ------------------------------------------------------
 
-def validate(object_states):
+def validate(object_states, require_map_tags=False, manifest_path=MAP_MANIFEST):
     """Return (issues, ctx). issues is sorted ERROR-first."""
-    ctx = build_context(object_states)
+    ctx = build_context(object_states, require_map_tags, manifest_path)
     issues = []
     for fn in CHECKS:
         issues.extend(fn(ctx))
@@ -429,13 +534,18 @@ def report(issues, ctx) -> tuple:
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Validate manifest-listed map cards.")
+    parser.add_argument("--require-map-tags", action="store_true",
+                        help="Require each map card to have 'map' and a 'map_crt*' tag.")
+    args = parser.parse_args()
     json_file = Path(__file__).parent.parent / "TTSJSON" / "ftc_base.json"
     if not json_file.exists():
         print(term.red(f"ERROR: {json_file} not found."))
         return 1
     save = json.loads(json_file.read_text(encoding="utf-8"))
-    issues, ctx = validate(save.get("ObjectStates", []))
-    print(term.bold(f"Validating {len(ctx.cards)} map cards in {json_file.name}..."))
+    issues, ctx = validate(save.get("ObjectStates", []),
+                           require_map_tags=args.require_map_tags)
+    print(term.bold(f"Validating {len(ctx.cards)} manifest-listed map cards in {json_file.name}..."))
     n_err, n_warn = report(issues, ctx)
     report_zone_versions(ctx)
     print(term.dim(f"  {n_err} error(s), {n_warn} warning(s)."))

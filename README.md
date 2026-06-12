@@ -35,7 +35,9 @@ python3 compile.py --no-validate   # skip the map-card check gate (see below)
 
 `compile.py` stitches the `TTSLUA/*.ttslua` scripts back into `TTSJSON/ftc_base.json`, stamps the version, and writes `lct_base_<version>_compiled.json` into the `builds` folder, printing a colored build summary at the end.
 
-Every build first runs a validator over the baked-in map cards (whitelist, terrain, zone size, terrain-GUID collisions, mission-matrix references, name-suffix → deployment zone, terrain JSON); errors abort the build. Run it on its own with `python3 validate_maps.py`, and add new checks by decorating a function with `@check` in `validate_maps.py`.
+Every build first runs a validator over the baked-in map cards (manifest inventory, whitelist, terrain, zone size, terrain-GUID collisions, mission-matrix references, name-suffix → deployment zone, terrain JSON); errors abort the build. The authoritative deck/card inventory lives in `TTSJSON/map_manifest.csv`; add or remove map cards there whenever the save changes. The validator also reports map cards found in the save but missing from the manifest.
+
+`--test` and `--release` additionally require every manifest-listed map card to have the `map` tag and at least one tag beginning with `map_crt`. Missing tags abort the build and print the affected map card GUID. Run the strict check directly with `python3 validate_maps.py --require-map-tags`. Add new checks by decorating a function with `@check` in `validate_maps.py`.
 
 The build report also shows each map card's **Map Zones** version (v1 = original wipe, v2 = deferred wipe that loads/clears reliably). Migrating is a separate, explicit step — it is never done by a normal build:
 
