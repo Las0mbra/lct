@@ -397,15 +397,69 @@ function getDiscardedSecondaryNames(color, objects)
     return names
 end
 
+-- Static-per-game context shown in the scoring overlay header/columns (Idea 1 & 2):
+-- per-player disposition + primary mission, and the shared deployment zone name.
+-- These are frozen once the game begins, so startMenu pushes them in once at
+-- startGame via setScoringContext rather than the overlay recomputing them on every
+-- 2s refresh. Cached here so reopening the overlay re-renders them.
+scoringContext = scoringContext or {
+    redDisposition = "", blueDisposition = "",
+    redPrimary = "", bluePrimary = "",
+    deployZone = "",
+}
+
+function setScoringContext(params)
+    if type(params) ~= "table" then return end
+    for _, key in ipairs({"redDisposition", "blueDisposition", "redPrimary", "bluePrimary", "deployZone"}) do
+        if params[key] ~= nil then
+            scoringContext[key] = tostring(params[key])
+        end
+    end
+    -- Push immediately so the header updates even if no overlay is currently open
+    -- (the values are static, so a single write is enough until the next game).
+    if isAnyScoringOverlayOpen() then
+        refreshScoringOverlay()
+    else
+        applyScoringContextToOverlay()
+    end
+end
+
+-- "Disposition - Mission" on one line; drops the separator if either is missing.
+function formatDispositionLine(disposition, mission)
+    disposition = disposition or ""
+    mission = mission or ""
+    if disposition ~= "" and mission ~= "" then
+        return disposition .. " - " .. mission
+    end
+    return disposition .. mission
+end
+
+-- Writes only the static context fields. The deploy zone now lives in the title
+-- (see refreshScoringOverlay) and each disposition line carries that player's
+-- primary mission, so this just writes the two combined disposition lines. Split
+-- out of refreshScoringOverlay so setScoringContext can update them without paying
+-- for the full secondary-card scan.
+function applyScoringContextToOverlay()
+    setHudValue({id = "ScoringOverlay_RedDisposition", value = formatDispositionLine(scoringContext.redDisposition, scoringContext.redPrimary)})
+    setHudValue({id = "ScoringOverlay_BlueDisposition", value = formatDispositionLine(scoringContext.blueDisposition, scoringContext.bluePrimary)})
+end
+
 function refreshScoringOverlay()
     local sheet = getObjectFromGUID(scoresheet_GUID)
     if not sheet then return end
     local summary = sheet.call("getMatchSummary")
     if not summary then return end
 
+    applyScoringContextToOverlay()
+
     local roundCounter = getObjectFromGUID(gameTurnCounter_GUID)
     local roundNum = (roundCounter and roundCounter.Counter and roundCounter.Counter.getValue()) or 0
-    setHudValue({id = "ScoringOverlay_Title", value = "⚔ Round " .. roundNum .. " ⚔"})
+    -- Deployment zone (static, set at game start) is folded into the title, e.g.
+    -- "⚔ Hammer and Anvil - Round 1 ⚔". Falls back to just the round before a game.
+    local zone = scoringContext.deployZone or ""
+    local titleText = (zone ~= "" and ("⚔ " .. zone .. " - Round " .. roundNum .. " ⚔"))
+        or ("⚔ Round " .. roundNum .. " ⚔")
+    setHudValue({id = "ScoringOverlay_Title", value = titleText})
 
     local redName = summary.red.name or "Red"
     local blueName = summary.blue.name or "Blue"
@@ -460,7 +514,9 @@ function refreshScoringOverlay()
     local deckH = sectionH(deckCount)
 
     -- If total exceeds the panel's content budget, scale all sections down proportionally.
-    local contentBudget = 770
+    -- Budget trimmed from 770 to leave room for the disposition row (with mission)
+    -- added under each player name (Idea 1).
+    local contentBudget = 730
     local needed = activeH + discardH + deckH
     if needed > contentBudget then
         local scale = contentBudget / needed
@@ -1107,6 +1163,20 @@ function onLoad(saved_data)
     --addHotkey("Tag Selected as Red", tagSelectedAsRed)
     --addHotkey("Tag Selected as Blue", tagSelectedAsBlue)
     Turns.enable=false
+    -- Register the disposition icon used by the scoring overlay (Idea 1). Additive
+    -- merge so we never clobber other Global UI assets added later. Referenced from
+    -- the overlay XML via image="dispoPlaceholder".
+    do
+        local assets = UI.getCustomAssets() or {}
+        local present = false
+        for _, a in ipairs(assets) do
+            if a.name == "dispoPlaceholder" then present = true break end
+        end
+        if not present then
+            table.insert(assets, {name = "dispoPlaceholder", url = "https://steamusercontent-a.akamaihd.net/ugc/9296742729343346160/10BAEEC79465E4F4E78DDCC7F55683F7C562C35D/"})
+            UI.setCustomAssets(assets)
+        end
+    end
     --- load vars from saved
     if saved_data ~= "" then
          local loaded_data = JSON.decode(saved_data)

@@ -329,13 +329,17 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
   </HorizontalLayout>
 </Panel>
 
-<Panel id="RedHud_ScoringOverlay" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false" visibility="Red" active="false" rectAlignment="MiddleCenter" width="1600" height="1300" scale="0.55 0.55 0.55" color="#0D0D1A80" outline="#2a2a4a" outlineSize="6">
+<Panel id="RedHud_ScoringOverlay" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false" visibility="Red" active="false" rectAlignment="MiddleCenter" width="1600" height="1300" scale="0.55 0.55 0.55" color="#0D0D1A40" outline="#2a2a4a80" outlineSize="6">
   <Text id="RedHud_ScoringOverlay_Title" text="⚔ Round 0 ⚔" fontSize="56" fontStyle="Bold" color="#FFFFFF" offsetXY="0 590" alignment="MiddleCenter"/>
   <Button id="RedHud_ScoringOverlay_CloseBtn" text="X" fontSize="32" textColor="#FFFFFF" color="#B52020" width="64" height="64" roundEdges="true" outline="#2a2a4aCC" outlineSize="3" offsetXY="740 590" onClick="hudCloseScoringOverlay" tooltip="Close"/>
   <HorizontalLayout spacing="40" padding="40 40 110 60" childForceExpandWidth="true" childForceExpandHeight="true">
-    <Panel color="#B5202080" outline="#D46060CC" outlineSize="4" roundEdges="true">
+    <Panel color="#B5202040" outline="#D4606080" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="8" padding="12 12 12 12" childForceExpandWidth="true">
         <Text id="RedHud_ScoringOverlay_RedName" text="Red Player" fontSize="42" fontStyle="Bold" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="50"/>
+        <HorizontalLayout preferredHeight="34" spacing="8" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleCenter">
+          <Image id="RedHud_ScoringOverlay_RedDispoIcon" image="dispoPlaceholder" preferredWidth="28" preferredHeight="28" minWidth="28" minHeight="28" flexibleWidth="0" flexibleHeight="0"/>
+          <Text id="RedHud_ScoringOverlay_RedDisposition" text="" fontSize="26" fontStyle="Bold" color="#FFFFFFE6" alignment="MiddleLeft" flexibleWidth="0" minWidth="0"/>
+        </HorizontalLayout>
         <Text id="RedHud_ScoringOverlay_RedRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160" richText="true"/>
         <Text text="ACTIVE SECONDARIES" fontSize="22" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="28"/>
         <Panel id="RedHud_ScoringOverlay_RedActive" color="rgba(0,0,0,0)" preferredHeight="200">
@@ -360,9 +364,13 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
         </Panel>
       </VerticalLayout>
     </Panel>
-    <Panel color="#1A5FC880" outline="#6DA8FFCC" outlineSize="4" roundEdges="true">
+    <Panel color="#1A5FC840" outline="#6DA8FF80" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="8" padding="12 12 12 12" childForceExpandWidth="true">
         <Text id="RedHud_ScoringOverlay_BlueName" text="Blue Player" fontSize="42" fontStyle="Bold" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="50"/>
+        <HorizontalLayout preferredHeight="34" spacing="8" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleCenter">
+          <Image id="RedHud_ScoringOverlay_BlueDispoIcon" image="dispoPlaceholder" preferredWidth="28" preferredHeight="28" minWidth="28" minHeight="28" flexibleWidth="0" flexibleHeight="0"/>
+          <Text id="RedHud_ScoringOverlay_BlueDisposition" text="" fontSize="26" fontStyle="Bold" color="#FFFFFFE6" alignment="MiddleLeft" flexibleWidth="0" minWidth="0"/>
+        </HorizontalLayout>
         <Text id="RedHud_ScoringOverlay_BlueRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160" richText="true"/>
         <Text text="ACTIVE SECONDARIES" fontSize="22" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="28"/>
         <Panel id="RedHud_ScoringOverlay_BlueActive" color="rgba(0,0,0,0)" preferredHeight="200">
@@ -390,13 +398,17 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
   </HorizontalLayout>
 </Panel>
 
-<Panel id="BlueHud_ScoringOverlay" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false" visibility="Blue" active="false" rectAlignment="MiddleCenter" width="1600" height="1300" scale="0.55 0.55 0.55" color="#0D0D1A80" outline="#2a2a4a" outlineSize="6">
+<Panel id="BlueHud_ScoringOverlay" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false" visibility="Blue" active="false" rectAlignment="MiddleCenter" width="1600" height="1300" scale="0.55 0.55 0.55" color="#0D0D1A40" outline="#2a2a4a80" outlineSize="6">
   <Text id="BlueHud_ScoringOverlay_Title" text="⚔ Round 0 ⚔" fontSize="56" fontStyle="Bold" color="#FFFFFF" offsetXY="0 590" alignment="MiddleCenter"/>
   <Button id="BlueHud_ScoringOverlay_CloseBtn" text="X" fontSize="32" textColor="#FFFFFF" color="#B52020" width="64" height="64" roundEdges="true" outline="#2a2a4aCC" outlineSize="3" offsetXY="740 590" onClick="hudCloseScoringOverlay" tooltip="Close"/>
   <HorizontalLayout spacing="40" padding="40 40 110 60" childForceExpandWidth="true" childForceExpandHeight="true">
-    <Panel color="#B5202080" outline="#D46060CC" outlineSize="4" roundEdges="true">
+    <Panel color="#B5202040" outline="#D4606080" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="8" padding="12 12 12 12" childForceExpandWidth="true">
         <Text id="BlueHud_ScoringOverlay_RedName" text="Red Player" fontSize="42" fontStyle="Bold" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="50"/>
+        <HorizontalLayout preferredHeight="34" spacing="8" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleCenter">
+          <Image id="BlueHud_ScoringOverlay_RedDispoIcon" image="dispoPlaceholder" preferredWidth="28" preferredHeight="28" minWidth="28" minHeight="28" flexibleWidth="0" flexibleHeight="0"/>
+          <Text id="BlueHud_ScoringOverlay_RedDisposition" text="" fontSize="26" fontStyle="Bold" color="#FFFFFFE6" alignment="MiddleLeft" flexibleWidth="0" minWidth="0"/>
+        </HorizontalLayout>
         <Text id="BlueHud_ScoringOverlay_RedRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160" richText="true"/>
         <Text text="ACTIVE SECONDARIES" fontSize="22" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="28"/>
         <Panel id="BlueHud_ScoringOverlay_RedActive" color="rgba(0,0,0,0)" preferredHeight="200">
@@ -421,9 +433,13 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
         </Panel>
       </VerticalLayout>
     </Panel>
-    <Panel color="#1A5FC880" outline="#6DA8FFCC" outlineSize="4" roundEdges="true">
+    <Panel color="#1A5FC840" outline="#6DA8FF80" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="8" padding="12 12 12 12" childForceExpandWidth="true">
         <Text id="BlueHud_ScoringOverlay_BlueName" text="Blue Player" fontSize="42" fontStyle="Bold" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="50"/>
+        <HorizontalLayout preferredHeight="34" spacing="8" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleCenter">
+          <Image id="BlueHud_ScoringOverlay_BlueDispoIcon" image="dispoPlaceholder" preferredWidth="28" preferredHeight="28" minWidth="28" minHeight="28" flexibleWidth="0" flexibleHeight="0"/>
+          <Text id="BlueHud_ScoringOverlay_BlueDisposition" text="" fontSize="26" fontStyle="Bold" color="#FFFFFFE6" alignment="MiddleLeft" flexibleWidth="0" minWidth="0"/>
+        </HorizontalLayout>
         <Text id="BlueHud_ScoringOverlay_BlueRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160" richText="true"/>
         <Text text="ACTIVE SECONDARIES" fontSize="22" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="28"/>
         <Panel id="BlueHud_ScoringOverlay_BlueActive" color="rgba(0,0,0,0)" preferredHeight="200">
@@ -451,13 +467,17 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
   </HorizontalLayout>
 </Panel>
 
-<Panel id="GreyHud_ScoringOverlay" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false" visibility="Grey" active="false" rectAlignment="MiddleCenter" width="1600" height="1300" scale="0.55 0.55 0.55" color="#0D0D1A80" outline="#2a2a4a" outlineSize="6">
+<Panel id="GreyHud_ScoringOverlay" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false" visibility="Grey" active="false" rectAlignment="MiddleCenter" width="1600" height="1300" scale="0.55 0.55 0.55" color="#0D0D1A40" outline="#2a2a4a80" outlineSize="6">
   <Text id="GreyHud_ScoringOverlay_Title" text="⚔ Round 0 ⚔" fontSize="56" fontStyle="Bold" color="#FFFFFF" offsetXY="0 590" alignment="MiddleCenter"/>
   <Button id="GreyHud_ScoringOverlay_CloseBtn" text="X" fontSize="32" textColor="#FFFFFF" color="#B52020" width="64" height="64" roundEdges="true" outline="#2a2a4aCC" outlineSize="3" offsetXY="740 590" onClick="hudCloseScoringOverlay" tooltip="Close"/>
   <HorizontalLayout spacing="40" padding="40 40 110 60" childForceExpandWidth="true" childForceExpandHeight="true">
-    <Panel color="#B5202080" outline="#D46060CC" outlineSize="4" roundEdges="true">
+    <Panel color="#B5202040" outline="#D4606080" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="8" padding="12 12 12 12" childForceExpandWidth="true">
         <Text id="GreyHud_ScoringOverlay_RedName" text="Red Player" fontSize="42" fontStyle="Bold" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="50"/>
+        <HorizontalLayout preferredHeight="34" spacing="8" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleCenter">
+          <Image id="GreyHud_ScoringOverlay_RedDispoIcon" image="dispoPlaceholder" preferredWidth="28" preferredHeight="28" minWidth="28" minHeight="28" flexibleWidth="0" flexibleHeight="0"/>
+          <Text id="GreyHud_ScoringOverlay_RedDisposition" text="" fontSize="26" fontStyle="Bold" color="#FFFFFFE6" alignment="MiddleLeft" flexibleWidth="0" minWidth="0"/>
+        </HorizontalLayout>
         <Text id="GreyHud_ScoringOverlay_RedRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160" richText="true"/>
         <Text text="ACTIVE SECONDARIES" fontSize="22" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="28"/>
         <Panel id="GreyHud_ScoringOverlay_RedActive" color="rgba(0,0,0,0)" preferredHeight="200">
@@ -482,9 +502,13 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
         </Panel>
       </VerticalLayout>
     </Panel>
-    <Panel color="#1A5FC880" outline="#6DA8FFCC" outlineSize="4" roundEdges="true">
+    <Panel color="#1A5FC840" outline="#6DA8FF80" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="8" padding="12 12 12 12" childForceExpandWidth="true">
         <Text id="GreyHud_ScoringOverlay_BlueName" text="Blue Player" fontSize="42" fontStyle="Bold" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="50"/>
+        <HorizontalLayout preferredHeight="34" spacing="8" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleCenter">
+          <Image id="GreyHud_ScoringOverlay_BlueDispoIcon" image="dispoPlaceholder" preferredWidth="28" preferredHeight="28" minWidth="28" minHeight="28" flexibleWidth="0" flexibleHeight="0"/>
+          <Text id="GreyHud_ScoringOverlay_BlueDisposition" text="" fontSize="26" fontStyle="Bold" color="#FFFFFFE6" alignment="MiddleLeft" flexibleWidth="0" minWidth="0"/>
+        </HorizontalLayout>
         <Text id="GreyHud_ScoringOverlay_BlueRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="160" richText="true"/>
         <Text text="ACTIVE SECONDARIES" fontSize="22" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="28"/>
         <Panel id="GreyHud_ScoringOverlay_BlueActive" color="rgba(0,0,0,0)" preferredHeight="200">

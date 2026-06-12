@@ -427,6 +427,10 @@ GAME_MODE_OBJECTS = {
     {guid = "97d33f", pos = {15.3000011, 0.961498559, 0.3300001}, rot = {7.681179e-07, 269.999939, -7.70054456e-08}},
     {guid = "65439e", pos = {15.3, 0.9614987, -6.25725269}, rot = {2.1445826e-06, 269.999939, 5.9717685e-08}},
     {guid = "80eda8", pos = {15.3, 0.9614987, -12.829999}, rot = {1.25535382e-06, 269.999969, -2.740111e-07}},
+    {guid = "32e34a", pos = {0.5, 0.996871352, 13.57}, rot = {2.270983e-08, 0.006589271, -2.72824281e-07}},
+    {guid = "7b5ba7", pos = {0.5, 0.996871352, 6.96}, rot = {7.45712e-08, 359.987671, -2.28905236e-07}},
+    {guid = "158d2c", pos = {0.5000001, 0.996871352, 0.329999954}, rot = {9.282046e-09, 179.973267, 1.28640192e-08}},
+    {guid = "e4cdd7", pos = {0.50000006, 0.996871352, -6.26}, rot = {8.051902e-08, 180.0167, -1.97242453e-08}},
 }
 
 function hideStartupMapCards()
@@ -1101,6 +1105,54 @@ deploymentMatrixDecks = {
             {guid = "bc8eb5", name = "TnH vs Rec 3 - SnD"},
         },
     },
+    ["2_4"] = {
+        guid = "32e34a", name = "Priority Assets vs Reconnaissance",
+        cards = {
+            {guid = "e236ba", name = "PA vs Rec 1 - CoB"},
+            {guid = "c0f610", name = "PA vs Rec 2 - TP"},
+            {guid = "40cd96", name = "PA vs Rec 3 - SE"},
+        },
+    },
+    ["4_2"] = {
+        guid = "32e34a", name = "Priority Assets vs Reconnaissance",
+        cards = {
+            {guid = "e236ba", name = "PA vs Rec 1 - CoB"},
+            {guid = "c0f610", name = "PA vs Rec 2 - TP"},
+            {guid = "40cd96", name = "PA vs Rec 3 - SE"},
+        },
+    },
+    ["2_2"] = {
+        guid = "7b5ba7", name = "Priority Assets vs Priority Assets",
+        cards = {
+            {guid = "0b77a1", name = "PA vs PA 1 - TP"},
+            {guid = "9a0432", name = "PA vs PA 2 - CoB"},
+            {guid = "9319a0", name = "PA vs PA 3 - SE"},
+        },
+    },
+    ["3_3"] = {
+        guid = "158d2c", name = "Purge the Foe vs Purge the Foe",
+        cards = {
+            {guid = "36cb1e", name = "PtF vs PtF 1 - SnD"},
+            {guid = "13243a", name = "PtF vs PtF 2 - TP"},
+            {guid = "bc0963", name = "PtF vs PtF 3 - SE"},
+        },
+    },
+    ["3_1"] = {
+        guid = "e4cdd7", name = "Purge the Foe vs Disruption",
+        cards = {
+            {guid = "72863c", name = "PtF vs Dis 1 - SnD"},
+            {guid = "6548f0", name = "PtF vs Dis 2 - TP"},
+            {guid = "121559", name = "PtF vs Dis 3 - SnD"},
+        },
+    },
+    ["1_3"] = {
+        guid = "e4cdd7", name = "Purge the Foe vs Disruption",
+        cards = {
+            {guid = "72863c", name = "PtF vs Dis 1 - SnD"},
+            {guid = "6548f0", name = "PtF vs Dis 2 - TP"},
+            {guid = "121559", name = "PtF vs Dis 3 - SnD"},
+        },
+    },
 }
 
 randomDeploymentDecks = {
@@ -1157,6 +1209,38 @@ randomDeploymentDecks = {
             {guid = "0538a9", name = "TnH vs Rec 2 - DoW"},
             {guid = "e4072b", name = "TnH vs Rec 3 - SnD"},
             {guid = "bc8eb5", name = "TnH vs Rec 3 - SnD"},
+        },
+    },
+    {
+        guid = "32e34a", name = "Priority Assets vs Reconnaissance",
+        cards = {
+            {guid = "e236ba", name = "PA vs Rec 1 - CoB"},
+            {guid = "c0f610", name = "PA vs Rec 2 - TP"},
+            {guid = "40cd96", name = "PA vs Rec 3 - SE"},
+        },
+    },
+    {
+        guid = "7b5ba7", name = "Priority Assets vs Priority Assets",
+        cards = {
+            {guid = "0b77a1", name = "PA vs PA 1 - TP"},
+            {guid = "9a0432", name = "PA vs PA 2 - CoB"},
+            {guid = "9319a0", name = "PA vs PA 3 - SE"},
+        },
+    },
+    {
+        guid = "158d2c", name = "Purge the Foe vs Purge the Foe",
+        cards = {
+            {guid = "36cb1e", name = "PtF vs PtF 1 - SnD"},
+            {guid = "13243a", name = "PtF vs PtF 2 - TP"},
+            {guid = "bc0963", name = "PtF vs PtF 3 - SE"},
+        },
+    },
+    {
+        guid = "e4cdd7", name = "Purge the Foe vs Disruption",
+        cards = {
+            {guid = "72863c", name = "PtF vs Dis 1 - SnD"},
+            {guid = "6548f0", name = "PtF vs Dis 2 - TP"},
+            {guid = "121559", name = "PtF vs Dis 3 - SnD"},
         },
     },
 }
@@ -1452,6 +1536,38 @@ function movePrimaryMissionCardsToIngameSlots()
             end
         end
     end
+end
+
+-- Name of the primary mission card sitting in a player's primary slots, read from
+-- the actual card dealt off that player's primary deck (Red = 25c0d8, Blue = e64441).
+-- getObjectsInMissionSlot matches both the display and in-game positions, so this is
+-- reliable whether the card has finished its startGame slide to the board or not.
+function getPrimaryMissionNameForPlayer(player)
+    for _, slot in ipairs(missionSlots) do
+        if slot.role == "primary" and slot.player == player then
+            for _, obj in ipairs(getObjectsInMissionSlot(slot, nil)) do
+                if obj.tag == "Card" then
+                    local n = obj.getName()
+                    if n and n ~= "" then return n end
+                end
+            end
+        end
+    end
+    return ""
+end
+
+-- Push the static-per-game scoring overlay header info to Global once the game
+-- starts (disposition + primary per player, shared deployment zone). These change
+-- a lot during deployment, so we only snapshot them here at startGame.
+function pushScoringContext()
+    local deployName = (selectedDeployment() and selectedDeployment().name) or ""
+    Global.call("setScoringContext", {
+        redDisposition  = dispositionValues[redDispositionSelected]  or "",
+        blueDisposition = dispositionValues[blueDispositionSelected] or "",
+        redPrimary      = getPrimaryMissionNameForPlayer("Red"),
+        bluePrimary     = getPrimaryMissionNameForPlayer("Blue"),
+        deployZone      = deployName,
+    })
 end
 
 function moveDeploymentCardToLockTarget(cardToMove)
@@ -2735,6 +2851,11 @@ function onMapCardLoaded(params)
     local name = (params and params.name) or "?"
     broadcastToAll("Loading map: " .. name, {0.3, 1.0, 0.3})  -- banner + chat log
 
+    -- A loaded map owns the mat (and brings its own Clear button), so dismiss
+    -- the standalone CLEAR MAT button the same way using it would.
+    matClearButtonUsed = true
+    writeMenus()
+
     local zoneName = name:match("^.*%-%s*(.-)%s*$")
     if not zoneName or zoneName == "" then return end
 
@@ -3333,6 +3454,7 @@ function startGame(obj, player, alt)
 
     returnCardsInDeploymentSlotsToDeck(false)
     movePrimaryMissionCardsToIngameSlots()
+    pushScoringContext()
 
     Global.call("recordPlayers")
     inGame = true

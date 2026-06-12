@@ -6,6 +6,7 @@ This project is a fork of Hutber’s FTC table (shared with permission), buildin
 
 The aim of this fork is to provide a clean, self-contained experience while continuing to iterate on usability and tooling for both players and developers.
 
+Feel free to take the project and use it as you with it.
 New to Tabletop Simulator or this table? Start with the [Quick Guide](TUTORIAL_GUIDE.md).
 
 ## Features
