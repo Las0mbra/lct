@@ -148,7 +148,7 @@ _NAME_SUFFIX_RE = re.compile(r'^.*-\s*(.*?)\s*$')
 # startMenu.ttslua holds the mission matrix and the deployment-zone names that a
 # couple of cross-checks need. Read best-effort; checks skip if it isn't found.
 STARTMENU_LUA = Path(__file__).parent.parent / "TTSLUA" / "startMenu.ttslua"
-MAP_MANIFEST = Path(__file__).parent.parent / "TTSJSON" / "map_manifest.csv"
+MAP_MANIFEST = Path(__file__).parent.parent / "data" / "map_manifest.csv"
 MAP_MANIFEST_COLUMNS = {"deck_guid", "deck_name", "card_guid", "card_name"}
 REQUIRED_MAP_TAG = "map"
 MAP_CREATOR_TAG_PREFIX = "map_crt"

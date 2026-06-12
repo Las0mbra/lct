@@ -15,7 +15,7 @@ import validate_maps
 
 ROOT = SCRIPT_DIR.parent
 SAVE_PATH = ROOT / "TTSJSON" / "ftc_base.json"
-MANIFEST_PATH = ROOT / "TTSJSON" / "map_manifest.csv"
+MANIFEST_PATH = ROOT / "data" / "map_manifest.csv"
 
 
 def find_guid(objects, guid):
