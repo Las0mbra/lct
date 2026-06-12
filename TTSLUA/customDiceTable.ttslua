@@ -2401,13 +2401,32 @@ coherencyMonitorTimer = nil
 coherencyTimeoutTimer = nil -- one-shot auto-stop timer
 coherencyLabels = {} -- pool of spawned 3DText distance labels, reused each tick
 
+-- Cached pairwise geometry so the live monitor doesn't recompute the whole
+-- O(n^2) base-gap matrix every tick. Indices are 1..#coherencyMonitorGuids and
+-- stay aligned with coherencyDesc; a deletion triggers a full rebuild that
+-- compacts the dead entry out. Routine movement only refreshes the moved
+-- models' rows (O(moving * n)) via the motion loop below.
+coherencyDesc = {}            -- desc[i] = base descriptor for monitored model i
+coherencyGap = {}             -- gap[i][j] = cached base-to-base gap
+coherencyCp = {}              -- cp[i][j]  = base-edge point on i toward j (for drawing)
+coherencyIndexByGuid = {}     -- guid -> current index, for O(1) event filtering
+coherencyMotionTimer = nil    -- runs ONLY while monitored models are moving
+
 local COHERENCY_RANGE = 2 -- inches, base-to-base
 local COHERENCY_MAX = 9   -- inches, base-to-base
 local COHERENCY_LIFT = 0.2 -- raise lines slightly so they sit above the bases
 local COHERENCY_LABEL_LIFT = 0.5 -- raise distance text a little above the lines
-local COHERENCY_REFRESH = 0.1 -- seconds between redraws
+local COHERENCY_REFRESH = 0.1 -- seconds between redraws WHILE models are moving
 local COHERENCY_TIMEOUT = 15 -- auto-stop if left on this many seconds
-local COHERENCY_MAX_MODELS = 30 -- refuse to monitor larger selections (O(n^2) at 4Hz)
+-- Soft backstop on selection size. The monitor is now event-driven (idle costs
+-- nothing; a moving model only re-measures its own row, O(moving * n)), so this
+-- can safely be raised well beyond the old O(n^2)-per-tick limit if desired.
+local COHERENCY_MAX_MODELS = 30
+-- Hard cap on how many breach lines/labels are ever drawn at once. A unit split
+-- into two clusters >9" apart breaches on a*b pairs (a 12+12 split = 144 lines),
+-- and each line is a vector line + a 3DText label -- enough to choke the table.
+-- We cap the rendered set so the draw cost stays bounded no matter the spread.
+local COHERENCY_MAX_LINES = 24
 local COHERENCY_LABEL_TAG = "coherencyLabel" -- GMNotes marker for sweep-on-load
 
 -- Spawn a flat, locked 3DText object to use as a floating distance label.
@@ -2473,11 +2492,19 @@ function stopCoherencyMonitor()
         Wait.stop(coherencyMonitorTimer)
         coherencyMonitorTimer = nil
     end
+    if coherencyMotionTimer ~= nil then
+        Wait.stop(coherencyMotionTimer)
+        coherencyMotionTimer = nil
+    end
     if coherencyTimeoutTimer ~= nil then
         Wait.stop(coherencyTimeoutTimer)
         coherencyTimeoutTimer = nil
     end
     coherencyMonitorGuids = {}
+    coherencyDesc = {}
+    coherencyGap = {}
+    coherencyCp = {}
+    coherencyIndexByGuid = {}
     for _, lbl in ipairs(coherencyLabels) do
         if lbl ~= nil and not lbl.isDestroyed() then
             destroyObject(lbl)
@@ -2530,87 +2557,236 @@ local function baseGap(d1, d2)
     return gap, p1, p2
 end
 
--- Recompute the breach lines and distance labels from the monitored models'
--- live positions. Driven by a repeating Wait.time so both track the models.
--- Distances are full base-to-base along the centre-to-centre line, using each
--- base's directional ellipse radius so ovals (and their facing) are measured
--- accurately; lines sit on the base edges.
-function refreshCoherencyLines()
-    if not coherencyMonitorActive then return end
+-- Recompute just one model's row/column of the cached gap/cp matrices after its
+-- descriptor (coherencyDesc[i]) has been refreshed. O(n). Used by the motion
+-- loop so a moving model only re-measures against the others, not every pair.
+local function recomputeCoherencyRow(i)
+    local di = coherencyDesc[i]
+    if di == nil then return end
+    for j = 1, #coherencyDesc do
+        if j ~= i and coherencyDesc[j] ~= nil then
+            local g, pi, pj = baseGap(di, coherencyDesc[j])
+            coherencyGap[i][j], coherencyGap[j][i] = g, g
+            coherencyCp[i][j],  coherencyCp[j][i]  = pi, pj
+        end
+    end
+end
 
-    -- Resolve the monitored set, dropping any models that were deleted.
-    local desc = {}
+-- Full O(n^2) rebuild of the cache: resolve the monitored set to live objects
+-- (compacting any that were deleted so indices stay dense and aligned), then
+-- recompute every pairwise gap once. Returns the live model count. Called on
+-- start and when a monitored model is deleted -- NOT every tick.
+local function coherencyFullRecompute()
+    local guids, desc, indexByGuid = {}, {}, {}
     for _, guid in ipairs(coherencyMonitorGuids) do
         local o = getObjectFromGUID(guid)
         if o ~= nil and not o.isDestroyed() then
+            guids[#guids + 1] = guid
             desc[#desc + 1] = buildBaseDescriptor(o)
+            indexByGuid[guid] = #guids
         end
     end
+    coherencyMonitorGuids = guids
+    coherencyDesc = desc
+    coherencyIndexByGuid = indexByGuid
 
+    local n = #desc
+    coherencyGap, coherencyCp = {}, {}
+    for i = 1, n do coherencyGap[i] = {}; coherencyCp[i] = {} end
+    for i = 1, n do
+        for j = i + 1, n do
+            local g, pi, pj = baseGap(desc[i], desc[j])
+            coherencyGap[i][j], coherencyGap[j][i] = g, g
+            coherencyCp[i][j],  coherencyCp[j][i]  = pi, pj
+        end
+    end
+    return n
+end
+
+-- Build the breach lines/labels from the CACHED gap/cp (no base-gap math here)
+-- and push them to the table. Cheap to call every motion tick. The rendered set
+-- is bounded by COHERENCY_MAX_LINES so a wide spread can't flood the table.
+--   * orange = a model with no other model within 2" (drawn to its nearest)
+--   * red    = a model out of 9" range (drawn to its single worst partner)
+local function drawCoherency()
+    if not coherencyMonitorActive then return end
+    local desc, gap, cp = coherencyDesc, coherencyGap, coherencyCp
     local n = #desc
     if n < 2 then
         stopCoherencyMonitor()
         return
     end
 
-    -- Precompute every pairwise gap once and reuse it for both rules.
-    -- gap[i][j] = distance, cp[i][j] = closest perimeter point on base i toward j.
-    local gap, cp = {}, {}
-    for i = 1, n do gap[i] = {}; cp[i] = {} end
-    for i = 1, n do
-        for j = i + 1, n do
-            local g, pi, pj = baseGap(desc[i], desc[j])
-            gap[i][j], gap[j][i] = g, g
-            cp[i][j], cp[j][i] = pi, pj
-        end
-    end
-
-    local lines = {}
-    local labels = {}
-
-    -- Record a breach: a coloured line between the two base-edge points plus a
-    -- distance label floating at the segment's midpoint.
+    local lines, labels = {}, {}
     local function addBreach(i, j, d, color)
         local pi, pj = cp[i][j], cp[j][i]
+        if pi == nil or pj == nil then return end
         local yi, yj = desc[i].pos.y, desc[j].pos.y
         local a = {pi.x, yi + COHERENCY_LIFT, pi.z}
         local b = {pj.x, yj + COHERENCY_LIFT, pj.z}
-        table.insert(lines, { points = {a, b}, color = color, thickness = 0.15 })
-        table.insert(labels, {
+        lines[#lines + 1] = { points = {a, b}, color = color, thickness = 0.15 }
+        labels[#labels + 1] = {
             pos = {(pi.x + pj.x) / 2, (yi + yj) / 2 + COHERENCY_LABEL_LIFT, (pi.z + pj.z) / 2},
             text = string.format("%.1f\"", d),
             color = color
-        })
+        }
+    end
+
+    -- Collect breach candidates, then render only the most important ones (up to
+    -- COHERENCY_MAX_LINES) so a wide spread can't flood the table with lines/labels.
+    local breaches = {}  -- { i, j, d, color, critical }
+    local function add(i, j, d, color, critical)
+        breaches[#breaches + 1] = { i = i, j = j, d = d, color = color, critical = critical }
     end
 
     -- Rule 1: every model needs at least one other model within 2" base-to-base.
-    -- If none qualifies, draw to its nearest neighbour to show the gap to close.
+    -- If none qualifies, flag the gap to its nearest neighbour (orange, critical).
     for i = 1, n do
         local hasBuddy = false
         local nearest, nearestDist = nil, math.huge
         for j = 1, n do
             if i ~= j then
                 local d = gap[i][j]
-                if d <= COHERENCY_RANGE then hasBuddy = true end
-                if d < nearestDist then nearestDist = d; nearest = j end
+                if d ~= nil then
+                    if d <= COHERENCY_RANGE then hasBuddy = true end
+                    if d < nearestDist then nearestDist = d; nearest = j end
+                end
             end
         end
         if not hasBuddy and nearest then
-            addBreach(i, nearest, nearestDist, {1, 0.5, 0})
+            add(i, nearest, nearestDist, {1, 0.5, 0}, true)
         end
     end
 
-    -- Rule 2: every pair of models must be within 9" base-to-base.
+    -- Rule 2: every model must be within 9" of every other. Drawing a line per
+    -- breaching PAIR is O(n^2) lines (a 12+12 split = 144); instead flag at most
+    -- one line per model -- to its single worst out-of-range partner, deduped --
+    -- so a split unit draws ~n lines while still marking every offending model.
+    local redSeen = {}
     for i = 1, n do
-        for j = i + 1, n do
-            if gap[i][j] > COHERENCY_MAX then
-                addBreach(i, j, gap[i][j], {1, 0, 0})
+        local worstJ, worstD = nil, COHERENCY_MAX
+        for j = 1, n do
+            if i ~= j then
+                local d = gap[i][j]
+                if d ~= nil and d > worstD then worstD = d; worstJ = j end
             end
         end
+        if worstJ then
+            local key = (i < worstJ) and (i * 100000 + worstJ) or (worstJ * 100000 + i)
+            if not redSeen[key] then
+                redSeen[key] = true
+                add(i, worstJ, worstD, {1, 0, 0}, false)
+            end
+        end
+    end
+
+    -- Render the most important breaches up to the hard cap: critical coherency
+    -- (orange) breaches first, then the most severe range (red) breaches by gap.
+    table.sort(breaches, function(a, b)
+        if a.critical ~= b.critical then return a.critical end
+        return a.d > b.d
+    end)
+    local shown = math.min(#breaches, COHERENCY_MAX_LINES)
+    for k = 1, shown do
+        local br = breaches[k]
+        addBreach(br.i, br.j, br.d, br.color)
     end
 
     Global.setVectorLines(lines)
     updateCoherencyLabels(labels)
+end
+
+-- Motion loop. Runs ONLY while one or more monitored models are in motion
+-- (held or not yet resting). Each tick it refreshes just the moving models'
+-- descriptors and recomputes their rows (O(moving * n)), then redraws. When
+-- nothing is moving it stops itself; the cached lines stay on the table until
+-- the next pickup/drop. A deleted model triggers a one-off full rebuild.
+local function coherencyMotionTick()
+    if not coherencyMonitorActive then return end
+
+    local moving, needsRebuild = {}, false
+    for i = 1, #coherencyMonitorGuids do
+        local o = getObjectFromGUID(coherencyMonitorGuids[i])
+        if o == nil or o.isDestroyed() then
+            needsRebuild = true
+        elseif o.held_by_color ~= nil or o.resting == false then
+            moving[#moving + 1] = { index = i, obj = o }
+        end
+    end
+
+    if needsRebuild then
+        if coherencyFullRecompute() < 2 then stopCoherencyMonitor() else drawCoherency() end
+        return
+    end
+
+    if #moving == 0 then
+        -- Scene is static again: stop polling, keep the cache and drawn lines.
+        if coherencyMotionTimer ~= nil then
+            Wait.stop(coherencyMotionTimer)
+            coherencyMotionTimer = nil
+        end
+        return
+    end
+
+    -- Refresh all moving descriptors first so a pair of two moving models uses
+    -- both fresh positions, then recompute only those rows.
+    for _, m in ipairs(moving) do
+        coherencyDesc[m.index] = buildBaseDescriptor(m.obj)
+    end
+    for _, m in ipairs(moving) do
+        recomputeCoherencyRow(m.index)
+    end
+    drawCoherency()
+end
+
+local function startCoherencyMotionLoop()
+    if not coherencyMonitorActive then return end
+    if coherencyMotionTimer ~= nil then return end -- already running
+    coherencyMotionTimer = Wait.time(coherencyMotionTick, COHERENCY_REFRESH, -1)
+end
+
+-- Manual full redraw / back-compat entry point. The live monitor no longer
+-- calls this every tick -- routine movement updates only the moved rows via the
+-- motion loop; this rebuilds the whole cache and redraws on demand.
+function refreshCoherencyLines()
+    if not coherencyMonitorActive then return end
+    if coherencyFullRecompute() < 2 then
+        stopCoherencyMonitor()
+        return
+    end
+    drawCoherency()
+end
+
+-- Object events (delivered for ALL objects). Kept cheap: bail immediately when
+-- the monitor is off or the object isn't part of the monitored set.
+function onObjectPickUp(player_color, obj)
+    if not coherencyMonitorActive then return end
+    if coherencyIndexByGuid[obj.getGUID()] == nil then return end
+    startCoherencyMotionLoop()
+end
+
+function onObjectDrop(player_color, obj)
+    if not coherencyMonitorActive then return end
+    local i = coherencyIndexByGuid[obj.getGUID()]
+    if i == nil then return end
+    -- Snap the lines to the model's new spot immediately (covers a drop that
+    -- lands already-resting), then run the motion loop to track any physics
+    -- settle; it self-stops once everything is at rest.
+    coherencyDesc[i] = buildBaseDescriptor(obj)
+    recomputeCoherencyRow(i)
+    drawCoherency()
+    startCoherencyMotionLoop()
+end
+
+function onObjectDestroy(obj)
+    if not coherencyMonitorActive then return end
+    if coherencyIndexByGuid[obj.getGUID()] == nil then return end
+    -- The object still exists during this event; defer a frame so the rebuild's
+    -- getObjectFromGUID skips it, then recompute the smaller set (or stop).
+    Wait.frames(function()
+        if not coherencyMonitorActive then return end
+        if coherencyFullRecompute() < 2 then stopCoherencyMonitor() else drawCoherency() end
+    end, 1)
 end
 
 -- Drive the live coherency monitor.
@@ -2654,8 +2830,8 @@ function checkCoherency(a, b, c)
         return
     end
 
-    -- The monitor is O(n^2) per redraw; refuse oversized selections so a whole-army
-    -- box-select can't stall the table. Leave any running monitor untouched.
+    -- Soft cap so an accidental whole-army box-select doesn't pay a big one-off
+    -- O(n^2) recompute. Leave any running monitor untouched.
     if #objs > COHERENCY_MAX_MODELS then
         broadcastToColor(string.format("Coherency check skipped: %d models selected (max %d). Select a single unit.", #objs, COHERENCY_MAX_MODELS), playerColor, {1, 0.3, 0.3})
         return
@@ -2675,8 +2851,15 @@ function checkCoherency(a, b, c)
     end
 
     coherencyMonitorActive = true
-    refreshCoherencyLines()
-    coherencyMonitorTimer = Wait.time(refreshCoherencyLines, COHERENCY_REFRESH, -1)
+    -- One full O(n^2) recompute now; after this the lines are only refreshed
+    -- when a monitored model actually moves (onObjectPickUp/onObjectDrop start
+    -- the motion loop), so an idle check costs nothing.
+    if coherencyFullRecompute() < 2 then
+        stopCoherencyMonitor()
+        printToColor("Coherency needs at least 2 live models.", playerColor, {1, 0.5, 0})
+        return
+    end
+    drawCoherency()
 
     -- Auto-stop after COHERENCY_TIMEOUT seconds so a forgotten monitor does not
     -- keep redrawing forever. Manual stop / restart cancels this in stopCoherencyMonitor.
@@ -2689,5 +2872,5 @@ function checkCoherency(a, b, c)
         end
     end, COHERENCY_TIMEOUT)
 
-    printToColor(string.format("Live coherency check ON for %d models. Orange = out of 2\" coherency, Red = over 9\" apart. Lines follow the models; auto-stops after %ds or RIGHT-CLICK Coherency to remove them.", #objs, COHERENCY_TIMEOUT), playerColor, {0, 1, 0})
+    printToColor(string.format("Live coherency check ON for %d models. Orange = out of 2\" coherency, Red = out of 9\" range (one line per offending model). Lines follow models as you move them; auto-stops after %ds or RIGHT-CLICK Coherency to remove them.", #objs, COHERENCY_TIMEOUT), playerColor, {0, 1, 0})
 end
