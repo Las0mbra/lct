@@ -2399,7 +2399,7 @@ coherencyMonitorActive = false
 coherencyMonitorGuids = {}
 coherencyMonitorTimer = nil
 coherencyTimeoutTimer = nil -- one-shot auto-stop timer
-coherencyLabels = {} -- pool of spawned 3DText distance labels, reused each tick
+coherencyLabels = {} -- pool of 3DText label entries {obj,key,pos,text,color,active}
 
 -- Cached pairwise geometry so the live monitor doesn't recompute the whole
 -- O(n^2) base-gap matrix every tick. Indices are 1..#coherencyMonitorGuids and
@@ -2411,6 +2411,8 @@ coherencyGap = {}             -- gap[i][j] = cached base-to-base gap
 coherencyCp = {}              -- cp[i][j]  = base-edge point on i toward j (for drawing)
 coherencyIndexByGuid = {}     -- guid -> current index, for O(1) event filtering
 coherencyMotionTimer = nil    -- runs ONLY while monitored models are moving
+coherencyMotionTicks = 0      -- motion-loop tick counter, for the label cadence
+coherencyPrevMoving = {}      -- set of indices that were moving last tick
 
 local COHERENCY_RANGE = 2 -- inches, base-to-base
 local COHERENCY_MAX = 9   -- inches, base-to-base
@@ -2427,6 +2429,12 @@ local COHERENCY_MAX_MODELS = 30
 -- and each line is a vector line + a 3DText label -- enough to choke the table.
 -- We cap the rendered set so the draw cost stays bounded no matter the spread.
 local COHERENCY_MAX_LINES = 24
+-- The 3DText distance labels are far costlier than the (batched) vector lines:
+-- each is a separate object needing setPosition + TextTool calls. So update them
+-- only every Nth motion tick (lines still follow every tick), and never more
+-- than a couple of them. Labels are diffed and parked (never destroyed mid-run).
+local COHERENCY_LABEL_EVERY = 2 -- update labels every Nth motion tick (lines: every tick)
+local COHERENCY_LABEL_PARK = {0, -50, 0} -- offscreen spot for unused (parked) labels
 local COHERENCY_LABEL_TAG = "coherencyLabel" -- GMNotes marker for sweep-on-load
 
 -- Spawn a flat, locked 3DText object to use as a floating distance label.
@@ -2461,28 +2469,80 @@ function cleanupOrphanCoherencyLabels()
     end
 end
 
--- Reconcile the label pool with the requested specs ({pos, text, color}),
--- reusing existing labels and spawning/destroying as the breach count changes.
+-- Reconcile the label pool with the requested specs ({key, pos, text, color}).
+-- Each spec is keyed by its breach (rule + model pair) so a label keeps a stable
+-- pool slot across ticks and only its OWN object's API calls fire when its pos/
+-- text/colour actually change (diffing). Labels for breaches that vanished are
+-- PARKED offscreen and blanked -- never destroyed -- so an oscillating breach
+-- count during a drag causes no spawn/destroy churn.
+local function applyLabel(e, spec, force)
+    local o = e.obj
+    if o == nil or o.isDestroyed() then return end
+    if force or e.pos[1] ~= spec.pos[1] or e.pos[2] ~= spec.pos[2] or e.pos[3] ~= spec.pos[3] then
+        o.setPosition(spec.pos)
+        e.pos[1], e.pos[2], e.pos[3] = spec.pos[1], spec.pos[2], spec.pos[3]
+    end
+    if force or e.text ~= spec.text then
+        o.TextTool.setValue(spec.text)
+        e.text = spec.text
+    end
+    if force or e.color[1] ~= spec.color[1] or e.color[2] ~= spec.color[2] or e.color[3] ~= spec.color[3] then
+        o.TextTool.setFontColor(spec.color)
+        e.color[1], e.color[2], e.color[3] = spec.color[1], spec.color[2], spec.color[3]
+    end
+end
+
 local function updateCoherencyLabels(specs)
-    for i, spec in ipairs(specs) do
-        local lbl = coherencyLabels[i]
-        if lbl ~= nil and not lbl.isDestroyed() then
-            lbl.setPosition(spec.pos)
-            lbl.TextTool.setValue(spec.text)
-            lbl.TextTool.setFontColor(spec.color)
+    -- Index currently-active labels by key for O(1) reuse.
+    local byKey = {}
+    for _, e in ipairs(coherencyLabels) do
+        if e.active and e.key ~= nil then byKey[e.key] = e end
+    end
+
+    local usedKeys = {}
+    for _, spec in ipairs(specs) do
+        usedKeys[spec.key] = true
+        local e = byKey[spec.key]
+        if e ~= nil then
+            applyLabel(e, spec, false) -- same breach as last tick: diff, skip unchanged
         else
-            -- Embed pos/text/color in the spawn data so the label is correct on
-            -- its first frame; later ticks update it in place.
-            coherencyLabels[i] = spawnCoherencyLabel(spec.pos, spec.text, spec.color)
+            -- Reuse a parked entry if one exists, else spawn a new label object.
+            local parked = nil
+            for _, cand in ipairs(coherencyLabels) do
+                if not cand.active then parked = cand; break end
+            end
+            if parked ~= nil then
+                parked.key = spec.key
+                parked.active = true
+                applyLabel(parked, spec, true) -- repurposed: force all fields
+                byKey[spec.key] = parked
+            else
+                local lbl = spawnCoherencyLabel(spec.pos, spec.text, spec.color)
+                local entry = {
+                    obj = lbl, key = spec.key, active = true,
+                    pos = {spec.pos[1], spec.pos[2], spec.pos[3]},
+                    text = spec.text,
+                    color = {spec.color[1], spec.color[2], spec.color[3]},
+                }
+                coherencyLabels[#coherencyLabels + 1] = entry
+                byKey[spec.key] = entry
+            end
         end
     end
-    -- Remove any surplus labels left from a previous, larger breach set.
-    for i = #coherencyLabels, #specs + 1, -1 do
-        local lbl = coherencyLabels[i]
-        if lbl ~= nil and not lbl.isDestroyed() then
-            destroyObject(lbl)
+
+    -- Park any label whose breach is no longer shown: blank it and move it
+    -- offscreen once, then leave it idle for later reuse (no destroy).
+    for _, e in ipairs(coherencyLabels) do
+        if e.active and not usedKeys[e.key] then
+            e.active = false
+            e.key = nil
+            local o = e.obj
+            if o ~= nil and not o.isDestroyed() then
+                if e.text ~= "" then o.TextTool.setValue(""); e.text = "" end
+                o.setPosition(COHERENCY_LABEL_PARK)
+                e.pos[1], e.pos[2], e.pos[3] = COHERENCY_LABEL_PARK[1], COHERENCY_LABEL_PARK[2], COHERENCY_LABEL_PARK[3]
+            end
         end
-        coherencyLabels[i] = nil
     end
 end
 
@@ -2505,9 +2565,11 @@ function stopCoherencyMonitor()
     coherencyGap = {}
     coherencyCp = {}
     coherencyIndexByGuid = {}
-    for _, lbl in ipairs(coherencyLabels) do
-        if lbl ~= nil and not lbl.isDestroyed() then
-            destroyObject(lbl)
+    coherencyMotionTicks = 0
+    coherencyPrevMoving = {}
+    for _, e in ipairs(coherencyLabels) do
+        if e.obj ~= nil and not e.obj.isDestroyed() then
+            destroyObject(e.obj)
         end
     end
     coherencyLabels = {}
@@ -2604,11 +2666,14 @@ local function coherencyFullRecompute()
 end
 
 -- Build the breach lines/labels from the CACHED gap/cp (no base-gap math here)
--- and push them to the table. Cheap to call every motion tick. The rendered set
--- is bounded by COHERENCY_MAX_LINES so a wide spread can't flood the table.
+-- and push them to the table. Lines update on every call; labels are far costlier
+-- (per-object 3DText API calls) so they're only reconciled when updateLabels is
+-- true (see the motion loop's cadence) and we draw a number on only a couple of
+-- lines -- the coherency (orange) breaches plus the single worst range (red) one.
+-- The rendered line set is bounded by COHERENCY_MAX_LINES.
 --   * orange = a model with no other model within 2" (drawn to its nearest)
 --   * red    = a model out of 9" range (drawn to its single worst partner)
-local function drawCoherency()
+local function drawCoherency(updateLabels)
     if not coherencyMonitorActive then return end
     local desc, gap, cp = coherencyDesc, coherencyGap, coherencyCp
     local n = #desc
@@ -2617,23 +2682,8 @@ local function drawCoherency()
         return
     end
 
-    local lines, labels = {}, {}
-    local function addBreach(i, j, d, color)
-        local pi, pj = cp[i][j], cp[j][i]
-        if pi == nil or pj == nil then return end
-        local yi, yj = desc[i].pos.y, desc[j].pos.y
-        local a = {pi.x, yi + COHERENCY_LIFT, pi.z}
-        local b = {pj.x, yj + COHERENCY_LIFT, pj.z}
-        lines[#lines + 1] = { points = {a, b}, color = color, thickness = 0.15 }
-        labels[#labels + 1] = {
-            pos = {(pi.x + pj.x) / 2, (yi + yj) / 2 + COHERENCY_LABEL_LIFT, (pi.z + pj.z) / 2},
-            text = string.format("%.1f\"", d),
-            color = color
-        }
-    end
-
     -- Collect breach candidates, then render only the most important ones (up to
-    -- COHERENCY_MAX_LINES) so a wide spread can't flood the table with lines/labels.
+    -- COHERENCY_MAX_LINES) so a wide spread can't flood the table with lines.
     local breaches = {}  -- { i, j, d, color, critical }
     local function add(i, j, d, color, critical)
         breaches[#breaches + 1] = { i = i, j = j, d = d, color = color, critical = critical }
@@ -2687,13 +2737,39 @@ local function drawCoherency()
         return a.d > b.d
     end)
     local shown = math.min(#breaches, COHERENCY_MAX_LINES)
+
+    local lines = {}
+    local labelSpecs = updateLabels and {} or nil
+    local redLabelDrawn = false
     for k = 1, shown do
         local br = breaches[k]
-        addBreach(br.i, br.j, br.d, br.color)
+        local pi, pj = cp[br.i][br.j], cp[br.j][br.i]
+        if pi ~= nil and pj ~= nil then
+            local yi, yj = desc[br.i].pos.y, desc[br.j].pos.y
+            lines[#lines + 1] = {
+                points = {{pi.x, yi + COHERENCY_LIFT, pi.z}, {pj.x, yj + COHERENCY_LIFT, pj.z}},
+                color = br.color, thickness = 0.15,
+            }
+            -- Number only the orange breaches and the single worst red one.
+            if updateLabels then
+                local wantLabel = br.critical
+                if not br.critical and not redLabelDrawn then wantLabel = true; redLabelDrawn = true end
+                if wantLabel then
+                    local lo, hi = br.i, br.j
+                    if lo > hi then lo, hi = hi, lo end
+                    labelSpecs[#labelSpecs + 1] = {
+                        key = (br.critical and "O" or "R") .. lo .. ":" .. hi,
+                        pos = {(pi.x + pj.x) / 2, (yi + yj) / 2 + COHERENCY_LABEL_LIFT, (pi.z + pj.z) / 2},
+                        text = string.format("%.1f\"", br.d),
+                        color = br.color,
+                    }
+                end
+            end
+        end
     end
 
     Global.setVectorLines(lines)
-    updateCoherencyLabels(labels)
+    if updateLabels then updateCoherencyLabels(labelSpecs) end
 end
 
 -- Motion loop. Runs ONLY while one or more monitored models are in motion
@@ -2703,24 +2779,45 @@ end
 -- the next pickup/drop. A deleted model triggers a one-off full rebuild.
 local function coherencyMotionTick()
     if not coherencyMonitorActive then return end
+    coherencyMotionTicks = coherencyMotionTicks + 1
 
-    local moving, needsRebuild = {}, false
+    local movingIdx, movingObj, needsRebuild = {}, {}, false
     for i = 1, #coherencyMonitorGuids do
         local o = getObjectFromGUID(coherencyMonitorGuids[i])
         if o == nil or o.isDestroyed() then
             needsRebuild = true
         elseif o.held_by_color ~= nil or o.resting == false then
-            moving[#moving + 1] = { index = i, obj = o }
+            movingIdx[i] = true
+            movingObj[i] = o
         end
     end
 
     if needsRebuild then
-        if coherencyFullRecompute() < 2 then stopCoherencyMonitor() else drawCoherency() end
+        coherencyPrevMoving = {}
+        if coherencyFullRecompute() < 2 then stopCoherencyMonitor() else drawCoherency(true) end
         return
     end
 
-    if #moving == 0 then
-        -- Scene is static again: stop polling, keep the cache and drawn lines.
+    -- Recompute the union of models moving now and last tick, so the tick a model
+    -- comes to rest its final position is captured before the loop stops.
+    local refresh = {}
+    for i in pairs(movingIdx) do refresh[i] = true end
+    for i in pairs(coherencyPrevMoving) do
+        if movingIdx[i] == nil then
+            local o = getObjectFromGUID(coherencyMonitorGuids[i])
+            if o ~= nil and not o.isDestroyed() then movingObj[i] = o; refresh[i] = true end
+        end
+    end
+    for i in pairs(refresh) do coherencyDesc[i] = buildBaseDescriptor(movingObj[i]) end
+    for i in pairs(refresh) do recomputeCoherencyRow(i) end
+
+    coherencyPrevMoving = movingIdx
+
+    if next(movingIdx) == nil then
+        -- Everything is at rest: draw once WITH labels (accurate final numbers),
+        -- then stop polling. Cache and drawn lines persist until the next pickup.
+        drawCoherency(true)
+        coherencyPrevMoving = {}
         if coherencyMotionTimer ~= nil then
             Wait.stop(coherencyMotionTimer)
             coherencyMotionTimer = nil
@@ -2728,15 +2825,8 @@ local function coherencyMotionTick()
         return
     end
 
-    -- Refresh all moving descriptors first so a pair of two moving models uses
-    -- both fresh positions, then recompute only those rows.
-    for _, m in ipairs(moving) do
-        coherencyDesc[m.index] = buildBaseDescriptor(m.obj)
-    end
-    for _, m in ipairs(moving) do
-        recomputeCoherencyRow(m.index)
-    end
-    drawCoherency()
+    -- Lines every tick (cheap, batched); labels only every Nth tick (costly).
+    drawCoherency(coherencyMotionTicks % COHERENCY_LABEL_EVERY == 0)
 end
 
 local function startCoherencyMotionLoop()
@@ -2754,7 +2844,7 @@ function refreshCoherencyLines()
         stopCoherencyMonitor()
         return
     end
-    drawCoherency()
+    drawCoherency(true)
 end
 
 -- Object events (delivered for ALL objects). Kept cheap: bail immediately when
@@ -2774,7 +2864,7 @@ function onObjectDrop(player_color, obj)
     -- settle; it self-stops once everything is at rest.
     coherencyDesc[i] = buildBaseDescriptor(obj)
     recomputeCoherencyRow(i)
-    drawCoherency()
+    drawCoherency(true)
     startCoherencyMotionLoop()
 end
 
@@ -2785,7 +2875,7 @@ function onObjectDestroy(obj)
     -- getObjectFromGUID skips it, then recompute the smaller set (or stop).
     Wait.frames(function()
         if not coherencyMonitorActive then return end
-        if coherencyFullRecompute() < 2 then stopCoherencyMonitor() else drawCoherency() end
+        if coherencyFullRecompute() < 2 then stopCoherencyMonitor() else drawCoherency(true) end
     end, 1)
 end
 
@@ -2851,6 +2941,8 @@ function checkCoherency(a, b, c)
     end
 
     coherencyMonitorActive = true
+    coherencyMotionTicks = 0
+    coherencyPrevMoving = {}
     -- One full O(n^2) recompute now; after this the lines are only refreshed
     -- when a monitored model actually moves (onObjectPickUp/onObjectDrop start
     -- the motion loop), so an idle check costs nothing.
@@ -2859,7 +2951,7 @@ function checkCoherency(a, b, c)
         printToColor("Coherency needs at least 2 live models.", playerColor, {1, 0.5, 0})
         return
     end
-    drawCoherency()
+    drawCoherency(true)
 
     -- Auto-stop after COHERENCY_TIMEOUT seconds so a forgotten monitor does not
     -- keep redrawing forever. Manual stop / restart cancels this in stopCoherencyMonitor.
