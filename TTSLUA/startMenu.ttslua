@@ -19,6 +19,7 @@ dispositionValues = {"Disruption", "Priority Assets", "Purge the Foe", "Reconnai
 blueDispositionSelected = 1
 redDispositionSelected = 3
 matTextureSelected = 1
+matClearButtonUsed = false
 mapMat_GUID = "28865a"
 matTextures = {
     {name = "Green", color = {0.00, 0.31, 0.03}, url = "https://steamusercontent-a.akamaihd.net/ugc/11600812045538713232/0064F3B919AEC48D35C233786977578689C81AD1/"},
@@ -59,6 +60,7 @@ function onLoad(saved_data)
         blueDispositionSelected = loaded_data.svblueDispositionSelected or blueDispositionSelected
         redDispositionSelected = loaded_data.svredDispositionSelected or redDispositionSelected
         matTextureSelected = loaded_data.svMatTextureSelected or matTextureSelected
+        matClearButtonUsed = loaded_data.svMatClearButtonUsed or false
     end
 
     if sizeConfirmed then
@@ -128,6 +130,7 @@ function onSave()
         svblueDispositionSelected = blueDispositionSelected,
         svredDispositionSelected = redDispositionSelected,
         svMatTextureSelected = matTextureSelected,
+        svMatClearButtonUsed = matClearButtonUsed,
     })
 
     return saved_data
@@ -510,6 +513,7 @@ end
 function confirmSizeMat()
     gameMode= "game"
     sizeConfirmed=true
+    matClearButtonUsed = false
     mat.setScale(sizeData[mapSizeSelected].scale)
     self.setRotation({0,270,0})
     if deployMode and isValidDeployMode(deployMode) then
@@ -840,6 +844,7 @@ dispositionArrowFontSize = 300
 dispositionButtonFontSize = 380
 ingameDispositionButtonFontSize = dispositionButtonFontSize * 0.5625
 dispositionArrowOffset = 5.75
+clearMatButtonWorldPosition = {-20, 1.00, -0.10}
 
 dispositionButtonColors = {
     ["Disruption"] = {0.36, 0.62, 1.00},
@@ -906,6 +911,54 @@ function writeDispositionMenu(locked)
     end
 end
 
+-- Mat wipe area + survivors, mirroring the map cards' own Clear/Load wipe so
+-- this standalone button behaves identically (mats survive, everything else on
+-- the mat is destroyed). Keep this whitelist in sync with the map cards.
+matClearZoneScale = {x = 60.12, y = 73, z = 44.04}
+matClearKeepGuids = {["28865a"] = true, ["4ee1f2"] = true, ["6012bf"] = true, ["948ce5"] = true, ["e7ca6e"] = true}
+
+-- Shown once a game mode is selected (gameMode == "game"); not tied to any map.
+-- Removes itself after a single use (matClearButtonUsed); reset in confirmSizeMat.
+function writeClearMatButton()
+    if gameMode ~= "game" or matClearButtonUsed then return end
+
+    local center = self.positionToLocal(clearMatButtonWorldPosition)
+    createButtonWithBorder({
+        label = "CLEAR MAT", click_function = "clearMat", function_owner = self,
+        position = {center.x, center.y, center.z}, rotation = {0, 0, 0},
+        height = dispositionButtonHeight, width = dispositionButtonWidth,
+        font_size = dispositionButtonFontSize,
+        color = {0.8, 0.1, 0.1}, font_color = {1, 1, 1},
+        tooltip = "Remove everything placed on the mat",
+    })
+end
+
+-- Deferred wipe: destroy every object the scripting zone overlaps except the
+-- mats, MapExclude-tagged objects, and this menu, then remove the zone itself.
+function matClearZoneCallback(zone)
+    Wait.frames(function()
+        for _, obj in ipairs(zone.getObjects()) do
+            if obj ~= self and not matClearKeepGuids[obj.getGUID()] and obj.getGMNotes() ~= "MapExclude" then
+                obj.destruct()
+            end
+        end
+        zone.destruct()
+    end, 2)
+end
+
+function clearMat()
+    matClearButtonUsed = true
+    writeMenus()  -- redraw without the CLEAR MAT button
+
+    spawnObject({
+        position = {x = 0, y = 26, z = 0},
+        scale = matClearZoneScale,
+        type = "ScriptingTrigger",
+        callback_function = matClearZoneCallback,
+        callback_owner = self,
+    })
+end
+
 function updateDispositionSelection(color, add)
     if color == "Blue" then
         blueDispositionSelected = normalizeDispositionIndex(blueDispositionSelected + add)
@@ -953,72 +1006,99 @@ deploymentMatrixDecks = {
         guid = "6e0d78", name = "Take and Hold vs Take and Hold",
         cards = {
             {guid = "c1d1af", name = "TnH vs TnH 1 - TP"},
+            {guid = "b3537f", name = "TnH vs TnH 1 - TP"},
             {guid = "1d5da4", name = "TnH vs TnH 2 - DoW"},
+            {guid = "f7026e", name = "TnH vs TnH 2 - DoW"},
             {guid = "63cf7e", name = "TnH vs TnH 3 - SnD"},
+            {guid = "32ec37", name = "TnH vs TnH 3 - SnD"},
         },
     },
     ["5_2"] = {
         guid = "eae80b", name = "Take and Hold vs Priority Assets",
         cards = {
             {guid = "51d1d5", name = "TnH vs PA 1 - CoB"},
+            {guid = "936fc5", name = "TnH vs PA 1 - CoB"},
             {guid = "2f68ac", name = "TnH vs PA 2 - HnA"},
+            {guid = "9a0779", name = "TnH vs PA 2 - HnA"},
             {guid = "b579e0", name = "TnH vs PA 3 - DoW"},
+            {guid = "0574f5", name = "TnH vs PA 3 - DoW"},
         },
     },
     ["2_5"] = {
         guid = "eae80b", name = "Take and Hold vs Priority Assets",
         cards = {
             {guid = "51d1d5", name = "TnH vs PA 1 - CoB"},
+            {guid = "936fc5", name = "TnH vs PA 1 - CoB"},
             {guid = "2f68ac", name = "TnH vs PA 2 - HnA"},
+            {guid = "9a0779", name = "TnH vs PA 2 - HnA"},
             {guid = "b579e0", name = "TnH vs PA 3 - DoW"},
+            {guid = "0574f5", name = "TnH vs PA 3 - DoW"},
         },
     },
     ["5_1"] = {
         guid = "cfeba5", name = "Take and Hold vs Disruption",
         cards = {
             {guid = "4b68d2", name = "TnH vs Dis 1 - SE"},
+            {guid = "2db2a2", name = "TnH vs Dis 1 - SE"},
             {guid = "33ad91", name = "TnH vs Dis 2 - CoB"},
+            {guid = "366693", name = "TnH vs Dis 2 - CoB"},
             {guid = "b7a5fe", name = "TnH vs Dis 3 - HnA"},
+            {guid = "b200c7", name = "TnH vs Dis 3 - HnA"},
         },
     },
     ["1_5"] = {
         guid = "cfeba5", name = "Take and Hold vs Disruption",
         cards = {
             {guid = "4b68d2", name = "TnH vs Dis 1 - SE"},
+            {guid = "2db2a2", name = "TnH vs Dis 1 - SE"},
             {guid = "33ad91", name = "TnH vs Dis 2 - CoB"},
+            {guid = "366693", name = "TnH vs Dis 2 - CoB"},
             {guid = "b7a5fe", name = "TnH vs Dis 3 - HnA"},
+            {guid = "b200c7", name = "TnH vs Dis 3 - HnA"},
         },
     },
     ["5_3"] = {
         guid = "1e6711", name = "Take and Hold vs Purge the Foe",
         cards = {
             {guid = "4ed3a4", name = "TnH vs PtF 1 - SE"},
+            {guid = "f2c13b", name = "TnH vs PtF 1 - SE"},
             {guid = "e58b87", name = "TnH vs PtF 2 - SnD"},
+            {guid = "af501d", name = "TnH vs PtF 2 - SnD"},
             {guid = "7f30d9", name = "TnH vs PtF 3 - HnA"},
+            {guid = "812e71", name = "TnH vs PtF 3 - HnA"},
         },
     },
     ["3_5"] = {
         guid = "1e6711", name = "Take and Hold vs Purge the Foe",
         cards = {
             {guid = "4ed3a4", name = "TnH vs PtF 1 - SE"},
+            {guid = "f2c13b", name = "TnH vs PtF 1 - SE"},
             {guid = "e58b87", name = "TnH vs PtF 2 - SnD"},
+            {guid = "af501d", name = "TnH vs PtF 2 - SnD"},
             {guid = "7f30d9", name = "TnH vs PtF 3 - HnA"},
+            {guid = "812e71", name = "TnH vs PtF 3 - HnA"},
         },
     },
     ["5_4"] = {
         guid = "109a6b", name = "Take and Hold vs Reconnaissance",
         cards = {
             {guid = "a21b0a", name = "TnH vs Rec 1 - TP"},
+            {guid = "c26edc", name = "TnH vs Rec 1 - TP"},
             {guid = "f0406d", name = "TnH vs Rec 2 - DoW"},
+            {guid = "0538a9", name = "TnH vs Rec 2 - DoW"},
             {guid = "e4072b", name = "TnH vs Rec 3 - SnD"},
+            {guid = "bc8eb5", name = "TnH vs Rec 3 - SnD"},
         },
     },
     ["4_5"] = {
         guid = "109a6b", name = "Take and Hold vs Reconnaissance",
         cards = {
             {guid = "a21b0a", name = "TnH vs Rec 1 - TP"},
+            {guid = "c26edc", name = "TnH vs Rec 1 - TP"},
             {guid = "f0406d", name = "TnH vs Rec 2 - DoW"},
+            {guid = "0538a9", name = "TnH vs Rec 2 - DoW"},
             {guid = "e4072b", name = "TnH vs Rec 3 - SnD"},
+            {guid = "bc8eb5", name = "TnH vs Rec 3 - SnD"},
         },
     },
 }
@@ -1028,40 +1108,55 @@ randomDeploymentDecks = {
         guid = "6e0d78", name = "Take and Hold vs Take and Hold",
         cards = {
             {guid = "c1d1af", name = "TnH vs TnH 1 - TP"},
+            {guid = "b3537f", name = "TnH vs TnH 1 - TP"},
             {guid = "1d5da4", name = "TnH vs TnH 2 - DoW"},
+            {guid = "f7026e", name = "TnH vs TnH 2 - DoW"},
             {guid = "63cf7e", name = "TnH vs TnH 3 - SnD"},
+            {guid = "32ec37", name = "TnH vs TnH 3 - SnD"},
         },
     },
     {
         guid = "eae80b", name = "Take and Hold vs Priority Assets",
         cards = {
             {guid = "51d1d5", name = "TnH vs PA 1 - CoB"},
+            {guid = "936fc5", name = "TnH vs PA 1 - CoB"},
             {guid = "2f68ac", name = "TnH vs PA 2 - HnA"},
+            {guid = "9a0779", name = "TnH vs PA 2 - HnA"},
             {guid = "b579e0", name = "TnH vs PA 3 - DoW"},
+            {guid = "0574f5", name = "TnH vs PA 3 - DoW"},
         },
     },
     {
         guid = "cfeba5", name = "Take and Hold vs Disruption",
         cards = {
             {guid = "4b68d2", name = "TnH vs Dis 1 - SE"},
+            {guid = "2db2a2", name = "TnH vs Dis 1 - SE"},
             {guid = "33ad91", name = "TnH vs Dis 2 - CoB"},
+            {guid = "366693", name = "TnH vs Dis 2 - CoB"},
             {guid = "b7a5fe", name = "TnH vs Dis 3 - HnA"},
+            {guid = "b200c7", name = "TnH vs Dis 3 - HnA"},
         },
     },
     {
         guid = "1e6711", name = "Take and Hold vs Purge the Foe",
         cards = {
             {guid = "4ed3a4", name = "TnH vs PtF 1 - SE"},
+            {guid = "f2c13b", name = "TnH vs PtF 1 - SE"},
             {guid = "e58b87", name = "TnH vs PtF 2 - SnD"},
+            {guid = "af501d", name = "TnH vs PtF 2 - SnD"},
             {guid = "7f30d9", name = "TnH vs PtF 3 - HnA"},
+            {guid = "812e71", name = "TnH vs PtF 3 - HnA"},
         },
     },
     {
         guid = "109a6b", name = "Take and Hold vs Reconnaissance",
         cards = {
             {guid = "a21b0a", name = "TnH vs Rec 1 - TP"},
+            {guid = "c26edc", name = "TnH vs Rec 1 - TP"},
             {guid = "f0406d", name = "TnH vs Rec 2 - DoW"},
+            {guid = "0538a9", name = "TnH vs Rec 2 - DoW"},
             {guid = "e4072b", name = "TnH vs Rec 3 - SnD"},
+            {guid = "bc8eb5", name = "TnH vs Rec 3 - SnD"},
         },
     },
 }
@@ -1502,6 +1597,14 @@ function copyRandomDeploymentDecks()
     return decks
 end
 
+-- Map-card nicknames use the number before " - " as their logical layout slot.
+-- Multiple creators can provide variants of the same slot; generation chooses
+-- one variant per slot so the displayed choices remain layouts 1, 2 and 3.
+function deploymentCardLayoutIndex(card)
+    local name = card and (card.nickname or card.name) or ""
+    return tonumber(string.match(name, "%s(%d+)%s*%-"))
+end
+
 function chooseDeploymentCardsFromDeckInfo(deckInfo, count)
     cacheDeploymentDeckContents()
     local choices = {}
@@ -1512,11 +1615,29 @@ function chooseDeploymentCardsFromDeckInfo(deckInfo, count)
         cards = deck and deck.getObjects and deck.getObjects() or {}
     end
 
+    local cardsByLayout = {}
+    local cardsWithoutLayout = {}
     for _, card in ipairs(cards) do
-        if #choices >= count then
-            break
+        local layoutIndex = deploymentCardLayoutIndex(card)
+        if layoutIndex then
+            cardsByLayout[layoutIndex] = cardsByLayout[layoutIndex] or {}
+            table.insert(cardsByLayout[layoutIndex], card)
+        else
+            table.insert(cardsWithoutLayout, card)
         end
+    end
 
+    local selectedCards = {}
+    for layoutIndex = 1, count do
+        local variants = cardsByLayout[layoutIndex] or {}
+        if #variants > 0 then
+            table.insert(selectedCards, variants[math.random(#variants)])
+        elseif #cardsWithoutLayout > 0 then
+            table.insert(selectedCards, table.remove(cardsWithoutLayout, math.random(#cardsWithoutLayout)))
+        end
+    end
+
+    for _, card in ipairs(selectedCards) do
         local name = card.nickname or card.name or deckInfo.name
         deploymentCardSourceDeckByGuid[card.guid] = deckInfo.guid
         if name and name ~= "" then
@@ -1550,31 +1671,16 @@ function chooseRandomDeploymentCards(count)
     local availableCards = {}
 
     for _, deckInfo in ipairs(randomDeploymentDecks) do
-        local deck = getObjectFromGUID(deckInfo.guid)
-        local cards = deckInfo.cards or (deck and deck.getObjects and deck.getObjects() or {})
-        for _, card in ipairs(cards) do
-            table.insert(availableCards, {deck = deck, deckInfo = deckInfo, card = card})
+        -- Collapse creator variants first so fallback selection weights logical
+        -- maps equally instead of favoring decks that have more creators.
+        for _, choice in ipairs(chooseDeploymentCardsFromDeckInfo(deckInfo, 3)) do
+            table.insert(availableCards, choice)
         end
     end
 
     while #choices < count and #availableCards > 0 do
         local cardIndex = math.random(#availableCards)
-        local picked = table.remove(availableCards, cardIndex)
-        local deckInfo = picked.deckInfo
-        local card = picked.card
-        local name = card.nickname or card.name or deckInfo.name
-
-        deploymentCardSourceDeckByGuid[card.guid] = deckInfo.guid
-        if name and name ~= "" then
-            deploymentCardSourceDeckByName[normalizeMissionName(name)] = deckInfo.guid
-        end
-        table.insert(choices, {
-            deck = picked.deck,
-            deckGuid = deckInfo.guid,
-            deckName = deckInfo.name,
-            guid = card.guid,
-            name = name,
-        })
+        table.insert(choices, table.remove(availableCards, cardIndex))
     end
 
     return choices
@@ -3016,6 +3122,7 @@ function writeMenus()
             writeIngameMenu()
         end
     end
+    writeClearMatButton()
 end
 
 menuButtonBorderThickness = 70

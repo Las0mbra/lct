@@ -1,7 +1,10 @@
 deck_guid,deck_name,card_guid,card_name
 6e0d78,Take and Hold vs Take and Hold,c1d1af,TnH vs TnH 1 - Tipping Point
+6e0d78,Take and Hold vs Take and Hold,b3537f,TnH vs TnH 1 - Tipping Point
 6e0d78,Take and Hold vs Take and Hold,1d5da4,TnH vs TnH 2 - Dawn of War
+6e0d78,Take and Hold vs Take and Hold,f7026e,TnH vs TnH 2 - Dawn of War
 6e0d78,Take and Hold vs Take and Hold,63cf7e,TnH vs TnH 3 - Search and Destroy
+6e0d78,Take and Hold vs Take and Hold,32ec37,TnH vs TnH 3 - Search and Destroy
 109a6b,Take and Hold vs Reconnaissance,e4072b,TnH vs Rec 3 - Search and Destroy
 109a6b,Take and Hold vs Reconnaissance,f0406d,TnH vs Rec 2 - Dawn of War
 109a6b,Take and Hold vs Reconnaissance,a21b0a,TnH vs Rec 1 - Tipping Point
@@ -14,3 +17,15 @@ cfeba5,Take and Hold vs Disruption,4b68d2,TnH vs Dis 1 - Sweeping Engagement
 eae80b,Take and Hold vs Priority Assets,b579e0,TnH vs PA 3 - Dawn of War
 eae80b,Take and Hold vs Priority Assets,2f68ac,TnH vs PA 2 - Hammer and Anvil
 eae80b,Take and Hold vs Priority Assets,51d1d5,TnH vs PA 1 - Crucible of Battle
+eae80b,Take and Hold vs Priority Assets,0574f5,TnH vs PA 3 - Dawn of War
+eae80b,Take and Hold vs Priority Assets,9a0779,TnH vs PA 2 - Hammer and Anvil
+eae80b,Take and Hold vs Priority Assets,936fc5,TnH vs PA 1 - Crucible of Battle
+cfeba5,Take and Hold vs Disruption,b200c7,TnH vs Dis 3 - Hammer and Anvil
+cfeba5,Take and Hold vs Disruption,366693,TnH vs Dis 2 - Crucible of Battle
+cfeba5,Take and Hold vs Disruption,2db2a2,TnH vs Dis 1 - Sweeping Engagement
+1e6711,Take and Hold vs Purge the Foe,812e71,TnH vs PtF 3 - Hammer and Anvil
+1e6711,Take and Hold vs Purge the Foe,af501d,TnH vs PtF 2 - Search and Destroy
+1e6711,Take and Hold vs Purge the Foe,f2c13b,TnH vs PtF 1 - Sweeping Engagement
+109a6b,Take and Hold vs Reconnaissance,bc8eb5,TnH vs Rec 3 - Search and Destroy
+109a6b,Take and Hold vs Reconnaissance,0538a9,TnH vs Rec 2 - Dawn of War
+109a6b,Take and Hold vs Reconnaissance,c26edc,TnH vs Rec 1 - Tipping Point

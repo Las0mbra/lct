@@ -3,6 +3,7 @@ import contextlib
 import copy
 import io
 import json
+import re
 import sys
 import tempfile
 import unittest
@@ -35,8 +36,26 @@ class ValidateMapsTest(unittest.TestCase):
 
     def test_strict_manifest_and_publishing_tags_pass(self):
         issues, ctx = validate_maps.validate(self.object_states, require_map_tags=True)
-        self.assertEqual(15, len(ctx.cards))
+        manifest_rows, manifest_issues = validate_maps.load_map_manifest(MANIFEST_PATH)
+        self.assertEqual([], manifest_issues)
+        self.assertEqual(len(manifest_rows), len(ctx.cards))
         self.assertEqual([], [i for i in issues if i.level == validate_maps.ERROR])
+
+    def test_creator_variant_decks_cover_all_layouts(self):
+        for deck_guid in ("6e0d78", "109a6b", "1e6711", "cfeba5", "eae80b"):
+            deck = find_guid(self.object_states, deck_guid)
+            variants = {1: [], 2: [], 3: []}
+            for card in deck["ContainedObjects"]:
+                match = re.search(r"\s([123])\s*-\s*", card["Nickname"])
+                self.assertIsNotNone(match, card["Nickname"])
+                variants[int(match.group(1))].append(card)
+
+            self.assertEqual({1: 2, 2: 2, 3: 2},
+                             {layout: len(cards) for layout, cards in variants.items()})
+            for cards in variants.values():
+                creators = {tag for card in cards for tag in card.get("Tags", [])
+                            if tag.startswith("map_crt_")}
+                self.assertEqual({"map_crt_belgium", "map_crt_cr5sh"}, creators)
 
     def test_missing_creator_tag_reports_card_guid(self):
         states = copy.deepcopy(self.object_states)
