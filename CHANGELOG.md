@@ -13,6 +13,13 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.6.5b
+- Map Generation from multiple creators. Now the system of loading layouts, will also pull maps from different creators, so if you press Generate mission again, eg for TnH vs TnH you ll always get appropriate Layouts 1,2 and 3 but you might get Layout 1 from creater A and Layout 2,3 from creator B. Hopefully this will allow for map variety and I will eventually add a tool that will allow for map filtering. 
+- Greatly improved performance for Coherency tool 
+- Removed/Refactored old legacy code.
+- UI: Improved boards contrast 
+- Added clear mat button for people who want to use maps with additive loading.  
+
 ## v1.6.5 
 - UI: New board art 
 - UI: Added Gain CP boards 
