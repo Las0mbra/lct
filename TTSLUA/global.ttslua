@@ -1191,6 +1191,85 @@ function onLoad(saved_data)
             refreshRedSecondaryNames()
 	        refreshBlueSecondaryNames()
 	    end, 2)
+
+    -- Shared debug panel: only on --test builds, after objects have settled.
+    if DEBUG == true then Wait.time(spawnDebugPanel, 2.5) end
+end
+
+-- ── SHARED DEBUG PANEL (--test builds only) ──────────────────────────────────
+-- A single tile at a fixed world spot that hosts every debug tool, so they
+-- aren't scattered across gameplay objects. Spawned from onLoad on DEBUG builds.
+-- Buttons are owned by Global (function_owner = Global) and call into the
+-- relevant object, so the panel needs no script of its own.
+DEBUG_PANEL_POS  = {71.5, 1.1, -78}
+DEBUG_PANEL_NAME = "LCT Debug Panel"
+
+function none() end   -- no-op for non-interactive panel labels
+
+function spawnDebugPanel()
+    -- Drop any stale panel from a previous reload before spawning a fresh one,
+    -- so panels never accumulate across save/load.
+    for _, o in ipairs(getAllObjects()) do
+        if o.getName() == DEBUG_PANEL_NAME then o.destroy() end
+    end
+
+    spawnObject({
+        type     = "BlockSquare",
+        position = DEBUG_PANEL_POS,
+        rotation = {0, 0, 0},
+        scale    = {2.4, 0.2, 2.4},
+        sound    = false,
+        callback_function = function(panel)
+            panel.setName(DEBUG_PANEL_NAME)
+            panel.setColorTint({0.08, 0.08, 0.10})
+            panel.setLock(true)
+            buildDebugPanelButtons(panel)
+        end,
+    })
+end
+
+function buildDebugPanelButtons(panel)
+    panel.createButton({
+        label = "DEBUG TOOLS", click_function = "none", function_owner = Global,
+        position = {0, 0.6, -0.78}, height = 0, width = 0, font_size = 95,
+        font_color = {1, 1, 1},
+    })
+    panel.createButton({
+        label = "PERF scan\nRed mat", click_function = "debugPerfScanRed", function_owner = Global,
+        position = {-0.5, 0.6, -0.18}, height = 320, width = 760, font_size = 90,
+        color = {0.15, 0.15, 0.15}, font_color = {0.4, 0.9, 1},
+        tooltip = "getAllObjects() vs Physics.cast box on the Red dice mat",
+    })
+    panel.createButton({
+        label = "PERF scan\nBlue mat", click_function = "debugPerfScanBlue", function_owner = Global,
+        position = {0.5, 0.6, -0.18}, height = 320, width = 760, font_size = 90,
+        color = {0.15, 0.15, 0.15}, font_color = {0.4, 0.9, 1},
+        tooltip = "getAllObjects() vs Physics.cast box on the Blue dice mat",
+    })
+    panel.createButton({
+        label = "RNG Test", click_function = "debugRngTest", function_owner = Global,
+        position = {0, 0.6, 0.55}, height = 320, width = 760, font_size = 100,
+        color = {0.2, 0.2, 0.2}, font_color = {1, 1, 0},
+        tooltip = "Run the RNG diagnostic on the Red dice roller",
+    })
+end
+
+function debugPerfScanRed(_, playerColor)
+    local mat = getObjectFromGUID(redCustomDiceMat_GUID)
+    if not mat then printToColor("[DEBUG] Red dice mat not found.", playerColor, {1, 0.3, 0.3}); return end
+    mat.call("runDiceScanBenchmark", {color = playerColor})
+end
+
+function debugPerfScanBlue(_, playerColor)
+    local mat = getObjectFromGUID(blueCustomDiceMat_GUID)
+    if not mat then printToColor("[DEBUG] Blue dice mat not found.", playerColor, {1, 0.3, 0.3}); return end
+    mat.call("runDiceScanBenchmark", {color = playerColor})
+end
+
+function debugRngTest(_, playerColor)
+    local roller = getObjectFromGUID(redCustomDiceRoller_GUID)
+    if not roller then printToColor("[DEBUG] Red dice roller not found.", playerColor, {1, 0.3, 0.3}); return end
+    roller.call("debugRngCheck")
 end
 
 function setMissionPack(params)

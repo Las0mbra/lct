@@ -1726,6 +1726,75 @@ function checkDice()
     self.editButton({ index = 1, label = divisionLabel })
 end
 
+-- ── DEBUG-ONLY PERF DIAGNOSTIC ───────────────────────────────────────────────
+-- Invoked from the shared debug panel (Global, --test builds only) via
+-- mat.call("runDiceScanBenchmark", {color=<clicker>}). Benchmarks the always-on
+-- getAllObjects() scan that checkDice() runs at 5Hz, and compares it against an
+-- area-limited Physics.cast box over this mat's bounds, so the cost of the
+-- whole-scene scan is visible and the box-cast win is provable in-game.
+-- Timed with os.clock() (real wall time) NOT Time.time (frame time, which is
+-- constant inside a single callback and would read zero).
+function runDiceScanBenchmark(params)
+    local playerColor = params and params.color
+    local ITER = 200   -- bump if the scene is small and timings read ~0
+
+    -- scene population is the real independent variable for getAllObjects()
+    local sceneCount = #getAllObjects()
+
+    -- mat box (same bounds checkDice uses to filter dice)
+    local b = self.getBounds()
+    local origin = { x = b.center.x, y = b.center.y, z = b.center.z }
+    local size   = { x = b.size.x,   y = b.size.y + 6, z = b.size.z }
+    local orient = { x = 0, y = self.getRotation().y, z = 0 }
+
+    -- NOTE: TTS's Lua (MoonSharp) returns nil for collectgarbage("count"), so
+    -- per-call heap allocation can't be measured here. Timing is the metric;
+    -- collectgarbage("collect") still works and we use it to settle GC first.
+
+    -- getAllObjects(): avg time per call
+    collectgarbage("collect")
+    local gaoT0 = os.clock()
+    for _ = 1, ITER do getAllObjects() end
+    local gaoMs = (os.clock() - gaoT0) / ITER * 1000
+
+    -- Physics.cast box over the mat: avg time per call
+    collectgarbage("collect")
+    local castT0   = os.clock()
+    local lastHits = 0
+    for _ = 1, ITER do
+        local hits = Physics.cast({
+            origin = origin, direction = { x = 0, y = 1, z = 0 },
+            type = 3, size = size, orientation = orient, max_distance = 0,
+        })
+        lastHits = #hits
+    end
+    local castMs = (os.clock() - castT0) / ITER * 1000
+    collectgarbage("collect")
+
+    -- always-on extrapolation: 2 mats * 5Hz = 10 scans/sec across the session
+    local CALLS_PER_SEC = 10
+    local speedup = (castMs > 0) and (gaoMs / castMs) or 0
+
+    local out = string.format(
+        "── checkDice scan benchmark (%d iters) ──\n" ..
+        "scene objects: %d   box hits: %d\n" ..
+        "getAllObjects: %.4f ms/call\n" ..
+        "Physics.cast : %.4f ms/call\n" ..
+        "speedup: %.1fx\n" ..
+        "always-on (10 scans/s): %.3f ms/s  vs  %.3f ms/s",
+        ITER, sceneCount, lastHits,
+        gaoMs, castMs,
+        speedup,
+        gaoMs * CALLS_PER_SEC, castMs * CALLS_PER_SEC)
+
+    if playerColor then
+        printToColor(out, playerColor, { 0.4, 0.9, 1 })
+    else
+        printToAll(out, { 0.4, 0.9, 1 })
+    end
+    print(out)   -- also to the host's System Console / log
+end
+
 function swapPipColor()
     customDiceImage = nil
     if pipColorBtn.color == "Black" then

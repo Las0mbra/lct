@@ -22,35 +22,13 @@ function onLoad(saved_data)
         height          = 2000,
         color           = {0, 0, 0, 0}
     })
-    if Global.getVar("DEBUG") == true then
-        self.createButton({
-            click_function  = "rngDiagnostic",
-            function_owner  = self,
-            label           = "RNG\nTest",
-            position        = {2.5, 0.2, 0},
-            width           = 700,
-            height          = 500,
-            font_size       = 120,
-            color           = {0.2, 0.2, 0.2},
-            font_color      = {1, 1, 0}
-        })
-    end
+    -- RNG Test moved to the shared debug panel (Global, --test builds only).
 end
 
 function onSave()
     return JSON.encode({
         objectivesOn = objectivesOn,
     })
-end
-
-function rngDiagnostic()
-    if Global.getVar("DEBUG") ~= true then return end
-    local roller = getObjectFromGUID(Global.getVar("redCustomDiceRoller_GUID"))
-    if not roller then
-        printToAll("[RNG CHECK] Red dice roller not found.", {1, 0, 0})
-        return
-    end
-    roller.call("debugRngCheck")
 end
 
 function setObjectivesVisible(visible)
