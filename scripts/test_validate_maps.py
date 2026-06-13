@@ -57,6 +57,20 @@ class ValidateMapsTest(unittest.TestCase):
                             if tag.startswith("map_crt_")}
                 self.assertEqual({"map_crt_belgium", "map_crt_cr5sh"}, creators)
 
+    def test_manifest_creator_tag_mismatch_reports_card_guid(self):
+        lines = MANIFEST_PATH.read_text().splitlines()
+        with tempfile.TemporaryDirectory() as tmp:
+            manifest = Path(tmp) / "map_manifest.csv"
+            manifest.write_text("\n".join(
+                line.replace("map_crt_belgium", "map_crt_wrong") if ",c1d1af," in line else line
+                for line in lines
+            ) + "\n")
+            issues, _ = validate_maps.validate(self.object_states, manifest_path=manifest)
+
+        matching = [i for i in issues if "c1d1af" in i.where and "map_creator_tag" in i.message]
+        self.assertEqual(1, len(matching))
+        self.assertEqual(validate_maps.ERROR, matching[0].level)
+
     def test_missing_creator_tag_reports_card_guid(self):
         states = copy.deepcopy(self.object_states)
         card = find_guid(states, "c1d1af")

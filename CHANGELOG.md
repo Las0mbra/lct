@@ -13,6 +13,12 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.6.5c
+- More maps, currently we have all Take and Hold Matchups, Priority Assets vs Priority Assets, Priority Assets vs Recon , Purge the Foe vs Purge the Foe, Purge the Foe vs Recon, Purge the Foe vs Priority Assets. 
+- Added a "Back to Menu" button that appears beneath dispotition text after a map is loaded, in case people want to back to the original selection. 
+- Revamped Score board overlay so that it looks way better. 
+- Added the Tournament Companion PDF
+
 ## v1.6.5b
 - Map Generation from multiple creators. Now the system of loading layouts, will also pull maps from different creators, so if you press Generate mission again, eg for TnH vs TnH you ll always get appropriate Layouts 1,2 and 3 but you might get Layout 1 from creater A and Layout 2,3 from creator B. Hopefully this will allow for map variety and I will eventually add a tool that will allow for map filtering. 
 - Greatly improved performance for Coherency tool 

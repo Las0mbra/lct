@@ -488,7 +488,7 @@ function refreshScoringOverlay()
             -- round) so all lines centre identically; only the active arrow shows.
             local marker = isCurrent and "<color=#FFD27F>▸</color> " or "<color=#00000000>▸</color> "
             lines[#lines + 1] = string.format(
-                "%s<b><color=%s>Round %d</color></b>   <color=#FFFFFF80>PRI</color> %d   <color=#FFFFFF80>SEC</color> %d   <color=#FFFFFF80>TOT</color> <b>%d</b>",
+                "%s<b><color=%s>Round %d</color></b>   <color=#FFFFFF80>PRI</color> %d <color=#FFFFFF40>|</color> <color=#FFFFFF80>SEC</color> %d <color=#FFFFFF40>|</color> <color=#FFFFFF80>SUM</color> <b>%d</b>",
                 marker, labelColor, j, pri, sec, tot)
         end
         return table.concat(lines, "\n")

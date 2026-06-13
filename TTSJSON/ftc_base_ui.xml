@@ -329,11 +329,11 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
   </HorizontalLayout>
 </Panel>
 
-<Panel id="RedHud_ScoringOverlay" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false" visibility="Red" active="false" rectAlignment="MiddleCenter" width="1600" height="1300" scale="0.55 0.55 0.55" color="#0D0D1A40" outline="#2a2a4a80" outlineSize="6">
+<Panel id="RedHud_ScoringOverlay" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false" visibility="Red" active="false" rectAlignment="MiddleCenter" width="1600" height="1300" scale="0.55 0.55 0.55" color="#0D0D1A73" outline="#2a2a4aB3" outlineSize="6">
   <Text id="RedHud_ScoringOverlay_Title" text="⚔ Scoreboard ⚔" fontSize="60" fontStyle="Bold" color="#FFFFFF" offsetXY="0 590" alignment="MiddleCenter"/>
   <Button id="RedHud_ScoringOverlay_CloseBtn" text="X" fontSize="32" textColor="#FFFFFF" colors="#1A1A2ACC|#B52020E6|#8E1818|#1A1A2A55" width="64" height="64" roundEdges="true" outline="#B52020CC" outlineSize="3" offsetXY="740 590" onClick="hudCloseScoringOverlay" tooltip="Close"/>
   <HorizontalLayout spacing="40" padding="40 40 110 60" childForceExpandWidth="true" childForceExpandHeight="true">
-    <Panel color="#B5202040" outline="#D4606080" outlineSize="4" roundEdges="true">
+    <Panel color="#B5202073" outline="#D46060B3" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="6" padding="0 0 0 14" childForceExpandWidth="true" childForceExpandHeight="false">
         <Panel color="#7A1414C0" preferredHeight="84" flexibleHeight="0" minHeight="84">
           <HorizontalLayout padding="18 18 0 0" spacing="12" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleCenter">
@@ -344,34 +344,34 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
           </HorizontalLayout>
         </Panel>
         <Text id="RedHud_ScoringOverlay_RedDisposition" text="" fontSize="30" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44" richText="true"/>
-        <Text id="RedHud_ScoringOverlay_RedRounds" text="" fontSize="20" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
+        <Text id="RedHud_ScoringOverlay_RedRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
         <Text id="RedHud_ScoringOverlay_RedActiveHdr" text="ACTIVE SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
         <Panel id="RedHud_ScoringOverlay_RedActive" color="rgba(0,0,0,0)" preferredHeight="160">
           <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
             <Text id="RedHud_ScoringOverlay_RedActiveL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
             <Text id="RedHud_ScoringOverlay_RedActiveR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
           </HorizontalLayout>
         </Panel>
-        <Text id="RedHud_ScoringOverlay_RedDiscardHdr" text="DISCARD PILE" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
-        <Panel id="RedHud_ScoringOverlay_RedDiscard" color="rgba(0,0,0,0)" preferredHeight="110">
-          <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
-            <Text id="RedHud_ScoringOverlay_RedDiscardL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
-            <Text id="RedHud_ScoringOverlay_RedDiscardR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
-          </HorizontalLayout>
-        </Panel>
         <Text id="RedHud_ScoringOverlay_RedDeckHdr" text="REMAINING SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
         <Panel id="RedHud_ScoringOverlay_RedDeck" color="rgba(0,0,0,0)" preferredHeight="110">
           <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
             <Text id="RedHud_ScoringOverlay_RedDeckL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
             <Text id="RedHud_ScoringOverlay_RedDeckR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
           </HorizontalLayout>
         </Panel>
+        <Text id="RedHud_ScoringOverlay_RedDiscardHdr" text="DISCARD PILE" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel id="RedHud_ScoringOverlay_RedDiscard" color="rgba(0,0,0,0)" preferredHeight="110">
+          <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
+            <Text id="RedHud_ScoringOverlay_RedDiscardL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
+            <Text id="RedHud_ScoringOverlay_RedDiscardR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
+          </HorizontalLayout>
+        </Panel>
       </VerticalLayout>
     </Panel>
-    <Panel color="#1A5FC840" outline="#6DA8FF80" outlineSize="4" roundEdges="true">
+    <Panel color="#1A5FC873" outline="#6DA8FFB3" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="6" padding="0 0 0 14" childForceExpandWidth="true" childForceExpandHeight="false">
         <Panel color="#0E337AC0" preferredHeight="84" flexibleHeight="0" minHeight="84">
           <HorizontalLayout padding="18 18 0 0" spacing="12" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleCenter">
@@ -382,29 +382,29 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
           </HorizontalLayout>
         </Panel>
         <Text id="RedHud_ScoringOverlay_BlueDisposition" text="" fontSize="30" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44" richText="true"/>
-        <Text id="RedHud_ScoringOverlay_BlueRounds" text="" fontSize="20" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
+        <Text id="RedHud_ScoringOverlay_BlueRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
         <Text id="RedHud_ScoringOverlay_BlueActiveHdr" text="ACTIVE SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
         <Panel id="RedHud_ScoringOverlay_BlueActive" color="rgba(0,0,0,0)" preferredHeight="160">
           <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
             <Text id="RedHud_ScoringOverlay_BlueActiveL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
             <Text id="RedHud_ScoringOverlay_BlueActiveR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
           </HorizontalLayout>
         </Panel>
-        <Text id="RedHud_ScoringOverlay_BlueDiscardHdr" text="DISCARD PILE" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
-        <Panel id="RedHud_ScoringOverlay_BlueDiscard" color="rgba(0,0,0,0)" preferredHeight="110">
-          <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
-            <Text id="RedHud_ScoringOverlay_BlueDiscardL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
-            <Text id="RedHud_ScoringOverlay_BlueDiscardR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
-          </HorizontalLayout>
-        </Panel>
         <Text id="RedHud_ScoringOverlay_BlueDeckHdr" text="REMAINING SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
         <Panel id="RedHud_ScoringOverlay_BlueDeck" color="rgba(0,0,0,0)" preferredHeight="110">
           <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
             <Text id="RedHud_ScoringOverlay_BlueDeckL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
             <Text id="RedHud_ScoringOverlay_BlueDeckR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
+          </HorizontalLayout>
+        </Panel>
+        <Text id="RedHud_ScoringOverlay_BlueDiscardHdr" text="DISCARD PILE" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel id="RedHud_ScoringOverlay_BlueDiscard" color="rgba(0,0,0,0)" preferredHeight="110">
+          <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
+            <Text id="RedHud_ScoringOverlay_BlueDiscardL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
+            <Text id="RedHud_ScoringOverlay_BlueDiscardR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
           </HorizontalLayout>
         </Panel>
       </VerticalLayout>
@@ -412,11 +412,11 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
   </HorizontalLayout>
 </Panel>
 
-<Panel id="BlueHud_ScoringOverlay" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false" visibility="Blue" active="false" rectAlignment="MiddleCenter" width="1600" height="1300" scale="0.55 0.55 0.55" color="#0D0D1A40" outline="#2a2a4a80" outlineSize="6">
+<Panel id="BlueHud_ScoringOverlay" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false" visibility="Blue" active="false" rectAlignment="MiddleCenter" width="1600" height="1300" scale="0.55 0.55 0.55" color="#0D0D1A73" outline="#2a2a4aB3" outlineSize="6">
   <Text id="BlueHud_ScoringOverlay_Title" text="⚔ Scoreboard ⚔" fontSize="60" fontStyle="Bold" color="#FFFFFF" offsetXY="0 590" alignment="MiddleCenter"/>
   <Button id="BlueHud_ScoringOverlay_CloseBtn" text="X" fontSize="32" textColor="#FFFFFF" colors="#1A1A2ACC|#B52020E6|#8E1818|#1A1A2A55" width="64" height="64" roundEdges="true" outline="#B52020CC" outlineSize="3" offsetXY="740 590" onClick="hudCloseScoringOverlay" tooltip="Close"/>
   <HorizontalLayout spacing="40" padding="40 40 110 60" childForceExpandWidth="true" childForceExpandHeight="true">
-    <Panel color="#B5202040" outline="#D4606080" outlineSize="4" roundEdges="true">
+    <Panel color="#B5202073" outline="#D46060B3" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="6" padding="0 0 0 14" childForceExpandWidth="true" childForceExpandHeight="false">
         <Panel color="#7A1414C0" preferredHeight="84" flexibleHeight="0" minHeight="84">
           <HorizontalLayout padding="18 18 0 0" spacing="12" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleCenter">
@@ -427,34 +427,34 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
           </HorizontalLayout>
         </Panel>
         <Text id="BlueHud_ScoringOverlay_RedDisposition" text="" fontSize="30" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44" richText="true"/>
-        <Text id="BlueHud_ScoringOverlay_RedRounds" text="" fontSize="20" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
+        <Text id="BlueHud_ScoringOverlay_RedRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
         <Text id="BlueHud_ScoringOverlay_RedActiveHdr" text="ACTIVE SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
         <Panel id="BlueHud_ScoringOverlay_RedActive" color="rgba(0,0,0,0)" preferredHeight="160">
           <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
             <Text id="BlueHud_ScoringOverlay_RedActiveL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
             <Text id="BlueHud_ScoringOverlay_RedActiveR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
           </HorizontalLayout>
         </Panel>
-        <Text id="BlueHud_ScoringOverlay_RedDiscardHdr" text="DISCARD PILE" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
-        <Panel id="BlueHud_ScoringOverlay_RedDiscard" color="rgba(0,0,0,0)" preferredHeight="110">
-          <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
-            <Text id="BlueHud_ScoringOverlay_RedDiscardL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
-            <Text id="BlueHud_ScoringOverlay_RedDiscardR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
-          </HorizontalLayout>
-        </Panel>
         <Text id="BlueHud_ScoringOverlay_RedDeckHdr" text="REMAINING SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
         <Panel id="BlueHud_ScoringOverlay_RedDeck" color="rgba(0,0,0,0)" preferredHeight="110">
           <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
             <Text id="BlueHud_ScoringOverlay_RedDeckL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
             <Text id="BlueHud_ScoringOverlay_RedDeckR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
           </HorizontalLayout>
         </Panel>
+        <Text id="BlueHud_ScoringOverlay_RedDiscardHdr" text="DISCARD PILE" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel id="BlueHud_ScoringOverlay_RedDiscard" color="rgba(0,0,0,0)" preferredHeight="110">
+          <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
+            <Text id="BlueHud_ScoringOverlay_RedDiscardL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
+            <Text id="BlueHud_ScoringOverlay_RedDiscardR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
+          </HorizontalLayout>
+        </Panel>
       </VerticalLayout>
     </Panel>
-    <Panel color="#1A5FC840" outline="#6DA8FF80" outlineSize="4" roundEdges="true">
+    <Panel color="#1A5FC873" outline="#6DA8FFB3" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="6" padding="0 0 0 14" childForceExpandWidth="true" childForceExpandHeight="false">
         <Panel color="#0E337AC0" preferredHeight="84" flexibleHeight="0" minHeight="84">
           <HorizontalLayout padding="18 18 0 0" spacing="12" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleCenter">
@@ -465,29 +465,29 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
           </HorizontalLayout>
         </Panel>
         <Text id="BlueHud_ScoringOverlay_BlueDisposition" text="" fontSize="30" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44" richText="true"/>
-        <Text id="BlueHud_ScoringOverlay_BlueRounds" text="" fontSize="20" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
+        <Text id="BlueHud_ScoringOverlay_BlueRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
         <Text id="BlueHud_ScoringOverlay_BlueActiveHdr" text="ACTIVE SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
         <Panel id="BlueHud_ScoringOverlay_BlueActive" color="rgba(0,0,0,0)" preferredHeight="160">
           <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
             <Text id="BlueHud_ScoringOverlay_BlueActiveL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
             <Text id="BlueHud_ScoringOverlay_BlueActiveR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
           </HorizontalLayout>
         </Panel>
-        <Text id="BlueHud_ScoringOverlay_BlueDiscardHdr" text="DISCARD PILE" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
-        <Panel id="BlueHud_ScoringOverlay_BlueDiscard" color="rgba(0,0,0,0)" preferredHeight="110">
-          <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
-            <Text id="BlueHud_ScoringOverlay_BlueDiscardL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
-            <Text id="BlueHud_ScoringOverlay_BlueDiscardR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
-          </HorizontalLayout>
-        </Panel>
         <Text id="BlueHud_ScoringOverlay_BlueDeckHdr" text="REMAINING SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
         <Panel id="BlueHud_ScoringOverlay_BlueDeck" color="rgba(0,0,0,0)" preferredHeight="110">
           <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
             <Text id="BlueHud_ScoringOverlay_BlueDeckL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
             <Text id="BlueHud_ScoringOverlay_BlueDeckR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
+          </HorizontalLayout>
+        </Panel>
+        <Text id="BlueHud_ScoringOverlay_BlueDiscardHdr" text="DISCARD PILE" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel id="BlueHud_ScoringOverlay_BlueDiscard" color="rgba(0,0,0,0)" preferredHeight="110">
+          <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
+            <Text id="BlueHud_ScoringOverlay_BlueDiscardL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
+            <Text id="BlueHud_ScoringOverlay_BlueDiscardR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
           </HorizontalLayout>
         </Panel>
       </VerticalLayout>
@@ -495,11 +495,11 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
   </HorizontalLayout>
 </Panel>
 
-<Panel id="GreyHud_ScoringOverlay" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false" visibility="Grey" active="false" rectAlignment="MiddleCenter" width="1600" height="1300" scale="0.55 0.55 0.55" color="#0D0D1A40" outline="#2a2a4a80" outlineSize="6">
+<Panel id="GreyHud_ScoringOverlay" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false" visibility="Grey" active="false" rectAlignment="MiddleCenter" width="1600" height="1300" scale="0.55 0.55 0.55" color="#0D0D1A73" outline="#2a2a4aB3" outlineSize="6">
   <Text id="GreyHud_ScoringOverlay_Title" text="⚔ Scoreboard ⚔" fontSize="60" fontStyle="Bold" color="#FFFFFF" offsetXY="0 590" alignment="MiddleCenter"/>
   <Button id="GreyHud_ScoringOverlay_CloseBtn" text="X" fontSize="32" textColor="#FFFFFF" colors="#1A1A2ACC|#B52020E6|#8E1818|#1A1A2A55" width="64" height="64" roundEdges="true" outline="#B52020CC" outlineSize="3" offsetXY="740 590" onClick="hudCloseScoringOverlay" tooltip="Close"/>
   <HorizontalLayout spacing="40" padding="40 40 110 60" childForceExpandWidth="true" childForceExpandHeight="true">
-    <Panel color="#B5202040" outline="#D4606080" outlineSize="4" roundEdges="true">
+    <Panel color="#B5202073" outline="#D46060B3" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="6" padding="0 0 0 14" childForceExpandWidth="true" childForceExpandHeight="false">
         <Panel color="#7A1414C0" preferredHeight="84" flexibleHeight="0" minHeight="84">
           <HorizontalLayout padding="18 18 0 0" spacing="12" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleCenter">
@@ -510,34 +510,34 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
           </HorizontalLayout>
         </Panel>
         <Text id="GreyHud_ScoringOverlay_RedDisposition" text="" fontSize="30" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44" richText="true"/>
-        <Text id="GreyHud_ScoringOverlay_RedRounds" text="" fontSize="20" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
+        <Text id="GreyHud_ScoringOverlay_RedRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
         <Text id="GreyHud_ScoringOverlay_RedActiveHdr" text="ACTIVE SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
         <Panel id="GreyHud_ScoringOverlay_RedActive" color="rgba(0,0,0,0)" preferredHeight="160">
           <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
             <Text id="GreyHud_ScoringOverlay_RedActiveL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
             <Text id="GreyHud_ScoringOverlay_RedActiveR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
           </HorizontalLayout>
         </Panel>
-        <Text id="GreyHud_ScoringOverlay_RedDiscardHdr" text="DISCARD PILE" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
-        <Panel id="GreyHud_ScoringOverlay_RedDiscard" color="rgba(0,0,0,0)" preferredHeight="110">
-          <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
-            <Text id="GreyHud_ScoringOverlay_RedDiscardL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
-            <Text id="GreyHud_ScoringOverlay_RedDiscardR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
-          </HorizontalLayout>
-        </Panel>
         <Text id="GreyHud_ScoringOverlay_RedDeckHdr" text="REMAINING SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
         <Panel id="GreyHud_ScoringOverlay_RedDeck" color="rgba(0,0,0,0)" preferredHeight="110">
           <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
             <Text id="GreyHud_ScoringOverlay_RedDeckL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
             <Text id="GreyHud_ScoringOverlay_RedDeckR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
           </HorizontalLayout>
         </Panel>
+        <Text id="GreyHud_ScoringOverlay_RedDiscardHdr" text="DISCARD PILE" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel id="GreyHud_ScoringOverlay_RedDiscard" color="rgba(0,0,0,0)" preferredHeight="110">
+          <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
+            <Text id="GreyHud_ScoringOverlay_RedDiscardL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
+            <Text id="GreyHud_ScoringOverlay_RedDiscardR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
+          </HorizontalLayout>
+        </Panel>
       </VerticalLayout>
     </Panel>
-    <Panel color="#1A5FC840" outline="#6DA8FF80" outlineSize="4" roundEdges="true">
+    <Panel color="#1A5FC873" outline="#6DA8FFB3" outlineSize="4" roundEdges="true">
       <VerticalLayout spacing="6" padding="0 0 0 14" childForceExpandWidth="true" childForceExpandHeight="false">
         <Panel color="#0E337AC0" preferredHeight="84" flexibleHeight="0" minHeight="84">
           <HorizontalLayout padding="18 18 0 0" spacing="12" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleCenter">
@@ -548,29 +548,29 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
           </HorizontalLayout>
         </Panel>
         <Text id="GreyHud_ScoringOverlay_BlueDisposition" text="" fontSize="30" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44" richText="true"/>
-        <Text id="GreyHud_ScoringOverlay_BlueRounds" text="" fontSize="20" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
+        <Text id="GreyHud_ScoringOverlay_BlueRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
         <Text id="GreyHud_ScoringOverlay_BlueActiveHdr" text="ACTIVE SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
         <Panel id="GreyHud_ScoringOverlay_BlueActive" color="rgba(0,0,0,0)" preferredHeight="160">
           <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
             <Text id="GreyHud_ScoringOverlay_BlueActiveL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
             <Text id="GreyHud_ScoringOverlay_BlueActiveR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
           </HorizontalLayout>
         </Panel>
-        <Text id="GreyHud_ScoringOverlay_BlueDiscardHdr" text="DISCARD PILE" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
-        <Panel id="GreyHud_ScoringOverlay_BlueDiscard" color="rgba(0,0,0,0)" preferredHeight="110">
-          <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
-            <Text id="GreyHud_ScoringOverlay_BlueDiscardL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
-            <Text id="GreyHud_ScoringOverlay_BlueDiscardR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
-          </HorizontalLayout>
-        </Panel>
         <Text id="GreyHud_ScoringOverlay_BlueDeckHdr" text="REMAINING SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
-        <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
         <Panel id="GreyHud_ScoringOverlay_BlueDeck" color="rgba(0,0,0,0)" preferredHeight="110">
           <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
             <Text id="GreyHud_ScoringOverlay_BlueDeckL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
             <Text id="GreyHud_ScoringOverlay_BlueDeckR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
+          </HorizontalLayout>
+        </Panel>
+        <Text id="GreyHud_ScoringOverlay_BlueDiscardHdr" text="DISCARD PILE" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
+        <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
+        <Panel id="GreyHud_ScoringOverlay_BlueDiscard" color="rgba(0,0,0,0)" preferredHeight="110">
+          <HorizontalLayout spacing="18" padding="18 18 0 0" childForceExpandWidth="true" childForceExpandHeight="true">
+            <Text id="GreyHud_ScoringOverlay_BlueDiscardL" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
+            <Text id="GreyHud_ScoringOverlay_BlueDiscardR" text="" fontSize="22" color="#FFFFFF" alignment="UpperLeft" richText="true"/>
           </HorizontalLayout>
         </Panel>
       </VerticalLayout>

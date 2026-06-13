@@ -149,7 +149,7 @@ _NAME_SUFFIX_RE = re.compile(r'^.*-\s*(.*?)\s*$')
 # couple of cross-checks need. Read best-effort; checks skip if it isn't found.
 STARTMENU_LUA = Path(__file__).parent.parent / "TTSLUA" / "startMenu.ttslua"
 MAP_MANIFEST = Path(__file__).parent.parent / "data" / "map_manifest.csv"
-MAP_MANIFEST_COLUMNS = {"deck_guid", "deck_name", "card_guid", "card_name"}
+MAP_MANIFEST_COLUMNS = {"deck_guid", "deck_name", "card_guid", "card_name", "map_creator_tag"}
 REQUIRED_MAP_TAG = "map"
 MAP_CREATOR_TAG_PREFIX = "map_crt"
 _GUID_RE = re.compile(r"^[0-9a-fA-F]{6}$")
@@ -250,6 +250,9 @@ def load_map_manifest(path=MAP_MANIFEST):
             if row["card_guid"] in seen_cards:
                 issues.append(Issue(ERROR, where,
                                     f"duplicate card_guid {row['card_guid']}"))
+            if not row["map_creator_tag"].startswith(MAP_CREATOR_TAG_PREFIX + "_"):
+                issues.append(Issue(ERROR, where,
+                                    f"invalid map_creator_tag {row['map_creator_tag']!r}"))
             seen_cards.add(row["card_guid"])
             rows.append(row)
     return rows, issues
@@ -298,6 +301,10 @@ def build_context(object_states, require_map_tags=False, manifest_path=MAP_MANIF
         if row["card_name"] and card.name != row["card_name"]:
             inventory_issues.append(Issue(WARN, card.where,
                                           f"manifest card_name is {row['card_name']!r}"))
+        if row["map_creator_tag"] not in card.tags:
+            inventory_issues.append(Issue(ERROR, card.where,
+                                          f"manifest map_creator_tag is {row['map_creator_tag']!r}, "
+                                          f"but save tags are {card.tags}"))
         deck_obj = deck_matches[0][0] if deck_matches else None
         deck_name = (deck_obj.get("Nickname") or deck_obj.get("Name") or "") if deck_obj else ""
         if row["deck_name"] and deck_name and deck_name != row["deck_name"]:

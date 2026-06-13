@@ -21,6 +21,15 @@ redDispositionSelected = 3
 matTextureSelected = 1
 matClearButtonUsed = false
 mapMat_GUID = "28865a"
+
+-- "Back to Selection" restore point. Captured automatically the instant a map
+-- is loaded (before its wipe), so a wrong map can be undone without reloading
+-- the mod. restorePointMenuState = the pre-load menu vars; restorePointObjects =
+-- {guid = JSON} of the persistent selection objects (in case the wipe destroys
+-- them; respawning preserves the original GUID since the source was destroyed).
+restorePointAvailable = false
+restorePointMenuState = nil
+restorePointObjects = nil
 matTextures = {
     {name = "Green", color = {0.00, 0.31, 0.03}, url = "https://steamusercontent-a.akamaihd.net/ugc/11600812045538713232/0064F3B919AEC48D35C233786977578689C81AD1/"},
     {name = "Blue", color = {0.00, 0.31, 0.44}, url = "https://steamusercontent-a.akamaihd.net/ugc/12661578557139534569/9D589BE05341F1CE8EA20369387C7C5077587AB9/"},
@@ -61,6 +70,7 @@ function onLoad(saved_data)
         redDispositionSelected = loaded_data.svredDispositionSelected or redDispositionSelected
         matTextureSelected = loaded_data.svMatTextureSelected or matTextureSelected
         matClearButtonUsed = loaded_data.svMatClearButtonUsed or false
+        -- Restore point is in-memory only (see onSave); a save+reload clears it.
     end
 
     if sizeConfirmed then
@@ -131,6 +141,11 @@ function onSave()
         svredDispositionSelected = redDispositionSelected,
         svMatTextureSelected = matTextureSelected,
         svMatClearButtonUsed = matClearButtonUsed,
+        -- NOTE: the restore point (restorePointObjects in particular) is held in
+        -- memory only and deliberately NOT persisted here. It can reach ~5 MB
+        -- (the game-mode objects are large decks), and JSON.encode on every
+        -- autosave over that blob stalls the table. A pending undo is transient
+        -- by nature, so losing it on a full save+reload is an acceptable trade.
     })
 
     return saved_data
@@ -429,8 +444,10 @@ GAME_MODE_OBJECTS = {
     {guid = "80eda8", pos = {15.3, 0.9614987, -12.829999}, rot = {1.25535382e-06, 269.999969, -2.740111e-07}},
     {guid = "32e34a", pos = {0.5, 0.996871352, 13.57}, rot = {2.270983e-08, 0.006589271, -2.72824281e-07}},
     {guid = "7b5ba7", pos = {0.5, 0.996871352, 6.96}, rot = {7.45712e-08, 359.987671, -2.28905236e-07}},
-    {guid = "158d2c", pos = {0.5000001, 0.996871352, 0.329999954}, rot = {9.282046e-09, 179.973267, 1.28640192e-08}},
-    {guid = "e4cdd7", pos = {0.50000006, 0.996871352, -6.26}, rot = {8.051902e-08, 180.0167, -1.97242453e-08}},
+    {guid = "3ebbd6", pos = {0.5, 0.996871352, 0.33}, rot = {1.09526219e-07, 359.991821, -1.90472022e-07}},
+    {guid = "dc8738", pos = {0.5000004, 0.996871352, -6.26}, rot = {-2.49159e-07, 359.973175, -8.21389463e-08}},
+    {guid = "a22c33", pos = {0.5000004, 0.996871352, -12.83}, rot = {-4.03964151e-07, 359.965271, -1.12179755e-07}},
+    {guid = "9ac38f", pos = {-10.0, 0.996871352, 13.57}, rot = {6.232898e-08, 0.0147686, -1.39255263e-07}},
 }
 
 function hideStartupMapCards()
@@ -937,6 +954,26 @@ function writeClearMatButton()
     })
 end
 
+-- Sits between the Generate Missions button (world x 35.6) and the Deployment
+-- Zone picker (world x ~49), both on world z 0.
+backToSelectionButtonWorldPosition = {42.5, 1.0, 0.0}
+
+-- Shown after a map is loaded (restore point captured) and before the game has
+-- started -- lets the player undo a wrong map and return to the selection screen.
+function writeBackToSelectionButton()
+    if not restorePointAvailable or gameMode ~= "game" or inGame then return end
+
+    local center = self.positionToLocal(backToSelectionButtonWorldPosition)
+    createButtonWithBorder({
+        label = "BACK TO SELECTION", click_function = "backToSelection", function_owner = self,
+        position = {center.x, center.y, center.z}, rotation = {0, 0, 0},
+        height = dispositionButtonHeight, width = dispositionButtonWidth,
+        font_size = dispositionButtonFontSize,
+        color = {0.85, 0.55, 0.1}, font_color = {1, 1, 1},
+        tooltip = "Undo the loaded map and return to map selection",
+    })
+end
+
 -- Deferred wipe: destroy every object the scripting zone overlaps except the
 -- mats, MapExclude-tagged objects, and this menu, then remove the zone itself.
 function matClearZoneCallback(zone)
@@ -961,6 +998,153 @@ function clearMat()
         callback_function = matClearZoneCallback,
         callback_owner = self,
     })
+end
+
+-- ******************
+-- BACK TO SELECTION (undo a wrong map load without reloading the mod)
+-- ******************
+
+-- The persistent objects that make up the selection screen. They live in the
+-- save permanently and are only repositioned (shown/hidden) -- but a map card's
+-- wipe destroys whatever is on the mat, so we snapshot their JSON as insurance.
+function getSelectionObjectGuids()
+    local guids = {}
+    for _, card in ipairs(STARTUP_MAP_CARDS) do table.insert(guids, card.guid) end
+    for _, entry in ipairs(GAME_MODE_OBJECTS) do table.insert(guids, entry.guid) end
+    if forceDispositionToken_GUID then table.insert(guids, forceDispositionToken_GUID) end
+    return guids
+end
+
+-- Capture the pre-load state: the menu variables that define where we are in the
+-- flow, plus the JSON of every selection object still on the table.
+function captureRestorePoint()
+    restorePointMenuState = {
+        gameMode = gameMode,
+        inGame = inGame,
+        singlesMode = singlesMode,
+        sizeConfirmed = sizeConfirmed,
+        mapSizeSelected = mapSizeSelected,
+        deployMode = deployMode,
+        deploySelected = deploySelected,
+        packSelected = packSelected,
+        redDispositionSelected = redDispositionSelected,
+        blueDispositionSelected = blueDispositionSelected,
+        matTextureSelected = matTextureSelected,
+    }
+    restorePointObjects = {}
+    for _, guid in ipairs(getSelectionObjectGuids()) do
+        local obj = getObjectFromGUID(guid)
+        if obj then
+            restorePointObjects[guid] = obj.getJSON()
+        end
+    end
+    restorePointAvailable = true
+end
+
+-- Entry point for the button: clear the (wrong) map, then restore the snapshot.
+function backToSelection()
+    if not restorePointAvailable then return end
+
+    broadcastToAll("Returning to map selection...", {0.3, 1.0, 0.3})
+    self.clearButtons()  -- prevent a double-press while the restore runs
+
+    -- Cancel a still-pending loaded-card auto-destruct; otherwise (on a fast
+    -- undo) it would fire after we've respawned the card and destroy it again.
+    if loadedMapCardDestroyTimerId then
+        Wait.stop(loadedMapCardDestroyTimerId)
+        loadedMapCardDestroyTimerId = nil
+    end
+
+    destroyAllObjectives()
+    destroyDeployZones()
+
+    spawnObject({
+        position = {x = 0, y = 26, z = 0},
+        scale = matClearZoneScale,
+        type = "ScriptingTrigger",
+        callback_function = restoreWipeCallback,
+        callback_owner = self,
+    })
+end
+
+-- Same wipe as matClearZoneCallback, but once the board is clear it kicks off the
+-- respawn instead of just removing the zone.
+function restoreWipeCallback(zone)
+    Wait.frames(function()
+        for _, obj in ipairs(zone.getObjects()) do
+            if obj ~= self and not matClearKeepGuids[obj.getGUID()] and obj.getGMNotes() ~= "MapExclude" then
+                obj.destruct()
+            end
+        end
+        zone.destruct()
+        -- Respawn only after the destruction has settled, so freshly spawned
+        -- selection objects aren't caught by the same wipe.
+        Wait.time(respawnSelectionObjects, 0.4)
+    end, 2)
+end
+
+-- Bring back any selection object the wipe destroyed. Spawning from the captured
+-- JSON reuses the original GUID (free now that the source was destroyed), which
+-- the rest of the codebase relies on.
+function respawnSelectionObjects()
+    for guid, json in pairs(restorePointObjects or {}) do
+        if not getObjectFromGUID(guid) then
+            spawnObjectJSON({json = json})
+        end
+    end
+    -- Let the spawned objects register before we reposition them.
+    Wait.time(applyRestoredSelectionState, 0.5)
+end
+
+-- Restore the menu variables and re-place the selection objects, mirroring the
+-- relevant parts of onLoad/confirmSizeMat so positions are normalized regardless
+-- of where the captured JSON put them.
+function applyRestoredSelectionState()
+    local s = restorePointMenuState or {}
+    gameMode = s.gameMode or "game"
+    inGame = s.inGame or false
+    singlesMode = s.singlesMode
+    sizeConfirmed = s.sizeConfirmed
+    mapSizeSelected = s.mapSizeSelected or mapSizeSelected
+    deployMode = s.deployMode
+    deploySelected = s.deploySelected
+    packSelected = s.packSelected
+    redDispositionSelected = s.redDispositionSelected or redDispositionSelected
+    blueDispositionSelected = s.blueDispositionSelected or blueDispositionSelected
+    matTextureSelected = s.matTextureSelected or matTextureSelected
+
+    if sizeConfirmed then
+        if isValidDeployMode(deployMode) then
+            setDeployZonesMode(deployMode, true)
+        else
+            setDeployZonesForSize(true)
+        end
+        if not deploySelected or not DeployZonesData[deploySelected] then
+            deploySelected = #DeployZonesData
+        end
+    end
+
+    placeStartupMapCards()
+    if packSelected then
+        local missionPackTable = Global.getTable("missionPackData")
+        if missionPackTable and missionPackTable[packSelected] then
+            missionPackData = missionPackTable[packSelected]
+        end
+        placeGameModeObjects()
+    else
+        hideGameModeObjects()
+    end
+    placeForceDispositionToken()
+
+    matClearButtonUsed = false  -- a fresh selection screen offers CLEAR MAT again
+    applyMatTexture(false)
+
+    restorePointAvailable = false
+    restorePointObjects = nil
+    restorePointMenuState = nil
+
+    writeMenus()
+    broadcastToAll("Back to map selection.", {0.3, 1.0, 0.3})
 end
 
 function updateDispositionSelection(color, add)
@@ -1130,27 +1314,59 @@ deploymentMatrixDecks = {
         },
     },
     ["3_3"] = {
-        guid = "158d2c", name = "Purge the Foe vs Purge the Foe",
+        guid = "3ebbd6", name = "Purge the Foe vs Purge the Foe",
         cards = {
-            {guid = "36cb1e", name = "PtF vs PtF 1 - SnD"},
-            {guid = "13243a", name = "PtF vs PtF 2 - TP"},
-            {guid = "bc0963", name = "PtF vs PtF 3 - SE"},
+            {guid = "5fdb47", name = "PtF vs PtF 1 - SnD"},
+            {guid = "cb907f", name = "PtF vs PtF 2 - TP"},
+            {guid = "3998a5", name = "PtF vs PtF 3 - SE"},
         },
     },
     ["3_1"] = {
-        guid = "e4cdd7", name = "Purge the Foe vs Disruption",
+        guid = "9ac38f", name = "Purge the Foe vs Disruption",
         cards = {
-            {guid = "72863c", name = "PtF vs Dis 1 - SnD"},
-            {guid = "6548f0", name = "PtF vs Dis 2 - TP"},
-            {guid = "121559", name = "PtF vs Dis 3 - SnD"},
+            {guid = "3eb69e", name = "PtF vs Dis 1 - SnD"},
+            {guid = "6277f1", name = "PtF vs Dis 2 - TP"},
+            {guid = "dbf11e", name = "PtF vs Dis 3 - SE"},
         },
     },
     ["1_3"] = {
-        guid = "e4cdd7", name = "Purge the Foe vs Disruption",
+        guid = "9ac38f", name = "Purge the Foe vs Disruption",
         cards = {
-            {guid = "72863c", name = "PtF vs Dis 1 - SnD"},
-            {guid = "6548f0", name = "PtF vs Dis 2 - TP"},
-            {guid = "121559", name = "PtF vs Dis 3 - SnD"},
+            {guid = "3eb69e", name = "PtF vs Dis 1 - SnD"},
+            {guid = "6277f1", name = "PtF vs Dis 2 - TP"},
+            {guid = "dbf11e", name = "PtF vs Dis 3 - SE"},
+        },
+    },
+    ["3_2"] = {
+        guid = "dc8738", name = "Purge the Foe vs Priority Assets",
+        cards = {
+            {guid = "653d63", name = "PtF vs PA 1 - DoW"},
+            {guid = "ab3235", name = "PtF vs PA 2 - SnD"},
+            {guid = "80af80", name = "PtF vs PA 3 - HnA"},
+        },
+    },
+    ["2_3"] = {
+        guid = "dc8738", name = "Purge the Foe vs Priority Assets",
+        cards = {
+            {guid = "653d63", name = "PtF vs PA 1 - DoW"},
+            {guid = "ab3235", name = "PtF vs PA 2 - SnD"},
+            {guid = "80af80", name = "PtF vs PA 3 - HnA"},
+        },
+    },
+    ["3_4"] = {
+        guid = "a22c33", name = "Purge the Foe vs Reconnaissance",
+        cards = {
+            {guid = "78d12d", name = "PtF vs Recon 1 - HnA"},
+            {guid = "6d872b", name = "PtF vs Recon 2 - DoW"},
+            {guid = "33a96e", name = "PtF vs Recon 3 - CoB"},
+        },
+    },
+    ["4_3"] = {
+        guid = "a22c33", name = "Purge the Foe vs Reconnaissance",
+        cards = {
+            {guid = "78d12d", name = "PtF vs Recon 1 - HnA"},
+            {guid = "6d872b", name = "PtF vs Recon 2 - DoW"},
+            {guid = "33a96e", name = "PtF vs Recon 3 - CoB"},
         },
     },
 }
@@ -1228,19 +1444,35 @@ randomDeploymentDecks = {
         },
     },
     {
-        guid = "158d2c", name = "Purge the Foe vs Purge the Foe",
+        guid = "3ebbd6", name = "Purge the Foe vs Purge the Foe",
         cards = {
-            {guid = "36cb1e", name = "PtF vs PtF 1 - SnD"},
-            {guid = "13243a", name = "PtF vs PtF 2 - TP"},
-            {guid = "bc0963", name = "PtF vs PtF 3 - SE"},
+            {guid = "5fdb47", name = "PtF vs PtF 1 - SnD"},
+            {guid = "cb907f", name = "PtF vs PtF 2 - TP"},
+            {guid = "3998a5", name = "PtF vs PtF 3 - SE"},
         },
     },
     {
-        guid = "e4cdd7", name = "Purge the Foe vs Disruption",
+        guid = "9ac38f", name = "Purge the Foe vs Disruption",
         cards = {
-            {guid = "72863c", name = "PtF vs Dis 1 - SnD"},
-            {guid = "6548f0", name = "PtF vs Dis 2 - TP"},
-            {guid = "121559", name = "PtF vs Dis 3 - SnD"},
+            {guid = "3eb69e", name = "PtF vs Dis 1 - SnD"},
+            {guid = "6277f1", name = "PtF vs Dis 2 - TP"},
+            {guid = "dbf11e", name = "PtF vs Dis 3 - SE"},
+        },
+    },
+    {
+        guid = "dc8738", name = "Purge the Foe vs Priority Assets",
+        cards = {
+            {guid = "653d63", name = "PtF vs PA 1 - DoW"},
+            {guid = "ab3235", name = "PtF vs PA 2 - SnD"},
+            {guid = "80af80", name = "PtF vs PA 3 - HnA"},
+        },
+    },
+    {
+        guid = "a22c33", name = "Purge the Foe vs Reconnaissance",
+        cards = {
+            {guid = "78d12d", name = "PtF vs Recon 1 - HnA"},
+            {guid = "6d872b", name = "PtF vs Recon 2 - DoW"},
+            {guid = "33a96e", name = "PtF vs Recon 3 - CoB"},
         },
     },
 }
@@ -2849,12 +3081,31 @@ end
 -- suffix after the last " - " is the full zone name, e.g. "... - Tipping Point").
 function onMapCardLoaded(params)
     local name = (params and params.name) or "?"
+
+    -- Snapshot the pre-load selection state BEFORE anything mutates or the card
+    -- wipes the board, so "Back to Selection" can return here.
+    captureRestorePoint()
+
     broadcastToAll("Loading map: " .. name, {0.3, 1.0, 0.3})  -- banner + chat log
 
     -- A loaded map owns the mat (and brings its own Clear button), so dismiss
     -- the standalone CLEAR MAT button the same way using it would.
     matClearButtonUsed = true
     writeMenus()
+
+    -- The v2 wipe deliberately keeps the loaded card alive so its 0.5s terrain
+    -- spawn can run; once that's done the card has no further purpose and just
+    -- clutters the mat. Remove it after the terrain settles. It was snapshotted
+    -- above, so "Back to Selection" still brings it back. Done before the
+    -- zone-suffix early-return below so it applies to every card uniformly.
+    if params and params.guid then
+        local cardGuid = params.guid
+        loadedMapCardDestroyTimerId = Wait.time(function()
+            loadedMapCardDestroyTimerId = nil
+            local card = getObjectFromGUID(cardGuid)
+            if card then card.destruct() end
+        end, loadedMapCardDestroyDelay)
+    end
 
     local zoneName = name:match("^.*%-%s*(.-)%s*$")
     if not zoneName or zoneName == "" then return end
@@ -2864,6 +3115,12 @@ function onMapCardLoaded(params)
     -- Defer past both so the zone survives. This is a single one-shot timer.
     Wait.time(function() selectDeployZoneByName(zoneName) end, 0.7)
 end
+
+-- Comfortably past the card's 0.5s terrain spawn; destroying it earlier would
+-- kill that pending timer and the terrain would never appear.
+loadedMapCardDestroyDelay = 1.0
+-- Id of the pending auto-destruct so backToSelection can cancel it (fast undo).
+loadedMapCardDestroyTimerId = nil
 
 -- Select+draw the deployment zone whose name matches, mirroring deployUpDown.
 function selectDeployZoneByName(zoneName)
@@ -3244,6 +3501,7 @@ function writeMenus()
         end
     end
     writeClearMatButton()
+    writeBackToSelectionButton()
 end
 
 menuButtonBorderThickness = 70

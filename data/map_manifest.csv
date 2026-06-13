@@ -1,43 +1,49 @@
-deck_guid,deck_name,card_guid,card_name
-6e0d78,Take and Hold vs Take and Hold,c1d1af,TnH vs TnH 1 - Tipping Point
-6e0d78,Take and Hold vs Take and Hold,b3537f,TnH vs TnH 1 - Tipping Point
-6e0d78,Take and Hold vs Take and Hold,1d5da4,TnH vs TnH 2 - Dawn of War
-6e0d78,Take and Hold vs Take and Hold,f7026e,TnH vs TnH 2 - Dawn of War
-6e0d78,Take and Hold vs Take and Hold,63cf7e,TnH vs TnH 3 - Search and Destroy
-6e0d78,Take and Hold vs Take and Hold,32ec37,TnH vs TnH 3 - Search and Destroy
-109a6b,Take and Hold vs Reconnaissance,e4072b,TnH vs Rec 3 - Search and Destroy
-109a6b,Take and Hold vs Reconnaissance,f0406d,TnH vs Rec 2 - Dawn of War
-109a6b,Take and Hold vs Reconnaissance,a21b0a,TnH vs Rec 1 - Tipping Point
-1e6711,Take and Hold vs Purge the Foe,7f30d9,TnH vs PtF 3 - Hammer and Anvil
-1e6711,Take and Hold vs Purge the Foe,e58b87,TnH vs PtF 2 - Search and Destroy
-1e6711,Take and Hold vs Purge the Foe,4ed3a4,TnH vs PtF 1 - Sweeping Engagement
-cfeba5,Take and Hold vs Disruption,b7a5fe,TnH vs Dis 3 - Hammer and Anvil
-cfeba5,Take and Hold vs Disruption,33ad91,TnH vs Dis 2 - Crucible of Battle
-cfeba5,Take and Hold vs Disruption,4b68d2,TnH vs Dis 1 - Sweeping Engagement
-eae80b,Take and Hold vs Priority Assets,b579e0,TnH vs PA 3 - Dawn of War
-eae80b,Take and Hold vs Priority Assets,2f68ac,TnH vs PA 2 - Hammer and Anvil
-eae80b,Take and Hold vs Priority Assets,51d1d5,TnH vs PA 1 - Crucible of Battle
-eae80b,Take and Hold vs Priority Assets,0574f5,TnH vs PA 3 - Dawn of War
-eae80b,Take and Hold vs Priority Assets,9a0779,TnH vs PA 2 - Hammer and Anvil
-eae80b,Take and Hold vs Priority Assets,936fc5,TnH vs PA 1 - Crucible of Battle
-cfeba5,Take and Hold vs Disruption,b200c7,TnH vs Dis 3 - Hammer and Anvil
-cfeba5,Take and Hold vs Disruption,366693,TnH vs Dis 2 - Crucible of Battle
-cfeba5,Take and Hold vs Disruption,2db2a2,TnH vs Dis 1 - Sweeping Engagement
-1e6711,Take and Hold vs Purge the Foe,812e71,TnH vs PtF 3 - Hammer and Anvil
-1e6711,Take and Hold vs Purge the Foe,af501d,TnH vs PtF 2 - Search and Destroy
-1e6711,Take and Hold vs Purge the Foe,f2c13b,TnH vs PtF 1 - Sweeping Engagement
-109a6b,Take and Hold vs Reconnaissance,bc8eb5,TnH vs Rec 3 - Search and Destroy
-109a6b,Take and Hold vs Reconnaissance,0538a9,TnH vs Rec 2 - Dawn of War
-109a6b,Take and Hold vs Reconnaissance,c26edc,TnH vs Rec 1 - Tipping Point
-32e34a,Priority Assets vs Reconnaissance,e236ba,PA vs Rec 1 - Crucible of Battle
-32e34a,Priority Assets vs Reconnaissance,c0f610,PA vs Rec 2 - Tipping Point
-32e34a,Priority Assets vs Reconnaissance,40cd96,PA vs Rec 3 - Sweeping Engagement
-7b5ba7,Priority Assets vs Priority Assets,9a0432,PA vs PA 2 - Crucible of Battle
-7b5ba7,Priority Assets vs Priority Assets,9319a0,PA vs PA 3 - Sweeping Engagement
-7b5ba7,Priority Assets vs Priority Assets,0b77a1,PA vs PA 1 - Tipping Point
-158d2c,Purge the Foe vs Purge the Foe,13243a,PtF vs PtF 2 - Tipping Point
-158d2c,Purge the Foe vs Purge the Foe,36cb1e,PtF vs PtF 1 - Search and Destroy
-158d2c,Purge the Foe vs Purge the Foe,bc0963,PtF vs PtF 3 - Sweeping Engagement
-e4cdd7,Purge the Foe vs Disruption,6548f0,PtF vs Disruption 2 - Tipping Point
-e4cdd7,Purge the Foe vs Disruption,121559,PtF vs Disruption 3 - Search and Destroy
-e4cdd7,Purge the Foe vs Disruption,72863c,PtF vs Disruption 1 - Search and Destroy
+deck_guid,deck_name,card_guid,card_name,map_creator_tag
+6e0d78,Take and Hold vs Take and Hold,c1d1af,TnH vs TnH 1 - Tipping Point,map_crt_belgium
+6e0d78,Take and Hold vs Take and Hold,b3537f,TnH vs TnH 1 - Tipping Point,map_crt_cr5sh
+6e0d78,Take and Hold vs Take and Hold,1d5da4,TnH vs TnH 2 - Dawn of War,map_crt_belgium
+6e0d78,Take and Hold vs Take and Hold,f7026e,TnH vs TnH 2 - Dawn of War,map_crt_cr5sh
+6e0d78,Take and Hold vs Take and Hold,63cf7e,TnH vs TnH 3 - Search and Destroy,map_crt_belgium
+6e0d78,Take and Hold vs Take and Hold,32ec37,TnH vs TnH 3 - Search and Destroy,map_crt_cr5sh
+109a6b,Take and Hold vs Reconnaissance,e4072b,TnH vs Rec 3 - Search and Destroy,map_crt_belgium
+109a6b,Take and Hold vs Reconnaissance,f0406d,TnH vs Rec 2 - Dawn of War,map_crt_belgium
+109a6b,Take and Hold vs Reconnaissance,a21b0a,TnH vs Rec 1 - Tipping Point,map_crt_belgium
+1e6711,Take and Hold vs Purge the Foe,7f30d9,TnH vs PtF 3 - Hammer and Anvil,map_crt_belgium
+1e6711,Take and Hold vs Purge the Foe,e58b87,TnH vs PtF 2 - Search and Destroy,map_crt_belgium
+1e6711,Take and Hold vs Purge the Foe,4ed3a4,TnH vs PtF 1 - Sweeping Engagement,map_crt_belgium
+cfeba5,Take and Hold vs Disruption,b7a5fe,TnH vs Dis 3 - Hammer and Anvil,map_crt_belgium
+cfeba5,Take and Hold vs Disruption,33ad91,TnH vs Dis 2 - Crucible of Battle,map_crt_belgium
+cfeba5,Take and Hold vs Disruption,4b68d2,TnH vs Dis 1 - Sweeping Engagement,map_crt_belgium
+eae80b,Take and Hold vs Priority Assets,b579e0,TnH vs PA 3 - Dawn of War,map_crt_belgium
+eae80b,Take and Hold vs Priority Assets,2f68ac,TnH vs PA 2 - Hammer and Anvil,map_crt_belgium
+eae80b,Take and Hold vs Priority Assets,51d1d5,TnH vs PA 1 - Crucible of Battle,map_crt_belgium
+eae80b,Take and Hold vs Priority Assets,0574f5,TnH vs PA 3 - Dawn of War,map_crt_cr5sh
+eae80b,Take and Hold vs Priority Assets,9a0779,TnH vs PA 2 - Hammer and Anvil,map_crt_cr5sh
+eae80b,Take and Hold vs Priority Assets,936fc5,TnH vs PA 1 - Crucible of Battle,map_crt_cr5sh
+cfeba5,Take and Hold vs Disruption,b200c7,TnH vs Dis 3 - Hammer and Anvil,map_crt_cr5sh
+cfeba5,Take and Hold vs Disruption,366693,TnH vs Dis 2 - Crucible of Battle,map_crt_cr5sh
+cfeba5,Take and Hold vs Disruption,2db2a2,TnH vs Dis 1 - Sweeping Engagement,map_crt_cr5sh
+1e6711,Take and Hold vs Purge the Foe,812e71,TnH vs PtF 3 - Hammer and Anvil,map_crt_cr5sh
+1e6711,Take and Hold vs Purge the Foe,af501d,TnH vs PtF 2 - Search and Destroy,map_crt_cr5sh
+1e6711,Take and Hold vs Purge the Foe,f2c13b,TnH vs PtF 1 - Sweeping Engagement,map_crt_cr5sh
+109a6b,Take and Hold vs Reconnaissance,bc8eb5,TnH vs Rec 3 - Search and Destroy,map_crt_cr5sh
+109a6b,Take and Hold vs Reconnaissance,0538a9,TnH vs Rec 2 - Dawn of War,map_crt_cr5sh
+109a6b,Take and Hold vs Reconnaissance,c26edc,TnH vs Rec 1 - Tipping Point,map_crt_cr5sh
+32e34a,Priority Assets vs Reconnaissance,e236ba,PA vs Rec 1 - Crucible of Battle,map_crt_cr5sh
+32e34a,Priority Assets vs Reconnaissance,c0f610,PA vs Rec 2 - Tipping Point,map_crt_cr5sh
+32e34a,Priority Assets vs Reconnaissance,40cd96,PA vs Rec 3 - Sweeping Engagement,map_crt_cr5sh
+7b5ba7,Priority Assets vs Priority Assets,9a0432,PA vs PA 2 - Crucible of Battle,map_crt_cr5sh
+7b5ba7,Priority Assets vs Priority Assets,9319a0,PA vs PA 3 - Sweeping Engagement,map_crt_cr5sh
+7b5ba7,Priority Assets vs Priority Assets,0b77a1,PA vs PA 1 - Tipping Point,map_crt_cr5sh
+3ebbd6,Purge the Foe vs Purge the Foe,cb907f,PtF vs PtF 2 - Tipping Point,map_crt_cr5sh
+3ebbd6,Purge the Foe vs Purge the Foe,5fdb47,PtF vs PtF 1 - Search and Destroy,map_crt_cr5sh
+3ebbd6,Purge the Foe vs Purge the Foe,3998a5,PtF vs PtF 3 - Sweeping Engagement,map_crt_cr5sh
+9ac38f,Purge the Foe vs Disruption,dbf11e,PtF vs Dis 3 - Sweeping Engagement,map_crt_cr5sh
+9ac38f,Purge the Foe vs Disruption,6277f1,PtF vs Dis 2 - Tipping Point,map_crt_cr5sh
+9ac38f,Purge the Foe vs Disruption,3eb69e,PtF vs Dis 1 - Search and Destroy,map_crt_cr5sh
+dc8738,Purge the Foe vs Priority Assets,80af80,PtF vs PA 3 - Hammer and Anvil,map_crt_cr5sh
+dc8738,Purge the Foe vs Priority Assets,ab3235,PtF vs PA 2 - Search and Destroy,map_crt_cr5sh
+dc8738,Purge the Foe vs Priority Assets,653d63,PtF vs PA 1 - Dawn of War,map_crt_cr5sh
+a22c33,Purge the Foe vs Reconnaissance,33a96e,PtF vs Recon 3 - Crucible of Battle,map_crt_cr5sh
+a22c33,Purge the Foe vs Reconnaissance,6d872b,PtF vs Recon 2 - Dawn of War,map_crt_cr5sh
+a22c33,Purge the Foe vs Reconnaissance,78d12d,PtF vs Recon 1 - Hammer and Anvil,map_crt_cr5sh
