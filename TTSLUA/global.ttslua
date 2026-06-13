@@ -275,8 +275,11 @@ function hotkeyToggleScoringOverlay(params)
     hudToggleLock(params.playerColor, nil, nil)
 end
 
-function formatSecondaryListColumns(names, cap, numbered)
-    if not names or #names == 0 then return "—", "" end
+function formatSecondaryListColumns(names, cap, numbered, emptyLabel)
+    -- Muted placeholder instead of a bare "—" when a section is empty (item 5).
+    if not names or #names == 0 then
+        return "<color=#FFFFFF66><i>" .. (emptyLabel or "None") .. "</i></color>", ""
+    end
     local count = #names
     if cap and count > cap then count = cap end
     local splitAt = math.ceil(count / 2)
@@ -285,9 +288,9 @@ function formatSecondaryListColumns(names, cap, numbered)
     for i = 1, count do
         local line
         if numbered then
-            line = i .. ". " .. names[i]
+            line = "<color=#FFFFFF80>" .. i .. ".</color> " .. names[i]
         else
-            line = "• " .. names[i]
+            line = "<color=#FFFFFF80>•</color> " .. names[i]
         end
         if i <= splitAt then
             left[#left + 1] = line
@@ -298,8 +301,8 @@ function formatSecondaryListColumns(names, cap, numbered)
     return table.concat(left, "\n"), table.concat(right, "\n")
 end
 
-function setHudListColumns(id, names, cap, numbered)
-    local left, right = formatSecondaryListColumns(names, cap, numbered)
+function setHudListColumns(id, names, cap, numbered, emptyLabel)
+    local left, right = formatSecondaryListColumns(names, cap, numbered, emptyLabel)
     setHudValue({id = id .. "L", value = left})
     setHudValue({id = id .. "R", value = right})
 end
@@ -407,7 +410,6 @@ scoringContext = scoringContext or {
     redPrimary = "", bluePrimary = "",
     deployZone = "",
 }
-
 function setScoringContext(params)
     if type(params) ~= "table" then return end
     for _, key in ipairs({"redDisposition", "blueDisposition", "redPrimary", "bluePrimary", "deployZone"}) do
@@ -424,14 +426,18 @@ function setScoringContext(params)
     end
 end
 
--- "Disposition - Mission" on one line; drops the separator if either is missing.
+-- Disposition (bright/bold) + mission (dimmer) on one line with a middot separator
+-- (item 6). richText is enabled on the disposition Text element. Drops the missing
+-- piece cleanly.
 function formatDispositionLine(disposition, mission)
     disposition = disposition or ""
     mission = mission or ""
-    if disposition ~= "" and mission ~= "" then
-        return disposition .. " - " .. mission
+    local dispPart = (disposition ~= "") and ("<b>" .. disposition .. "</b>") or ""
+    local missionPart = (mission ~= "") and ("<color=#FFFFFFA0>" .. mission .. "</color>") or ""
+    if dispPart ~= "" and missionPart ~= "" then
+        return dispPart .. "  <color=#FFFFFF70>·</color>  " .. missionPart
     end
-    return disposition .. mission
+    return dispPart .. missionPart
 end
 
 -- Writes only the static context fields. The deploy zone now lives in the title
@@ -454,32 +460,41 @@ function refreshScoringOverlay()
 
     local roundCounter = getObjectFromGUID(gameTurnCounter_GUID)
     local roundNum = (roundCounter and roundCounter.Counter and roundCounter.Counter.getValue()) or 0
-    -- Deployment zone (static, set at game start) is folded into the title, e.g.
-    -- "⚔ Hammer and Anvil - Round 1 ⚔". Falls back to just the round before a game.
+    -- Title: "⚔ <Deploy Zone> - Round N ⚔" (deploy zone is static, set at game start).
     local zone = scoringContext.deployZone or ""
-    local titleText = (zone ~= "" and ("⚔ " .. zone .. " - Round " .. roundNum .. " ⚔"))
+    local titleText = (zone ~= "") and ("⚔ " .. zone .. " - Round " .. roundNum .. " ⚔")
         or ("⚔ Round " .. roundNum .. " ⚔")
     setHudValue({id = "ScoringOverlay_Title", value = titleText})
 
-    local redName = summary.red.name or "Red"
-    local blueName = summary.blue.name or "Blue"
-    local redTotal = summary.red.total or 0
-    local blueTotal = summary.blue.total or 0
-    setHudValue({id = "ScoringOverlay_RedName", value = redName .. " (" .. redTotal .. ")"})
-    setHudValue({id = "ScoringOverlay_BlueName", value = blueName .. " (" .. blueTotal .. ")"})
+    -- Player name (plain) + VP in a pill.
+    setHudValue({id = "ScoringOverlay_RedName", value = summary.red.name or "Red"})
+    setHudValue({id = "ScoringOverlay_BlueName", value = summary.blue.name or "Blue"})
+    setHudValue({id = "ScoringOverlay_RedVP", value = (summary.red.total or 0) .. " VP"})
+    setHudValue({id = "ScoringOverlay_BlueVP", value = (summary.blue.total or 0) .. " VP"})
 
-    local redRoundsText = ""
-    local blueRoundsText = ""
-    for j = 1, 5 do
-        local r = summary.red.rounds and summary.red.rounds[j] or {}
-        local b = summary.blue.rounds and summary.blue.rounds[j] or {}
-        redRoundsText = redRoundsText .. string.format("<b>Round %d</b> | PRI: %d - SEC: %d |\n",
-            j, r.primary or 0, r.secondary or 0)
-        blueRoundsText = blueRoundsText .. string.format("<b>Round %d</b> | PRI: %d - SEC: %d |\n",
-            j, b.primary or 0, b.secondary or 0)
+    -- Per-round table: fixed PRI/SEC/TOT columns with dimmed labels, the current
+    -- battle round highlighted (item 1). Colour tags are kept un-nested so Unity
+    -- rich text renders each segment correctly.
+    local function buildRounds(rounds)
+        local lines = {}
+        for j = 1, 5 do
+            local rr = (rounds and rounds[j]) or {}
+            local pri = rr.primary or 0
+            local sec = rr.secondary or 0
+            local tot = rr.total or (pri + sec)
+            local isCurrent = (j == roundNum)
+            local labelColor = isCurrent and "#FFD27F" or "#FFFFFF"
+            -- Reserve the arrow's width on every row (transparent when not the active
+            -- round) so all lines centre identically; only the active arrow shows.
+            local marker = isCurrent and "<color=#FFD27F>▸</color> " or "<color=#00000000>▸</color> "
+            lines[#lines + 1] = string.format(
+                "%s<b><color=%s>Round %d</color></b>   <color=#FFFFFF80>PRI</color> %d   <color=#FFFFFF80>SEC</color> %d   <color=#FFFFFF80>TOT</color> <b>%d</b>",
+                marker, labelColor, j, pri, sec, tot)
+        end
+        return table.concat(lines, "\n")
     end
-    setHudValue({id = "ScoringOverlay_RedRounds", value = redRoundsText})
-    setHudValue({id = "ScoringOverlay_BlueRounds", value = blueRoundsText})
+    setHudValue({id = "ScoringOverlay_RedRounds", value = buildRounds(summary.red.rounds)})
+    setHudValue({id = "ScoringOverlay_BlueRounds", value = buildRounds(summary.blue.rounds)})
 
     local redActive = getActiveSecondaryNames("Red")
     local blueActive = getActiveSecondaryNames("Blue")
@@ -490,17 +505,25 @@ function refreshScoringOverlay()
     local redDeck = getRemainingDeckSecondaryNames("Red")
     local blueDeck = getRemainingDeckSecondaryNames("Blue")
 
-    setHudListColumns("ScoringOverlay_RedActive", redActive, 8, true)
-    setHudListColumns("ScoringOverlay_BlueActive", blueActive, 8, true)
-    setHudListColumns("ScoringOverlay_RedDiscard", redDiscard, nil, false)
-    setHudListColumns("ScoringOverlay_BlueDiscard", blueDiscard, nil, false)
-    setHudListColumns("ScoringOverlay_RedDeck", redDeck, nil, false)
-    setHudListColumns("ScoringOverlay_BlueDeck", blueDeck, nil, false)
+    -- Counts in the section headers (item 4).
+    setHudValue({id = "ScoringOverlay_RedActiveHdr",  value = "ACTIVE SECONDARIES (" .. #redActive .. ")"})
+    setHudValue({id = "ScoringOverlay_BlueActiveHdr", value = "ACTIVE SECONDARIES (" .. #blueActive .. ")"})
+    setHudValue({id = "ScoringOverlay_RedDiscardHdr",  value = "DISCARD PILE (" .. #redDiscard .. ")"})
+    setHudValue({id = "ScoringOverlay_BlueDiscardHdr", value = "DISCARD PILE (" .. #blueDiscard .. ")"})
+    setHudValue({id = "ScoringOverlay_RedDeckHdr",  value = "REMAINING SECONDARIES (" .. #redDeck .. ")"})
+    setHudValue({id = "ScoringOverlay_BlueDeckHdr", value = "REMAINING SECONDARIES (" .. #blueDeck .. ")"})
+
+    setHudListColumns("ScoringOverlay_RedActive", redActive, 8, true, "None drawn yet")
+    setHudListColumns("ScoringOverlay_BlueActive", blueActive, 8, true, "None drawn yet")
+    setHudListColumns("ScoringOverlay_RedDiscard", redDiscard, nil, false, "Empty")
+    setHudListColumns("ScoringOverlay_BlueDiscard", blueDiscard, nil, false, "Empty")
+    setHudListColumns("ScoringOverlay_RedDeck", redDeck, nil, false, "All drawn")
+    setHudListColumns("ScoringOverlay_BlueDeck", blueDeck, nil, false, "All drawn")
 
     -- Dynamic, symmetric section heights based on content count.
     -- Both sides get the same height per section (max of red/blue) so columns line up.
-    local lineHeight = 22
-    local minSection = 26  -- room for "—" placeholder
+    local lineHeight = 27  -- matches the 22pt list font (item 3)
+    local minSection = 30  -- room for the empty-state placeholder
     local function sectionH(count)
         if count <= 0 then return minSection end
         return math.ceil(count / 2) * lineHeight + 4
@@ -514,9 +537,9 @@ function refreshScoringOverlay()
     local deckH = sectionH(deckCount)
 
     -- If total exceeds the panel's content budget, scale all sections down proportionally.
-    -- Budget trimmed from 770 to leave room for the disposition row (with mission)
-    -- added under each player name (Idea 1).
-    local contentBudget = 730
+    -- Trimmed to account for the taller column header (name band + breakdown line) and
+    -- the separate section-header/divider rows now above each list (items 3,4,8,9).
+    local contentBudget = 680
     local needed = activeH + discardH + deckH
     if needed > contentBudget then
         local scale = contentBudget / needed
@@ -1163,20 +1186,6 @@ function onLoad(saved_data)
     --addHotkey("Tag Selected as Red", tagSelectedAsRed)
     --addHotkey("Tag Selected as Blue", tagSelectedAsBlue)
     Turns.enable=false
-    -- Register the disposition icon used by the scoring overlay (Idea 1). Additive
-    -- merge so we never clobber other Global UI assets added later. Referenced from
-    -- the overlay XML via image="dispoPlaceholder".
-    do
-        local assets = UI.getCustomAssets() or {}
-        local present = false
-        for _, a in ipairs(assets) do
-            if a.name == "dispoPlaceholder" then present = true break end
-        end
-        if not present then
-            table.insert(assets, {name = "dispoPlaceholder", url = "https://steamusercontent-a.akamaihd.net/ugc/9296742729343346160/10BAEEC79465E4F4E78DDCC7F55683F7C562C35D/"})
-            UI.setCustomAssets(assets)
-        end
-    end
     --- load vars from saved
     if saved_data ~= "" then
          local loaded_data = JSON.decode(saved_data)
