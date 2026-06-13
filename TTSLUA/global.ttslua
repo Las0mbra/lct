@@ -273,10 +273,14 @@ function hotkeyToggleScoringOverlay(params)
     hudToggleLock(params.playerColor, nil, nil)
 end
 
+-- IMPORTANT: overlay text values must stay PLAIN (no <color>/<b>/<i>/rich-text).
+-- setHudValue writes each value into a Global.UI `text="..."` attribute, and
+-- yellowscribe rebuilds the whole Global UI via getXmlTable()/setXmlTable(). Raw
+-- <, >, |, # in an attribute corrupt that round-trip and the overlay renders huge
+-- with default text. Keep markup out of these strings.
 function formatSecondaryListColumns(names, cap, numbered, emptyLabel)
-    -- Muted placeholder instead of a bare "—" when a section is empty (item 5).
     if not names or #names == 0 then
-        return "<color=#FFFFFF66><i>" .. (emptyLabel or "None") .. "</i></color>", ""
+        return (emptyLabel or "None"), ""
     end
     local count = #names
     if cap and count > cap then count = cap end
@@ -286,9 +290,9 @@ function formatSecondaryListColumns(names, cap, numbered, emptyLabel)
     for i = 1, count do
         local line
         if numbered then
-            line = "<color=#FFFFFF80>" .. i .. ".</color> " .. names[i]
+            line = i .. ". " .. names[i]
         else
-            line = "<color=#FFFFFF80>•</color> " .. names[i]
+            line = "• " .. names[i]
         end
         if i <= splitAt then
             left[#left + 1] = line
@@ -424,18 +428,15 @@ function setScoringContext(params)
     end
 end
 
--- Disposition (bright/bold) + mission (dimmer) on one line with a middot separator
--- (item 6). richText is enabled on the disposition Text element. Drops the missing
--- piece cleanly.
+-- Disposition + mission on one line, middot separator. PLAIN text (the bold styling
+-- comes from the Text element's fontStyle, not rich-text) — see formatSecondaryListColumns.
 function formatDispositionLine(disposition, mission)
     disposition = disposition or ""
     mission = mission or ""
-    local dispPart = (disposition ~= "") and ("<b>" .. disposition .. "</b>") or ""
-    local missionPart = (mission ~= "") and ("<color=#FFFFFFA0>" .. mission .. "</color>") or ""
-    if dispPart ~= "" and missionPart ~= "" then
-        return dispPart .. "  <color=#FFFFFF70>·</color>  " .. missionPart
+    if disposition ~= "" and mission ~= "" then
+        return disposition .. "  ·  " .. mission
     end
-    return dispPart .. missionPart
+    return disposition .. mission
 end
 
 -- Writes only the static context fields. The deploy zone now lives in the title
@@ -480,14 +481,13 @@ function refreshScoringOverlay()
             local pri = rr.primary or 0
             local sec = rr.secondary or 0
             local tot = rr.total or (pri + sec)
-            local isCurrent = (j == roundNum)
-            local labelColor = isCurrent and "#FFD27F" or "#FFFFFF"
-            -- Reserve the arrow's width on every row (transparent when not the active
-            -- round) so all lines centre identically; only the active arrow shows.
-            local marker = isCurrent and "<color=#FFD27F>▸</color> " or "<color=#00000000>▸</color> "
+            -- Active round flagged with a leading arrow; inactive rows pad with
+            -- matching spaces so every line still centres alike. PLAIN text only
+            -- (no <color>/<b>) — see formatSecondaryListColumns for why.
+            local marker = (j == roundNum) and "▸ " or "   "
             lines[#lines + 1] = string.format(
-                "%s<b><color=%s>Round %d</color></b>   <color=#FFFFFF80>PRI</color> %d <color=#FFFFFF40>|</color> <color=#FFFFFF80>SEC</color> %d <color=#FFFFFF40>|</color> <color=#FFFFFF80>SUM</color> <b>%d</b>",
-                marker, labelColor, j, pri, sec, tot)
+                "%sRound %d   PRI %d | SEC %d | SUM %d",
+                marker, j, pri, sec, tot)
         end
         return table.concat(lines, "\n")
     end

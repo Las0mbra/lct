@@ -343,7 +343,7 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
             </Panel>
           </HorizontalLayout>
         </Panel>
-        <Text id="RedHud_ScoringOverlay_RedDisposition" text="" fontSize="30" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44" richText="true"/>
+        <Text id="RedHud_ScoringOverlay_RedDisposition" text="" fontSize="30" fontStyle="Bold" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44"/>
         <Text id="RedHud_ScoringOverlay_RedRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
         <Text id="RedHud_ScoringOverlay_RedActiveHdr" text="ACTIVE SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
         <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
@@ -381,7 +381,7 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
             </Panel>
           </HorizontalLayout>
         </Panel>
-        <Text id="RedHud_ScoringOverlay_BlueDisposition" text="" fontSize="30" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44" richText="true"/>
+        <Text id="RedHud_ScoringOverlay_BlueDisposition" text="" fontSize="30" fontStyle="Bold" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44"/>
         <Text id="RedHud_ScoringOverlay_BlueRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
         <Text id="RedHud_ScoringOverlay_BlueActiveHdr" text="ACTIVE SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
         <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
@@ -426,7 +426,7 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
             </Panel>
           </HorizontalLayout>
         </Panel>
-        <Text id="BlueHud_ScoringOverlay_RedDisposition" text="" fontSize="30" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44" richText="true"/>
+        <Text id="BlueHud_ScoringOverlay_RedDisposition" text="" fontSize="30" fontStyle="Bold" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44"/>
         <Text id="BlueHud_ScoringOverlay_RedRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
         <Text id="BlueHud_ScoringOverlay_RedActiveHdr" text="ACTIVE SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
         <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
@@ -464,7 +464,7 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
             </Panel>
           </HorizontalLayout>
         </Panel>
-        <Text id="BlueHud_ScoringOverlay_BlueDisposition" text="" fontSize="30" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44" richText="true"/>
+        <Text id="BlueHud_ScoringOverlay_BlueDisposition" text="" fontSize="30" fontStyle="Bold" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44"/>
         <Text id="BlueHud_ScoringOverlay_BlueRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
         <Text id="BlueHud_ScoringOverlay_BlueActiveHdr" text="ACTIVE SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
         <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
@@ -509,7 +509,7 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
             </Panel>
           </HorizontalLayout>
         </Panel>
-        <Text id="GreyHud_ScoringOverlay_RedDisposition" text="" fontSize="30" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44" richText="true"/>
+        <Text id="GreyHud_ScoringOverlay_RedDisposition" text="" fontSize="30" fontStyle="Bold" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44"/>
         <Text id="GreyHud_ScoringOverlay_RedRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
         <Text id="GreyHud_ScoringOverlay_RedActiveHdr" text="ACTIVE SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
         <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
@@ -547,7 +547,7 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
             </Panel>
           </HorizontalLayout>
         </Panel>
-        <Text id="GreyHud_ScoringOverlay_BlueDisposition" text="" fontSize="30" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44" richText="true"/>
+        <Text id="GreyHud_ScoringOverlay_BlueDisposition" text="" fontSize="30" fontStyle="Bold" color="#FFFFFFD8" alignment="MiddleCenter" preferredHeight="44"/>
         <Text id="GreyHud_ScoringOverlay_BlueRounds" text="" fontSize="22" color="#FFFFFF" alignment="MiddleCenter" preferredHeight="150" richText="true"/>
         <Text id="GreyHud_ScoringOverlay_BlueActiveHdr" text="ACTIVE SECONDARIES" fontSize="20" fontStyle="Bold" color="#FFFFFFAA" alignment="MiddleCenter" preferredHeight="26"/>
         <Panel color="#FFFFFF73" preferredHeight="2" flexibleHeight="0" minHeight="2"/>
