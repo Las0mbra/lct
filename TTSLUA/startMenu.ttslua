@@ -432,22 +432,28 @@ STARTUP_MAP_CARDS = {
 }
 
 GAME_MODE_OBJECTS = {
-    {guid = "6e0d78", pos = {10.939455, 0.996871352, 13.56927}, rot = {8.81163444e-08, 180.0, -1.03525615e-07}},
-    {guid = "109a6b", pos = {10.9394531, 0.9968714, -12.8266459}, rot = {3.53603831e-08, 180.0, -2.3401121e-08}},
-    {guid = "1e6711", pos = {10.9392757, 0.996871352, -6.25547457}, rot = {4.93389848e-07, 180.00264, -6.66980668e-07}},
-    {guid = "cfeba5", pos = {10.939455, 0.9968714, 0.327113152}, rot = {-1.7571665e-08, 180.0, -6.281383e-08}},
-    {guid = "eae80b", pos = {10.939455, 0.9968714, 6.957587}, rot = {-2.49072318e-08, 180.0, -7.044857e-09}},
-    {guid = "642d0d", pos = {15.3045588, 0.961498559, 13.57}, rot = {-6.5961143e-07, 269.998535, 2.31601589e-07}},
-    {guid = "3f56e1", pos = {15.3, 0.9614987, 6.96}, rot = {1.51178779e-06, 269.999969, 7.22752247e-07}},
-    {guid = "97d33f", pos = {15.3000011, 0.961498559, 0.3300001}, rot = {7.681179e-07, 269.999939, -7.70054456e-08}},
-    {guid = "65439e", pos = {15.3, 0.9614987, -6.25725269}, rot = {2.1445826e-06, 269.999939, 5.9717685e-08}},
-    {guid = "80eda8", pos = {15.3, 0.9614987, -12.829999}, rot = {1.25535382e-06, 269.999969, -2.740111e-07}},
-    {guid = "32e34a", pos = {0.5, 0.996871352, 13.57}, rot = {2.270983e-08, 0.006589271, -2.72824281e-07}},
-    {guid = "7b5ba7", pos = {0.5, 0.996871352, 6.96}, rot = {7.45712e-08, 359.987671, -2.28905236e-07}},
-    {guid = "3ebbd6", pos = {0.5, 0.996871352, 0.33}, rot = {1.09526219e-07, 359.991821, -1.90472022e-07}},
-    {guid = "dc8738", pos = {0.5000004, 0.996871352, -6.26}, rot = {-2.49159e-07, 359.973175, -8.21389463e-08}},
-    {guid = "a22c33", pos = {0.5000004, 0.996871352, -12.83}, rot = {-4.03964151e-07, 359.965271, -1.12179755e-07}},
-    {guid = "9ac38f", pos = {-10.0, 0.996871352, 13.57}, rot = {6.232898e-08, 0.0147686, -1.39255263e-07}},
+    {guid = "6e0d78", pos = {11.000001, 0.68394804, 13.5668268}, rot = {-4.270224e-07, 179.937439, -2.482284e-07}},
+    {guid = "642d0d", pos = {8.0, 0.9614985, 13.5698309}, rot = {-5.643753e-07, 269.998535, -2.77505681e-08}},
+    {guid = "eae80b", pos = {11.000001, 0.6839485, 6.954931}, rot = {6.62776944e-10, 180.048141, -1.57748e-06}},
+    {guid = "3f56e1", pos = {8.0, 0.9614985, 6.95999861}, rot = {-1.15988474e-09, 269.999969, -3.40068169e-08}},
+    {guid = "cfeba5", pos = {11.0, 0.683947563, 0.327113241}, rot = {8.53773543e-07, 180.0, -7.487194e-07}},
+    {guid = "97d33f", pos = {8.0, 0.9614986, 0.330000162}, rot = {-3.1294494e-06, 269.999939, 1.47785059e-07}},
+    {guid = "1e6711", pos = {11.0, 0.683947563, -6.25547457}, rot = {-4.26895468e-07, 180.00264, 3.76851119e-07}},
+    {guid = "65439e", pos = {8.0, 0.9614985, -6.26}, rot = {-1.50906931e-06, 269.999939, 1.46045934e-07}},
+    {guid = "109a6b", pos = {11.0, 0.6839478, -12.8266459}, rot = {4.26886771e-07, 180.0, 2.801445e-07}},
+    {guid = "80eda8", pos = {8.0, 0.9614985, -12.829999}, rot = {-2.0461282e-06, 269.999969, -2.85835171e-07}},
+    {guid = "32e34a", pos = {2.00000167, 0.6839478, 13.57}, rot = {-2.69956377e-06, 359.954071, 4.046237e-07}},
+    {guid = "e88089", pos = {-0.99999994, 0.961498737, 13.57}, rot = {1.20469338e-06, 269.9985, -1.13345045e-07}},
+    {guid = "7b5ba7", pos = {2.00000048, 0.68394804, 6.95}, rot = {2.486443e-06, 359.974854, 7.331658e-07}},
+    {guid = "4a1bbd", pos = {-1.00000012, 0.9614986, 6.96}, rot = {-2.93093512e-06, 269.9985, 1.49311518e-07}},
+    {guid = "3ebbd6", pos = {1.99999988, 0.683948159, 0.3264686}, rot = {-1.12459031e-06, 0.0428198874, 1.81218161e-06}},
+    {guid = "444551", pos = {-1.00000024, 0.9614987, 0.329999983}, rot = {-1.58890418e-06, 269.9985, 1.115018e-07}},
+    {guid = "dc8738", pos = {2.00000072, 0.683947563, -6.25875568}, rot = {3.11421758e-07, 0.02346802, 1.98108546e-06}},
+    {guid = "703a8c", pos = {-1.0, 0.9614987, -6.26}, rot = {-7.628994e-08, 269.9985, 1.5668796e-07}},
+    {guid = "a22c33", pos = {1.99999964, 0.683947563, -12.83}, rot = {-3.065244e-07, 359.976471, 1.46248374e-06}},
+    {guid = "41bf2c", pos = {-1.0, 0.9614987, -12.83}, rot = {-1.51229142e-06, 269.9985, 4.58130671e-08}},
+    {guid = "9ac38f", pos = {-6.999999, 0.6839471, 13.5718813}, rot = {5.32230024e-06, 359.940735, 2.36180017e-06}},
+    {guid = "2aef7f", pos = {-10.0, 0.961498737, 13.57}, rot = {-3.10884019e-07, 269.9985, 8.4917e-09}},
 }
 
 function hideStartupMapCards()
@@ -865,7 +871,13 @@ dispositionArrowFontSize = 300
 dispositionButtonFontSize = 380
 ingameDispositionButtonFontSize = dispositionButtonFontSize * 0.5625
 dispositionArrowOffset = 5.75
-clearMatButtonWorldPosition = {-20, 1.00, -0.10}
+-- CLEAR MAT and BACK TO SELECTION flank the Deployment Zone picker symmetrically,
+-- on the same row (local z/y taken from deployBtn): CLEAR MAT just outside the
+-- left "<-" arrow, BACK TO SELECTION just outside the right "->" arrow. Defined in
+-- the menu's local frame so they track the picker if it ever moves. The picker
+-- arrows sit at local x ±arrowOffset (±7.5); this offset clears the arrow plus the
+-- flank button's own half-width (width 4500 ~= 5 local units) with a small gap.
+deployFlankButtonLocalX = 14.0
 
 dispositionButtonColors = {
     ["Disruption"] = {0.36, 0.62, 1.00},
@@ -943,10 +955,9 @@ matClearKeepGuids = {["28865a"] = true, ["4ee1f2"] = true, ["6012bf"] = true, ["
 function writeClearMatButton()
     if gameMode ~= "game" or matClearButtonUsed then return end
 
-    local center = self.positionToLocal(clearMatButtonWorldPosition)
     createButtonWithBorder({
         label = "CLEAR MAT", click_function = "clearMat", function_owner = self,
-        position = {center.x, center.y, center.z}, rotation = {0, 0, 0},
+        position = {-deployFlankButtonLocalX, deployBtn.position[2], deployBtn.position[3]}, rotation = {0, 0, 0},
         height = dispositionButtonHeight, width = dispositionButtonWidth,
         font_size = dispositionButtonFontSize,
         color = {0.8, 0.1, 0.1}, font_color = {1, 1, 1},
@@ -954,19 +965,15 @@ function writeClearMatButton()
     })
 end
 
--- Sits between the Generate Missions button (world x 35.6) and the Deployment
--- Zone picker (world x ~49), both on world z 0.
-backToSelectionButtonWorldPosition = {42.5, 1.0, 0.0}
-
 -- Shown after a map is loaded (restore point captured) and before the game has
 -- started -- lets the player undo a wrong map and return to the selection screen.
+-- Sits just right of the Deployment Zone picker, mirroring CLEAR MAT on the left.
 function writeBackToSelectionButton()
     if not restorePointAvailable or gameMode ~= "game" or inGame then return end
 
-    local center = self.positionToLocal(backToSelectionButtonWorldPosition)
     createButtonWithBorder({
         label = "BACK TO SELECTION", click_function = "backToSelection", function_owner = self,
-        position = {center.x, center.y, center.z}, rotation = {0, 0, 0},
+        position = {deployFlankButtonLocalX, deployBtn.position[2], deployBtn.position[3]}, rotation = {0, 0, 0},
         height = dispositionButtonHeight, width = dispositionButtonWidth,
         font_size = dispositionButtonFontSize,
         color = {0.85, 0.55, 0.1}, font_color = {1, 1, 1},
@@ -1039,6 +1046,20 @@ function captureRestorePoint()
             restorePointObjects[guid] = obj.getJSON()
         end
     end
+
+    -- Generated map cards are loose outside their source decks when Load Map is
+    -- pressed. Snapshot them too; otherwise Back to Selection restores decks
+    -- that are missing the selected matchup cards, leaving only abbreviated
+    -- matrix names available on the next same-matchup generation.
+    for _, slot in ipairs(missionSlots or {}) do
+        if slot.role == "deployment" then
+            for _, obj in ipairs(getObjectsInMissionSlot(slot, nil)) do
+                if obj.tag == "Card" then
+                    restorePointObjects[obj.getGUID()] = obj.getJSON()
+                end
+            end
+        end
+    end
     restorePointAvailable = true
 end
 
@@ -1058,6 +1079,7 @@ function backToSelection()
 
     destroyAllObjectives()
     destroyDeployZones()
+    returnLoadedLayoutArtCardToDeck()
 
     spawnObject({
         position = {x = 0, y = 26, z = 0},
@@ -1185,12 +1207,12 @@ layoutArtDeck_GUID = "fb4b5d"
 missionSlots = {
     {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  4.67}, displayPosition = {32.60, 0.92,  14.23}, displayScale = {1.5, 1.0, 1.5}},
     {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  2.55}, displayPosition = {32.59, 0.92,  10.20}, displayScale = {1.5, 1.0, 1.5}},
-    {role = "deployment", index = 1, deckVar = "deploymentDeck_GUID", position = {23.70, 1.00,  17.65}},
-    {role = "layout",     index = 1, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.00,  12.35}},
-    {role = "deployment", index = 2, deckVar = "deploymentDeck_GUID", position = {23.70, 1.00,   2.65}},
-    {role = "layout",     index = 2, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.00,  -2.65}},
-    {role = "deployment", index = 3, deckVar = "deploymentDeck_GUID", position = {23.70, 1.00, -12.35}},
-    {role = "layout",     index = 3, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.00, -17.65}},
+    {role = "deployment", index = 1, deckVar = "deploymentDeck_GUID", position = {23.70, 1.02,  17.65}},
+    {role = "layout",     index = 1, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.02,  12.35}},
+    {role = "deployment", index = 2, deckVar = "deploymentDeck_GUID", position = {23.70, 1.02,   2.65}},
+    {role = "layout",     index = 2, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.02,  -2.65}},
+    {role = "deployment", index = 3, deckVar = "deploymentDeck_GUID", position = {23.70, 1.02, -12.35}},
+    {role = "layout",     index = 3, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.02, -17.65}},
     {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -2.55}, displayPosition = {32.59, 0.92, -10.20}, displayScale = {1.5, 1.0, 1.5}},
     {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -4.67}, displayPosition = {32.60, 0.92, -14.23}, displayScale = {1.5, 1.0, 1.5}},
 }
@@ -1485,8 +1507,16 @@ randomDeploymentDecks = {
 deploymentCardSourceDeckByGuid = {}
 deploymentCardSourceDeckByName = {}
 layoutArtCardTag = "layout_art_card"
+loadedLayoutArtCardGuid = nil
+loadedLayoutArtTargetPosition = {75.35, 0.97, 0.00}
+loadedLayoutArtTargetScale = {1.12, 1.00, 1.18}
+layoutArtDeckScale = {2.00, 1.00, 2.10}
 
-deploymentLockTargetPosition = {75.37, 1.01, 0.00}
+deploymentLockTargetPosition = {75.37, 1.02, 0.00}
+-- Map (deployment) cards should always settle face up at y=180. Layout-art helper
+-- cards keep their own rotation (they have their own orientation handling).
+-- Absolute (not a +180 toggle) so a re-press is idempotent.
+deploymentMapCardRotation = {0, 180, 0}
 deploymentLockButtonWorldX = 36.65
 deploymentLockButtonWorldY = 1.00
 deploymentLockButtonOffsetX = -1.60
@@ -1538,6 +1568,13 @@ end
 
 function isMissionCardObject(obj)
     return obj and (obj.tag == "Card" or obj.tag == "Deck")
+end
+
+-- A card may be returned into either a Deck (helper/primary sources) or a Bag
+-- (the matchup map sources). Both expose getObjects()/takeObject by GUID, so any
+-- by-GUID lookup that scans containers must consider both.
+function isCardContainer(obj)
+    return obj and (obj.tag == "Deck" or obj.tag == "Bag") and obj.getObjects ~= nil
 end
 
 function addMissionSlotObject(objectsByGuid, obj)
@@ -1699,41 +1736,18 @@ function selectedDeploymentCardGuidSet(choices)
     return selected
 end
 
-function deploymentDeckHomeByGuid(deckGuid)
-    for _, entry in ipairs(GAME_MODE_OBJECTS) do
-        if entry.guid == deckGuid then
-            return entry
-        end
-    end
-    for _, entry in ipairs(STARTUP_MAP_CARDS) do
-        if entry.guid == deckGuid then
-            return entry
-        end
-    end
-    return nil
-end
-
+-- Return a generated map card to its source bag. We putObject into the live bag
+-- (located by GUID) rather than setPosition to a recorded "home": a Bag keeps its
+-- GUID and accepts putObject wherever it sits on the table, so the card always
+-- ends up INSIDE its bag no matter where the bags have been moved. The old
+-- setPosition-to-home only dropped the card next to a bag, and missed entirely
+-- once the bag's recorded coordinate went stale. returnCounts is no longer needed
+-- but is kept so the caller's loop is unchanged.
 function returnDeploymentCardHome(card, returnCounts)
     if not card then return end
-    cacheDeploymentDeckContents()
-
-    local cardGuid = card.getGUID and card.getGUID() or nil
-    local sourceGuid = cardGuid and deploymentCardSourceDeckByGuid[cardGuid] or nil
-
-    card.locked = false
     card.tooltip = true
     card.interactable = true
-
-    local home = sourceGuid and deploymentDeckHomeByGuid(sourceGuid) or nil
-    if home then
-        local count = returnCounts[sourceGuid] or 0
-        returnCounts[sourceGuid] = count + 1
-        card.setPosition({home.pos[1] + (0.38 * (count + 1)), home.pos[2], home.pos[3] + (0.28 * (count + 1))})
-        card.setRotation(home.rot or {0, 180, 0})
-        card.setLock(false)
-    else
-        returnDeploymentCardToSourceDeck(card)
-    end
+    returnDeploymentCardToSourceDeck(card)
 end
 
 function clearDeploymentSlotForChoices(slot, selectedGuids, returnCounts)
@@ -1765,12 +1779,45 @@ function clearDeploymentSlotsForChoices(choices, layoutChoices)
     clearDeploymentSlotForChoices({position = deploymentLockTargetPosition}, selectedGuids, returnCounts)
 end
 
-function returnLayoutCardsToDeck()
+function returnLayoutCardsToDeck(exceptCard)
     for _, slot in ipairs(missionSlots) do
         if slot.role == "layout" then
-            returnDeploymentCardsFromSlot(slot)
+            for _, obj in ipairs(getObjectsInMissionSlot(slot, nil)) do
+                if obj ~= exceptCard then
+                    returnDeploymentCardToSourceDeck(obj)
+                end
+            end
         end
     end
+end
+
+function returnLoadedLayoutArtCardToDeck()
+    if not loadedLayoutArtCardGuid then return end
+    local card = getObjectFromGUID(loadedLayoutArtCardGuid)
+    loadedLayoutArtCardGuid = nil
+    if card then
+        card.locked = false
+        card.setScale(layoutArtDeckScale)
+        returnDeploymentCardToSourceDeck(card)
+    end
+end
+
+function placeLoadedLayoutArtCard(mapName)
+    local card = findLooseLayoutArtCard(mapName)
+    returnLayoutCardsToDeck(card)
+
+    if not card then
+        broadcastToAll("Could not find paired layout art for loaded map: " .. tostring(mapName), "Yellow")
+        return
+    end
+
+    loadedLayoutArtCardGuid = card.getGUID()
+    card.locked = false
+    card.setScale(loadedLayoutArtTargetScale)
+    card.setPosition(loadedLayoutArtTargetPosition)
+    card.tooltip = true
+    card.interactable = true
+    card.setLock(true)
 end
 
 function returnCardsInDeploymentSlotsToDeck(includeLockedIn)
@@ -1991,7 +2038,7 @@ function getCardNameByGuid(guid, fallback)
     end
 
     for _, candidate in ipairs(getAllObjects()) do
-        if candidate.tag == "Deck" and candidate.getObjects then
+        if isCardContainer(candidate) then
             for _, entry in ipairs(candidate.getObjects()) do
                 if entry.guid == guid then
                     return entry.nickname or entry.name or fallback
@@ -2182,6 +2229,10 @@ function finishPlacedMissionCard(card, placement)
         card.flip()
     end
 
+    if placement.rotation then
+        card.setRotationSmooth(placement.rotation, false, true)
+    end
+
     if placement.scale then
         animateCardScale(card, placement.scale)
     end
@@ -2231,7 +2282,7 @@ function findDeploymentCard(guid)
     local obj = getObjectFromGUID(guid)
     if obj then return obj, nil end
     for _, candidate in ipairs(getAllObjects()) do
-        if candidate.tag == "Deck" and candidate.getObjects then
+        if isCardContainer(candidate) then
             for _, entry in ipairs(candidate.getObjects()) do
                 if entry.guid == guid then
                     return nil, candidate
@@ -2274,6 +2325,7 @@ function placeMissionCardFromGuid(p)
             end,
         }
         if p.guid then params.guid = p.guid end
+        if p.rotation then params.rotation = p.rotation end
         pcall(function() sourceDeck.takeObject(params) end)
     end
 end
@@ -2408,7 +2460,7 @@ function runMissionGeneration(deploymentMode)
                 elseif slot.role == "deployment" then
                     local info = deploymentChoices[slot.index]
                     if info and info.guid then
-                        table.insert(deploymentPlacements, {role = "deployment", deck = info.deck, guid = info.guid, position = slot.position, sourceDeckGuid = info.deckGuid, flip = false, lock = true})
+                        table.insert(deploymentPlacements, {role = "deployment", deck = info.deck, guid = info.guid, position = slot.position, rotation = deploymentMapCardRotation, sourceDeckGuid = info.deckGuid, flip = false, lock = true})
                     end
                 elseif slot.role == "layout" then
                     local info = layoutChoices[slot.index]
@@ -3195,9 +3247,9 @@ function onMapCardLoaded(params)
     -- wipes the board, so "Back to Selection" can return here.
     captureRestorePoint()
 
-    -- Layout-art cards are display helpers, not part of the loaded terrain.
-    -- Return them before the map card wipes the selection area.
-    returnLayoutCardsToDeck()
+    -- Move the paired layout art to the mission board before the map wipe. The
+    -- target sits outside the wipe area, so it survives without MapExclude.
+    placeLoadedLayoutArtCard(name)
 
     broadcastToAll("Loading map: " .. name, {0.3, 1.0, 0.3})  -- banner + chat log
 

@@ -153,6 +153,10 @@ MAP_MANIFEST_COLUMNS = {"deck_guid", "deck_name", "card_guid", "card_name", "map
 REQUIRED_MAP_TAG = "map"
 MAP_CREATOR_TAG_PREFIX = "map_crt"
 LAYOUT_ART_DECK_GUID = "fb4b5d"
+# A matchup map source may be a Deck or a standard Bag. Bags are the preferred
+# form: a Deck collapses once it drops below two cards, but a Bag keeps its GUID
+# and never collapses, so cards can be taken/returned by GUID across generations.
+MAP_SOURCE_CONTAINER_NAMES = {"Deck", "Bag"}
 _GUID_RE = re.compile(r"^[0-9a-fA-F]{6}$")
 _MATRIX_GUID_RE = re.compile(r'guid\s*=\s*"([0-9a-fA-F]{6})"')
 _DEPLOY_ZONE_NAME_RE = re.compile(r'\{name = "([^"]+)",\s*draw')
@@ -272,7 +276,7 @@ def build_context(object_states, require_map_tags=False, manifest_path=MAP_MANIF
             if _is_map_card(o):
                 detected_cards[g] = MapCard(o, parent_deck_guid)
             if "ContainedObjects" in o:
-                child_parent = g if o.get("Name") == "Deck" else parent_deck_guid
+                child_parent = g if o.get("Name") in MAP_SOURCE_CONTAINER_NAMES else parent_deck_guid
                 walk(o["ContainedObjects"], child_parent)
 
     walk(object_states)
@@ -286,9 +290,9 @@ def build_context(object_states, require_map_tags=False, manifest_path=MAP_MANIF
         if not deck_matches:
             inventory_issues.append(Issue(ERROR, "map manifest",
                                           f"deck {deck_guid} is missing from the save"))
-        elif not any(obj.get("Name") == "Deck" for obj, _ in deck_matches):
+        elif not any(obj.get("Name") in MAP_SOURCE_CONTAINER_NAMES for obj, _ in deck_matches):
             inventory_issues.append(Issue(ERROR, "map manifest",
-                                          f"deck {deck_guid} is not a Deck object"))
+                                          f"deck {deck_guid} is not a Deck or Bag object"))
 
         card = detected_cards.get(card_guid)
         if not card:
