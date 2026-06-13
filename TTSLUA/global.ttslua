@@ -15,8 +15,6 @@ quarterCircle_GUID = "51ee3f"
 startMenu_GUID = "738804"
 redDiceMat_GUID = "c57d70" -- diceTable
 blueDiceMat_GUID = "a84ed2" -- diceTable
-redDiceRoller_GUID = "beae28" -- kustom40kDiceRoller
-blueDiceRoller_GUID = "4e0e0b" -- kustom40kDiceRoller
 redMissionManager_GUID = "cff35b"
 blueMissionManager_GUID = "471de1"
 
