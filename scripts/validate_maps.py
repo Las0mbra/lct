@@ -152,6 +152,7 @@ MAP_MANIFEST = Path(__file__).parent.parent / "data" / "map_manifest.csv"
 MAP_MANIFEST_COLUMNS = {"deck_guid", "deck_name", "card_guid", "card_name", "map_creator_tag"}
 REQUIRED_MAP_TAG = "map"
 MAP_CREATOR_TAG_PREFIX = "map_crt"
+LAYOUT_ART_DECK_GUID = "fb4b5d"
 _GUID_RE = re.compile(r"^[0-9a-fA-F]{6}$")
 _MATRIX_GUID_RE = re.compile(r'guid\s*=\s*"([0-9a-fA-F]{6})"')
 _DEPLOY_ZONE_NAME_RE = re.compile(r'\{name = "([^"]+)",\s*draw')
@@ -195,13 +196,14 @@ class MapCard:
 
 class MapContext:
     def __init__(self, cards, scene_guids, startmenu_lua=None, inventory_issues=None,
-                 require_map_tags=False, manifest_path=MAP_MANIFEST):
+                 require_map_tags=False, manifest_path=MAP_MANIFEST, layout_art_cards=None):
         self.cards = cards
         self.scene_guids = scene_guids
         self.startmenu_lua = startmenu_lua
         self.inventory_issues = inventory_issues or []
         self.require_map_tags = require_map_tags
         self.manifest_path = manifest_path
+        self.layout_art_cards = layout_art_cards or []
 
     def matrix_referenced_guids(self):
         """GUIDs referenced by startMenu's mission matrix tables, or None if the
@@ -316,9 +318,25 @@ def build_context(object_states, require_map_tags=False, manifest_path=MAP_MANIF
             inventory_issues.append(Issue(ERROR, card.where,
                                           "map card exists in the save but is missing from map_manifest.csv"))
 
+    layout_art_cards = []
+    layout_matches = objects_by_guid.get(LAYOUT_ART_DECK_GUID, [])
+    if not layout_matches:
+        inventory_issues.append(Issue(ERROR, "layout art deck",
+                                      f"deck {LAYOUT_ART_DECK_GUID} is missing from the save"))
+    else:
+        layout_deck = layout_matches[0][0]
+        if layout_deck.get("Name") != "Deck":
+            inventory_issues.append(Issue(ERROR, "layout art deck",
+                                          f"{LAYOUT_ART_DECK_GUID} is not a Deck object"))
+        for card in layout_deck.get("ContainedObjects", []):
+            layout_art_cards.append({
+                "guid": card.get("GUID") or "??????",
+                "name": card.get("Nickname") or card.get("Name") or "",
+            })
+
     startmenu = STARTMENU_LUA.read_text(encoding="utf-8") if STARTMENU_LUA.exists() else None
     return MapContext(cards, scene_guids, startmenu, inventory_issues,
-                      require_map_tags, Path(manifest_path))
+                      require_map_tags, Path(manifest_path), layout_art_cards)
 
 
 # --- Check registry ---------------------------------------------------------
@@ -439,6 +457,28 @@ def mission_matrix_resolves(ctx):
         if card.guid not in refs:
             yield Issue(WARN, card.where,
                         "not referenced by any deploymentMatrixDecks/randomDeploymentDecks entry")
+
+
+@check
+def layout_art_names_resolve(ctx):
+    """Each logical map name needs exactly one matching card in the helper-art deck."""
+    helper_by_name = {}
+    for card in ctx.layout_art_cards:
+        helper_by_name.setdefault(card["name"].strip().casefold(), []).append(card)
+
+    maps_by_name = {}
+    for card in ctx.cards:
+        maps_by_name.setdefault(card.name.strip().casefold(), card.name.strip())
+
+    for normalized, map_name in sorted(maps_by_name.items(), key=lambda item: item[1]):
+        matches = helper_by_name.get(normalized, [])
+        if not matches:
+            yield Issue(WARN, "layout art deck",
+                        f"no helper card matches map name {map_name!r}")
+        elif len(matches) > 1:
+            guids = ", ".join(card["guid"] for card in matches)
+            yield Issue(ERROR, "layout art deck",
+                        f"multiple helper cards match map name {map_name!r}: {guids}")
 
 
 @check

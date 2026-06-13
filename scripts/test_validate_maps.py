@@ -57,6 +57,18 @@ class ValidateMapsTest(unittest.TestCase):
                             if tag.startswith("map_crt_")}
                 self.assertEqual({"map_crt_belgium", "map_crt_cr5sh"}, creators)
 
+    def test_duplicate_layout_art_name_is_an_error(self):
+        states = copy.deepcopy(self.object_states)
+        deck = find_guid(states, validate_maps.LAYOUT_ART_DECK_GUID)
+        duplicate = copy.deepcopy(find_guid(states, "061a28"))
+        duplicate["GUID"] = "ffffff"
+        deck["ContainedObjects"].append(duplicate)
+
+        issues, _ = validate_maps.validate(states)
+        matching = [i for i in issues if "multiple helper cards match" in i.message]
+        self.assertEqual(1, len(matching))
+        self.assertEqual(validate_maps.ERROR, matching[0].level)
+
     def test_manifest_creator_tag_mismatch_reports_card_guid(self):
         lines = MANIFEST_PATH.read_text().splitlines()
         with tempfile.TemporaryDirectory() as tmp:

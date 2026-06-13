@@ -988,6 +988,7 @@ function matClearZoneCallback(zone)
 end
 
 function clearMat()
+    returnLayoutCardsToDeck()
     matClearButtonUsed = true
     writeMenus()  -- redraw without the CLEAR MAT button
 
@@ -1178,13 +1179,18 @@ generateMissionWorldZ = 0.0
 
 -- "primary" slots are filled deterministically from the disposition matchup
 -- (player + index decide which mission card lands here). Red is the +Z pair,
--- blue the -Z pair (see the deck/zone notes in global.ttslua).
+-- blue the -Z pair (see the deck/zone notes in global.ttslua). Each deployment
+-- map slot has a neighboring layout-art slot fed by layoutArtDeck_GUID.
+layoutArtDeck_GUID = "fb4b5d"
 missionSlots = {
     {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  4.67}, displayPosition = {32.60, 0.92,  14.23}, displayScale = {1.5, 1.0, 1.5}},
     {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  2.55}, displayPosition = {32.59, 0.92,  10.20}, displayScale = {1.5, 1.0, 1.5}},
-    {role = "deployment", index = 1, deckVar = "deploymentDeck_GUID", position = {23.71, 1.00,  5.83}},
-    {role = "deployment", index = 2, deckVar = "deploymentDeck_GUID", position = {23.71, 1.00, -0.10}},
-    {role = "deployment", index = 3, deckVar = "deploymentDeck_GUID", position = {23.71, 1.00, -6.03}},
+    {role = "deployment", index = 1, deckVar = "deploymentDeck_GUID", position = {23.70, 1.00,  17.65}},
+    {role = "layout",     index = 1, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.00,  12.35}},
+    {role = "deployment", index = 2, deckVar = "deploymentDeck_GUID", position = {23.70, 1.00,   2.65}},
+    {role = "layout",     index = 2, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.00,  -2.65}},
+    {role = "deployment", index = 3, deckVar = "deploymentDeck_GUID", position = {23.70, 1.00, -12.35}},
+    {role = "layout",     index = 3, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.00, -17.65}},
     {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -2.55}, displayPosition = {32.59, 0.92, -10.20}, displayScale = {1.5, 1.0, 1.5}},
     {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -4.67}, displayPosition = {32.60, 0.92, -14.23}, displayScale = {1.5, 1.0, 1.5}},
 }
@@ -1478,6 +1484,7 @@ randomDeploymentDecks = {
 }
 deploymentCardSourceDeckByGuid = {}
 deploymentCardSourceDeckByName = {}
+layoutArtCardTag = "layout_art_card"
 
 deploymentLockTargetPosition = {75.37, 1.01, 0.00}
 deploymentLockButtonWorldX = 36.65
@@ -1597,7 +1604,7 @@ function rememberDeploymentCardSource(card, deckGuid)
         deploymentCardSourceDeckByGuid[guid] = deckGuid
     end
     local name = card.getName and card.getName() or nil
-    if name and name ~= "" then
+    if deckGuid ~= layoutArtDeck_GUID and name and name ~= "" then
         deploymentCardSourceDeckByName[normalizeMissionName(name)] = deckGuid
     end
 end
@@ -1627,6 +1634,15 @@ function cacheDeploymentDeckContents()
             end
         end
     end
+
+    local layoutDeck = getObjectFromGUID(layoutArtDeck_GUID)
+    if layoutDeck and layoutDeck.getObjects then
+        for _, entry in ipairs(layoutDeck.getObjects()) do
+            if entry.guid then
+                deploymentCardSourceDeckByGuid[entry.guid] = layoutArtDeck_GUID
+            end
+        end
+    end
 end
 
 function getDeploymentCardSourceDeck(card)
@@ -1635,6 +1651,9 @@ function getDeploymentCardSourceDeck(card)
 
     local guid = card.getGUID and card.getGUID() or nil
     local deckGuid = guid and deploymentCardSourceDeckByGuid[guid] or nil
+    if card.hasTag and card.hasTag(layoutArtCardTag) then
+        deckGuid = layoutArtDeck_GUID
+    end
 
     if not deckGuid and card.getName then
         local name = card.getName()
@@ -1732,20 +1751,31 @@ function clearDeploymentSlotForChoices(slot, selectedGuids, returnCounts)
     end
 end
 
-function clearDeploymentSlotsForChoices(choices)
+function clearDeploymentSlotsForChoices(choices, layoutChoices)
     local selectedGuids = selectedDeploymentCardGuidSet(choices)
+    for guid in pairs(selectedDeploymentCardGuidSet(layoutChoices)) do
+        selectedGuids[guid] = true
+    end
     local returnCounts = {}
     for _, slot in ipairs(missionSlots) do
-        if slot.role == "deployment" then
+        if slot.role == "deployment" or slot.role == "layout" then
             clearDeploymentSlotForChoices(slot, selectedGuids, returnCounts)
         end
     end
     clearDeploymentSlotForChoices({position = deploymentLockTargetPosition}, selectedGuids, returnCounts)
 end
 
+function returnLayoutCardsToDeck()
+    for _, slot in ipairs(missionSlots) do
+        if slot.role == "layout" then
+            returnDeploymentCardsFromSlot(slot)
+        end
+    end
+end
+
 function returnCardsInDeploymentSlotsToDeck(includeLockedIn)
     for _, slot in ipairs(missionSlots) do
-        if slot.role == "deployment" then
+        if slot.role == "deployment" or slot.role == "layout" then
             returnDeploymentCardsFromSlot(slot)
         end
     end
@@ -1953,6 +1983,76 @@ function deploymentCardLayoutIndex(card)
     return tonumber(string.match(name, "%s(%d+)%s*%-"))
 end
 
+function getCardNameByGuid(guid, fallback)
+    local loose = guid and getObjectFromGUID(guid) or nil
+    if loose and loose.getName then
+        local name = loose.getName()
+        if name and name ~= "" then return name end
+    end
+
+    for _, candidate in ipairs(getAllObjects()) do
+        if candidate.tag == "Deck" and candidate.getObjects then
+            for _, entry in ipairs(candidate.getObjects()) do
+                if entry.guid == guid then
+                    return entry.nickname or entry.name or fallback
+                end
+            end
+        end
+    end
+    return fallback
+end
+
+function findLooseLayoutArtCard(cardName)
+    local target = normalizeMissionName(cardName)
+    for _, obj in ipairs(getAllObjects()) do
+        if obj.tag == "Card" and obj.hasTag and obj.hasTag(layoutArtCardTag) and
+           normalizeMissionName(obj.getName()) == target then
+            return obj
+        end
+    end
+    return nil
+end
+
+function resolveLayoutArtChoice(mapChoice)
+    if not mapChoice or not mapChoice.name then return nil end
+    local target = normalizeMissionName(mapChoice.name)
+    local layoutDeck = getObjectFromGUID(layoutArtDeck_GUID)
+    if layoutDeck and layoutDeck.getObjects then
+        for _, entry in ipairs(layoutDeck.getObjects()) do
+            local name = entry.nickname or entry.name or ""
+            if normalizeMissionName(name) == target then
+                deploymentCardSourceDeckByGuid[entry.guid] = layoutArtDeck_GUID
+                return {deck = layoutDeck, deckGuid = layoutArtDeck_GUID, guid = entry.guid, name = name}
+            end
+        end
+    end
+
+    local loose = findLooseLayoutArtCard(mapChoice.name)
+    if loose then
+        local guid = loose.getGUID()
+        deploymentCardSourceDeckByGuid[guid] = layoutArtDeck_GUID
+        return {deck = layoutDeck, deckGuid = layoutArtDeck_GUID, guid = guid, name = loose.getName()}
+    end
+    return nil
+end
+
+function resolveLayoutArtChoices(mapChoices)
+    local choices = {}
+    local missing = {}
+    for index, mapChoice in pairs(mapChoices or {}) do
+        local choice = resolveLayoutArtChoice(mapChoice)
+        if choice then
+            choices[index] = choice
+        else
+            table.insert(missing, mapChoice.name or "?")
+        end
+    end
+    if #missing > 0 then
+        broadcastToAll("Missing matching layout art: " .. table.concat(missing, ", "), "Yellow")
+    end
+    return choices
+end
+
 function chooseDeploymentCardsFromDeckInfo(deckInfo, count)
     cacheDeploymentDeckContents()
     local choices = {}
@@ -1986,7 +2086,7 @@ function chooseDeploymentCardsFromDeckInfo(deckInfo, count)
     end
 
     for _, card in ipairs(selectedCards) do
-        local name = card.nickname or card.name or deckInfo.name
+        local name = getCardNameByGuid(card.guid, card.nickname or card.name or deckInfo.name)
         deploymentCardSourceDeckByGuid[card.guid] = deckInfo.guid
         if name and name ~= "" then
             deploymentCardSourceDeckByName[normalizeMissionName(name)] = deckInfo.guid
@@ -2073,6 +2173,9 @@ function finishPlacedMissionCard(card, placement)
 
     if placement.sourceDeckGuid then
         rememberDeploymentCardSource(card, placement.sourceDeckGuid)
+    end
+    if placement.role == "layout" and card.addTag then
+        card.addTag(layoutArtCardTag)
     end
 
     if placement.flip == false and card.is_face_down then
@@ -2286,7 +2389,8 @@ function runMissionGeneration(deploymentMode)
     if deploymentMode == "random" then
         deploymentChoices = pickRandomMissionCard(deploymentChoices)
     end
-    clearDeploymentSlotsForChoices(deploymentChoices)
+    local layoutChoices = resolveLayoutArtChoices(deploymentChoices)
+    clearDeploymentSlotsForChoices(deploymentChoices, layoutChoices)
 
     Wait.frames(function()
         local ok, err = pcall(function()
@@ -2304,7 +2408,12 @@ function runMissionGeneration(deploymentMode)
                 elseif slot.role == "deployment" then
                     local info = deploymentChoices[slot.index]
                     if info and info.guid then
-                        table.insert(deploymentPlacements, {deck = info.deck, guid = info.guid, position = slot.position, sourceDeckGuid = info.deckGuid, flip = false, lock = true})
+                        table.insert(deploymentPlacements, {role = "deployment", deck = info.deck, guid = info.guid, position = slot.position, sourceDeckGuid = info.deckGuid, flip = false, lock = true})
+                    end
+                elseif slot.role == "layout" then
+                    local info = layoutChoices[slot.index]
+                    if info and info.guid then
+                        table.insert(deploymentPlacements, {role = "layout", deck = info.deck, guid = info.guid, position = slot.position, sourceDeckGuid = info.deckGuid, flip = true, lock = true})
                     end
                 end
             end
@@ -3085,6 +3194,10 @@ function onMapCardLoaded(params)
     -- Snapshot the pre-load selection state BEFORE anything mutates or the card
     -- wipes the board, so "Back to Selection" can return here.
     captureRestorePoint()
+
+    -- Layout-art cards are display helpers, not part of the loaded terrain.
+    -- Return them before the map card wipes the selection area.
+    returnLayoutCardsToDeck()
 
     broadcastToAll("Loading map: " .. name, {0.3, 1.0, 0.3})  -- banner + chat log
 
