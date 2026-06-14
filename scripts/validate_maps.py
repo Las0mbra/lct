@@ -156,6 +156,7 @@ MAP_TYPE_TAG_PREFIX = "map_type"
 MAP_CREATOR_DISPLAY_NAMES = {
     "map_crt_cr5sh": "Cra5shnatural",
     "map_crt_belgium": "Team Belgium",
+    "map_crt_izar": "Izar",
 }
 LAYOUT_ART_DECK_GUID = "fb4b5d"
 # A matchup map source may be a Deck or a standard Bag. Bags are the preferred

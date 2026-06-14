@@ -1223,7 +1223,10 @@ deploymentMatrixDecks = {
             {guid = "f7026e", name = "TnH vs TnH 2 - DoW"},
             {guid = "63cf7e", name = "TnH vs TnH 3 - SnD"},
             {guid = "32ec37", name = "TnH vs TnH 3 - SnD"},
-        },
+            {guid = "88063f", name = "TnH vs TnH 1 - TP"},
+            {guid = "32f3ae", name = "TnH vs TnH 2 - DoW"},
+            {guid = "c08454", name = "TnH vs TnH 3 - SnD"},
+},
     },
     ["5_2"] = {
         guid = "eae80b", name = "Take and Hold vs Priority Assets",
@@ -1234,7 +1237,10 @@ deploymentMatrixDecks = {
             {guid = "9a0779", name = "TnH vs PA 2 - HnA"},
             {guid = "b579e0", name = "TnH vs PA 3 - DoW"},
             {guid = "0574f5", name = "TnH vs PA 3 - DoW"},
-        },
+            {guid = "c0d4e5", name = "TnH vs PA 1 - CoB"},
+            {guid = "e7b247", name = "TnH vs PA 2 - HnA"},
+            {guid = "127066", name = "TnH vs PA 3 - DoW"},
+},
     },
     ["2_5"] = {
         guid = "eae80b", name = "Take and Hold vs Priority Assets",
@@ -1245,7 +1251,10 @@ deploymentMatrixDecks = {
             {guid = "9a0779", name = "TnH vs PA 2 - HnA"},
             {guid = "b579e0", name = "TnH vs PA 3 - DoW"},
             {guid = "0574f5", name = "TnH vs PA 3 - DoW"},
-        },
+            {guid = "c0d4e5", name = "TnH vs PA 1 - CoB"},
+            {guid = "e7b247", name = "TnH vs PA 2 - HnA"},
+            {guid = "127066", name = "TnH vs PA 3 - DoW"},
+},
     },
     ["5_1"] = {
         guid = "cfeba5", name = "Take and Hold vs Disruption",
@@ -1256,7 +1265,10 @@ deploymentMatrixDecks = {
             {guid = "366693", name = "TnH vs Dis 2 - CoB"},
             {guid = "b7a5fe", name = "TnH vs Dis 3 - HnA"},
             {guid = "b200c7", name = "TnH vs Dis 3 - HnA"},
-        },
+            {guid = "45bb37", name = "TnH vs Dis 1 - SE"},
+            {guid = "b53767", name = "TnH vs Dis 2 - CoB"},
+            {guid = "6261e9", name = "TnH vs Dis 3 - HnA"},
+},
     },
     ["1_5"] = {
         guid = "cfeba5", name = "Take and Hold vs Disruption",
@@ -1267,7 +1279,10 @@ deploymentMatrixDecks = {
             {guid = "366693", name = "TnH vs Dis 2 - CoB"},
             {guid = "b7a5fe", name = "TnH vs Dis 3 - HnA"},
             {guid = "b200c7", name = "TnH vs Dis 3 - HnA"},
-        },
+            {guid = "45bb37", name = "TnH vs Dis 1 - SE"},
+            {guid = "b53767", name = "TnH vs Dis 2 - CoB"},
+            {guid = "6261e9", name = "TnH vs Dis 3 - HnA"},
+},
     },
     ["5_3"] = {
         guid = "1e6711", name = "Take and Hold vs Purge the Foe",
@@ -1278,7 +1293,10 @@ deploymentMatrixDecks = {
             {guid = "af501d", name = "TnH vs PtF 2 - SnD"},
             {guid = "7f30d9", name = "TnH vs PtF 3 - HnA"},
             {guid = "812e71", name = "TnH vs PtF 3 - HnA"},
-        },
+            {guid = "8ba2f3", name = "TnH vs PtF 1 - SE"},
+            {guid = "67ca48", name = "TnH vs PtF 2 - SnD"},
+            {guid = "acb689", name = "TnH vs PtF 3 - HnA"},
+},
     },
     ["3_5"] = {
         guid = "1e6711", name = "Take and Hold vs Purge the Foe",
@@ -1289,7 +1307,10 @@ deploymentMatrixDecks = {
             {guid = "af501d", name = "TnH vs PtF 2 - SnD"},
             {guid = "7f30d9", name = "TnH vs PtF 3 - HnA"},
             {guid = "812e71", name = "TnH vs PtF 3 - HnA"},
-        },
+            {guid = "8ba2f3", name = "TnH vs PtF 1 - SE"},
+            {guid = "67ca48", name = "TnH vs PtF 2 - SnD"},
+            {guid = "acb689", name = "TnH vs PtF 3 - HnA"},
+},
     },
     ["5_4"] = {
         guid = "109a6b", name = "Take and Hold vs Reconnaissance",
@@ -1300,7 +1321,10 @@ deploymentMatrixDecks = {
             {guid = "0538a9", name = "TnH vs Rec 2 - DoW"},
             {guid = "e4072b", name = "TnH vs Rec 3 - SnD"},
             {guid = "bc8eb5", name = "TnH vs Rec 3 - SnD"},
-        },
+            {guid = "41e4dd", name = "TnH vs Rec 1 - TP"},
+            {guid = "38f59f", name = "TnH vs Rec 2 - DoW"},
+            {guid = "82efe8", name = "TnH vs Rec 3 - SnD"},
+},
     },
     ["4_5"] = {
         guid = "109a6b", name = "Take and Hold vs Reconnaissance",
@@ -1311,7 +1335,10 @@ deploymentMatrixDecks = {
             {guid = "0538a9", name = "TnH vs Rec 2 - DoW"},
             {guid = "e4072b", name = "TnH vs Rec 3 - SnD"},
             {guid = "bc8eb5", name = "TnH vs Rec 3 - SnD"},
-        },
+            {guid = "41e4dd", name = "TnH vs Rec 1 - TP"},
+            {guid = "38f59f", name = "TnH vs Rec 2 - DoW"},
+            {guid = "82efe8", name = "TnH vs Rec 3 - SnD"},
+},
     },
     ["2_4"] = {
         guid = "32e34a", name = "Priority Assets vs Reconnaissance",
@@ -1343,7 +1370,10 @@ deploymentMatrixDecks = {
             {guid = "5fdb47", name = "PtF vs PtF 1 - SnD"},
             {guid = "cb907f", name = "PtF vs PtF 2 - TP"},
             {guid = "3998a5", name = "PtF vs PtF 3 - SE"},
-        },
+            {guid = "b1fa49", name = "PtF vs PtF 1 - SnD"},
+            {guid = "aaa962", name = "PtF vs PtF 2 - TP"},
+            {guid = "81f229", name = "PtF vs PtF 3 - SE"},
+},
     },
     ["3_1"] = {
         guid = "9ac38f", name = "Purge the Foe vs Disruption",
@@ -1351,7 +1381,10 @@ deploymentMatrixDecks = {
             {guid = "3eb69e", name = "PtF vs Dis 1 - SnD"},
             {guid = "6277f1", name = "PtF vs Dis 2 - TP"},
             {guid = "dbf11e", name = "PtF vs Dis 3 - SE"},
-        },
+            {guid = "ce2202", name = "PtF vs Dis 1 - SnD"},
+            {guid = "a76f64", name = "PtF vs Dis 2 - TP"},
+            {guid = "215479", name = "PtF vs Dis 3 - SE"},
+},
     },
     ["1_3"] = {
         guid = "9ac38f", name = "Purge the Foe vs Disruption",
@@ -1359,7 +1392,10 @@ deploymentMatrixDecks = {
             {guid = "3eb69e", name = "PtF vs Dis 1 - SnD"},
             {guid = "6277f1", name = "PtF vs Dis 2 - TP"},
             {guid = "dbf11e", name = "PtF vs Dis 3 - SE"},
-        },
+            {guid = "ce2202", name = "PtF vs Dis 1 - SnD"},
+            {guid = "a76f64", name = "PtF vs Dis 2 - TP"},
+            {guid = "215479", name = "PtF vs Dis 3 - SE"},
+},
     },
     ["3_2"] = {
         guid = "dc8738", name = "Purge the Foe vs Priority Assets",
@@ -1383,7 +1419,10 @@ deploymentMatrixDecks = {
             {guid = "78d12d", name = "PtF vs Recon 1 - HnA"},
             {guid = "6d872b", name = "PtF vs Recon 2 - DoW"},
             {guid = "33a96e", name = "PtF vs Recon 3 - CoB"},
-        },
+            {guid = "0052d1", name = "PtF vs Recon 1 - HnA"},
+            {guid = "7a9f56", name = "PtF vs Recon 2 - DoW"},
+            {guid = "100d5d", name = "PtF vs Recon 3 - CoB"},
+},
     },
     ["4_3"] = {
         guid = "a22c33", name = "Purge the Foe vs Reconnaissance",
@@ -1391,7 +1430,10 @@ deploymentMatrixDecks = {
             {guid = "78d12d", name = "PtF vs Recon 1 - HnA"},
             {guid = "6d872b", name = "PtF vs Recon 2 - DoW"},
             {guid = "33a96e", name = "PtF vs Recon 3 - CoB"},
-        },
+            {guid = "0052d1", name = "PtF vs Recon 1 - HnA"},
+            {guid = "7a9f56", name = "PtF vs Recon 2 - DoW"},
+            {guid = "100d5d", name = "PtF vs Recon 3 - CoB"},
+},
     },
 }
 
@@ -1405,7 +1447,10 @@ randomDeploymentDecks = {
             {guid = "f7026e", name = "TnH vs TnH 2 - DoW"},
             {guid = "63cf7e", name = "TnH vs TnH 3 - SnD"},
             {guid = "32ec37", name = "TnH vs TnH 3 - SnD"},
-        },
+            {guid = "88063f", name = "TnH vs TnH 1 - TP"},
+            {guid = "32f3ae", name = "TnH vs TnH 2 - DoW"},
+            {guid = "c08454", name = "TnH vs TnH 3 - SnD"},
+},
     },
     {
         guid = "eae80b", name = "Take and Hold vs Priority Assets",
@@ -1416,7 +1461,10 @@ randomDeploymentDecks = {
             {guid = "9a0779", name = "TnH vs PA 2 - HnA"},
             {guid = "b579e0", name = "TnH vs PA 3 - DoW"},
             {guid = "0574f5", name = "TnH vs PA 3 - DoW"},
-        },
+            {guid = "c0d4e5", name = "TnH vs PA 1 - CoB"},
+            {guid = "e7b247", name = "TnH vs PA 2 - HnA"},
+            {guid = "127066", name = "TnH vs PA 3 - DoW"},
+},
     },
     {
         guid = "cfeba5", name = "Take and Hold vs Disruption",
@@ -1427,7 +1475,10 @@ randomDeploymentDecks = {
             {guid = "366693", name = "TnH vs Dis 2 - CoB"},
             {guid = "b7a5fe", name = "TnH vs Dis 3 - HnA"},
             {guid = "b200c7", name = "TnH vs Dis 3 - HnA"},
-        },
+            {guid = "45bb37", name = "TnH vs Dis 1 - SE"},
+            {guid = "b53767", name = "TnH vs Dis 2 - CoB"},
+            {guid = "6261e9", name = "TnH vs Dis 3 - HnA"},
+},
     },
     {
         guid = "1e6711", name = "Take and Hold vs Purge the Foe",
@@ -1438,7 +1489,10 @@ randomDeploymentDecks = {
             {guid = "af501d", name = "TnH vs PtF 2 - SnD"},
             {guid = "7f30d9", name = "TnH vs PtF 3 - HnA"},
             {guid = "812e71", name = "TnH vs PtF 3 - HnA"},
-        },
+            {guid = "8ba2f3", name = "TnH vs PtF 1 - SE"},
+            {guid = "67ca48", name = "TnH vs PtF 2 - SnD"},
+            {guid = "acb689", name = "TnH vs PtF 3 - HnA"},
+},
     },
     {
         guid = "109a6b", name = "Take and Hold vs Reconnaissance",
@@ -1449,7 +1503,10 @@ randomDeploymentDecks = {
             {guid = "0538a9", name = "TnH vs Rec 2 - DoW"},
             {guid = "e4072b", name = "TnH vs Rec 3 - SnD"},
             {guid = "bc8eb5", name = "TnH vs Rec 3 - SnD"},
-        },
+            {guid = "41e4dd", name = "TnH vs Rec 1 - TP"},
+            {guid = "38f59f", name = "TnH vs Rec 2 - DoW"},
+            {guid = "82efe8", name = "TnH vs Rec 3 - SnD"},
+},
     },
     {
         guid = "32e34a", name = "Priority Assets vs Reconnaissance",
@@ -1473,7 +1530,10 @@ randomDeploymentDecks = {
             {guid = "5fdb47", name = "PtF vs PtF 1 - SnD"},
             {guid = "cb907f", name = "PtF vs PtF 2 - TP"},
             {guid = "3998a5", name = "PtF vs PtF 3 - SE"},
-        },
+            {guid = "b1fa49", name = "PtF vs PtF 1 - SnD"},
+            {guid = "aaa962", name = "PtF vs PtF 2 - TP"},
+            {guid = "81f229", name = "PtF vs PtF 3 - SE"},
+},
     },
     {
         guid = "9ac38f", name = "Purge the Foe vs Disruption",
@@ -1481,7 +1541,10 @@ randomDeploymentDecks = {
             {guid = "3eb69e", name = "PtF vs Dis 1 - SnD"},
             {guid = "6277f1", name = "PtF vs Dis 2 - TP"},
             {guid = "dbf11e", name = "PtF vs Dis 3 - SE"},
-        },
+            {guid = "ce2202", name = "PtF vs Dis 1 - SnD"},
+            {guid = "a76f64", name = "PtF vs Dis 2 - TP"},
+            {guid = "215479", name = "PtF vs Dis 3 - SE"},
+},
     },
     {
         guid = "dc8738", name = "Purge the Foe vs Priority Assets",
@@ -1497,7 +1560,10 @@ randomDeploymentDecks = {
             {guid = "78d12d", name = "PtF vs Recon 1 - HnA"},
             {guid = "6d872b", name = "PtF vs Recon 2 - DoW"},
             {guid = "33a96e", name = "PtF vs Recon 3 - CoB"},
-        },
+            {guid = "0052d1", name = "PtF vs Recon 1 - HnA"},
+            {guid = "7a9f56", name = "PtF vs Recon 2 - DoW"},
+            {guid = "100d5d", name = "PtF vs Recon 3 - CoB"},
+},
     },
 }
 deploymentCardSourceDeckByGuid = {}
@@ -1928,7 +1994,7 @@ function normalizeMissionName(s)
     return (s:lower():gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
-mapCreatorDisplaySuffixes = {"Cra5shnatural", "Team Belgium"}
+mapCreatorDisplaySuffixes = {"Cra5shnatural", "Team Belgium", "Izar"}
 
 -- Map cards carry creator credit at the end of their visible nickname. Strip
 -- only a recognized creator suffix when matching shared layout art or reading

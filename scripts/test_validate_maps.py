@@ -43,7 +43,13 @@ class ValidateMapsTest(unittest.TestCase):
         self.assertEqual([], [i for i in issues if i.level == validate_maps.ERROR])
 
     def test_creator_variant_decks_cover_all_layouts(self):
-        for deck_guid in ("6e0d78", "109a6b", "1e6711", "cfeba5", "eae80b"):
+        expected_by_deck = {
+            **{guid: {"map_crt_belgium", "map_crt_cr5sh", "map_crt_izar"}
+               for guid in ("6e0d78", "109a6b", "1e6711", "cfeba5", "eae80b")},
+            **{guid: {"map_crt_cr5sh", "map_crt_izar"}
+               for guid in ("a22c33", "3ebbd6", "9ac38f")},
+        }
+        for deck_guid, expected_creators in expected_by_deck.items():
             deck = find_guid(self.object_states, deck_guid)
             variants = {1: [], 2: [], 3: []}
             for card in deck["ContainedObjects"]:
@@ -51,12 +57,13 @@ class ValidateMapsTest(unittest.TestCase):
                 self.assertIsNotNone(match, card["Nickname"])
                 variants[int(match.group(1))].append(card)
 
-            self.assertEqual({1: 2, 2: 2, 3: 2},
+            expected_count = len(expected_creators)
+            self.assertEqual({1: expected_count, 2: expected_count, 3: expected_count},
                              {layout: len(cards) for layout, cards in variants.items()})
             for cards in variants.values():
                 creators = {tag for card in cards for tag in card.get("Tags", [])
                             if tag.startswith("map_crt_")}
-                self.assertEqual({"map_crt_belgium", "map_crt_cr5sh"}, creators)
+                self.assertEqual(expected_creators, creators)
 
     def test_duplicate_layout_art_name_is_an_error(self):
         states = copy.deepcopy(self.object_states)
@@ -97,6 +104,12 @@ class ValidateMapsTest(unittest.TestCase):
                 "TnH vs Rec 1 - Tipping Point - Team Belgium"
             ),
         )
+        self.assertEqual(
+            "TnH vs Rec 1 - Tipping Point",
+            validate_maps.map_logical_name(
+                "TnH vs Rec 1 - Tipping Point - Izar"
+            ),
+        )
 
     def test_creator_suffix_must_match_creator_tag(self):
         states = copy.deepcopy(self.object_states)
@@ -135,10 +148,10 @@ class ValidateMapsTest(unittest.TestCase):
     def test_map_statistics_describe_current_inventory(self):
         _, ctx = validate_maps.validate(self.object_states, require_map_tags=True)
         stats = validate_maps.map_statistics(ctx)
-        self.assertEqual(48, stats["cards"])
+        self.assertEqual(72, stats["cards"])
         self.assertEqual(33, stats["logical_layouts"])
         self.assertEqual(11, stats["source_containers"])
-        self.assertEqual({"comp": 48}, dict(stats["map_types"]))
+        self.assertEqual({"comp": 72}, dict(stats["map_types"]))
         self.assertEqual(19, stats["mapped_matchups"])
         self.assertEqual(25, stats["total_matchups"])
         self.assertGreater(stats["terrain_total"], 0)
@@ -151,7 +164,7 @@ class ValidateMapsTest(unittest.TestCase):
         try:
             with contextlib.redirect_stdout(output):
                 compile_script.print_summary(
-                    "test", True, [], [], ctx, issues, 48, Path("preview.json"), None
+                    "test", True, [], [], ctx, issues, 72, Path("preview.json"), None
                 )
         finally:
             compile_script.WARNINGS[:] = old_warnings
