@@ -21,6 +21,15 @@ redDispositionSelected = 3
 matTextureSelected = 1
 matClearButtonUsed = false
 mapMat_GUID = "28865a"
+
+-- "Back to Selection" restore point. Captured automatically the instant a map
+-- is loaded (before its wipe), so a wrong map can be undone without reloading
+-- the mod. restorePointMenuState = the pre-load menu vars; restorePointObjects =
+-- {guid = JSON} of the persistent selection objects (in case the wipe destroys
+-- them; respawning preserves the original GUID since the source was destroyed).
+restorePointAvailable = false
+restorePointMenuState = nil
+restorePointObjects = nil
 matTextures = {
     {name = "Green", color = {0.00, 0.31, 0.03}, url = "https://steamusercontent-a.akamaihd.net/ugc/11600812045538713232/0064F3B919AEC48D35C233786977578689C81AD1/"},
     {name = "Blue", color = {0.00, 0.31, 0.44}, url = "https://steamusercontent-a.akamaihd.net/ugc/12661578557139534569/9D589BE05341F1CE8EA20369387C7C5077587AB9/"},
@@ -61,6 +70,7 @@ function onLoad(saved_data)
         redDispositionSelected = loaded_data.svredDispositionSelected or redDispositionSelected
         matTextureSelected = loaded_data.svMatTextureSelected or matTextureSelected
         matClearButtonUsed = loaded_data.svMatClearButtonUsed or false
+        -- Restore point is in-memory only (see onSave); a save+reload clears it.
     end
 
     if sizeConfirmed then
@@ -131,6 +141,11 @@ function onSave()
         svredDispositionSelected = redDispositionSelected,
         svMatTextureSelected = matTextureSelected,
         svMatClearButtonUsed = matClearButtonUsed,
+        -- NOTE: the restore point (restorePointObjects in particular) is held in
+        -- memory only and deliberately NOT persisted here. It can reach ~5 MB
+        -- (the game-mode objects are large decks), and JSON.encode on every
+        -- autosave over that blob stalls the table. A pending undo is transient
+        -- by nature, so losing it on a full save+reload is an acceptable trade.
     })
 
     return saved_data
@@ -417,16 +432,36 @@ STARTUP_MAP_CARDS = {
 }
 
 GAME_MODE_OBJECTS = {
-    {guid = "6e0d78", pos = {10.939455, 0.996871352, 13.56927}, rot = {8.81163444e-08, 180.0, -1.03525615e-07}},
-    {guid = "109a6b", pos = {10.9394531, 0.9968714, -12.8266459}, rot = {3.53603831e-08, 180.0, -2.3401121e-08}},
-    {guid = "1e6711", pos = {10.9392757, 0.996871352, -6.25547457}, rot = {4.93389848e-07, 180.00264, -6.66980668e-07}},
-    {guid = "cfeba5", pos = {10.939455, 0.9968714, 0.327113152}, rot = {-1.7571665e-08, 180.0, -6.281383e-08}},
-    {guid = "eae80b", pos = {10.939455, 0.9968714, 6.957587}, rot = {-2.49072318e-08, 180.0, -7.044857e-09}},
-    {guid = "642d0d", pos = {15.3045588, 0.961498559, 13.57}, rot = {-6.5961143e-07, 269.998535, 2.31601589e-07}},
-    {guid = "3f56e1", pos = {15.3, 0.9614987, 6.96}, rot = {1.51178779e-06, 269.999969, 7.22752247e-07}},
-    {guid = "97d33f", pos = {15.3000011, 0.961498559, 0.3300001}, rot = {7.681179e-07, 269.999939, -7.70054456e-08}},
-    {guid = "65439e", pos = {15.3, 0.9614987, -6.25725269}, rot = {2.1445826e-06, 269.999939, 5.9717685e-08}},
-    {guid = "80eda8", pos = {15.3, 0.9614987, -12.829999}, rot = {1.25535382e-06, 269.999969, -2.740111e-07}},
+    {guid = "6e0d78", pos = {11.000001, 0.68394804, 13.5668268}, rot = {-4.270224e-07, 179.937439, -2.482284e-07}},
+    {guid = "642d0d", pos = {8.0, 0.9614985, 13.5698309}, rot = {-5.643753e-07, 269.998535, -2.77505681e-08}},
+    {guid = "eae80b", pos = {11.000001, 0.6839485, 6.954931}, rot = {6.62776944e-10, 180.048141, -1.57748e-06}},
+    {guid = "3f56e1", pos = {8.0, 0.9614985, 6.95999861}, rot = {-1.15988474e-09, 269.999969, -3.40068169e-08}},
+    {guid = "cfeba5", pos = {11.0, 0.683947563, 0.327113241}, rot = {8.53773543e-07, 180.0, -7.487194e-07}},
+    {guid = "97d33f", pos = {8.0, 0.9614986, 0.330000162}, rot = {-3.1294494e-06, 269.999939, 1.47785059e-07}},
+    {guid = "1e6711", pos = {11.0, 0.683947563, -6.25547457}, rot = {-4.26895468e-07, 180.00264, 3.76851119e-07}},
+    {guid = "65439e", pos = {8.0, 0.9614985, -6.26}, rot = {-1.50906931e-06, 269.999939, 1.46045934e-07}},
+    {guid = "109a6b", pos = {11.0, 0.6839478, -12.8266459}, rot = {4.26886771e-07, 180.0, 2.801445e-07}},
+    {guid = "80eda8", pos = {8.0, 0.9614985, -12.829999}, rot = {-2.0461282e-06, 269.999969, -2.85835171e-07}},
+    {guid = "32e34a", pos = {2.00000167, 0.6839478, 13.57}, rot = {-2.69956377e-06, 359.954071, 4.046237e-07}},
+    {guid = "e88089", pos = {-0.99999994, 0.961498737, 13.57}, rot = {1.20469338e-06, 269.9985, -1.13345045e-07}},
+    {guid = "7b5ba7", pos = {2.00000048, 0.68394804, 6.95}, rot = {2.486443e-06, 359.974854, 7.331658e-07}},
+    {guid = "4a1bbd", pos = {-1.00000012, 0.9614986, 6.96}, rot = {-2.93093512e-06, 269.9985, 1.49311518e-07}},
+    {guid = "3ebbd6", pos = {1.99999988, 0.683948159, 0.3264686}, rot = {-1.12459031e-06, 0.0428198874, 1.81218161e-06}},
+    {guid = "444551", pos = {-1.00000024, 0.9614987, 0.329999983}, rot = {-1.58890418e-06, 269.9985, 1.115018e-07}},
+    {guid = "dc8738", pos = {2.00000072, 0.683947563, -6.25875568}, rot = {3.11421758e-07, 0.02346802, 1.98108546e-06}},
+    {guid = "703a8c", pos = {-1.0, 0.9614987, -6.26}, rot = {-7.628994e-08, 269.9985, 1.5668796e-07}},
+    {guid = "a22c33", pos = {1.99999964, 0.683947563, -12.83}, rot = {-3.065244e-07, 359.976471, 1.46248374e-06}},
+    {guid = "41bf2c", pos = {-1.0, 0.9614987, -12.83}, rot = {-1.51229142e-06, 269.9985, 4.58130671e-08}},
+    {guid = "9ac38f", pos = {-6.999999, 0.6839471, 13.5718813}, rot = {5.32230024e-06, 359.940735, 2.36180017e-06}},
+    {guid = "2aef7f", pos = {-10.0, 0.961498737, 13.57}, rot = {-3.10884019e-07, 269.9985, 8.4917e-09}},
+    {guid = "4409ba", pos = {-6.99999857, 0.6839477, 6.950001}, rot = {1.67717872e-06, 359.93988, -6.728933e-07}},
+    {guid = "6a1d02", pos = {-10.0, 0.961498737, 6.96}, rot = {1.52687008e-07, 269.9985, -2.39379485e-08}},
+    {guid = "2c7cd1", pos = {-6.999999, 0.6839477, -0.329999059}, rot = {-1.40792667e-06, 359.93988, -1.0181202e-06}},
+    {guid = "888613", pos = {-9.999791, 0.961498737, 0.3301134}, rot = {2.59994266e-07, 269.99408, 6.61830342e-08}},
+    {guid = "f1e22b", pos = {-6.99999952, 0.6839478, -6.26}, rot = {1.50679591e-06, 359.96637, -2.20824768e-06}},
+    {guid = "9a274c", pos = {-9.999996, 0.961498737, -6.26}, rot = {-1.82543e-06, 269.998474, 1.54362482e-07}},
+    {guid = "793bc0", pos = {-6.99999952, 0.6839477, -12.829999}, rot = {-2.69469723e-07, 359.966278, 2.27458554e-06}},
+    {guid = "066fd3", pos = {-10.0, 0.961498737, -12.83}, rot = {-1.9510837e-07, 269.9985, 1.241135e-07}},
 }
 
 function hideStartupMapCards()
@@ -844,7 +879,13 @@ dispositionArrowFontSize = 300
 dispositionButtonFontSize = 380
 ingameDispositionButtonFontSize = dispositionButtonFontSize * 0.5625
 dispositionArrowOffset = 5.75
-clearMatButtonWorldPosition = {-20, 1.00, -0.10}
+-- CLEAR MAT and BACK TO SELECTION flank the Deployment Zone picker symmetrically,
+-- on the same row (local z/y taken from deployBtn): CLEAR MAT just outside the
+-- left "<-" arrow, BACK TO SELECTION just outside the right "->" arrow. Defined in
+-- the menu's local frame so they track the picker if it ever moves. The picker
+-- arrows sit at local x ±arrowOffset (±7.5); this offset clears the arrow plus the
+-- flank button's own half-width (width 4500 ~= 5 local units) with a small gap.
+deployFlankButtonLocalX = 14.0
 
 dispositionButtonColors = {
     ["Disruption"] = {0.36, 0.62, 1.00},
@@ -922,14 +963,29 @@ matClearKeepGuids = {["28865a"] = true, ["4ee1f2"] = true, ["6012bf"] = true, ["
 function writeClearMatButton()
     if gameMode ~= "game" or matClearButtonUsed then return end
 
-    local center = self.positionToLocal(clearMatButtonWorldPosition)
     createButtonWithBorder({
         label = "CLEAR MAT", click_function = "clearMat", function_owner = self,
-        position = {center.x, center.y, center.z}, rotation = {0, 0, 0},
+        position = {-deployFlankButtonLocalX, deployBtn.position[2], deployBtn.position[3]}, rotation = {0, 0, 0},
         height = dispositionButtonHeight, width = dispositionButtonWidth,
         font_size = dispositionButtonFontSize,
         color = {0.8, 0.1, 0.1}, font_color = {1, 1, 1},
         tooltip = "Remove everything placed on the mat",
+    })
+end
+
+-- Shown after a map is loaded (restore point captured) and before the game has
+-- started -- lets the player undo a wrong map and return to the selection screen.
+-- Sits just right of the Deployment Zone picker, mirroring CLEAR MAT on the left.
+function writeBackToSelectionButton()
+    if not restorePointAvailable or gameMode ~= "game" or inGame then return end
+
+    createButtonWithBorder({
+        label = "BACK TO SELECTION", click_function = "backToSelection", function_owner = self,
+        position = {deployFlankButtonLocalX, deployBtn.position[2], deployBtn.position[3]}, rotation = {0, 0, 0},
+        height = dispositionButtonHeight, width = dispositionButtonWidth,
+        font_size = dispositionButtonFontSize,
+        color = {0.85, 0.55, 0.1}, font_color = {1, 1, 1},
+        tooltip = "Undo the loaded map and return to map selection",
     })
 end
 
@@ -947,6 +1003,7 @@ function matClearZoneCallback(zone)
 end
 
 function clearMat()
+    returnLayoutCardsToDeck()
     matClearButtonUsed = true
     writeMenus()  -- redraw without the CLEAR MAT button
 
@@ -957,6 +1014,164 @@ function clearMat()
         callback_function = matClearZoneCallback,
         callback_owner = self,
     })
+end
+
+-- ******************
+-- BACK TO SELECTION (undo a wrong map load without reloading the mod)
+-- ******************
+
+-- The persistent objects that make up the selection screen. They live in the
+-- save permanently and are only repositioned (shown/hidden) -- but a map card's
+-- wipe destroys whatever is on the mat, so we snapshot their JSON as insurance.
+function getSelectionObjectGuids()
+    local guids = {}
+    for _, card in ipairs(STARTUP_MAP_CARDS) do table.insert(guids, card.guid) end
+    for _, entry in ipairs(GAME_MODE_OBJECTS) do table.insert(guids, entry.guid) end
+    if forceDispositionToken_GUID then table.insert(guids, forceDispositionToken_GUID) end
+    return guids
+end
+
+-- Capture the pre-load state: the menu variables that define where we are in the
+-- flow, plus the JSON of every selection object still on the table.
+function captureRestorePoint()
+    restorePointMenuState = {
+        gameMode = gameMode,
+        inGame = inGame,
+        singlesMode = singlesMode,
+        sizeConfirmed = sizeConfirmed,
+        mapSizeSelected = mapSizeSelected,
+        deployMode = deployMode,
+        deploySelected = deploySelected,
+        packSelected = packSelected,
+        redDispositionSelected = redDispositionSelected,
+        blueDispositionSelected = blueDispositionSelected,
+        matTextureSelected = matTextureSelected,
+    }
+    restorePointObjects = {}
+    for _, guid in ipairs(getSelectionObjectGuids()) do
+        local obj = getObjectFromGUID(guid)
+        if obj then
+            restorePointObjects[guid] = obj.getJSON()
+        end
+    end
+
+    -- Generated map cards are loose outside their source bags when Load Map is
+    -- pressed. Snapshot every loose map-tagged card wherever a player moved it;
+    -- limiting this to deployment slots loses manually moved cards during undo.
+    -- Cards still inside bags are already included in their source bag JSON.
+    for _, obj in ipairs(getAllObjects()) do
+        if obj.tag == "Card" and obj.hasTag and obj.hasTag("map") then
+            restorePointObjects[obj.getGUID()] = obj.getJSON()
+        end
+    end
+    restorePointAvailable = true
+end
+
+-- Entry point for the button: clear the (wrong) map, then restore the snapshot.
+function backToSelection()
+    if not restorePointAvailable then return end
+
+    broadcastToAll("Returning to map selection...", {0.3, 1.0, 0.3})
+    self.clearButtons()  -- prevent a double-press while the restore runs
+
+    -- Cancel a still-pending loaded-card auto-destruct; otherwise (on a fast
+    -- undo) it would fire after we've respawned the card and destroy it again.
+    if loadedMapCardDestroyTimerId then
+        Wait.stop(loadedMapCardDestroyTimerId)
+        loadedMapCardDestroyTimerId = nil
+    end
+
+    destroyAllObjectives()
+    destroyDeployZones()
+    returnLoadedLayoutArtCardToDeck()
+
+    spawnObject({
+        position = {x = 0, y = 26, z = 0},
+        scale = matClearZoneScale,
+        type = "ScriptingTrigger",
+        callback_function = restoreWipeCallback,
+        callback_owner = self,
+    })
+end
+
+-- Same wipe as matClearZoneCallback, but once the board is clear it kicks off the
+-- respawn instead of just removing the zone.
+function restoreWipeCallback(zone)
+    Wait.frames(function()
+        for _, obj in ipairs(zone.getObjects()) do
+            if obj ~= self and not matClearKeepGuids[obj.getGUID()] and obj.getGMNotes() ~= "MapExclude" then
+                obj.destruct()
+            end
+        end
+        zone.destruct()
+        -- Respawn only after the destruction has settled, so freshly spawned
+        -- selection objects aren't caught by the same wipe.
+        Wait.time(respawnSelectionObjects, 0.4)
+    end, 2)
+end
+
+-- Bring back any selection object the wipe destroyed. Spawning from the captured
+-- JSON reuses the original GUID (free now that the source was destroyed), which
+-- the rest of the codebase relies on.
+function respawnSelectionObjects()
+    for guid, json in pairs(restorePointObjects or {}) do
+        if not getObjectFromGUID(guid) then
+            spawnObjectJSON({json = json})
+        end
+    end
+    -- Let the spawned objects register before we reposition them.
+    Wait.time(applyRestoredSelectionState, 0.5)
+end
+
+-- Restore the menu variables and re-place the selection objects, mirroring the
+-- relevant parts of onLoad/confirmSizeMat so positions are normalized regardless
+-- of where the captured JSON put them.
+function applyRestoredSelectionState()
+    local s = restorePointMenuState or {}
+    gameMode = s.gameMode or "game"
+    inGame = s.inGame or false
+    singlesMode = s.singlesMode
+    sizeConfirmed = s.sizeConfirmed
+    mapSizeSelected = s.mapSizeSelected or mapSizeSelected
+    deployMode = s.deployMode
+    deploySelected = s.deploySelected
+    packSelected = s.packSelected
+    redDispositionSelected = s.redDispositionSelected or redDispositionSelected
+    blueDispositionSelected = s.blueDispositionSelected or blueDispositionSelected
+    matTextureSelected = s.matTextureSelected or matTextureSelected
+
+    if sizeConfirmed then
+        if isValidDeployMode(deployMode) then
+            setDeployZonesMode(deployMode, true)
+        else
+            setDeployZonesForSize(true)
+        end
+        if not deploySelected or not DeployZonesData[deploySelected] then
+            deploySelected = #DeployZonesData
+        end
+    end
+
+    placeStartupMapCards()
+    if packSelected then
+        local missionPackTable = Global.getTable("missionPackData")
+        if missionPackTable and missionPackTable[packSelected] then
+            missionPackData = missionPackTable[packSelected]
+        end
+        placeGameModeObjects()
+    else
+        hideGameModeObjects()
+    end
+    placeForceDispositionToken()
+
+    matClearButtonUsed = false  -- a fresh selection screen offers CLEAR MAT again
+    applyMatTexture(false)
+
+    restorePointAvailable = false
+    restorePointObjects = nil
+    restorePointMenuState = nil
+
+    writeMenus()
+    broadcastToAll("Back to map selection.", {0.3, 1.0, 0.3})
 end
 
 function updateDispositionSelection(color, add)
@@ -990,13 +1205,18 @@ generateMissionWorldZ = 0.0
 
 -- "primary" slots are filled deterministically from the disposition matchup
 -- (player + index decide which mission card lands here). Red is the +Z pair,
--- blue the -Z pair (see the deck/zone notes in global.ttslua).
+-- blue the -Z pair (see the deck/zone notes in global.ttslua). Each deployment
+-- map slot has a neighboring layout-art slot fed by layoutArtDeck_GUID.
+layoutArtDeck_GUID = "fb4b5d"
 missionSlots = {
     {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  4.67}, displayPosition = {32.60, 0.92,  14.23}, displayScale = {1.5, 1.0, 1.5}},
     {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  2.55}, displayPosition = {32.59, 0.92,  10.20}, displayScale = {1.5, 1.0, 1.5}},
-    {role = "deployment", index = 1, deckVar = "deploymentDeck_GUID", position = {23.71, 1.00,  5.83}},
-    {role = "deployment", index = 2, deckVar = "deploymentDeck_GUID", position = {23.71, 1.00, -0.10}},
-    {role = "deployment", index = 3, deckVar = "deploymentDeck_GUID", position = {23.71, 1.00, -6.03}},
+    {role = "deployment", index = 1, deckVar = "deploymentDeck_GUID", position = {23.70, 1.02,  17.65}},
+    {role = "layout",     index = 1, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.02,  12.35}},
+    {role = "deployment", index = 2, deckVar = "deploymentDeck_GUID", position = {23.70, 1.02,   2.65}},
+    {role = "layout",     index = 2, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.02,  -2.65}},
+    {role = "deployment", index = 3, deckVar = "deploymentDeck_GUID", position = {23.70, 1.02, -12.35}},
+    {role = "layout",     index = 3, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.02, -17.65}},
     {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -2.55}, displayPosition = {32.59, 0.92, -10.20}, displayScale = {1.5, 1.0, 1.5}},
     {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -4.67}, displayPosition = {32.60, 0.92, -14.23}, displayScale = {1.5, 1.0, 1.5}},
 }
@@ -1011,7 +1231,10 @@ deploymentMatrixDecks = {
             {guid = "f7026e", name = "TnH vs TnH 2 - DoW"},
             {guid = "63cf7e", name = "TnH vs TnH 3 - SnD"},
             {guid = "32ec37", name = "TnH vs TnH 3 - SnD"},
-        },
+            {guid = "88063f", name = "TnH vs TnH 1 - TP"},
+            {guid = "32f3ae", name = "TnH vs TnH 2 - DoW"},
+            {guid = "c08454", name = "TnH vs TnH 3 - SnD"},
+},
     },
     ["5_2"] = {
         guid = "eae80b", name = "Take and Hold vs Priority Assets",
@@ -1022,7 +1245,10 @@ deploymentMatrixDecks = {
             {guid = "9a0779", name = "TnH vs PA 2 - HnA"},
             {guid = "b579e0", name = "TnH vs PA 3 - DoW"},
             {guid = "0574f5", name = "TnH vs PA 3 - DoW"},
-        },
+            {guid = "c0d4e5", name = "TnH vs PA 1 - CoB"},
+            {guid = "e7b247", name = "TnH vs PA 2 - HnA"},
+            {guid = "127066", name = "TnH vs PA 3 - DoW"},
+},
     },
     ["2_5"] = {
         guid = "eae80b", name = "Take and Hold vs Priority Assets",
@@ -1033,7 +1259,10 @@ deploymentMatrixDecks = {
             {guid = "9a0779", name = "TnH vs PA 2 - HnA"},
             {guid = "b579e0", name = "TnH vs PA 3 - DoW"},
             {guid = "0574f5", name = "TnH vs PA 3 - DoW"},
-        },
+            {guid = "c0d4e5", name = "TnH vs PA 1 - CoB"},
+            {guid = "e7b247", name = "TnH vs PA 2 - HnA"},
+            {guid = "127066", name = "TnH vs PA 3 - DoW"},
+},
     },
     ["5_1"] = {
         guid = "cfeba5", name = "Take and Hold vs Disruption",
@@ -1044,7 +1273,10 @@ deploymentMatrixDecks = {
             {guid = "366693", name = "TnH vs Dis 2 - CoB"},
             {guid = "b7a5fe", name = "TnH vs Dis 3 - HnA"},
             {guid = "b200c7", name = "TnH vs Dis 3 - HnA"},
-        },
+            {guid = "45bb37", name = "TnH vs Dis 1 - SE"},
+            {guid = "b53767", name = "TnH vs Dis 2 - CoB"},
+            {guid = "6261e9", name = "TnH vs Dis 3 - HnA"},
+},
     },
     ["1_5"] = {
         guid = "cfeba5", name = "Take and Hold vs Disruption",
@@ -1055,7 +1287,10 @@ deploymentMatrixDecks = {
             {guid = "366693", name = "TnH vs Dis 2 - CoB"},
             {guid = "b7a5fe", name = "TnH vs Dis 3 - HnA"},
             {guid = "b200c7", name = "TnH vs Dis 3 - HnA"},
-        },
+            {guid = "45bb37", name = "TnH vs Dis 1 - SE"},
+            {guid = "b53767", name = "TnH vs Dis 2 - CoB"},
+            {guid = "6261e9", name = "TnH vs Dis 3 - HnA"},
+},
     },
     ["5_3"] = {
         guid = "1e6711", name = "Take and Hold vs Purge the Foe",
@@ -1066,7 +1301,10 @@ deploymentMatrixDecks = {
             {guid = "af501d", name = "TnH vs PtF 2 - SnD"},
             {guid = "7f30d9", name = "TnH vs PtF 3 - HnA"},
             {guid = "812e71", name = "TnH vs PtF 3 - HnA"},
-        },
+            {guid = "8ba2f3", name = "TnH vs PtF 1 - SE"},
+            {guid = "67ca48", name = "TnH vs PtF 2 - SnD"},
+            {guid = "acb689", name = "TnH vs PtF 3 - HnA"},
+},
     },
     ["3_5"] = {
         guid = "1e6711", name = "Take and Hold vs Purge the Foe",
@@ -1077,7 +1315,10 @@ deploymentMatrixDecks = {
             {guid = "af501d", name = "TnH vs PtF 2 - SnD"},
             {guid = "7f30d9", name = "TnH vs PtF 3 - HnA"},
             {guid = "812e71", name = "TnH vs PtF 3 - HnA"},
-        },
+            {guid = "8ba2f3", name = "TnH vs PtF 1 - SE"},
+            {guid = "67ca48", name = "TnH vs PtF 2 - SnD"},
+            {guid = "acb689", name = "TnH vs PtF 3 - HnA"},
+},
     },
     ["5_4"] = {
         guid = "109a6b", name = "Take and Hold vs Reconnaissance",
@@ -1088,7 +1329,10 @@ deploymentMatrixDecks = {
             {guid = "0538a9", name = "TnH vs Rec 2 - DoW"},
             {guid = "e4072b", name = "TnH vs Rec 3 - SnD"},
             {guid = "bc8eb5", name = "TnH vs Rec 3 - SnD"},
-        },
+            {guid = "41e4dd", name = "TnH vs Rec 1 - TP"},
+            {guid = "38f59f", name = "TnH vs Rec 2 - DoW"},
+            {guid = "82efe8", name = "TnH vs Rec 3 - SnD"},
+},
     },
     ["4_5"] = {
         guid = "109a6b", name = "Take and Hold vs Reconnaissance",
@@ -1099,6 +1343,152 @@ deploymentMatrixDecks = {
             {guid = "0538a9", name = "TnH vs Rec 2 - DoW"},
             {guid = "e4072b", name = "TnH vs Rec 3 - SnD"},
             {guid = "bc8eb5", name = "TnH vs Rec 3 - SnD"},
+            {guid = "41e4dd", name = "TnH vs Rec 1 - TP"},
+            {guid = "38f59f", name = "TnH vs Rec 2 - DoW"},
+            {guid = "82efe8", name = "TnH vs Rec 3 - SnD"},
+},
+    },
+    ["2_4"] = {
+        guid = "32e34a", name = "Priority Assets vs Reconnaissance",
+        cards = {
+            {guid = "e236ba", name = "PA vs Rec 1 - CoB"},
+            {guid = "c0f610", name = "PA vs Rec 2 - TP"},
+            {guid = "40cd96", name = "PA vs Rec 3 - SE"},
+        },
+    },
+    ["4_2"] = {
+        guid = "32e34a", name = "Priority Assets vs Reconnaissance",
+        cards = {
+            {guid = "e236ba", name = "PA vs Rec 1 - CoB"},
+            {guid = "c0f610", name = "PA vs Rec 2 - TP"},
+            {guid = "40cd96", name = "PA vs Rec 3 - SE"},
+        },
+    },
+    ["2_2"] = {
+        guid = "7b5ba7", name = "Priority Assets vs Priority Assets",
+        cards = {
+            {guid = "0b77a1", name = "PA vs PA 1 - TP"},
+            {guid = "9a0432", name = "PA vs PA 2 - CoB"},
+            {guid = "9319a0", name = "PA vs PA 3 - SE"},
+        },
+    },
+    ["3_3"] = {
+        guid = "3ebbd6", name = "Purge the Foe vs Purge the Foe",
+        cards = {
+            {guid = "5fdb47", name = "PtF vs PtF 1 - SnD"},
+            {guid = "cb907f", name = "PtF vs PtF 2 - TP"},
+            {guid = "3998a5", name = "PtF vs PtF 3 - SE"},
+            {guid = "b1fa49", name = "PtF vs PtF 1 - SnD"},
+            {guid = "aaa962", name = "PtF vs PtF 2 - TP"},
+            {guid = "81f229", name = "PtF vs PtF 3 - SE"},
+},
+    },
+    ["3_1"] = {
+        guid = "9ac38f", name = "Purge the Foe vs Disruption",
+        cards = {
+            {guid = "3eb69e", name = "PtF vs Dis 1 - SnD"},
+            {guid = "6277f1", name = "PtF vs Dis 2 - TP"},
+            {guid = "dbf11e", name = "PtF vs Dis 3 - SE"},
+            {guid = "ce2202", name = "PtF vs Dis 1 - SnD"},
+            {guid = "a76f64", name = "PtF vs Dis 2 - TP"},
+            {guid = "215479", name = "PtF vs Dis 3 - SE"},
+},
+    },
+    ["1_3"] = {
+        guid = "9ac38f", name = "Purge the Foe vs Disruption",
+        cards = {
+            {guid = "3eb69e", name = "PtF vs Dis 1 - SnD"},
+            {guid = "6277f1", name = "PtF vs Dis 2 - TP"},
+            {guid = "dbf11e", name = "PtF vs Dis 3 - SE"},
+            {guid = "ce2202", name = "PtF vs Dis 1 - SnD"},
+            {guid = "a76f64", name = "PtF vs Dis 2 - TP"},
+            {guid = "215479", name = "PtF vs Dis 3 - SE"},
+},
+    },
+    ["3_2"] = {
+        guid = "dc8738", name = "Purge the Foe vs Priority Assets",
+        cards = {
+            {guid = "653d63", name = "PtF vs PA 1 - DoW"},
+            {guid = "ab3235", name = "PtF vs PA 2 - SnD"},
+            {guid = "80af80", name = "PtF vs PA 3 - HnA"},
+        },
+    },
+    ["2_3"] = {
+        guid = "dc8738", name = "Purge the Foe vs Priority Assets",
+        cards = {
+            {guid = "653d63", name = "PtF vs PA 1 - DoW"},
+            {guid = "ab3235", name = "PtF vs PA 2 - SnD"},
+            {guid = "80af80", name = "PtF vs PA 3 - HnA"},
+        },
+    },
+    ["3_4"] = {
+        guid = "a22c33", name = "Purge the Foe vs Reconnaissance",
+        cards = {
+            {guid = "78d12d", name = "PtF vs Recon 1 - HnA"},
+            {guid = "6d872b", name = "PtF vs Recon 2 - DoW"},
+            {guid = "33a96e", name = "PtF vs Recon 3 - CoB"},
+            {guid = "0052d1", name = "PtF vs Recon 1 - HnA"},
+            {guid = "7a9f56", name = "PtF vs Recon 2 - DoW"},
+            {guid = "100d5d", name = "PtF vs Recon 3 - CoB"},
+},
+    },
+    ["4_3"] = {
+        guid = "a22c33", name = "Purge the Foe vs Reconnaissance",
+        cards = {
+            {guid = "78d12d", name = "PtF vs Recon 1 - HnA"},
+            {guid = "6d872b", name = "PtF vs Recon 2 - DoW"},
+            {guid = "33a96e", name = "PtF vs Recon 3 - CoB"},
+            {guid = "0052d1", name = "PtF vs Recon 1 - HnA"},
+            {guid = "7a9f56", name = "PtF vs Recon 2 - DoW"},
+            {guid = "100d5d", name = "PtF vs Recon 3 - CoB"},
+},
+    },
+    ["1_1"] = {
+        guid = "4409ba", name = "Disruption vs Disruption",
+        cards = {
+            {guid = "49422d", name = "Dis vs Dis 1 - CoB"},
+            {guid = "86375f", name = "Dis vs Dis 2 - TP"},
+            {guid = "245d0a", name = "Dis vs Dis 3 - SE"},
+        },
+    },
+    ["4_4"] = {
+        guid = "793bc0", name = "Reconnaissance vs Reconnaissance",
+        cards = {
+            {guid = "e154fa", name = "Rec vs Rec 1 - SE"},
+            {guid = "4c3e76", name = "Rec vs Rec 2 - CoB"},
+            {guid = "8d3618", name = "Rec vs Rec 3 - TP"},
+        },
+    },
+    ["1_4"] = {
+        guid = "2c7cd1", name = "Disruption vs Reconnaissance",
+        cards = {
+            {guid = "bca7d1", name = "Dis vs Rec 1 - TP"},
+            {guid = "c5b652", name = "Dis vs Rec 2 - DoW"},
+            {guid = "428ff1", name = "Dis vs Rec 3 - SnD"},
+        },
+    },
+    ["4_1"] = {
+        guid = "2c7cd1", name = "Disruption vs Reconnaissance",
+        cards = {
+            {guid = "bca7d1", name = "Dis vs Rec 1 - TP"},
+            {guid = "c5b652", name = "Dis vs Rec 2 - DoW"},
+            {guid = "428ff1", name = "Dis vs Rec 3 - SnD"},
+        },
+    },
+    ["1_2"] = {
+        guid = "f1e22b", name = "Disruption vs Priority Assets",
+        cards = {
+            {guid = "58b284", name = "Dis vs PA 1 - SE"},
+            {guid = "b53c20", name = "Dis vs PA 2 - TP"},
+            {guid = "dbfc1a", name = "Dis vs PA 3 - SnD"},
+        },
+    },
+    ["2_1"] = {
+        guid = "f1e22b", name = "Disruption vs Priority Assets",
+        cards = {
+            {guid = "58b284", name = "Dis vs PA 1 - SE"},
+            {guid = "b53c20", name = "Dis vs PA 2 - TP"},
+            {guid = "dbfc1a", name = "Dis vs PA 3 - SnD"},
         },
     },
 }
@@ -1113,7 +1503,10 @@ randomDeploymentDecks = {
             {guid = "f7026e", name = "TnH vs TnH 2 - DoW"},
             {guid = "63cf7e", name = "TnH vs TnH 3 - SnD"},
             {guid = "32ec37", name = "TnH vs TnH 3 - SnD"},
-        },
+            {guid = "88063f", name = "TnH vs TnH 1 - TP"},
+            {guid = "32f3ae", name = "TnH vs TnH 2 - DoW"},
+            {guid = "c08454", name = "TnH vs TnH 3 - SnD"},
+},
     },
     {
         guid = "eae80b", name = "Take and Hold vs Priority Assets",
@@ -1124,7 +1517,10 @@ randomDeploymentDecks = {
             {guid = "9a0779", name = "TnH vs PA 2 - HnA"},
             {guid = "b579e0", name = "TnH vs PA 3 - DoW"},
             {guid = "0574f5", name = "TnH vs PA 3 - DoW"},
-        },
+            {guid = "c0d4e5", name = "TnH vs PA 1 - CoB"},
+            {guid = "e7b247", name = "TnH vs PA 2 - HnA"},
+            {guid = "127066", name = "TnH vs PA 3 - DoW"},
+},
     },
     {
         guid = "cfeba5", name = "Take and Hold vs Disruption",
@@ -1135,7 +1531,10 @@ randomDeploymentDecks = {
             {guid = "366693", name = "TnH vs Dis 2 - CoB"},
             {guid = "b7a5fe", name = "TnH vs Dis 3 - HnA"},
             {guid = "b200c7", name = "TnH vs Dis 3 - HnA"},
-        },
+            {guid = "45bb37", name = "TnH vs Dis 1 - SE"},
+            {guid = "b53767", name = "TnH vs Dis 2 - CoB"},
+            {guid = "6261e9", name = "TnH vs Dis 3 - HnA"},
+},
     },
     {
         guid = "1e6711", name = "Take and Hold vs Purge the Foe",
@@ -1146,7 +1545,10 @@ randomDeploymentDecks = {
             {guid = "af501d", name = "TnH vs PtF 2 - SnD"},
             {guid = "7f30d9", name = "TnH vs PtF 3 - HnA"},
             {guid = "812e71", name = "TnH vs PtF 3 - HnA"},
-        },
+            {guid = "8ba2f3", name = "TnH vs PtF 1 - SE"},
+            {guid = "67ca48", name = "TnH vs PtF 2 - SnD"},
+            {guid = "acb689", name = "TnH vs PtF 3 - HnA"},
+},
     },
     {
         guid = "109a6b", name = "Take and Hold vs Reconnaissance",
@@ -1157,13 +1559,114 @@ randomDeploymentDecks = {
             {guid = "0538a9", name = "TnH vs Rec 2 - DoW"},
             {guid = "e4072b", name = "TnH vs Rec 3 - SnD"},
             {guid = "bc8eb5", name = "TnH vs Rec 3 - SnD"},
+            {guid = "41e4dd", name = "TnH vs Rec 1 - TP"},
+            {guid = "38f59f", name = "TnH vs Rec 2 - DoW"},
+            {guid = "82efe8", name = "TnH vs Rec 3 - SnD"},
+},
+    },
+    {
+        guid = "32e34a", name = "Priority Assets vs Reconnaissance",
+        cards = {
+            {guid = "e236ba", name = "PA vs Rec 1 - CoB"},
+            {guid = "c0f610", name = "PA vs Rec 2 - TP"},
+            {guid = "40cd96", name = "PA vs Rec 3 - SE"},
+        },
+    },
+    {
+        guid = "7b5ba7", name = "Priority Assets vs Priority Assets",
+        cards = {
+            {guid = "0b77a1", name = "PA vs PA 1 - TP"},
+            {guid = "9a0432", name = "PA vs PA 2 - CoB"},
+            {guid = "9319a0", name = "PA vs PA 3 - SE"},
+        },
+    },
+    {
+        guid = "3ebbd6", name = "Purge the Foe vs Purge the Foe",
+        cards = {
+            {guid = "5fdb47", name = "PtF vs PtF 1 - SnD"},
+            {guid = "cb907f", name = "PtF vs PtF 2 - TP"},
+            {guid = "3998a5", name = "PtF vs PtF 3 - SE"},
+            {guid = "b1fa49", name = "PtF vs PtF 1 - SnD"},
+            {guid = "aaa962", name = "PtF vs PtF 2 - TP"},
+            {guid = "81f229", name = "PtF vs PtF 3 - SE"},
+},
+    },
+    {
+        guid = "9ac38f", name = "Purge the Foe vs Disruption",
+        cards = {
+            {guid = "3eb69e", name = "PtF vs Dis 1 - SnD"},
+            {guid = "6277f1", name = "PtF vs Dis 2 - TP"},
+            {guid = "dbf11e", name = "PtF vs Dis 3 - SE"},
+            {guid = "ce2202", name = "PtF vs Dis 1 - SnD"},
+            {guid = "a76f64", name = "PtF vs Dis 2 - TP"},
+            {guid = "215479", name = "PtF vs Dis 3 - SE"},
+},
+    },
+    {
+        guid = "dc8738", name = "Purge the Foe vs Priority Assets",
+        cards = {
+            {guid = "653d63", name = "PtF vs PA 1 - DoW"},
+            {guid = "ab3235", name = "PtF vs PA 2 - SnD"},
+            {guid = "80af80", name = "PtF vs PA 3 - HnA"},
+        },
+    },
+    {
+        guid = "a22c33", name = "Purge the Foe vs Reconnaissance",
+        cards = {
+            {guid = "78d12d", name = "PtF vs Recon 1 - HnA"},
+            {guid = "6d872b", name = "PtF vs Recon 2 - DoW"},
+            {guid = "33a96e", name = "PtF vs Recon 3 - CoB"},
+            {guid = "0052d1", name = "PtF vs Recon 1 - HnA"},
+            {guid = "7a9f56", name = "PtF vs Recon 2 - DoW"},
+            {guid = "100d5d", name = "PtF vs Recon 3 - CoB"},
+},
+    },
+    {
+        guid = "4409ba", name = "Disruption vs Disruption",
+        cards = {
+            {guid = "49422d", name = "Dis vs Dis 1 - CoB"},
+            {guid = "86375f", name = "Dis vs Dis 2 - TP"},
+            {guid = "245d0a", name = "Dis vs Dis 3 - SE"},
+        },
+    },
+    {
+        guid = "793bc0", name = "Reconnaissance vs Reconnaissance",
+        cards = {
+            {guid = "e154fa", name = "Rec vs Rec 1 - SE"},
+            {guid = "4c3e76", name = "Rec vs Rec 2 - CoB"},
+            {guid = "8d3618", name = "Rec vs Rec 3 - TP"},
+        },
+    },
+    {
+        guid = "2c7cd1", name = "Disruption vs Reconnaissance",
+        cards = {
+            {guid = "bca7d1", name = "Dis vs Rec 1 - TP"},
+            {guid = "c5b652", name = "Dis vs Rec 2 - DoW"},
+            {guid = "428ff1", name = "Dis vs Rec 3 - SnD"},
+        },
+    },
+    {
+        guid = "f1e22b", name = "Disruption vs Priority Assets",
+        cards = {
+            {guid = "58b284", name = "Dis vs PA 1 - SE"},
+            {guid = "b53c20", name = "Dis vs PA 2 - TP"},
+            {guid = "dbfc1a", name = "Dis vs PA 3 - SnD"},
         },
     },
 }
 deploymentCardSourceDeckByGuid = {}
 deploymentCardSourceDeckByName = {}
+layoutArtCardTag = "layout_art_card"
+loadedLayoutArtCardGuid = nil
+loadedLayoutArtTargetPosition = {75.35, 0.97, 0.00}
+loadedLayoutArtTargetScale = {1.12, 1.00, 1.18}
+layoutArtDeckScale = {2.00, 1.00, 2.10}
 
-deploymentLockTargetPosition = {75.37, 1.01, 0.00}
+deploymentLockTargetPosition = {75.37, 1.02, 0.00}
+-- Map (deployment) cards should always settle face up at y=180. Layout-art helper
+-- cards keep their own rotation (they have their own orientation handling).
+-- Absolute (not a +180 toggle) so a re-press is idempotent.
+deploymentMapCardRotation = {0, 180, 0}
 deploymentLockButtonWorldX = 36.65
 deploymentLockButtonWorldY = 1.00
 deploymentLockButtonOffsetX = -1.60
@@ -1215,6 +1718,13 @@ end
 
 function isMissionCardObject(obj)
     return obj and (obj.tag == "Card" or obj.tag == "Deck")
+end
+
+-- A card may be returned into either a Deck (helper/primary sources) or a Bag
+-- (the matchup map sources). Both expose getObjects()/takeObject by GUID, so any
+-- by-GUID lookup that scans containers must consider both.
+function isCardContainer(obj)
+    return obj and (obj.tag == "Deck" or obj.tag == "Bag") and obj.getObjects ~= nil
 end
 
 function addMissionSlotObject(objectsByGuid, obj)
@@ -1281,7 +1791,7 @@ function rememberDeploymentCardSource(card, deckGuid)
         deploymentCardSourceDeckByGuid[guid] = deckGuid
     end
     local name = card.getName and card.getName() or nil
-    if name and name ~= "" then
+    if deckGuid ~= layoutArtDeck_GUID and name and name ~= "" then
         deploymentCardSourceDeckByName[normalizeMissionName(name)] = deckGuid
     end
 end
@@ -1311,6 +1821,15 @@ function cacheDeploymentDeckContents()
             end
         end
     end
+
+    local layoutDeck = getObjectFromGUID(layoutArtDeck_GUID)
+    if layoutDeck and layoutDeck.getObjects then
+        for _, entry in ipairs(layoutDeck.getObjects()) do
+            if entry.guid then
+                deploymentCardSourceDeckByGuid[entry.guid] = layoutArtDeck_GUID
+            end
+        end
+    end
 end
 
 function getDeploymentCardSourceDeck(card)
@@ -1319,6 +1838,9 @@ function getDeploymentCardSourceDeck(card)
 
     local guid = card.getGUID and card.getGUID() or nil
     local deckGuid = guid and deploymentCardSourceDeckByGuid[guid] or nil
+    if card.hasTag and card.hasTag(layoutArtCardTag) then
+        deckGuid = layoutArtDeck_GUID
+    end
 
     if not deckGuid and card.getName then
         local name = card.getName()
@@ -1364,41 +1886,18 @@ function selectedDeploymentCardGuidSet(choices)
     return selected
 end
 
-function deploymentDeckHomeByGuid(deckGuid)
-    for _, entry in ipairs(GAME_MODE_OBJECTS) do
-        if entry.guid == deckGuid then
-            return entry
-        end
-    end
-    for _, entry in ipairs(STARTUP_MAP_CARDS) do
-        if entry.guid == deckGuid then
-            return entry
-        end
-    end
-    return nil
-end
-
+-- Return a generated map card to its source bag. We putObject into the live bag
+-- (located by GUID) rather than setPosition to a recorded "home": a Bag keeps its
+-- GUID and accepts putObject wherever it sits on the table, so the card always
+-- ends up INSIDE its bag no matter where the bags have been moved. The old
+-- setPosition-to-home only dropped the card next to a bag, and missed entirely
+-- once the bag's recorded coordinate went stale. returnCounts is no longer needed
+-- but is kept so the caller's loop is unchanged.
 function returnDeploymentCardHome(card, returnCounts)
     if not card then return end
-    cacheDeploymentDeckContents()
-
-    local cardGuid = card.getGUID and card.getGUID() or nil
-    local sourceGuid = cardGuid and deploymentCardSourceDeckByGuid[cardGuid] or nil
-
-    card.locked = false
     card.tooltip = true
     card.interactable = true
-
-    local home = sourceGuid and deploymentDeckHomeByGuid(sourceGuid) or nil
-    if home then
-        local count = returnCounts[sourceGuid] or 0
-        returnCounts[sourceGuid] = count + 1
-        card.setPosition({home.pos[1] + (0.38 * (count + 1)), home.pos[2], home.pos[3] + (0.28 * (count + 1))})
-        card.setRotation(home.rot or {0, 180, 0})
-        card.setLock(false)
-    else
-        returnDeploymentCardToSourceDeck(card)
-    end
+    returnDeploymentCardToSourceDeck(card)
 end
 
 function clearDeploymentSlotForChoices(slot, selectedGuids, returnCounts)
@@ -1416,20 +1915,64 @@ function clearDeploymentSlotForChoices(slot, selectedGuids, returnCounts)
     end
 end
 
-function clearDeploymentSlotsForChoices(choices)
+function clearDeploymentSlotsForChoices(choices, layoutChoices)
     local selectedGuids = selectedDeploymentCardGuidSet(choices)
+    for guid in pairs(selectedDeploymentCardGuidSet(layoutChoices)) do
+        selectedGuids[guid] = true
+    end
     local returnCounts = {}
     for _, slot in ipairs(missionSlots) do
-        if slot.role == "deployment" then
+        if slot.role == "deployment" or slot.role == "layout" then
             clearDeploymentSlotForChoices(slot, selectedGuids, returnCounts)
         end
     end
     clearDeploymentSlotForChoices({position = deploymentLockTargetPosition}, selectedGuids, returnCounts)
 end
 
+function returnLayoutCardsToDeck(exceptCard)
+    for _, slot in ipairs(missionSlots) do
+        if slot.role == "layout" then
+            for _, obj in ipairs(getObjectsInMissionSlot(slot, nil)) do
+                if obj ~= exceptCard then
+                    returnDeploymentCardToSourceDeck(obj)
+                end
+            end
+        end
+    end
+end
+
+function returnLoadedLayoutArtCardToDeck()
+    if not loadedLayoutArtCardGuid then return end
+    local card = getObjectFromGUID(loadedLayoutArtCardGuid)
+    loadedLayoutArtCardGuid = nil
+    if card then
+        card.locked = false
+        card.setScale(layoutArtDeckScale)
+        returnDeploymentCardToSourceDeck(card)
+    end
+end
+
+function placeLoadedLayoutArtCard(mapName)
+    local card = findLooseLayoutArtCard(mapName)
+    returnLayoutCardsToDeck(card)
+
+    if not card then
+        broadcastToAll("Could not find paired layout art for loaded map: " .. tostring(mapName), "Yellow")
+        return
+    end
+
+    loadedLayoutArtCardGuid = card.getGUID()
+    card.locked = false
+    card.setScale(loadedLayoutArtTargetScale)
+    card.setPosition(loadedLayoutArtTargetPosition)
+    card.tooltip = true
+    card.interactable = true
+    card.setLock(true)
+end
+
 function returnCardsInDeploymentSlotsToDeck(includeLockedIn)
     for _, slot in ipairs(missionSlots) do
-        if slot.role == "deployment" then
+        if slot.role == "deployment" or slot.role == "layout" then
             returnDeploymentCardsFromSlot(slot)
         end
     end
@@ -1452,6 +1995,38 @@ function movePrimaryMissionCardsToIngameSlots()
             end
         end
     end
+end
+
+-- Name of the primary mission card sitting in a player's primary slots, read from
+-- the actual card dealt off that player's primary deck (Red = 25c0d8, Blue = e64441).
+-- getObjectsInMissionSlot matches both the display and in-game positions, so this is
+-- reliable whether the card has finished its startGame slide to the board or not.
+function getPrimaryMissionNameForPlayer(player)
+    for _, slot in ipairs(missionSlots) do
+        if slot.role == "primary" and slot.player == player then
+            for _, obj in ipairs(getObjectsInMissionSlot(slot, nil)) do
+                if obj.tag == "Card" then
+                    local n = obj.getName()
+                    if n and n ~= "" then return n end
+                end
+            end
+        end
+    end
+    return ""
+end
+
+-- Push the static-per-game scoring overlay header info to Global once the game
+-- starts (disposition + primary per player, shared deployment zone). These change
+-- a lot during deployment, so we only snapshot them here at startGame.
+function pushScoringContext()
+    local deployName = (selectedDeployment() and selectedDeployment().name) or ""
+    Global.call("setScoringContext", {
+        redDisposition  = dispositionValues[redDispositionSelected]  or "",
+        blueDisposition = dispositionValues[blueDispositionSelected] or "",
+        redPrimary      = getPrimaryMissionNameForPlayer("Red"),
+        bluePrimary     = getPrimaryMissionNameForPlayer("Blue"),
+        deployZone      = deployName,
+    })
 end
 
 function moveDeploymentCardToLockTarget(cardToMove)
@@ -1505,6 +2080,28 @@ function normalizeMissionName(s)
     s = tostring(s or "")
     s = s:gsub("\226\128\152", "'"):gsub("\226\128\153", "'")
     return (s:lower():gsub("^%s+", ""):gsub("%s+$", ""))
+end
+
+mapCreatorDisplaySuffixes = {"Cra5shnatural", "Team Belgium", "Izar", "BTTF"}
+
+-- Map cards carry creator credit at the end of their visible nickname. Strip
+-- only a recognized creator suffix when matching shared layout art or reading
+-- the deployment-zone suffix.
+function mapLogicalName(name)
+    name = tostring(name or ""):gsub("%s+$", "")
+    local normalized = normalizeMissionName(name)
+    for _, creator in ipairs(mapCreatorDisplaySuffixes) do
+        local suffix = " - " .. creator
+        local normalizedSuffix = suffix:lower()
+        if normalized:sub(-#normalizedSuffix) == normalizedSuffix then
+            return name:sub(1, #name - #suffix):gsub("%s+$", "")
+        end
+    end
+    return name
+end
+
+function mapDeploymentZoneName(name)
+    return mapLogicalName(name):match("^.*%-%s*(.-)%s*$")
 end
 
 -- "Death Trap 2" -> "Death Trap"; a card with no trailing 1/2 is unchanged.
@@ -1605,6 +2202,76 @@ function deploymentCardLayoutIndex(card)
     return tonumber(string.match(name, "%s(%d+)%s*%-"))
 end
 
+function getCardNameByGuid(guid, fallback)
+    local loose = guid and getObjectFromGUID(guid) or nil
+    if loose and loose.getName then
+        local name = loose.getName()
+        if name and name ~= "" then return name end
+    end
+
+    for _, candidate in ipairs(getAllObjects()) do
+        if isCardContainer(candidate) then
+            for _, entry in ipairs(candidate.getObjects()) do
+                if entry.guid == guid then
+                    return entry.nickname or entry.name or fallback
+                end
+            end
+        end
+    end
+    return fallback
+end
+
+function findLooseLayoutArtCard(cardName)
+    local target = normalizeMissionName(mapLogicalName(cardName))
+    for _, obj in ipairs(getAllObjects()) do
+        if obj.tag == "Card" and obj.hasTag and obj.hasTag(layoutArtCardTag) and
+           normalizeMissionName(obj.getName()) == target then
+            return obj
+        end
+    end
+    return nil
+end
+
+function resolveLayoutArtChoice(mapChoice)
+    if not mapChoice or not mapChoice.name then return nil end
+    local target = normalizeMissionName(mapLogicalName(mapChoice.name))
+    local layoutDeck = getObjectFromGUID(layoutArtDeck_GUID)
+    if layoutDeck and layoutDeck.getObjects then
+        for _, entry in ipairs(layoutDeck.getObjects()) do
+            local name = entry.nickname or entry.name or ""
+            if normalizeMissionName(name) == target then
+                deploymentCardSourceDeckByGuid[entry.guid] = layoutArtDeck_GUID
+                return {deck = layoutDeck, deckGuid = layoutArtDeck_GUID, guid = entry.guid, name = name}
+            end
+        end
+    end
+
+    local loose = findLooseLayoutArtCard(mapChoice.name)
+    if loose then
+        local guid = loose.getGUID()
+        deploymentCardSourceDeckByGuid[guid] = layoutArtDeck_GUID
+        return {deck = layoutDeck, deckGuid = layoutArtDeck_GUID, guid = guid, name = loose.getName()}
+    end
+    return nil
+end
+
+function resolveLayoutArtChoices(mapChoices)
+    local choices = {}
+    local missing = {}
+    for index, mapChoice in pairs(mapChoices or {}) do
+        local choice = resolveLayoutArtChoice(mapChoice)
+        if choice then
+            choices[index] = choice
+        else
+            table.insert(missing, mapChoice.name or "?")
+        end
+    end
+    if #missing > 0 then
+        broadcastToAll("Missing matching layout art: " .. table.concat(missing, ", "), "Yellow")
+    end
+    return choices
+end
+
 function chooseDeploymentCardsFromDeckInfo(deckInfo, count)
     cacheDeploymentDeckContents()
     local choices = {}
@@ -1638,7 +2305,7 @@ function chooseDeploymentCardsFromDeckInfo(deckInfo, count)
     end
 
     for _, card in ipairs(selectedCards) do
-        local name = card.nickname or card.name or deckInfo.name
+        local name = getCardNameByGuid(card.guid, card.nickname or card.name or deckInfo.name)
         deploymentCardSourceDeckByGuid[card.guid] = deckInfo.guid
         if name and name ~= "" then
             deploymentCardSourceDeckByName[normalizeMissionName(name)] = deckInfo.guid
@@ -1726,9 +2393,16 @@ function finishPlacedMissionCard(card, placement)
     if placement.sourceDeckGuid then
         rememberDeploymentCardSource(card, placement.sourceDeckGuid)
     end
+    if placement.role == "layout" and card.addTag then
+        card.addTag(layoutArtCardTag)
+    end
 
     if placement.flip == false and card.is_face_down then
         card.flip()
+    end
+
+    if placement.rotation then
+        card.setRotationSmooth(placement.rotation, false, true)
     end
 
     if placement.scale then
@@ -1780,7 +2454,7 @@ function findDeploymentCard(guid)
     local obj = getObjectFromGUID(guid)
     if obj then return obj, nil end
     for _, candidate in ipairs(getAllObjects()) do
-        if candidate.tag == "Deck" and candidate.getObjects then
+        if isCardContainer(candidate) then
             for _, entry in ipairs(candidate.getObjects()) do
                 if entry.guid == guid then
                     return nil, candidate
@@ -1823,6 +2497,7 @@ function placeMissionCardFromGuid(p)
             end,
         }
         if p.guid then params.guid = p.guid end
+        if p.rotation then params.rotation = p.rotation end
         pcall(function() sourceDeck.takeObject(params) end)
     end
 end
@@ -1938,7 +2613,8 @@ function runMissionGeneration(deploymentMode)
     if deploymentMode == "random" then
         deploymentChoices = pickRandomMissionCard(deploymentChoices)
     end
-    clearDeploymentSlotsForChoices(deploymentChoices)
+    local layoutChoices = resolveLayoutArtChoices(deploymentChoices)
+    clearDeploymentSlotsForChoices(deploymentChoices, layoutChoices)
 
     Wait.frames(function()
         local ok, err = pcall(function()
@@ -1956,7 +2632,12 @@ function runMissionGeneration(deploymentMode)
                 elseif slot.role == "deployment" then
                     local info = deploymentChoices[slot.index]
                     if info and info.guid then
-                        table.insert(deploymentPlacements, {deck = info.deck, guid = info.guid, position = slot.position, sourceDeckGuid = info.deckGuid, flip = false, lock = true})
+                        table.insert(deploymentPlacements, {role = "deployment", deck = info.deck, guid = info.guid, position = slot.position, rotation = deploymentMapCardRotation, sourceDeckGuid = info.deckGuid, flip = false, lock = true})
+                    end
+                elseif slot.role == "layout" then
+                    local info = layoutChoices[slot.index]
+                    if info and info.guid then
+                        table.insert(deploymentPlacements, {role = "layout", deck = info.deck, guid = info.guid, position = slot.position, sourceDeckGuid = info.deckGuid, flip = true, lock = true})
                     end
                 end
             end
@@ -2729,13 +3410,41 @@ end
 
 -- Called (via obj.call) by a map card the instant its "Load Map" button is
 -- pressed -- BEFORE the card wipes itself. params = {name=, guid=}. We announce
--- the map and auto-select the deployment zone encoded in the card's name (the
--- suffix after the last " - " is the full zone name, e.g. "... - Tipping Point").
+-- the map and auto-select the deployment zone encoded before the optional creator
+-- credit, e.g. "... - Tipping Point - Team Belgium".
 function onMapCardLoaded(params)
     local name = (params and params.name) or "?"
+
+    -- Snapshot the pre-load selection state BEFORE anything mutates or the card
+    -- wipes the board, so "Back to Selection" can return here.
+    captureRestorePoint()
+
+    -- Move the paired layout art to the mission board before the map wipe. The
+    -- target sits outside the wipe area, so it survives without MapExclude.
+    placeLoadedLayoutArtCard(name)
+
     broadcastToAll("Loading map: " .. name, {0.3, 1.0, 0.3})  -- banner + chat log
 
-    local zoneName = name:match("^.*%-%s*(.-)%s*$")
+    -- A loaded map owns the mat (and brings its own Clear button), so dismiss
+    -- the standalone CLEAR MAT button the same way using it would.
+    matClearButtonUsed = true
+    writeMenus()
+
+    -- The v2 wipe deliberately keeps the loaded card alive so its 0.5s terrain
+    -- spawn can run; once that's done the card has no further purpose and just
+    -- clutters the mat. Remove it after the terrain settles. It was snapshotted
+    -- above, so "Back to Selection" still brings it back. Done before the
+    -- zone-suffix early-return below so it applies to every card uniformly.
+    if params and params.guid then
+        local cardGuid = params.guid
+        loadedMapCardDestroyTimerId = Wait.time(function()
+            loadedMapCardDestroyTimerId = nil
+            local card = getObjectFromGUID(cardGuid)
+            if card then card.destruct() end
+        end, loadedMapCardDestroyDelay)
+    end
+
+    local zoneName = mapDeploymentZoneName(name)
     if not zoneName or zoneName == "" then return end
 
     -- The card's wipe spawns ~1 frame after the press and the terrain at 0.5s;
@@ -2743,6 +3452,12 @@ function onMapCardLoaded(params)
     -- Defer past both so the zone survives. This is a single one-shot timer.
     Wait.time(function() selectDeployZoneByName(zoneName) end, 0.7)
 end
+
+-- Comfortably past the card's 0.5s terrain spawn; destroying it earlier would
+-- kill that pending timer and the terrain would never appear.
+loadedMapCardDestroyDelay = 1.0
+-- Id of the pending auto-destruct so backToSelection can cancel it (fast undo).
+loadedMapCardDestroyTimerId = nil
 
 -- Select+draw the deployment zone whose name matches, mirroring deployUpDown.
 function selectDeployZoneByName(zoneName)
@@ -3123,6 +3838,7 @@ function writeMenus()
         end
     end
     writeClearMatButton()
+    writeBackToSelectionButton()
 end
 
 menuButtonBorderThickness = 70
@@ -3333,6 +4049,7 @@ function startGame(obj, player, alt)
 
     returnCardsInDeploymentSlotsToDeck(false)
     movePrimaryMissionCardsToIngameSlots()
+    pushScoringContext()
 
     Global.call("recordPlayers")
     inGame = true

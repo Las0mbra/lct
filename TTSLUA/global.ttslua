@@ -15,8 +15,6 @@ quarterCircle_GUID = "51ee3f"
 startMenu_GUID = "738804"
 redDiceMat_GUID = "c57d70" -- diceTable
 blueDiceMat_GUID = "a84ed2" -- diceTable
-redDiceRoller_GUID = "beae28" -- kustom40kDiceRoller
-blueDiceRoller_GUID = "4e0e0b" -- kustom40kDiceRoller
 redMissionManager_GUID = "cff35b"
 blueMissionManager_GUID = "471de1"
 
@@ -275,8 +273,15 @@ function hotkeyToggleScoringOverlay(params)
     hudToggleLock(params.playerColor, nil, nil)
 end
 
-function formatSecondaryListColumns(names, cap, numbered)
-    if not names or #names == 0 then return "—", "" end
+-- IMPORTANT: overlay text values must stay PLAIN (no <color>/<b>/<i>/rich-text).
+-- setHudValue writes each value into a Global.UI `text="..."` attribute, and
+-- yellowscribe rebuilds the whole Global UI via getXmlTable()/setXmlTable(). Raw
+-- <, >, |, # in an attribute corrupt that round-trip and the overlay renders huge
+-- with default text. Keep markup out of these strings.
+function formatSecondaryListColumns(names, cap, numbered, emptyLabel)
+    if not names or #names == 0 then
+        return (emptyLabel or "None"), ""
+    end
     local count = #names
     if cap and count > cap then count = cap end
     local splitAt = math.ceil(count / 2)
@@ -298,8 +303,8 @@ function formatSecondaryListColumns(names, cap, numbered)
     return table.concat(left, "\n"), table.concat(right, "\n")
 end
 
-function setHudListColumns(id, names, cap, numbered)
-    local left, right = formatSecondaryListColumns(names, cap, numbered)
+function setHudListColumns(id, names, cap, numbered, emptyLabel)
+    local left, right = formatSecondaryListColumns(names, cap, numbered, emptyLabel)
     setHudValue({id = id .. "L", value = left})
     setHudValue({id = id .. "R", value = right})
 end
@@ -397,35 +402,97 @@ function getDiscardedSecondaryNames(color, objects)
     return names
 end
 
+-- Static-per-game context shown in the scoring overlay header/columns (Idea 1 & 2):
+-- per-player disposition + primary mission, and the shared deployment zone name.
+-- These are frozen once the game begins, so startMenu pushes them in once at
+-- startGame via setScoringContext rather than the overlay recomputing them on every
+-- 2s refresh. Cached here so reopening the overlay re-renders them.
+scoringContext = scoringContext or {
+    redDisposition = "", blueDisposition = "",
+    redPrimary = "", bluePrimary = "",
+    deployZone = "",
+}
+function setScoringContext(params)
+    if type(params) ~= "table" then return end
+    for _, key in ipairs({"redDisposition", "blueDisposition", "redPrimary", "bluePrimary", "deployZone"}) do
+        if params[key] ~= nil then
+            scoringContext[key] = tostring(params[key])
+        end
+    end
+    -- Push immediately so the header updates even if no overlay is currently open
+    -- (the values are static, so a single write is enough until the next game).
+    if isAnyScoringOverlayOpen() then
+        refreshScoringOverlay()
+    else
+        applyScoringContextToOverlay()
+    end
+end
+
+-- Disposition + mission on one line, middot separator. PLAIN text (the bold styling
+-- comes from the Text element's fontStyle, not rich-text) — see formatSecondaryListColumns.
+function formatDispositionLine(disposition, mission)
+    disposition = disposition or ""
+    mission = mission or ""
+    if disposition ~= "" and mission ~= "" then
+        return disposition .. "  ·  " .. mission
+    end
+    return disposition .. mission
+end
+
+-- Writes only the static context fields. The deploy zone now lives in the title
+-- (see refreshScoringOverlay) and each disposition line carries that player's
+-- primary mission, so this just writes the two combined disposition lines. Split
+-- out of refreshScoringOverlay so setScoringContext can update them without paying
+-- for the full secondary-card scan.
+function applyScoringContextToOverlay()
+    setHudValue({id = "ScoringOverlay_RedDisposition", value = formatDispositionLine(scoringContext.redDisposition, scoringContext.redPrimary)})
+    setHudValue({id = "ScoringOverlay_BlueDisposition", value = formatDispositionLine(scoringContext.blueDisposition, scoringContext.bluePrimary)})
+end
+
 function refreshScoringOverlay()
     local sheet = getObjectFromGUID(scoresheet_GUID)
     if not sheet then return end
     local summary = sheet.call("getMatchSummary")
     if not summary then return end
 
+    applyScoringContextToOverlay()
+
     local roundCounter = getObjectFromGUID(gameTurnCounter_GUID)
     local roundNum = (roundCounter and roundCounter.Counter and roundCounter.Counter.getValue()) or 0
-    setHudValue({id = "ScoringOverlay_Title", value = "⚔ Round " .. roundNum .. " ⚔"})
+    -- Title: "⚔ <Deploy Zone> - Round N ⚔" (deploy zone is static, set at game start).
+    local zone = scoringContext.deployZone or ""
+    local titleText = (zone ~= "") and ("⚔ " .. zone .. " - Round " .. roundNum .. " ⚔")
+        or ("⚔ Round " .. roundNum .. " ⚔")
+    setHudValue({id = "ScoringOverlay_Title", value = titleText})
 
-    local redName = summary.red.name or "Red"
-    local blueName = summary.blue.name or "Blue"
-    local redTotal = summary.red.total or 0
-    local blueTotal = summary.blue.total or 0
-    setHudValue({id = "ScoringOverlay_RedName", value = redName .. " (" .. redTotal .. ")"})
-    setHudValue({id = "ScoringOverlay_BlueName", value = blueName .. " (" .. blueTotal .. ")"})
+    -- Player name (plain) + VP in a pill.
+    setHudValue({id = "ScoringOverlay_RedName", value = summary.red.name or "Red"})
+    setHudValue({id = "ScoringOverlay_BlueName", value = summary.blue.name or "Blue"})
+    setHudValue({id = "ScoringOverlay_RedVP", value = (summary.red.total or 0) .. " VP"})
+    setHudValue({id = "ScoringOverlay_BlueVP", value = (summary.blue.total or 0) .. " VP"})
 
-    local redRoundsText = ""
-    local blueRoundsText = ""
-    for j = 1, 5 do
-        local r = summary.red.rounds and summary.red.rounds[j] or {}
-        local b = summary.blue.rounds and summary.blue.rounds[j] or {}
-        redRoundsText = redRoundsText .. string.format("<b>Round %d</b> | PRI: %d - SEC: %d |\n",
-            j, r.primary or 0, r.secondary or 0)
-        blueRoundsText = blueRoundsText .. string.format("<b>Round %d</b> | PRI: %d - SEC: %d |\n",
-            j, b.primary or 0, b.secondary or 0)
+    -- Per-round table: fixed PRI/SEC/TOT columns with dimmed labels, the current
+    -- battle round highlighted (item 1). Colour tags are kept un-nested so Unity
+    -- rich text renders each segment correctly.
+    local function buildRounds(rounds)
+        local lines = {}
+        for j = 1, 5 do
+            local rr = (rounds and rounds[j]) or {}
+            local pri = rr.primary or 0
+            local sec = rr.secondary or 0
+            local tot = rr.total or (pri + sec)
+            -- Active round flagged with a leading arrow; inactive rows pad with
+            -- matching spaces so every line still centres alike. PLAIN text only
+            -- (no <color>/<b>) — see formatSecondaryListColumns for why.
+            local marker = (j == roundNum) and "▸ " or "   "
+            lines[#lines + 1] = string.format(
+                "%sRound %d   PRI %d | SEC %d | SUM %d",
+                marker, j, pri, sec, tot)
+        end
+        return table.concat(lines, "\n")
     end
-    setHudValue({id = "ScoringOverlay_RedRounds", value = redRoundsText})
-    setHudValue({id = "ScoringOverlay_BlueRounds", value = blueRoundsText})
+    setHudValue({id = "ScoringOverlay_RedRounds", value = buildRounds(summary.red.rounds)})
+    setHudValue({id = "ScoringOverlay_BlueRounds", value = buildRounds(summary.blue.rounds)})
 
     local redActive = getActiveSecondaryNames("Red")
     local blueActive = getActiveSecondaryNames("Blue")
@@ -436,17 +503,25 @@ function refreshScoringOverlay()
     local redDeck = getRemainingDeckSecondaryNames("Red")
     local blueDeck = getRemainingDeckSecondaryNames("Blue")
 
-    setHudListColumns("ScoringOverlay_RedActive", redActive, 8, true)
-    setHudListColumns("ScoringOverlay_BlueActive", blueActive, 8, true)
-    setHudListColumns("ScoringOverlay_RedDiscard", redDiscard, nil, false)
-    setHudListColumns("ScoringOverlay_BlueDiscard", blueDiscard, nil, false)
-    setHudListColumns("ScoringOverlay_RedDeck", redDeck, nil, false)
-    setHudListColumns("ScoringOverlay_BlueDeck", blueDeck, nil, false)
+    -- Counts in the section headers (item 4).
+    setHudValue({id = "ScoringOverlay_RedActiveHdr",  value = "ACTIVE SECONDARIES (" .. #redActive .. ")"})
+    setHudValue({id = "ScoringOverlay_BlueActiveHdr", value = "ACTIVE SECONDARIES (" .. #blueActive .. ")"})
+    setHudValue({id = "ScoringOverlay_RedDiscardHdr",  value = "DISCARD PILE (" .. #redDiscard .. ")"})
+    setHudValue({id = "ScoringOverlay_BlueDiscardHdr", value = "DISCARD PILE (" .. #blueDiscard .. ")"})
+    setHudValue({id = "ScoringOverlay_RedDeckHdr",  value = "REMAINING SECONDARIES (" .. #redDeck .. ")"})
+    setHudValue({id = "ScoringOverlay_BlueDeckHdr", value = "REMAINING SECONDARIES (" .. #blueDeck .. ")"})
+
+    setHudListColumns("ScoringOverlay_RedActive", redActive, 8, true, "None drawn yet")
+    setHudListColumns("ScoringOverlay_BlueActive", blueActive, 8, true, "None drawn yet")
+    setHudListColumns("ScoringOverlay_RedDiscard", redDiscard, nil, false, "Empty")
+    setHudListColumns("ScoringOverlay_BlueDiscard", blueDiscard, nil, false, "Empty")
+    setHudListColumns("ScoringOverlay_RedDeck", redDeck, nil, false, "All drawn")
+    setHudListColumns("ScoringOverlay_BlueDeck", blueDeck, nil, false, "All drawn")
 
     -- Dynamic, symmetric section heights based on content count.
     -- Both sides get the same height per section (max of red/blue) so columns line up.
-    local lineHeight = 22
-    local minSection = 26  -- room for "—" placeholder
+    local lineHeight = 27  -- matches the 22pt list font (item 3)
+    local minSection = 30  -- room for the empty-state placeholder
     local function sectionH(count)
         if count <= 0 then return minSection end
         return math.ceil(count / 2) * lineHeight + 4
@@ -460,7 +535,9 @@ function refreshScoringOverlay()
     local deckH = sectionH(deckCount)
 
     -- If total exceeds the panel's content budget, scale all sections down proportionally.
-    local contentBudget = 770
+    -- Trimmed to account for the taller column header (name band + breakdown line) and
+    -- the separate section-header/divider rows now above each list (items 3,4,8,9).
+    local contentBudget = 680
     local needed = activeH + discardH + deckH
     if needed > contentBudget then
         local scale = contentBudget / needed
