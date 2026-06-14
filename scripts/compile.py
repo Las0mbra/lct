@@ -433,6 +433,24 @@ def print_summary(version, debug_enabled, lua_guids, json_guid_entries, val_ctx,
     val_errs = sum(1 for i in val_issues if i.level == validate_maps.ERROR)
     val_warns = len(val_issues) - val_errs
 
+    map_rows = []
+    if val_ctx is not None:
+        stats = validate_maps.map_statistics(val_ctx)
+        creators = " / ".join(f"{name} {count}" for name, count in sorted(stats["creators"].items()))
+        map_types = " / ".join(f"{name} {count}" for name, count in sorted(stats["map_types"].items()))
+        mapped = stats["mapped_matchups"]
+        matchup_text = (f"{mapped}/{stats['total_matchups']} dedicated / "
+                        f"{stats['total_matchups'] - mapped} fallback") if mapped is not None else "not checked"
+        map_rows = [
+            ("Map inventory", f"{stats['cards']} cards / {stats['logical_layouts']} layouts / "
+                              f"{stats['source_containers']} sources"),
+            ("Map creators", creators or "none"),
+            ("Map types", map_types or "none"),
+            ("Map matchups", matchup_text),
+            ("Terrain payload", f"{stats['terrain_total']} objects / "
+                                f"{stats['terrain_min']}-{stats['terrain_max']} per card"),
+        ]
+
     if val_ctx is not None:
         v2, v1 = validate_maps.split_by_zone_version(val_ctx)
         zones = f"{len(v2)} v2 / {len(v1)} v1"
@@ -457,6 +475,7 @@ def print_summary(version, debug_enabled, lua_guids, json_guid_entries, val_ctx,
         ("JSON GUIDs", str(len(json_guid_entries))),
         ("Map validation", validation),
         ("Map Zones", zones),
+        *map_rows,
         ("Warnings", term.yellow(str(len(WARNINGS))) if WARNINGS else "0"),
         ("Output", str(out_file)),
         ("Copied to", str(copied_to) if copied_to else term.dim("not copied")),

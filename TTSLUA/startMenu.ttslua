@@ -1932,6 +1932,28 @@ function normalizeMissionName(s)
     return (s:lower():gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
+mapCreatorDisplaySuffixes = {"Cra5shnatural", "Team Belgium"}
+
+-- Map cards carry creator credit at the end of their visible nickname. Strip
+-- only a recognized creator suffix when matching shared layout art or reading
+-- the deployment-zone suffix.
+function mapLogicalName(name)
+    name = tostring(name or ""):gsub("%s+$", "")
+    local normalized = normalizeMissionName(name)
+    for _, creator in ipairs(mapCreatorDisplaySuffixes) do
+        local suffix = " - " .. creator
+        local normalizedSuffix = suffix:lower()
+        if normalized:sub(-#normalizedSuffix) == normalizedSuffix then
+            return name:sub(1, #name - #suffix):gsub("%s+$", "")
+        end
+    end
+    return name
+end
+
+function mapDeploymentZoneName(name)
+    return mapLogicalName(name):match("^.*%-%s*(.-)%s*$")
+end
+
 -- "Death Trap 2" -> "Death Trap"; a card with no trailing 1/2 is unchanged.
 function missionBaseName(nick)
     return (tostring(nick or ""):gsub("%s+[12]%s*$", ""))
@@ -2050,7 +2072,7 @@ function getCardNameByGuid(guid, fallback)
 end
 
 function findLooseLayoutArtCard(cardName)
-    local target = normalizeMissionName(cardName)
+    local target = normalizeMissionName(mapLogicalName(cardName))
     for _, obj in ipairs(getAllObjects()) do
         if obj.tag == "Card" and obj.hasTag and obj.hasTag(layoutArtCardTag) and
            normalizeMissionName(obj.getName()) == target then
@@ -2062,7 +2084,7 @@ end
 
 function resolveLayoutArtChoice(mapChoice)
     if not mapChoice or not mapChoice.name then return nil end
-    local target = normalizeMissionName(mapChoice.name)
+    local target = normalizeMissionName(mapLogicalName(mapChoice.name))
     local layoutDeck = getObjectFromGUID(layoutArtDeck_GUID)
     if layoutDeck and layoutDeck.getObjects then
         for _, entry in ipairs(layoutDeck.getObjects()) do
@@ -3238,8 +3260,8 @@ end
 
 -- Called (via obj.call) by a map card the instant its "Load Map" button is
 -- pressed -- BEFORE the card wipes itself. params = {name=, guid=}. We announce
--- the map and auto-select the deployment zone encoded in the card's name (the
--- suffix after the last " - " is the full zone name, e.g. "... - Tipping Point").
+-- the map and auto-select the deployment zone encoded before the optional creator
+-- credit, e.g. "... - Tipping Point - Team Belgium".
 function onMapCardLoaded(params)
     local name = (params and params.name) or "?"
 
@@ -3272,7 +3294,7 @@ function onMapCardLoaded(params)
         end, loadedMapCardDestroyDelay)
     end
 
-    local zoneName = name:match("^.*%-%s*(.-)%s*$")
+    local zoneName = mapDeploymentZoneName(name)
     if not zoneName or zoneName == "" then return end
 
     -- The card's wipe spawns ~1 frame after the press and the terrain at 0.5s;

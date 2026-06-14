@@ -27,7 +27,7 @@ import csv
 import json
 import re
 import sys
-from collections import namedtuple
+from collections import Counter, namedtuple
 from pathlib import Path
 
 try:
@@ -141,17 +141,22 @@ _TERRAIN_GUID_RE = re.compile(r'"GUID"\s*:')
 _TERRAIN_GUID_VALUE_RE = re.compile(r'"GUID"\s*:\s*"([0-9a-fA-F]{6})"')
 # Each baked terrain object is a Lua long-string [[ {json} ]] in objectJSONs.
 _OBJECTJSON_ENTRY_RE = re.compile(r'\[\[(.*?)\]\]', re.DOTALL)
-# Card name "... - Sweeping Engagement" -> "Sweeping Engagement" (mirrors the
-# Lua suffix match the Load Map auto-deploy uses).
+# Logical card name "... - Sweeping Engagement" -> "Sweeping Engagement"
+# (mirrors the Lua suffix match the Load Map auto-deploy uses).
 _NAME_SUFFIX_RE = re.compile(r'^.*-\s*(.*?)\s*$')
 
 # startMenu.ttslua holds the mission matrix and the deployment-zone names that a
 # couple of cross-checks need. Read best-effort; checks skip if it isn't found.
 STARTMENU_LUA = Path(__file__).parent.parent / "TTSLUA" / "startMenu.ttslua"
 MAP_MANIFEST = Path(__file__).parent.parent / "data" / "map_manifest.csv"
-MAP_MANIFEST_COLUMNS = {"deck_guid", "deck_name", "card_guid", "card_name", "map_creator_tag"}
+MAP_MANIFEST_COLUMNS = {"deck_guid", "deck_name", "card_guid", "card_name", "map_creator_tag", "map_type_tag"}
 REQUIRED_MAP_TAG = "map"
 MAP_CREATOR_TAG_PREFIX = "map_crt"
+MAP_TYPE_TAG_PREFIX = "map_type"
+MAP_CREATOR_DISPLAY_NAMES = {
+    "map_crt_cr5sh": "Cra5shnatural",
+    "map_crt_belgium": "Team Belgium",
+}
 LAYOUT_ART_DECK_GUID = "fb4b5d"
 # A matchup map source may be a Deck or a standard Bag. Bags are the preferred
 # form: a Deck collapses once it drops below two cards, but a Bag keeps its GUID
@@ -159,7 +164,19 @@ LAYOUT_ART_DECK_GUID = "fb4b5d"
 MAP_SOURCE_CONTAINER_NAMES = {"Deck", "Bag"}
 _GUID_RE = re.compile(r"^[0-9a-fA-F]{6}$")
 _MATRIX_GUID_RE = re.compile(r'guid\s*=\s*"([0-9a-fA-F]{6})"')
+_MATCHUP_KEY_RE = re.compile(r'\["([1-5]_[1-5])"\]')
 _DEPLOY_ZONE_NAME_RE = re.compile(r'\{name = "([^"]+)",\s*draw')
+
+
+def map_logical_name(name: str) -> str:
+    """Remove a recognized trailing creator credit from a visible map name."""
+    name = (name or "").rstrip()
+    folded = name.casefold()
+    for creator in MAP_CREATOR_DISPLAY_NAMES.values():
+        suffix = f" - {creator}"
+        if folded.endswith(suffix.casefold()):
+            return name[:-len(suffix)].rstrip()
+    return name
 
 
 class MapCard:
@@ -190,7 +207,8 @@ class MapCard:
         self.terrain_count = len(_TERRAIN_GUID_RE.findall(tail))
         self.terrain_guids = set(_TERRAIN_GUID_VALUE_RE.findall(tail))
         self.terrain_entries = _OBJECTJSON_ENTRY_RE.findall(tail)
-        sm = _NAME_SUFFIX_RE.match(self.name)
+        self.logical_name = map_logical_name(self.name)
+        sm = _NAME_SUFFIX_RE.match(self.logical_name)
         self.suffix = sm.group(1) if sm and sm.group(1) else None
 
     @property
@@ -221,11 +239,49 @@ class MapContext:
             return None
         return set(_MATRIX_GUID_RE.findall(seg))
 
+    def deployment_matrix_keys(self):
+        """Disposition matchup keys with dedicated map sources, or None."""
+        lua = self.startmenu_lua
+        if not lua:
+            return None
+        try:
+            seg = lua[lua.index("deploymentMatrixDecks"):lua.index("randomDeploymentDecks")]
+        except ValueError:
+            return None
+        return set(_MATCHUP_KEY_RE.findall(seg))
+
     def deploy_zone_names(self):
         """All deployment-zone names defined in startMenu, or None if unavailable."""
         if not self.startmenu_lua:
             return None
         return set(_DEPLOY_ZONE_NAME_RE.findall(self.startmenu_lua))
+
+
+def map_statistics(ctx):
+    """High-signal inventory statistics shared by reports and compile summaries."""
+    creator_counts = Counter()
+    type_counts = Counter()
+    for card in ctx.cards:
+        for tag in card.tags:
+            if tag.startswith(MAP_CREATOR_TAG_PREFIX + "_"):
+                creator_counts[MAP_CREATOR_DISPLAY_NAMES.get(tag, tag)] += 1
+            elif tag.startswith(MAP_TYPE_TAG_PREFIX + "_"):
+                type_counts[tag.removeprefix(MAP_TYPE_TAG_PREFIX + "_")] += 1
+
+    payloads = [len(card.terrain_entries) for card in ctx.cards]
+    matchup_keys = ctx.deployment_matrix_keys()
+    return {
+        "cards": len(ctx.cards),
+        "logical_layouts": len({card.logical_name.casefold() for card in ctx.cards}),
+        "source_containers": len({card.deck_guid for card in ctx.cards if card.deck_guid}),
+        "creators": creator_counts,
+        "map_types": type_counts,
+        "mapped_matchups": len(matchup_keys) if matchup_keys is not None else None,
+        "total_matchups": 25,
+        "terrain_min": min(payloads) if payloads else 0,
+        "terrain_max": max(payloads) if payloads else 0,
+        "terrain_total": sum(payloads),
+    }
 
 
 def _is_map_card(obj) -> bool:
@@ -259,6 +315,9 @@ def load_map_manifest(path=MAP_MANIFEST):
             if not row["map_creator_tag"].startswith(MAP_CREATOR_TAG_PREFIX + "_"):
                 issues.append(Issue(ERROR, where,
                                     f"invalid map_creator_tag {row['map_creator_tag']!r}"))
+            if not row["map_type_tag"].startswith(MAP_TYPE_TAG_PREFIX + "_"):
+                issues.append(Issue(ERROR, where,
+                                    f"invalid map_type_tag {row['map_type_tag']!r}"))
             seen_cards.add(row["card_guid"])
             rows.append(row)
     return rows, issues
@@ -305,11 +364,15 @@ def build_context(object_states, require_map_tags=False, manifest_path=MAP_MANIF
                                           f"manifest assigns it to deck {deck_guid}, "
                                           f"but save contains it in {card.deck_guid or 'no deck'}"))
         if row["card_name"] and card.name != row["card_name"]:
-            inventory_issues.append(Issue(WARN, card.where,
+            inventory_issues.append(Issue(ERROR, card.where,
                                           f"manifest card_name is {row['card_name']!r}"))
         if row["map_creator_tag"] not in card.tags:
             inventory_issues.append(Issue(ERROR, card.where,
                                           f"manifest map_creator_tag is {row['map_creator_tag']!r}, "
+                                          f"but save tags are {card.tags}"))
+        if row["map_type_tag"] not in card.tags:
+            inventory_issues.append(Issue(ERROR, card.where,
+                                          f"manifest map_type_tag is {row['map_type_tag']!r}, "
                                           f"but save tags are {card.tags}"))
         deck_obj = deck_matches[0][0] if deck_matches else None
         deck_name = (deck_obj.get("Nickname") or deck_obj.get("Name") or "") if deck_obj else ""
@@ -361,7 +424,7 @@ def manifest_inventory_consistent(ctx):
 
 @check
 def publishing_tags_present(ctx):
-    """Test/release builds require the generic map tag and a creator tag."""
+    """Test/release builds require generic, creator, and map-type tags."""
     if not ctx.require_map_tags:
         return
     for card in ctx.cards:
@@ -370,10 +433,33 @@ def publishing_tags_present(ctx):
             missing.append(REQUIRED_MAP_TAG)
         if not any(tag.startswith(MAP_CREATOR_TAG_PREFIX) for tag in card.tags):
             missing.append(MAP_CREATOR_TAG_PREFIX + "*")
+        if not any(tag.startswith(MAP_TYPE_TAG_PREFIX + "_") for tag in card.tags):
+            missing.append(MAP_TYPE_TAG_PREFIX + "_*")
         if missing:
             yield Issue(ERROR, card.where,
                         f"missing required publishing tag(s): {', '.join(missing)}; "
                         f"current tags: {card.tags}")
+
+
+@check
+def creator_name_suffix_matches_tag(ctx):
+    """Visible map-card credit must agree with its authoritative creator tag."""
+    for card in ctx.cards:
+        creator_tags = [tag for tag in card.tags if tag.startswith(MAP_CREATOR_TAG_PREFIX + "_")]
+        if len(creator_tags) != 1:
+            yield Issue(ERROR, card.where,
+                        f"expected exactly one creator tag, found {creator_tags}")
+            continue
+        creator_tag = creator_tags[0]
+        display_name = MAP_CREATOR_DISPLAY_NAMES.get(creator_tag)
+        if not display_name:
+            yield Issue(ERROR, card.where,
+                        f"creator tag {creator_tag!r} has no configured display name")
+            continue
+        expected_suffix = f" - {display_name}"
+        if not card.name.endswith(expected_suffix):
+            yield Issue(ERROR, card.where,
+                        f"nickname must end with {expected_suffix!r} for creator tag {creator_tag}")
 
 
 @check
@@ -472,7 +558,7 @@ def layout_art_names_resolve(ctx):
 
     maps_by_name = {}
     for card in ctx.cards:
-        maps_by_name.setdefault(card.name.strip().casefold(), card.name.strip())
+        maps_by_name.setdefault(card.logical_name.strip().casefold(), card.logical_name.strip())
 
     for normalized, map_name in sorted(maps_by_name.items(), key=lambda item: item[1]):
         matches = helper_by_name.get(normalized, [])
