@@ -1047,17 +1047,13 @@ function captureRestorePoint()
         end
     end
 
-    -- Generated map cards are loose outside their source decks when Load Map is
-    -- pressed. Snapshot them too; otherwise Back to Selection restores decks
-    -- that are missing the selected matchup cards, leaving only abbreviated
-    -- matrix names available on the next same-matchup generation.
-    for _, slot in ipairs(missionSlots or {}) do
-        if slot.role == "deployment" then
-            for _, obj in ipairs(getObjectsInMissionSlot(slot, nil)) do
-                if obj.tag == "Card" then
-                    restorePointObjects[obj.getGUID()] = obj.getJSON()
-                end
-            end
+    -- Generated map cards are loose outside their source bags when Load Map is
+    -- pressed. Snapshot every loose map-tagged card wherever a player moved it;
+    -- limiting this to deployment slots loses manually moved cards during undo.
+    -- Cards still inside bags are already included in their source bag JSON.
+    for _, obj in ipairs(getAllObjects()) do
+        if obj.tag == "Card" and obj.hasTag and obj.hasTag("map") then
+            restorePointObjects[obj.getGUID()] = obj.getJSON()
         end
     end
     restorePointAvailable = true

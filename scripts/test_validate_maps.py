@@ -70,6 +70,15 @@ class ValidateMapsTest(unittest.TestCase):
         self.assertEqual(1, len(matching))
         self.assertEqual(validate_maps.ERROR, matching[0].level)
 
+    def test_back_to_selection_snapshots_loose_maps_worldwide(self):
+        lua = (ROOT / "TTSLUA" / "startMenu.ttslua").read_text()
+        start = lua.index("function captureRestorePoint()")
+        end = lua.index("function backToSelection()", start)
+        capture = lua[start:end]
+        self.assertIn("for _, obj in ipairs(getAllObjects()) do", capture)
+        self.assertIn('obj.hasTag("map")', capture)
+        self.assertNotIn('slot.role == "deployment"', capture)
+
     def test_runtime_creator_suffix_parser_preserves_separator(self):
         lua = (ROOT / "TTSLUA" / "startMenu.ttslua").read_text()
         self.assertIn('local normalizedSuffix = suffix:lower()', lua)
