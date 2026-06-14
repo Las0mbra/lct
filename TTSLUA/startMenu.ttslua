@@ -454,6 +454,14 @@ GAME_MODE_OBJECTS = {
     {guid = "41bf2c", pos = {-1.0, 0.9614987, -12.83}, rot = {-1.51229142e-06, 269.9985, 4.58130671e-08}},
     {guid = "9ac38f", pos = {-6.999999, 0.6839471, 13.5718813}, rot = {5.32230024e-06, 359.940735, 2.36180017e-06}},
     {guid = "2aef7f", pos = {-10.0, 0.961498737, 13.57}, rot = {-3.10884019e-07, 269.9985, 8.4917e-09}},
+    {guid = "4409ba", pos = {-6.99999857, 0.6839477, 6.950001}, rot = {1.67717872e-06, 359.93988, -6.728933e-07}},
+    {guid = "6a1d02", pos = {-10.0, 0.961498737, 6.96}, rot = {1.52687008e-07, 269.9985, -2.39379485e-08}},
+    {guid = "2c7cd1", pos = {-6.999999, 0.6839477, -0.329999059}, rot = {-1.40792667e-06, 359.93988, -1.0181202e-06}},
+    {guid = "888613", pos = {-9.999791, 0.961498737, 0.3301134}, rot = {2.59994266e-07, 269.99408, 6.61830342e-08}},
+    {guid = "f1e22b", pos = {-6.99999952, 0.6839478, -6.26}, rot = {1.50679591e-06, 359.96637, -2.20824768e-06}},
+    {guid = "9a274c", pos = {-9.999996, 0.961498737, -6.26}, rot = {-1.82543e-06, 269.998474, 1.54362482e-07}},
+    {guid = "793bc0", pos = {-6.99999952, 0.6839477, -12.829999}, rot = {-2.69469723e-07, 359.966278, 2.27458554e-06}},
+    {guid = "066fd3", pos = {-10.0, 0.961498737, -12.83}, rot = {-1.9510837e-07, 269.9985, 1.241135e-07}},
 }
 
 function hideStartupMapCards()
@@ -1435,6 +1443,54 @@ deploymentMatrixDecks = {
             {guid = "100d5d", name = "PtF vs Recon 3 - CoB"},
 },
     },
+    ["1_1"] = {
+        guid = "4409ba", name = "Disruption vs Disruption",
+        cards = {
+            {guid = "49422d", name = "Dis vs Dis 1 - CoB"},
+            {guid = "86375f", name = "Dis vs Dis 2 - TP"},
+            {guid = "245d0a", name = "Dis vs Dis 3 - SE"},
+        },
+    },
+    ["4_4"] = {
+        guid = "793bc0", name = "Reconnaissance vs Reconnaissance",
+        cards = {
+            {guid = "e154fa", name = "Rec vs Rec 1 - SE"},
+            {guid = "4c3e76", name = "Rec vs Rec 2 - CoB"},
+            {guid = "8d3618", name = "Rec vs Rec 3 - TP"},
+        },
+    },
+    ["1_4"] = {
+        guid = "2c7cd1", name = "Disruption vs Reconnaissance",
+        cards = {
+            {guid = "bca7d1", name = "Dis vs Rec 1 - TP"},
+            {guid = "c5b652", name = "Dis vs Rec 2 - DoW"},
+            {guid = "428ff1", name = "Dis vs Rec 3 - SnD"},
+        },
+    },
+    ["4_1"] = {
+        guid = "2c7cd1", name = "Disruption vs Reconnaissance",
+        cards = {
+            {guid = "bca7d1", name = "Dis vs Rec 1 - TP"},
+            {guid = "c5b652", name = "Dis vs Rec 2 - DoW"},
+            {guid = "428ff1", name = "Dis vs Rec 3 - SnD"},
+        },
+    },
+    ["1_2"] = {
+        guid = "f1e22b", name = "Disruption vs Priority Assets",
+        cards = {
+            {guid = "58b284", name = "Dis vs PA 1 - SE"},
+            {guid = "b53c20", name = "Dis vs PA 2 - TP"},
+            {guid = "dbfc1a", name = "Dis vs PA 3 - SnD"},
+        },
+    },
+    ["2_1"] = {
+        guid = "f1e22b", name = "Disruption vs Priority Assets",
+        cards = {
+            {guid = "58b284", name = "Dis vs PA 1 - SE"},
+            {guid = "b53c20", name = "Dis vs PA 2 - TP"},
+            {guid = "dbfc1a", name = "Dis vs PA 3 - SnD"},
+        },
+    },
 }
 
 randomDeploymentDecks = {
@@ -1564,6 +1620,38 @@ randomDeploymentDecks = {
             {guid = "7a9f56", name = "PtF vs Recon 2 - DoW"},
             {guid = "100d5d", name = "PtF vs Recon 3 - CoB"},
 },
+    },
+    {
+        guid = "4409ba", name = "Disruption vs Disruption",
+        cards = {
+            {guid = "49422d", name = "Dis vs Dis 1 - CoB"},
+            {guid = "86375f", name = "Dis vs Dis 2 - TP"},
+            {guid = "245d0a", name = "Dis vs Dis 3 - SE"},
+        },
+    },
+    {
+        guid = "793bc0", name = "Reconnaissance vs Reconnaissance",
+        cards = {
+            {guid = "e154fa", name = "Rec vs Rec 1 - SE"},
+            {guid = "4c3e76", name = "Rec vs Rec 2 - CoB"},
+            {guid = "8d3618", name = "Rec vs Rec 3 - TP"},
+        },
+    },
+    {
+        guid = "2c7cd1", name = "Disruption vs Reconnaissance",
+        cards = {
+            {guid = "bca7d1", name = "Dis vs Rec 1 - TP"},
+            {guid = "c5b652", name = "Dis vs Rec 2 - DoW"},
+            {guid = "428ff1", name = "Dis vs Rec 3 - SnD"},
+        },
+    },
+    {
+        guid = "f1e22b", name = "Disruption vs Priority Assets",
+        cards = {
+            {guid = "58b284", name = "Dis vs PA 1 - SE"},
+            {guid = "b53c20", name = "Dis vs PA 2 - TP"},
+            {guid = "dbfc1a", name = "Dis vs PA 3 - SnD"},
+        },
     },
 }
 deploymentCardSourceDeckByGuid = {}
@@ -1994,7 +2082,7 @@ function normalizeMissionName(s)
     return (s:lower():gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
-mapCreatorDisplaySuffixes = {"Cra5shnatural", "Team Belgium", "Izar"}
+mapCreatorDisplaySuffixes = {"Cra5shnatural", "Team Belgium", "Izar", "BTTF"}
 
 -- Map cards carry creator credit at the end of their visible nickname. Strip
 -- only a recognized creator suffix when matching shared layout art or reading
