@@ -3510,6 +3510,7 @@ defaultObjectivesHeight=1.0
 --   3c9b57: state 1 = central / triangle objective
 --   7fd7df: state 1 = neutral (expansion) objective
 objectiveSpawnY = 1.03       -- fallback height (table surface) used only if the downward raycast hits nothing
+objectiveMinSurfaceY = 1.04  -- hard floor for the detected surface; markers never seat below this Y even if the raycast finds something lower (e.g. under a center ruin on some Izar maps)
 objectiveTopOffset = 0.1     -- spawn lift above the detected surface (before the final seat below)
 objectiveSeatClearance = 0.0 -- gap left under a seated marker; 0 = touching, bump up to avoid z-fighting
 objectiveDebug = Global.getVar("DEBUG") == true  -- build-wide debug flag (true on --test builds)
@@ -3600,7 +3601,11 @@ function objectiveSurfaceY(x, z)
             end
         end
     end
-    return (surfaceY or objectiveSpawnY) + objectiveTopOffset
+    local surface = surfaceY or objectiveSpawnY
+    if surface < objectiveMinSurfaceY then
+        surface = objectiveMinSurfaceY
+    end
+    return surface + objectiveTopOffset
 end
 
 -- Position a marker should sit at for a given target: horizontal center of the
