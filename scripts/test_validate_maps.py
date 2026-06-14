@@ -148,11 +148,11 @@ class ValidateMapsTest(unittest.TestCase):
     def test_map_statistics_describe_current_inventory(self):
         _, ctx = validate_maps.validate(self.object_states, require_map_tags=True)
         stats = validate_maps.map_statistics(ctx)
-        self.assertEqual(72, stats["cards"])
-        self.assertEqual(33, stats["logical_layouts"])
-        self.assertEqual(11, stats["source_containers"])
-        self.assertEqual({"comp": 72}, dict(stats["map_types"]))
-        self.assertEqual(19, stats["mapped_matchups"])
+        self.assertEqual(84, stats["cards"])
+        self.assertEqual(45, stats["logical_layouts"])
+        self.assertEqual(15, stats["source_containers"])
+        self.assertEqual({"comp": 84}, dict(stats["map_types"]))
+        self.assertEqual(25, stats["mapped_matchups"])
         self.assertEqual(25, stats["total_matchups"])
         self.assertGreater(stats["terrain_total"], 0)
 
@@ -200,6 +200,74 @@ class ValidateMapsTest(unittest.TestCase):
         matching = [i for i in issues if "c1d1af" in i.where and "missing from map_manifest.csv" in i.message]
         self.assertEqual(1, len(matching))
         self.assertEqual(validate_maps.ERROR, matching[0].level)
+
+    # --- runtime wiring: a map can pass the static/manifest checks yet still
+    # break in-game unless every system that touches it is bound to the manifest.
+
+    def _checks_with_startmenu(self, startmenu_lua):
+        """Run every @check against the real save but a patched startMenu text."""
+        ctx = validate_maps.build_context(copy.deepcopy(self.object_states),
+                                          require_map_tags=True)
+        ctx.startmenu_lua = startmenu_lua
+        issues = []
+        for fn in validate_maps.CHECKS:
+            issues.extend(fn(ctx))
+        return issues
+
+    def test_every_source_bag_is_wired_into_all_runtime_systems(self):
+        ctx = validate_maps.build_context(self.object_states, require_map_tags=True)
+        bags = {c.deck_guid for c in ctx.cards if c.deck_guid}
+        self.assertTrue(bags)
+        # Matrix => Generate Mission reachable; random => return-to-bag / source
+        # resolution; game-mode => hide-until-mode AND BACK TO SELECTION snapshot.
+        self.assertLessEqual(bags, ctx.matrix_deck_guids())
+        self.assertLessEqual(bags, ctx.random_deck_guids())
+        self.assertLessEqual(bags, ctx.game_mode_object_guids())
+
+    def test_all_25_matchups_have_a_dedicated_deck(self):
+        ctx = validate_maps.build_context(self.object_states, require_map_tags=True)
+        self.assertEqual(validate_maps._ALL_MATRIX_KEYS, ctx.deployment_matrix_keys())
+
+    def test_back_to_selection_restores_source_bags(self):
+        # captureRestorePoint snapshots getSelectionObjectGuids() == GAME_MODE_OBJECTS,
+        # so a bag (and the cards inside it) is restored on undo only if it's listed.
+        ctx = validate_maps.build_context(self.object_states, require_map_tags=True)
+        bags = {c.deck_guid for c in ctx.cards if c.deck_guid}
+        self.assertLessEqual(bags, ctx.game_mode_object_guids())
+
+    def test_self_excluded_loader_card_is_error(self):
+        states = copy.deepcopy(self.object_states)
+        find_guid(states, "c1d1af")["GMNotes"] = validate_maps.EXPECTED_GM_EXCLUDE
+        issues, _ = validate_maps.validate(states, require_map_tags=True)
+        matching = [i for i in issues if "c1d1af" in i.where and "GMNotes" in i.message]
+        self.assertEqual(1, len(matching))
+        self.assertEqual(validate_maps.ERROR, matching[0].level)
+
+    def test_foreign_machinery_head_is_error(self):
+        states = copy.deepcopy(self.object_states)
+        card = find_guid(states, "c1d1af")
+        blob = card["LuaScript"][card["LuaScript"].index("objectJSONs = {"):]
+        card["LuaScript"] = "function loadMap() spawnBattlemasterObjectJSONs() end\n" + blob
+        issues, _ = validate_maps.validate(states, require_map_tags=True)
+        matching = [i for i in issues if "c1d1af" in i.where and "machinery differs" in i.message]
+        self.assertEqual(1, len(matching))
+        self.assertEqual(validate_maps.ERROR, matching[0].level)
+
+    def test_unwired_bag_fails_matrix_random_and_game_mode(self):
+        lua = (ROOT / "TTSLUA" / "startMenu.ttslua").read_text()
+        patched = lua.replace('"6e0d78"', '"zzzzzz"')  # erase a source bag from startMenu
+        errors = [i.message for i in self._checks_with_startmenu(patched)
+                  if "6e0d78" in i.where and i.level == validate_maps.ERROR]
+        self.assertTrue(any("deploymentMatrixDecks" in m for m in errors))
+        self.assertTrue(any("randomDeploymentDecks" in m for m in errors))
+        self.assertTrue(any("GAME_MODE_OBJECTS" in m for m in errors))
+
+    def test_incomplete_matchup_matrix_is_error(self):
+        lua = (ROOT / "TTSLUA" / "startMenu.ttslua").read_text()
+        patched = lua.replace('["5_5"]', '["x_x"]')  # drop one matchup key
+        issues = self._checks_with_startmenu(patched)
+        self.assertTrue(any("5_5" in i.message and "dedicated deck" in i.message
+                            and i.level == validate_maps.ERROR for i in issues))
 
 
 if __name__ == "__main__":

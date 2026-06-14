@@ -149,6 +149,10 @@ _NAME_SUFFIX_RE = re.compile(r'^.*-\s*(.*?)\s*$')
 # couple of cross-checks need. Read best-effort; checks skip if it isn't found.
 STARTMENU_LUA = Path(__file__).parent.parent / "TTSLUA" / "startMenu.ttslua"
 MAP_MANIFEST = Path(__file__).parent.parent / "data" / "map_manifest.csv"
+# The one canonical load/clear machinery every map card's head must match (the
+# text before its `objectJSONs = {` blob). Foreign loaders (e.g. the Battlemaster
+# system) are normalized to this -- see scripts/normalize_map_card.py.
+MAP_CARD_MACHINERY = Path(__file__).parent.parent / "data" / "map_card_machinery.lua"
 MAP_MANIFEST_COLUMNS = {"deck_guid", "deck_name", "card_guid", "card_name", "map_creator_tag", "map_type_tag"}
 REQUIRED_MAP_TAG = "map"
 MAP_CREATOR_TAG_PREFIX = "map_crt"
@@ -168,6 +172,11 @@ _GUID_RE = re.compile(r"^[0-9a-fA-F]{6}$")
 _MATRIX_GUID_RE = re.compile(r'guid\s*=\s*"([0-9a-fA-F]{6})"')
 _MATCHUP_KEY_RE = re.compile(r'\["([1-5]_[1-5])"\]')
 _DEPLOY_ZONE_NAME_RE = re.compile(r'\{name = "([^"]+)",\s*draw')
+# A container/source-bag GUID appears as `guid = "xxxxxx"` at the start of a line
+# (deck level); a card GUID is inline as `{guid = "xxxxxx"`. Anchoring to the line
+# start picks out only the deck/bag GUIDs.
+_DECK_LEVEL_GUID_RE = re.compile(r'^\s*guid\s*=\s*"([0-9a-fA-F]{6})"', re.M)
+_ALL_MATRIX_KEYS = {f"{red}_{blue}" for red in range(1, 6) for blue in range(1, 6)}
 
 
 def map_logical_name(name: str) -> str:
@@ -194,8 +203,11 @@ class MapCard:
         self.name = obj.get("Nickname") or obj.get("Name") or ""
         self.deck_guid = deck_guid
         self.tags = list(obj.get("Tags") or [])
+        self.gmnotes = obj.get("GMNotes") or ""
         lua = obj.get("LuaScript", "") or ""
         self.lua = lua
+        # The load/clear machinery is everything before the terrain blob.
+        self.head = lua.split("objectJSONs = {", 1)[0]
 
         self.zones_version = "v2" if MAP_ZONES_V2_MARKER in lua else "v1"
 
@@ -257,6 +269,32 @@ class MapContext:
         if not self.startmenu_lua:
             return None
         return set(_DEPLOY_ZONE_NAME_RE.findall(self.startmenu_lua))
+
+    def _segment(self, start, end):
+        """Text between two startMenu markers, or None if either is missing."""
+        lua = self.startmenu_lua
+        if not lua:
+            return None
+        try:
+            return lua[lua.index(start):lua.index(end, lua.index(start))]
+        except ValueError:
+            return None
+
+    def matrix_deck_guids(self):
+        """Source-bag GUIDs wired into the disposition matrix, or None."""
+        seg = self._segment("deploymentMatrixDecks", "randomDeploymentDecks")
+        return set(_DECK_LEVEL_GUID_RE.findall(seg)) if seg is not None else None
+
+    def random_deck_guids(self):
+        """Source-bag GUIDs registered for return-to-bag / random selection, or None."""
+        seg = self._segment("randomDeploymentDecks", "deploymentCardSourceDeckByGuid")
+        return set(_DECK_LEVEL_GUID_RE.findall(seg)) if seg is not None else None
+
+    def game_mode_object_guids(self):
+        """GUIDs shown/hidden with game mode and snapshotted for BACK TO SELECTION,
+        or None if the list isn't found."""
+        seg = self._segment("GAME_MODE_OBJECTS = {", "function hideStartupMapCards")
+        return set(_MATRIX_GUID_RE.findall(seg)) if seg is not None else None
 
 
 def map_statistics(ctx):
@@ -545,9 +583,11 @@ def mission_matrix_resolves(ctx):
         if g not in ctx.scene_guids:
             yield Issue(ERROR, "startMenu matrix",
                         f"references GUID {g} but no such deck/card exists in the save")
+    # Unreachable maps are tolerated in dev builds but block test/release.
+    unreachable_level = ERROR if ctx.require_map_tags else WARN
     for card in ctx.cards:
         if card.guid not in refs:
-            yield Issue(WARN, card.where,
+            yield Issue(unreachable_level, card.where,
                         "not referenced by any deploymentMatrixDecks/randomDeploymentDecks entry")
 
 
@@ -562,10 +602,13 @@ def layout_art_names_resolve(ctx):
     for card in ctx.cards:
         maps_by_name.setdefault(card.logical_name.strip().casefold(), card.logical_name.strip())
 
+    # Missing layout art breaks Generate Mission / Random Layout, so block
+    # test/release builds; warn only in dev.
+    missing_level = ERROR if ctx.require_map_tags else WARN
     for normalized, map_name in sorted(maps_by_name.items(), key=lambda item: item[1]):
         matches = helper_by_name.get(normalized, [])
         if not matches:
-            yield Issue(WARN, "layout art deck",
+            yield Issue(missing_level, "layout art deck",
                         f"no helper card matches map name {map_name!r}")
         elif len(matches) > 1:
             guids = ", ".join(card["guid"] for card in matches)
@@ -624,6 +667,114 @@ def loadmap_is_hookable(ctx):
             yield Issue(WARN, card.where,
                         "loadMap signature not in the expected form; "
                         "compile-time Load Map hook will be skipped")
+
+
+@check
+def loader_card_not_self_excluded(ctx):
+    """A map loader card tagged with the wipe opt-out spares itself from every
+    wipe, so it (and stale copies) never clear off the mat -- the exact BTTF bug.
+    The opt-out is for terrain/markers, never the loader card."""
+    for card in ctx.cards:
+        if card.gmnotes == EXPECTED_GM_EXCLUDE:
+            yield Issue(ERROR, card.where,
+                        f'loader card has GMNotes "{EXPECTED_GM_EXCLUDE}"; the wipe '
+                        "will spare it, so it never clears off the mat")
+
+
+@check
+def card_head_is_canonical(ctx):
+    """Every card must use the one canonical load/clear machinery. A card whose
+    head differs runs a foreign load system (the Battlemaster cards did) and will
+    behave differently from the rest -- normalize it. Enforced on test/release."""
+    if not ctx.require_map_tags:
+        return
+    template = _read_machinery_template()
+    if template is None:
+        yield Issue(ERROR, "map machinery",
+                    f"canonical head template missing: {MAP_CARD_MACHINERY}")
+        return
+    for card in ctx.cards:
+        if card.head != template:
+            yield Issue(ERROR, card.where,
+                        f"load/clear machinery differs from {MAP_CARD_MACHINERY.name}; "
+                        "run normalize_map_card.py to standardize it")
+
+
+@check
+def source_bag_in_matrix(ctx):
+    """Every source bag must be wired into the disposition matrix, else its maps
+    are unreachable via Generate Mission. Enforced on test/release."""
+    if not ctx.require_map_tags:
+        return
+    guids = ctx.matrix_deck_guids()
+    if guids is None:
+        return
+    for deck_guid in sorted({c.deck_guid for c in ctx.cards if c.deck_guid}):
+        if deck_guid not in guids:
+            yield Issue(ERROR, f"deck {deck_guid}",
+                        "source bag is not in deploymentMatrixDecks; its maps are "
+                        "unreachable via Generate Mission")
+
+
+@check
+def source_bag_in_random_decks(ctx):
+    """Every source bag must be registered in randomDeploymentDecks, which powers
+    return-to-bag on disposition change and card-source resolution. test/release."""
+    if not ctx.require_map_tags:
+        return
+    guids = ctx.random_deck_guids()
+    if guids is None:
+        return
+    for deck_guid in sorted({c.deck_guid for c in ctx.cards if c.deck_guid}):
+        if deck_guid not in guids:
+            yield Issue(ERROR, f"deck {deck_guid}",
+                        "source bag is not in randomDeploymentDecks; its cards won't "
+                        "return to it when the disposition changes")
+
+
+@check
+def source_bag_in_game_mode_objects(ctx):
+    """Every source bag must be in GAME_MODE_OBJECTS so it hides until game mode is
+    chosen AND its JSON (with contained cards) is snapshotted for BACK TO
+    SELECTION. test/release."""
+    if not ctx.require_map_tags:
+        return
+    guids = ctx.game_mode_object_guids()
+    if guids is None:
+        return
+    for deck_guid in sorted({c.deck_guid for c in ctx.cards if c.deck_guid}):
+        if deck_guid not in guids:
+            yield Issue(ERROR, f"deck {deck_guid}",
+                        "source bag is not in GAME_MODE_OBJECTS; it won't hide "
+                        "pre-game and won't be restored by BACK TO SELECTION")
+
+
+@check
+def matchup_matrix_complete(ctx):
+    """All 25 disposition matchups must have a dedicated source, so generation
+    never falls back to a random mission. test/release."""
+    if not ctx.require_map_tags:
+        return
+    keys = ctx.deployment_matrix_keys()
+    if keys is None:
+        return
+    missing = sorted(_ALL_MATRIX_KEYS - keys)
+    if missing:
+        yield Issue(ERROR, "startMenu matrix",
+                    f"matchup(s) without a dedicated deck (random-mission fallback): "
+                    f"{', '.join(missing)}")
+
+
+_MACHINERY_TEMPLATE = False  # sentinel: not yet read
+
+
+def _read_machinery_template():
+    """Canonical head text, read once. None if the template file is absent."""
+    global _MACHINERY_TEMPLATE
+    if _MACHINERY_TEMPLATE is False:
+        _MACHINERY_TEMPLATE = (MAP_CARD_MACHINERY.read_text(encoding="utf-8")
+                               if MAP_CARD_MACHINERY.exists() else None)
+    return _MACHINERY_TEMPLATE
 
 
 # --- Runner / reporting ------------------------------------------------------
