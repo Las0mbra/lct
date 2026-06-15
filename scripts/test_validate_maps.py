@@ -48,6 +48,10 @@ class ValidateMapsTest(unittest.TestCase):
                for guid in ("6e0d78", "109a6b", "1e6711", "cfeba5", "eae80b")},
             **{guid: {"map_crt_cr5sh", "map_crt_izar"}
                for guid in ("a22c33", "3ebbd6", "9ac38f")},
+            **{guid: {"map_crt_bttf", "map_crt_cr5sh"}
+               for guid in ("793bc0", "4409ba", "2c7cd1", "f1e22b")},
+            **{guid: {"map_crt_cr5sh"}
+               for guid in ("32e34a", "7b5ba7", "dc8738")},
         }
         for deck_guid, expected_creators in expected_by_deck.items():
             deck = find_guid(self.object_states, deck_guid)
@@ -95,7 +99,7 @@ class ValidateMapsTest(unittest.TestCase):
         self.assertEqual(
             "TnH vs Rec 1 - Tipping Point",
             validate_maps.map_logical_name(
-                "TnH vs Rec 1 - Tipping Point - Cra5shnatural"
+                "TnH vs Rec 1 - Tipping Point - Cra5hNatural"
             ),
         )
         self.assertEqual(
@@ -114,7 +118,7 @@ class ValidateMapsTest(unittest.TestCase):
     def test_creator_suffix_must_match_creator_tag(self):
         states = copy.deepcopy(self.object_states)
         card = find_guid(states, "c1d1af")
-        card["Nickname"] = card["Nickname"].replace("Team Belgium", "Cra5shnatural")
+        card["Nickname"] = card["Nickname"].replace("Team Belgium", "Cra5hNatural")
 
         issues, _ = validate_maps.validate(states)
         matching = [i for i in issues if "c1d1af" in i.where and "nickname must end with" in i.message]
@@ -148,10 +152,10 @@ class ValidateMapsTest(unittest.TestCase):
     def test_map_statistics_describe_current_inventory(self):
         _, ctx = validate_maps.validate(self.object_states, require_map_tags=True)
         stats = validate_maps.map_statistics(ctx)
-        self.assertEqual(84, stats["cards"])
+        self.assertEqual(96, stats["cards"])
         self.assertEqual(45, stats["logical_layouts"])
         self.assertEqual(15, stats["source_containers"])
-        self.assertEqual({"comp": 84}, dict(stats["map_types"]))
+        self.assertEqual({"comp": 96}, dict(stats["map_types"]))
         self.assertEqual(25, stats["mapped_matchups"])
         self.assertEqual(25, stats["total_matchups"])
         self.assertGreater(stats["terrain_total"], 0)
@@ -164,7 +168,7 @@ class ValidateMapsTest(unittest.TestCase):
         try:
             with contextlib.redirect_stdout(output):
                 compile_script.print_summary(
-                    "test", True, [], [], ctx, issues, 72, Path("preview.json"), None
+                    "test", True, [], [], ctx, issues, 96, Path("preview.json"), None
                 )
         finally:
             compile_script.WARNINGS[:] = old_warnings

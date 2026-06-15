@@ -24,17 +24,30 @@ UI_VERTICAL_LIFT = -150
 
 activeCreators = {}     -- { [creatorId] = true }
 
+-- Creators toggled on the first time the panel spawns (no saved state yet).
+-- Keys are creator ids = the map_crt_* tag without the "map_crt_" prefix.
+DEFAULT_ENABLED_CREATORS = {"cr5sh", "izar"}
+
+function defaultActiveCreators()
+    local t = {}
+    for _, id in ipairs(DEFAULT_ENABLED_CREATORS) do t[id] = true end
+    return t
+end
+
 function onSave()
     return JSON.encode({activeCreators = activeCreators})
 end
 
 function onLoad(saved)
-    activeCreators = {}
+    activeCreators = nil
     if saved and saved ~= "" then
         local ok, data = pcall(function() return JSON.decode(saved) end)
         if ok and type(data) == "table" and type(data.activeCreators) == "table" then
             activeCreators = data.activeCreators
         end
+    end
+    if not activeCreators then
+        activeCreators = defaultActiveCreators()
     end
     publishActiveCreators()
     -- Small delay so the Global script's MAP_INDEX is in place regardless of

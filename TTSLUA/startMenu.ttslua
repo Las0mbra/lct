@@ -1384,25 +1384,25 @@ deploymentMatrixDecks = {
     ["2_4"] = {
         guid = "32e34a", name = "Priority Assets vs Reconnaissance",
         cards = {
-            {guid = "e236ba", name = "PA vs Rec 1 - CoB"},
-            {guid = "c0f610", name = "PA vs Rec 2 - TP"},
-            {guid = "40cd96", name = "PA vs Rec 3 - SE"},
+            {guid = "8fc0f1", name = "PA vs Rec 1 - CoB"},
+            {guid = "cb843a", name = "PA vs Rec 2 - TP"},
+            {guid = "0d4f36", name = "PA vs Rec 3 - SE"},
         },
     },
     ["4_2"] = {
         guid = "32e34a", name = "Priority Assets vs Reconnaissance",
         cards = {
-            {guid = "e236ba", name = "PA vs Rec 1 - CoB"},
-            {guid = "c0f610", name = "PA vs Rec 2 - TP"},
-            {guid = "40cd96", name = "PA vs Rec 3 - SE"},
+            {guid = "8fc0f1", name = "PA vs Rec 1 - CoB"},
+            {guid = "cb843a", name = "PA vs Rec 2 - TP"},
+            {guid = "0d4f36", name = "PA vs Rec 3 - SE"},
         },
     },
     ["2_2"] = {
         guid = "7b5ba7", name = "Priority Assets vs Priority Assets",
         cards = {
-            {guid = "0b77a1", name = "PA vs PA 1 - TP"},
-            {guid = "9a0432", name = "PA vs PA 2 - CoB"},
-            {guid = "9319a0", name = "PA vs PA 3 - SE"},
+            {guid = "104223", name = "PA vs PA 1 - SE"},
+            {guid = "5fa95f", name = "PA vs PA 2 - CoB"},
+            {guid = "71a63a", name = "PA vs PA 3 - TP"},
         },
     },
     ["3_3"] = {
@@ -1442,7 +1442,7 @@ deploymentMatrixDecks = {
         guid = "dc8738", name = "Purge the Foe vs Priority Assets",
         cards = {
             {guid = "653d63", name = "PtF vs PA 1 - DoW"},
-            {guid = "ab3235", name = "PtF vs PA 2 - SnD"},
+            {guid = "bc3814", name = "PtF vs PA 2 - SnD"},
             {guid = "80af80", name = "PtF vs PA 3 - HnA"},
         },
     },
@@ -1450,7 +1450,7 @@ deploymentMatrixDecks = {
         guid = "dc8738", name = "Purge the Foe vs Priority Assets",
         cards = {
             {guid = "653d63", name = "PtF vs PA 1 - DoW"},
-            {guid = "ab3235", name = "PtF vs PA 2 - SnD"},
+            {guid = "bc3814", name = "PtF vs PA 2 - SnD"},
             {guid = "80af80", name = "PtF vs PA 3 - HnA"},
         },
     },
@@ -1458,7 +1458,7 @@ deploymentMatrixDecks = {
         guid = "a22c33", name = "Purge the Foe vs Reconnaissance",
         cards = {
             {guid = "78d12d", name = "PtF vs Recon 1 - HnA"},
-            {guid = "6d872b", name = "PtF vs Recon 2 - DoW"},
+            {guid = "29061a", name = "PtF vs Recon 2 - DoW"},
             {guid = "33a96e", name = "PtF vs Recon 3 - CoB"},
             {guid = "0052d1", name = "PtF vs Recon 1 - HnA"},
             {guid = "7a9f56", name = "PtF vs Recon 2 - DoW"},
@@ -1469,7 +1469,7 @@ deploymentMatrixDecks = {
         guid = "a22c33", name = "Purge the Foe vs Reconnaissance",
         cards = {
             {guid = "78d12d", name = "PtF vs Recon 1 - HnA"},
-            {guid = "6d872b", name = "PtF vs Recon 2 - DoW"},
+            {guid = "29061a", name = "PtF vs Recon 2 - DoW"},
             {guid = "33a96e", name = "PtF vs Recon 3 - CoB"},
             {guid = "0052d1", name = "PtF vs Recon 1 - HnA"},
             {guid = "7a9f56", name = "PtF vs Recon 2 - DoW"},
@@ -1482,6 +1482,9 @@ deploymentMatrixDecks = {
             {guid = "49422d", name = "Dis vs Dis 1 - CoB"},
             {guid = "86375f", name = "Dis vs Dis 2 - TP"},
             {guid = "245d0a", name = "Dis vs Dis 3 - SE"},
+            {guid = "3fc11c", name = "Dis vs Dis 1 - CoB"},
+            {guid = "796c92", name = "Dis vs Dis 2 - TP"},
+            {guid = "bdfb2a", name = "Dis vs Dis 3 - SE"},
         },
     },
     ["4_4"] = {
@@ -1490,6 +1493,9 @@ deploymentMatrixDecks = {
             {guid = "e154fa", name = "Rec vs Rec 1 - SE"},
             {guid = "4c3e76", name = "Rec vs Rec 2 - CoB"},
             {guid = "8d3618", name = "Rec vs Rec 3 - TP"},
+            {guid = "262746", name = "Rec vs Rec 1 - SE"},
+            {guid = "e4117b", name = "Rec vs Rec 2 - CoB"},
+            {guid = "229fed", name = "Rec vs Rec 3 - TP"},
         },
     },
     ["1_4"] = {
@@ -1498,6 +1504,9 @@ deploymentMatrixDecks = {
             {guid = "bca7d1", name = "Dis vs Rec 1 - TP"},
             {guid = "c5b652", name = "Dis vs Rec 2 - DoW"},
             {guid = "428ff1", name = "Dis vs Rec 3 - SnD"},
+            {guid = "f1a6b5", name = "Dis vs Rec 1 - TP"},
+            {guid = "b3addc", name = "Dis vs Rec 2 - DoW"},
+            {guid = "002262", name = "Dis vs Rec 3 - SnD"},
         },
     },
     ["4_1"] = {
@@ -1506,6 +1515,9 @@ deploymentMatrixDecks = {
             {guid = "bca7d1", name = "Dis vs Rec 1 - TP"},
             {guid = "c5b652", name = "Dis vs Rec 2 - DoW"},
             {guid = "428ff1", name = "Dis vs Rec 3 - SnD"},
+            {guid = "f1a6b5", name = "Dis vs Rec 1 - TP"},
+            {guid = "b3addc", name = "Dis vs Rec 2 - DoW"},
+            {guid = "002262", name = "Dis vs Rec 3 - SnD"},
         },
     },
     ["1_2"] = {
@@ -1514,6 +1526,9 @@ deploymentMatrixDecks = {
             {guid = "58b284", name = "Dis vs PA 1 - SE"},
             {guid = "b53c20", name = "Dis vs PA 2 - TP"},
             {guid = "dbfc1a", name = "Dis vs PA 3 - SnD"},
+            {guid = "f9769a", name = "Dis vs PA 1 - SE"},
+            {guid = "f83312", name = "Dis vs PA 2 - TP"},
+            {guid = "4a79c4", name = "Dis vs PA 3 - SnD"},
         },
     },
     ["2_1"] = {
@@ -1522,6 +1537,9 @@ deploymentMatrixDecks = {
             {guid = "58b284", name = "Dis vs PA 1 - SE"},
             {guid = "b53c20", name = "Dis vs PA 2 - TP"},
             {guid = "dbfc1a", name = "Dis vs PA 3 - SnD"},
+            {guid = "f9769a", name = "Dis vs PA 1 - SE"},
+            {guid = "f83312", name = "Dis vs PA 2 - TP"},
+            {guid = "4a79c4", name = "Dis vs PA 3 - SnD"},
         },
     },
 }
@@ -1600,17 +1618,17 @@ randomDeploymentDecks = {
     {
         guid = "32e34a", name = "Priority Assets vs Reconnaissance",
         cards = {
-            {guid = "e236ba", name = "PA vs Rec 1 - CoB"},
-            {guid = "c0f610", name = "PA vs Rec 2 - TP"},
-            {guid = "40cd96", name = "PA vs Rec 3 - SE"},
+            {guid = "8fc0f1", name = "PA vs Rec 1 - CoB"},
+            {guid = "cb843a", name = "PA vs Rec 2 - TP"},
+            {guid = "0d4f36", name = "PA vs Rec 3 - SE"},
         },
     },
     {
         guid = "7b5ba7", name = "Priority Assets vs Priority Assets",
         cards = {
-            {guid = "0b77a1", name = "PA vs PA 1 - TP"},
-            {guid = "9a0432", name = "PA vs PA 2 - CoB"},
-            {guid = "9319a0", name = "PA vs PA 3 - SE"},
+            {guid = "104223", name = "PA vs PA 1 - SE"},
+            {guid = "5fa95f", name = "PA vs PA 2 - CoB"},
+            {guid = "71a63a", name = "PA vs PA 3 - TP"},
         },
     },
     {
@@ -1639,7 +1657,7 @@ randomDeploymentDecks = {
         guid = "dc8738", name = "Purge the Foe vs Priority Assets",
         cards = {
             {guid = "653d63", name = "PtF vs PA 1 - DoW"},
-            {guid = "ab3235", name = "PtF vs PA 2 - SnD"},
+            {guid = "bc3814", name = "PtF vs PA 2 - SnD"},
             {guid = "80af80", name = "PtF vs PA 3 - HnA"},
         },
     },
@@ -1647,7 +1665,7 @@ randomDeploymentDecks = {
         guid = "a22c33", name = "Purge the Foe vs Reconnaissance",
         cards = {
             {guid = "78d12d", name = "PtF vs Recon 1 - HnA"},
-            {guid = "6d872b", name = "PtF vs Recon 2 - DoW"},
+            {guid = "29061a", name = "PtF vs Recon 2 - DoW"},
             {guid = "33a96e", name = "PtF vs Recon 3 - CoB"},
             {guid = "0052d1", name = "PtF vs Recon 1 - HnA"},
             {guid = "7a9f56", name = "PtF vs Recon 2 - DoW"},
@@ -1660,6 +1678,9 @@ randomDeploymentDecks = {
             {guid = "49422d", name = "Dis vs Dis 1 - CoB"},
             {guid = "86375f", name = "Dis vs Dis 2 - TP"},
             {guid = "245d0a", name = "Dis vs Dis 3 - SE"},
+            {guid = "3fc11c", name = "Dis vs Dis 1 - CoB"},
+            {guid = "796c92", name = "Dis vs Dis 2 - TP"},
+            {guid = "bdfb2a", name = "Dis vs Dis 3 - SE"},
         },
     },
     {
@@ -1668,6 +1689,9 @@ randomDeploymentDecks = {
             {guid = "e154fa", name = "Rec vs Rec 1 - SE"},
             {guid = "4c3e76", name = "Rec vs Rec 2 - CoB"},
             {guid = "8d3618", name = "Rec vs Rec 3 - TP"},
+            {guid = "262746", name = "Rec vs Rec 1 - SE"},
+            {guid = "e4117b", name = "Rec vs Rec 2 - CoB"},
+            {guid = "229fed", name = "Rec vs Rec 3 - TP"},
         },
     },
     {
@@ -1676,6 +1700,9 @@ randomDeploymentDecks = {
             {guid = "bca7d1", name = "Dis vs Rec 1 - TP"},
             {guid = "c5b652", name = "Dis vs Rec 2 - DoW"},
             {guid = "428ff1", name = "Dis vs Rec 3 - SnD"},
+            {guid = "f1a6b5", name = "Dis vs Rec 1 - TP"},
+            {guid = "b3addc", name = "Dis vs Rec 2 - DoW"},
+            {guid = "002262", name = "Dis vs Rec 3 - SnD"},
         },
     },
     {
@@ -1684,6 +1711,9 @@ randomDeploymentDecks = {
             {guid = "58b284", name = "Dis vs PA 1 - SE"},
             {guid = "b53c20", name = "Dis vs PA 2 - TP"},
             {guid = "dbfc1a", name = "Dis vs PA 3 - SnD"},
+            {guid = "f9769a", name = "Dis vs PA 1 - SE"},
+            {guid = "f83312", name = "Dis vs PA 2 - TP"},
+            {guid = "4a79c4", name = "Dis vs PA 3 - SnD"},
         },
     },
 }
@@ -2140,7 +2170,7 @@ function normalizeMissionName(s)
     return (s:lower():gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
-mapCreatorDisplaySuffixes = {"Cra5shnatural", "Team Belgium", "Izar", "BTTF"}
+mapCreatorDisplaySuffixes = {"Cra5hNatural", "Team Belgium", "Izar", "BTTF"}
 
 -- Map cards carry creator credit at the end of their visible nickname. Strip
 -- only a recognized creator suffix when matching shared layout art or reading
