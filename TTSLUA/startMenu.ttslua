@@ -990,16 +990,16 @@ end
 matClearZoneScale = {x = 60.12, y = 73, z = 44.04}
 matClearKeepGuids = {["28865a"] = true, ["4ee1f2"] = true, ["6012bf"] = true, ["948ce5"] = true, ["e7ca6e"] = true}
 
--- Shown throughout setup after a game mode is selected; hidden once the game starts.
+-- Shown immediately during setup; hidden once the game starts.
 function writeClearMatButton()
-    if gameMode ~= "game" or inGame then return end
+    if inGame then return end
 
     createButtonWithBorder({
-        label = "CLEAR MAT", click_function = "clearMat", function_owner = self,
+        label = "Clear Mat", click_function = "clearMat", function_owner = self,
         position = {-deployFlankButtonLocalX, deployBtn.position[2], deployBtn.position[3]}, rotation = {0, 0, 0},
         height = dispositionButtonHeight, width = dispositionButtonWidth,
         font_size = dispositionButtonFontSize,
-        color = {0.8, 0.1, 0.1}, font_color = {1, 1, 1},
+        color = {0.90, 0.35, 0.35}, font_color = {0, 0, 0},
         tooltip = "Remove everything placed on the mat",
     })
 end
@@ -1011,12 +1011,12 @@ function writeBackToSelectionButton()
 
     local enabled = restorePointAvailable
     createButtonWithBorder({
-        label = "BACK TO SELECTION", click_function = enabled and "backToSelection" or "none", function_owner = self,
+        label = "Back to Selection", click_function = enabled and "backToSelection" or "none", function_owner = self,
         position = {deployFlankButtonLocalX, deployBtn.position[2], deployBtn.position[3]}, rotation = {0, 0, 0},
         height = dispositionButtonHeight, width = dispositionButtonWidth,
         font_size = dispositionButtonFontSize,
-        color = enabled and {0.85, 0.55, 0.1} or {0.35, 0.35, 0.35},
-        font_color = enabled and {1, 1, 1} or {0.75, 0.75, 0.75},
+        color = enabled and {0.90, 0.62, 0.20} or {0.55, 0.55, 0.55},
+        font_color = enabled and {0, 0, 0} or {0.20, 0.20, 0.20},
         tooltip = enabled and "Undo the loaded map and return to map selection" or "Load a map to enable this button",
     })
 end
@@ -1692,7 +1692,7 @@ deploymentCardSourceDeckByName = {}
 layoutArtCardTag = "layout_art_card"
 loadedLayoutArtCardGuid = nil
 loadedLayoutArtTargetPosition = {75.35, 0.97, 0.00}
-loadedLayoutArtTargetScale = {1.12, 1.00, 1.18}
+loadedLayoutArtTargetScale = {0.97, 1.00, 1.03}
 layoutArtDeckScale = {2.00, 1.00, 2.10}
 
 deploymentLockTargetPosition = {75.37, 1.02, 0.00}
@@ -2013,18 +2013,43 @@ function returnCardsInDeploymentSlotsToDeck(includeLockedIn)
     end
 end
 
-function movePrimaryMissionCardsToIngameSlots()
+function movePrimaryCardToIngameSlot(card, slot, smooth)
+    local target = {slot.position[1], slot.position[2], slot.position[3]}
+    card.locked = false
+    card.setScale({1.0, 1.0, 1.0})
+
+    -- Load Map wipes the mat on the next frame, so that path must place cards
+    -- directly on the safe board. Start Game can keep the visible smooth move.
+    if smooth == false then
+        card.setPosition(target)
+        card.locked = true
+        return
+    end
+
+    card.setPositionSmooth(target, false, true)
+
+    local function finishMove()
+        if card then card.locked = true end
+    end
+    local function moveFinished()
+        if not card then return true end
+        local pos = card.getPosition()
+        return math.abs(pos.x - target[1]) < 0.2 and math.abs(pos.z - target[3]) < 0.2
+    end
+    local function forceFinishMove()
+        if card then
+            card.setPosition(target)
+            card.locked = true
+        end
+    end
+    Wait.condition(finishMove, moveFinished, 5, forceFinishMove)
+end
+
+function movePrimaryMissionCardsToIngameSlots(smooth)
     for _, slot in ipairs(missionSlots) do
         if slot.role == "primary" then
-            for _, obj in ipairs(getObjectsInMissionSlot(slot, nil)) do
-                obj.locked = false
-                -- Move first, then shrink from the 2.5 preview scale down to the
-                -- in-game 1.0 scale once the card has reached its slot.
-                obj.setPositionSmooth(slot.position, false, true)
-                animateCardScale(obj, {1.0, 1.0, 1.0})
-                Wait.frames(function()
-                    if obj then obj.locked = true end
-                end, 1)
+            for _, card in ipairs(getObjectsInMissionSlot(slot, nil)) do
+                movePrimaryCardToIngameSlot(card, slot, smooth)
             end
         end
     end
@@ -3459,6 +3484,9 @@ function onMapCardLoaded(params)
     -- target sits outside the wipe area, so it survives without MapExclude.
     placeLoadedLayoutArtCard(name)
 
+    -- Move primary missions off the mat before the map card starts its next-frame wipe.
+    movePrimaryMissionCardsToIngameSlots(false)
+
     broadcastToAll("Loading map: " .. name, {0.3, 1.0, 0.3})  -- banner + chat log
 
     -- Keep the standalone CLEAR MAT button available throughout setup.
@@ -3865,18 +3893,18 @@ startBtn = {
 startBtnDisabled = {
     index = 1, label = "S T A R T  G A M E", click_function = "startGameDisabled", function_owner = self,
     position = {0, 5, - 1}, rotation = {0, 0, 0}, height = 750, width = 5000,
-    font_size = 500, color = {0.35, 0.35, 0.35}, font_color = {0.85, 0.85, 0.85}
+    font_size = 500, color = {0.55, 0.55, 0.55}, font_color = {0.85, 0.85, 0.85}
 }
 firstPlayerBtn = {
     index = 1, label = redFirstLbl, click_function = "togglePlyr", function_owner = self,
     position = {0, 5, 1}, rotation = {0, 0, 0}, height = 750, width = 5000,
     font_size = 300, color = {1, 0, 0}, font_color = {1, 1, 1}
 }
-nextPhaseLbl = "P A S S\nT U R N"
+nextPhaseLbl = "Pass\nTurn"
 nextPhaseBtn = {
     index = 1, label = nextPhaseLbl, tooltip = "Left click - Next phase\nRight click - Skip to next turn", click_function = "nextPhase", function_owner = self,
     position = {0, 5, 0}, rotation = {0, 0, 0}, height = 1500, width = 5000,
-    font_size = 600, color = {1, 0, 0}, font_color = {1, 1, 1}
+    font_size = 600, color = {0.90, 0.30, 0.30}, font_color = {1, 1, 1}
 }
 position = {menuX, 5, menuZ}
 notePadTxt = ""
@@ -3982,10 +4010,11 @@ end
 function writeIngameMenu()
     destroyNineInchDeployLines()
 
-    nextPhaseBtn.color = currentTurn
-    nextPhaseBtn.label = phases[currentPhase].."\nNEXT PHASE"
+    nextPhaseBtn.color = currentTurn == "Blue" and {0.30, 0.58, 0.90} or {0.90, 0.30, 0.30}
+    nextPhaseBtn.font_color = {1, 1, 1}
+    nextPhaseBtn.label = phases[currentPhase].."\nNext Phase"
     if currentPhase == #phases then
-        nextPhaseBtn.label = phases[currentPhase].."\nPASS TURN"
+        nextPhaseBtn.label = phases[currentPhase].."\nPass Turn"
     end
     createButtonWithBorder(nextPhaseBtn)
     writeDispositionMenu(true)
