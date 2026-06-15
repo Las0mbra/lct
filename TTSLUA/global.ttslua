@@ -738,8 +738,6 @@ blueSecondaryName_GUIDs = {
 }
 challengerCardZone_GUID = "cdecf2"
 
-deploymentDeck_GUID = "23699d"
-challengerDeck_GUID = "ffdf05"
 primaryDeck_GUID = "d26e9c"
 redSecondaryDeck_GUID = "c0fb49"
 blueSecondaryDeck_GUID = "bbdb02"
@@ -825,37 +823,6 @@ missionMatchups = {
     ["5_5"] = { red = "Battlefield Dominance",  blue = "Battlefield Dominance" },
 }
 
--- Deployment choices keyed the same way as missionMatchups. Each entry is
--- a deterministic set of deployment cards from deploymentDeck_GUID.
--- Edit these per pairing as the matrix gets finalized.
-missionDeploymentMatchups = {
-    ["1_1"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["1_2"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["1_3"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["1_4"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["1_5"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["2_1"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["2_2"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["2_3"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["2_4"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["2_5"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["3_1"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["3_2"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["3_3"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["3_4"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["3_5"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["4_1"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["4_2"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["4_3"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["4_4"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["4_5"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["5_1"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["5_2"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["5_3"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["5_4"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-    ["5_5"] = {"Hammer And Anvil", "Crucible Of Battle", "Search And Destroy"},
-}
-
 interactiveButtonTableQuarters_State = 1
 interactiveButtonAreaDenial = 1
 interactiveButtonStratReserves = 1
@@ -889,7 +856,6 @@ Unexploded Ordnance 41f293
 Crucible of Battle e96d18
 Dawn of War 7f45dc
 Hammer and Anvil 97f3f0
-11e Deployment Zones 23699d
 Sweeping Engagement c6edf3
 Tipping Point 77cde6
 
@@ -914,60 +880,10 @@ missionPackData = {
     {
         id = MISSION_PACK_PARIAH_NEXUS,
         name = "Chapter Approved 2025",
-        deploymentDeck_GUID = "23699d",
         primaryDeck_GUID = "d26e9c",
         fixedSecondaryDeck_GUID = "b55459",
         redSecondaryDeck_GUID = "c0fb49",
         blueSecondaryDeck_GUID = "bbdb02",
-        tournamentMissions = {
-            -- A: Take and Hold / Tipping Point
-            {name = "A", primary = "bffd57", deployment = "77cde6"},
-            -- B: Supply Drop / Tipping Point
-            {name = "B", primary = "981226", deployment = "77cde6"},
-            -- C: Linchpin / Tipping Point
-            {name = "C", primary = "540fd0", deployment = "77cde6"},
-            -- D: Scorched Earth / Tipping Point
-            {name = "D", primary = "6860de", deployment = "77cde6"},
-            -- E: Take and Hold / Hammer and Anvil
-            {name = "E", primary = "bffd57", deployment = "97f3f0"},
-            -- F: Hidden Supplies / Hammer and Anvil
-            {name = "F", primary = "85718f", deployment = "97f3f0"},
-            -- G: Purge the Foe / Hammer and Anvil
-            {name = "G", primary = "d9d35a", deployment = "97f3f0"},
-            -- H: Supply Drop / Hammer and Anvil
-            {name = "H", primary = "981226", deployment = "97f3f0"},
-            -- I: Hidden Supplies / Search and Destroy
-            {name = "I", primary = "85718f", deployment = "23699d"},
-            -- J: Linchpin / Search and Destroy
-            {name = "J", primary = "540fd0", deployment = "23699d"},
-            -- K: Scorched Earth / Search and Destroy
-            {name = "K", primary = "6860de", deployment = "23699d"},
-            -- L: Take and Hold / Search and Destroy
-            {name = "L", primary = "bffd57", deployment = "23699d"},
-            -- M: Purge the Foe / Crucible of Battle
-            {name = "M", primary = "d9d35a", deployment = "e96d18"},
-            -- N: Hidden Supplies / Crucible of Battle
-            {name = "N", primary = "85718f", deployment = "e96d18"},
-            -- O: Terraform / Crucible of Battle
-            {name = "O", primary = "7fa6d0", deployment = "e96d18"},
-            -- P: Scorched Earth / Crucible of Battle
-            {name = "P", primary = "6860de", deployment = "e96d18"},
-            -- Q: Supply Drop / Sweeping Engagement
-            {name = "Q", primary = "981226", deployment = "c6edf3"},
-            -- R: Terraform / Sweeping Engagement
-            {name = "R", primary = "7fa6d0", deployment = "c6edf3"},
-            -- S: Linchpin / Dawn of War
-            {name = "S", primary = "540fd0", deployment = "7f45dc"},
-            -- T: Purge the Foe / Dawn of War
-            { name = "T", primary = "d9d35a", deployment = "7f45dc" },
-            -- UKTC Maps
-            {name = "U", primary = "7fa6d0", deployment = "c6edf3"},
-            {name = "V", primary = "d9d35a", deployment = "e96d18"},
-            {name = "W", primary = "85718f", deployment = "23699d"},
-            {name = "X", primary = "540fd0", deployment = "7f45dc"},
-            {name = "Y", primary = "bffd57", deployment = "23699d"},
-            {name = "Z", primary = "bffd57", deployment = "23699d"}
-        }
     },
 }
 
@@ -1281,6 +1197,11 @@ end
 DEBUG_PANEL_POS  = {71.5, 1.1, -78}
 DEBUG_PANEL_NAME = "LCT Debug Panel"
 
+-- Where the "Dump selected GUIDs" tile lands, and its name so stale dumps can be
+-- cleared before spawning a fresh one (see debugDumpSelectedGuids).
+GUID_DUMP_POS  = {68.0, 1.1, -78}
+GUID_DUMP_NAME = "Selected GUIDs"
+
 function none() end   -- no-op for non-interactive panel labels
 
 function spawnDebugPanel()
@@ -1329,6 +1250,12 @@ function buildDebugPanelButtons(panel)
         color = {0.2, 0.2, 0.2}, font_color = {1, 1, 0},
         tooltip = "Run the RNG diagnostic on the Red dice roller",
     })
+    panel.createButton({
+        label = "Dump selected\nGUIDs", click_function = "debugDumpSelectedGuids", function_owner = Global,
+        position = {0, 0.6, 1.28}, height = 320, width = 760, font_size = 90,
+        color = {0.15, 0.2, 0.15}, font_color = {0.4, 1, 0.4},
+        tooltip = "Select objects first, then click: writes their GUIDs into a tile's description to copy/paste",
+    })
 end
 
 function debugPerfScanRed(_, playerColor)
@@ -1347,6 +1274,45 @@ function debugRngTest(_, playerColor)
     local roller = getObjectFromGUID(redCustomDiceRoller_GUID)
     if not roller then printToColor("[DEBUG] Red dice roller not found.", playerColor, {1, 0.3, 0.3}); return end
     roller.call("debugRngCheck")
+end
+
+-- Collect the GUIDs of whatever the clicking player has selected and bake them,
+-- one per line, into a spawned tile's description. Chat_copy is unreliable on
+-- Linux, so this gives a copyable text field instead. A previous dump is cleared
+-- first so the tiles don't accumulate across clicks.
+function debugDumpSelectedGuids(_, playerColor)
+    local player = Player[playerColor]
+    local selected = player and player.getSelectedObjects() or {}
+    if #selected == 0 then
+        printToColor("[DEBUG] No objects selected. Select objects first, then click.", playerColor, {1, 0.3, 0.3})
+        return
+    end
+
+    local guids = {}
+    for _, obj in ipairs(selected) do
+        guids[#guids + 1] = obj.getGUID()
+    end
+    local text = table.concat(guids, "\n")
+
+    for _, o in ipairs(getAllObjects()) do
+        if o.getName() == GUID_DUMP_NAME then o.destroy() end
+    end
+
+    spawnObject({
+        type     = "BlockSquare",
+        position = GUID_DUMP_POS,
+        rotation = {0, 0, 0},
+        scale    = {1.6, 0.2, 1.6},
+        sound    = false,
+        callback_function = function(tile)
+            tile.setName(GUID_DUMP_NAME)
+            tile.setDescription(text)
+            tile.setColorTint({0.10, 0.18, 0.10})
+            tile.setLock(true)
+        end,
+    })
+    printToColor(string.format("[DEBUG] Dumped %d GUID(s) into the '%s' tile description.",
+        #guids, GUID_DUMP_NAME), playerColor, {0.4, 1, 0.4})
 end
 
 function setMissionPack(params)

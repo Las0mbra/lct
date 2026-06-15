@@ -425,43 +425,46 @@ function destroyLegacyPrimaryDeck()
     destroyObjectByGUID(legacyPrimaryDeck_GUID)
 end
 
-STARTUP_MAP_CARDS = {
-    {guid = "6713e1", pos = {-24.3929005, 0.9614988, 11.895701}, rot = {5.3779473e-08, 270.00006, -3.8887436e-08}},  -- https://steamcommunity.com/sharedfiles/filedetails/?id=3427040776
-    {guid = "fc2507", pos = {-24.3929, 0.9614989, 0.1457061}, rot = {5.371441e-08, 270.00092, -5.6065662e-08}},  -- https://steamcommunity.com/sharedfiles/filedetails/?id=3702781217
-    {guid = "a982e3", pos = {-24.3929005, 0.96149874, -11.604293}, rot = {-3.5893564e-07, 270.00006, 1.4783116e-07}},  -- https://steamcommunity.com/sharedfiles/filedetails/?id=3733857840
-}
+-- The three startup workshop-link tiles were removed from the save; nothing to
+-- place or hide here now. Kept as an empty table so the place/hide loops no-op.
+STARTUP_MAP_CARDS = {}
 
+-- Normalized mission-matrix layout: 15 matchup bags + their 15 art tiles on a
+-- square grid (6.6u column/row spacing), each tile offset -3 in x from its bag.
+-- 9c6ce8 is the mission_matrix backdrop tile (kept at its hand-placed spot). These
+-- positions are kept in lockstep with the Transform values baked into ftc_base.json.
 GAME_MODE_OBJECTS = {
-    {guid = "6e0d78", pos = {11.000001, 0.68394804, 13.5668268}, rot = {-4.270224e-07, 179.937439, -2.482284e-07}},
-    {guid = "642d0d", pos = {8.0, 0.9614985, 13.5698309}, rot = {-5.643753e-07, 269.998535, -2.77505681e-08}},
-    {guid = "eae80b", pos = {11.000001, 0.6839485, 6.954931}, rot = {6.62776944e-10, 180.048141, -1.57748e-06}},
-    {guid = "3f56e1", pos = {8.0, 0.9614985, 6.95999861}, rot = {-1.15988474e-09, 269.999969, -3.40068169e-08}},
-    {guid = "cfeba5", pos = {11.0, 0.683947563, 0.327113241}, rot = {8.53773543e-07, 180.0, -7.487194e-07}},
-    {guid = "97d33f", pos = {8.0, 0.9614986, 0.330000162}, rot = {-3.1294494e-06, 269.999939, 1.47785059e-07}},
-    {guid = "1e6711", pos = {11.0, 0.683947563, -6.25547457}, rot = {-4.26895468e-07, 180.00264, 3.76851119e-07}},
-    {guid = "65439e", pos = {8.0, 0.9614985, -6.26}, rot = {-1.50906931e-06, 269.999939, 1.46045934e-07}},
-    {guid = "109a6b", pos = {11.0, 0.6839478, -12.8266459}, rot = {4.26886771e-07, 180.0, 2.801445e-07}},
-    {guid = "80eda8", pos = {8.0, 0.9614985, -12.829999}, rot = {-2.0461282e-06, 269.999969, -2.85835171e-07}},
-    {guid = "32e34a", pos = {2.00000167, 0.6839478, 13.57}, rot = {-2.69956377e-06, 359.954071, 4.046237e-07}},
-    {guid = "e88089", pos = {-0.99999994, 0.961498737, 13.57}, rot = {1.20469338e-06, 269.9985, -1.13345045e-07}},
-    {guid = "7b5ba7", pos = {2.00000048, 0.68394804, 6.95}, rot = {2.486443e-06, 359.974854, 7.331658e-07}},
-    {guid = "4a1bbd", pos = {-1.00000012, 0.9614986, 6.96}, rot = {-2.93093512e-06, 269.9985, 1.49311518e-07}},
-    {guid = "3ebbd6", pos = {1.99999988, 0.683948159, 0.3264686}, rot = {-1.12459031e-06, 0.0428198874, 1.81218161e-06}},
-    {guid = "444551", pos = {-1.00000024, 0.9614987, 0.329999983}, rot = {-1.58890418e-06, 269.9985, 1.115018e-07}},
-    {guid = "dc8738", pos = {2.00000072, 0.683947563, -6.25875568}, rot = {3.11421758e-07, 0.02346802, 1.98108546e-06}},
-    {guid = "703a8c", pos = {-1.0, 0.9614987, -6.26}, rot = {-7.628994e-08, 269.9985, 1.5668796e-07}},
-    {guid = "a22c33", pos = {1.99999964, 0.683947563, -12.83}, rot = {-3.065244e-07, 359.976471, 1.46248374e-06}},
-    {guid = "41bf2c", pos = {-1.0, 0.9614987, -12.83}, rot = {-1.51229142e-06, 269.9985, 4.58130671e-08}},
-    {guid = "9ac38f", pos = {-6.999999, 0.6839471, 13.5718813}, rot = {5.32230024e-06, 359.940735, 2.36180017e-06}},
-    {guid = "2aef7f", pos = {-10.0, 0.961498737, 13.57}, rot = {-3.10884019e-07, 269.9985, 8.4917e-09}},
-    {guid = "4409ba", pos = {-6.99999857, 0.6839477, 6.950001}, rot = {1.67717872e-06, 359.93988, -6.728933e-07}},
-    {guid = "6a1d02", pos = {-10.0, 0.961498737, 6.96}, rot = {1.52687008e-07, 269.9985, -2.39379485e-08}},
-    {guid = "2c7cd1", pos = {-6.999999, 0.6839477, -0.329999059}, rot = {-1.40792667e-06, 359.93988, -1.0181202e-06}},
-    {guid = "888613", pos = {-9.999791, 0.961498737, 0.3301134}, rot = {2.59994266e-07, 269.99408, 6.61830342e-08}},
-    {guid = "f1e22b", pos = {-6.99999952, 0.6839478, -6.26}, rot = {1.50679591e-06, 359.96637, -2.20824768e-06}},
-    {guid = "9a274c", pos = {-9.999996, 0.961498737, -6.26}, rot = {-1.82543e-06, 269.998474, 1.54362482e-07}},
-    {guid = "793bc0", pos = {-6.99999952, 0.6839477, -12.829999}, rot = {-2.69469723e-07, 359.966278, 2.27458554e-06}},
-    {guid = "066fd3", pos = {-10.0, 0.961498737, -12.83}, rot = {-1.9510837e-07, 269.9985, 1.241135e-07}},
+    {guid = "6e0d78", pos = {-22.4612, 0.683948, 17.5906}, rot = {0, 180, 0}},
+    {guid = "642d0d", pos = {-25.4612, 0.961499, 17.5906}, rot = {0, 270, 0}},
+    {guid = "eae80b", pos = {-22.4612, 0.683948, 10.9906}, rot = {0, 180, 0}},
+    {guid = "3f56e1", pos = {-25.4612, 0.961499, 10.9906}, rot = {0, 270, 0}},
+    {guid = "cfeba5", pos = {-22.4612, 0.683948, 4.3906}, rot = {0, 180, 0}},
+    {guid = "97d33f", pos = {-25.4612, 0.961499, 4.3906}, rot = {0, 270, 0}},
+    {guid = "1e6711", pos = {-22.4612, 0.683948, -2.2094}, rot = {0, 180, 0}},
+    {guid = "65439e", pos = {-25.4612, 0.961499, -2.2094}, rot = {0, 270, 0}},
+    {guid = "109a6b", pos = {-22.4612, 0.683948, -8.8094}, rot = {0, 180, 0}},
+    {guid = "80eda8", pos = {-25.4612, 0.961499, -8.8094}, rot = {0, 270, 0}},
+    {guid = "3ebbd6", pos = {-15.8613, 0.683948, 17.5906}, rot = {0, 0, 0}},
+    {guid = "444551", pos = {-18.8613, 0.961499, 17.5906}, rot = {0, 270, 0}},
+    {guid = "dc8738", pos = {-15.8613, 0.683948, 10.9906}, rot = {0, 0, 0}},
+    {guid = "703a8c", pos = {-18.8613, 0.961499, 10.9906}, rot = {0, 270, 0}},
+    {guid = "a22c33", pos = {-15.8613, 0.683948, 4.3906}, rot = {0, 0, 0}},
+    {guid = "41bf2c", pos = {-18.8613, 0.961499, 4.3906}, rot = {0, 270, 0}},
+    {guid = "9ac38f", pos = {-15.8613, 0.683948, -2.2094}, rot = {0, 0, 0}},
+    {guid = "2aef7f", pos = {-18.8613, 0.961499, -2.2094}, rot = {0, 270, 0}},
+    {guid = "4409ba", pos = {-9.2613, 0.683948, 17.5906}, rot = {0, 0, 0}},
+    {guid = "6a1d02", pos = {-12.2613, 0.961499, 17.5906}, rot = {0, 270, 0}},
+    {guid = "2c7cd1", pos = {-9.2613, 0.683948, 10.9906}, rot = {0, 0, 0}},
+    {guid = "888613", pos = {-12.2613, 0.961499, 10.9906}, rot = {0, 270, 0}},
+    {guid = "f1e22b", pos = {-9.2613, 0.683948, 4.3906}, rot = {0, 0, 0}},
+    {guid = "9a274c", pos = {-12.2613, 0.961499, 4.3906}, rot = {0, 270, 0}},
+    {guid = "32e34a", pos = {-2.6613, 0.683948, 17.5906}, rot = {0, 0, 0}},
+    {guid = "e88089", pos = {-5.6613, 0.961499, 17.5906}, rot = {0, 270, 0}},
+    {guid = "7b5ba7", pos = {-2.6613, 0.683948, 10.9906}, rot = {0, 0, 0}},
+    {guid = "4a1bbd", pos = {-5.6613, 0.961499, 10.9906}, rot = {0, 270, 0}},
+    {guid = "793bc0", pos = {3.9387, 0.683948, 17.5906}, rot = {0, 0, 0}},
+    {guid = "066fd3", pos = {0.9387, 0.961499, 17.5906}, rot = {0, 270, 0}},
+    {guid = "9c6ce8", pos = {1.3561, 0.9615, -6.7349}, rot = {0, 270, 0}},
 }
 
 function hideStartupMapCards()
@@ -495,8 +498,10 @@ function placeStartupMapCards()
 end
 
 function placeGameModeObjects()
+    -- The mission-matrix bags/tiles are reference props, not handled during play,
+    -- so lock them on placement to stop them drifting or being dragged off the mat.
     for _, entry in ipairs(GAME_MODE_OBJECTS) do
-        placeObjectAtPosition(entry.guid, entry.pos, entry.rot)
+        placeObjectAtPosition(entry.guid, entry.pos, entry.rot, true)
     end
 end
 
@@ -524,7 +529,7 @@ function hideForceDispositionToken()
     end
 end
 
-function placeObjectAtPosition(guid, position, rotation)
+function placeObjectAtPosition(guid, position, rotation, lock)
     local obj = getObjectFromGUID(guid)
     if not obj then
         broadcastToAll("Object with GUID " .. guid .. " not found.", {1, 0, 0})
@@ -533,7 +538,7 @@ function placeObjectAtPosition(guid, position, rotation)
 
     obj.setPosition(position)
     obj.setRotation(rotation or {0, 180, 0})
-    obj.setLock(false)
+    obj.setLock(lock == true)
     obj.tooltip = true
     obj.interactable = true
 end
@@ -1209,16 +1214,16 @@ generateMissionWorldZ = 0.0
 -- map slot has a neighboring layout-art slot fed by layoutArtDeck_GUID.
 layoutArtDeck_GUID = "fb4b5d"
 missionSlots = {
-    {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  4.67}, displayPosition = {32.60, 0.92,  14.23}, displayScale = {1.5, 1.0, 1.5}},
-    {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  2.55}, displayPosition = {32.59, 0.92,  10.20}, displayScale = {1.5, 1.0, 1.5}},
-    {role = "deployment", index = 1, deckVar = "deploymentDeck_GUID", position = {23.70, 1.02,  17.65}},
+    {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  4.67}, displayPosition = {13.00, 1.00,  10.85}},
+    {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  2.55}, displayPosition = {13.00, 1.00,   5.68}},
+    {role = "deployment", index = 1, position = {23.70, 1.02,  17.65}},
     {role = "layout",     index = 1, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.02,  12.35}},
-    {role = "deployment", index = 2, deckVar = "deploymentDeck_GUID", position = {23.70, 1.02,   2.65}},
+    {role = "deployment", index = 2, position = {23.70, 1.02,   2.65}},
     {role = "layout",     index = 2, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.02,  -2.65}},
-    {role = "deployment", index = 3, deckVar = "deploymentDeck_GUID", position = {23.70, 1.02, -12.35}},
+    {role = "deployment", index = 3, position = {23.70, 1.02, -12.35}},
     {role = "layout",     index = 3, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.02, -17.65}},
-    {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -2.55}, displayPosition = {32.59, 0.92, -10.20}, displayScale = {1.5, 1.0, 1.5}},
-    {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -4.67}, displayPosition = {32.60, 0.92, -14.23}, displayScale = {1.5, 1.0, 1.5}},
+    {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -2.55}, displayPosition = {13.00, 1.00,  -5.68}},
+    {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -4.67}, displayPosition = {13.00, 1.00, -10.85}},
 }
 
 deploymentMatrixDecks = {
@@ -1859,12 +1864,10 @@ function returnDeploymentCardToSourceDeck(card)
         return sourceDeck.putObject(card) or sourceDeck
     end
 
-    local fallbackDeck = getObjectFromGUID(Global.getVar("deploymentDeck_GUID"))
-    if fallbackDeck then
-        card.locked = false
-        return fallbackDeck.putObject(card) or fallbackDeck
-    end
-
+    -- No known source: deployment/layout cards now come exclusively from the
+    -- matchup matrix decks and the layout-art deck (fb4b5d), both tracked in
+    -- deploymentCardSourceDeckBy*. The old shared deployment deck is gone, so a
+    -- card with no recorded source simply stays where it is.
     return nil
 end
 
@@ -1987,8 +1990,10 @@ function movePrimaryMissionCardsToIngameSlots()
         if slot.role == "primary" then
             for _, obj in ipairs(getObjectsInMissionSlot(slot, nil)) do
                 obj.locked = false
-                obj.setScale({1.0, 1.0, 1.0})
+                -- Move first, then shrink from the 2.5 preview scale down to the
+                -- in-game 1.0 scale once the card has reached its slot.
                 obj.setPositionSmooth(slot.position, false, true)
+                animateCardScale(obj, {1.0, 1.0, 1.0})
                 Wait.frames(function()
                     if obj then obj.locked = true end
                 end, 1)
@@ -2628,7 +2633,10 @@ function runMissionGeneration(deploymentMode)
                     local info = guids[slot.index]
                     local order = slot.index * 2
                     if slot.player == "Red" then order = order - 1 end
-                    table.insert(primaryPlacements, {order = order, deck = deck, guid = info and info.guid or nil, position = slot.displayPosition or slot.position, scale = slot.displayScale})
+                    -- No scale set: primary cards inherit the deck's 2.5 display
+                    -- scale, which is already the intended preview size, so they are
+                    -- not resized at generation (only on game start, to 1.0).
+                    table.insert(primaryPlacements, {order = order, deck = deck, guid = info and info.guid or nil, position = slot.displayPosition or slot.position})
                 elseif slot.role == "deployment" then
                     local info = deploymentChoices[slot.index]
                     if info and info.guid then
@@ -3770,12 +3778,8 @@ function selectMissionPack(packIndex)
     blueMissionManager.call("packSelected", {pack = packSelected, dealFixedSecondaries = dealFixedSecondaries, fixedChoiceCardGuids = blueFixedChoiceCardGuids, tacticalCardGuidToKeep = blueTacticalCardGuidToKeep})
 
     missionPackData = Global.getTable("missionPackData")[packSelected]
-    deploymentDeck = getObjectFromGUID(missionPackData.deploymentDeck_GUID)
     primaryDeck = getObjectFromGUID(missionPackData.primaryDeck_GUID)
 
-    deploymentDeck.locked = false
-    deploymentDeck.tooltip = true
-    deploymentDeck.interactable = true
     if legacyPrimaryDeckEnabled then
         showLegacyPrimaryDeck()
     else
