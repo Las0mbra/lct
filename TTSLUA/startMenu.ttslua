@@ -3550,15 +3550,37 @@ objectiveSeatClearance = 0.0 -- gap left under a seated marker; 0 = touching, bu
 objectiveDebug = Global.getVar("DEBUG") == true  -- build-wide debug flag (true on --test builds)
 -- rotY (optional) overrides only the Y rotation of the placed marker; the
 -- model's existing X/Z tilt is preserved. Omit it to keep the template default.
+-- Tag aliases (new naming convention; old names kept for backwards compatibility):
+--   obj_center  == obj_central  (single central marker)
+--   obj_center1 == obj_center2 == obj_triangle (triangle-group; 2 of them collapse to one)
 objectiveMarkerByTag = {
     obj_central   = {guid = "3c9b57", state = 1},
+    obj_center    = {guid = "3c9b57", state = 1},
     obj_triangle  = {guid = "3c9b57", state = 1},
+    obj_center1   = {guid = "3c9b57", state = 1},
+    obj_center2   = {guid = "3c9b57", state = 1},
     obj_neutral   = {guid = "7fd7df", state = 1},
     obj_home_blue = {guid = "e6b8fb", state = 1, rotY = 270},
     obj_home_red  = {guid = "e6b8fb", state = 1, rotY = 270},
 }
--- Stable iteration order so an object matching multiple tags resolves deterministically.
-objectiveTagOrder = {"obj_central", "obj_triangle", "obj_neutral", "obj_home_blue", "obj_home_red"}
+-- Triangle-group tags: handled together for the 2 -> 1 central-marker collapse below.
+objectiveTriangleTags = {
+    obj_triangle = true,
+    obj_center1  = true,
+    obj_center2  = true,
+}
+-- Resolution priority when an object carries more than one obj_ tag: the first tag
+-- in this list wins and the rest are ignored. Highest priority first:
+--   obj_triangle / obj_center1 / obj_center2  (tied)
+--   > obj_central / obj_center  (tied)
+--   > obj_neutral
+--   > obj_home_red / obj_home_blue  (tied)
+objectiveTagOrder = {
+    "obj_triangle", "obj_center1", "obj_center2",
+    "obj_central", "obj_center",
+    "obj_neutral",
+    "obj_home_red", "obj_home_blue",
+}
 
 function placeObjectives()
     destroyAllObjectives()
@@ -3570,12 +3592,12 @@ function placeObjectives()
         if target.getGMNotes() ~= "objective" then
             for _, tag in ipairs(objectiveTagOrder) do
                 if target.hasTag(tag) then
-                    if tag == "obj_triangle" then
+                    if objectiveTriangleTags[tag] then
                         table.insert(triangleTargets, target)
                     else
                         table.insert(placements, {target = target, tag = tag})
                     end
-                    break  -- one marker per object
+                    break  -- highest-priority tag wins; one marker per object
                 end
             end
         end

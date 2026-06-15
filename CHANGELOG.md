@@ -13,6 +13,11 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.7.0 
+- All maps should now be available. If you notice any map errors, let me know!
+- Reworked ui to to make it look more intuitive.
+
+
 ## v1.6.5c
 - More maps, currently we have all Take and Hold Matchups, Priority Assets vs Priority Assets, Priority Assets vs Recon , Purge the Foe vs Purge the Foe, Purge the Foe vs Recon, Purge the Foe vs Priority Assets. 
 - Added a "Back to Menu" button that appears beneath dispotition text after a map is loaded, in case people want to back to the original selection. 
