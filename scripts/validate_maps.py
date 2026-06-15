@@ -153,7 +153,7 @@ MAP_MANIFEST = Path(__file__).parent.parent / "data" / "map_manifest.csv"
 # text before its `objectJSONs = {` blob). Foreign loaders (e.g. the Battlemaster
 # system) are normalized to this -- see scripts/normalize_map_card.py.
 MAP_CARD_MACHINERY = Path(__file__).parent.parent / "data" / "map_card_machinery.lua"
-MAP_MANIFEST_COLUMNS = {"deck_guid", "deck_name", "card_guid", "card_name", "map_creator_tag", "map_type_tag"}
+MAP_MANIFEST_COLUMNS = {"deck_guid", "deck_name", "card_guid", "card_name", "map_creator_tag", "map_type_tag", "creator_display", "eligible"}
 REQUIRED_MAP_TAG = "map"
 MAP_CREATOR_TAG_PREFIX = "map_crt"
 MAP_TYPE_TAG_PREFIX = "map_type"
@@ -358,8 +358,44 @@ def load_map_manifest(path=MAP_MANIFEST):
             if not row["map_type_tag"].startswith(MAP_TYPE_TAG_PREFIX + "_"):
                 issues.append(Issue(ERROR, where,
                                     f"invalid map_type_tag {row['map_type_tag']!r}"))
+            if not row["creator_display"]:
+                issues.append(Issue(ERROR, where, "creator_display is empty"))
+            if row["eligible"] not in ("true", "false"):
+                issues.append(Issue(ERROR, where,
+                                    f"eligible must be 'true' or 'false', got {row['eligible']!r}"))
             seen_cards.add(row["card_guid"])
             rows.append(row)
+
+    # creator_display must be consistent for a given creator tag, or one creator
+    # would split into two filter buttons later.
+    display_by_tag = {}
+    for row in rows:
+        tag, disp = row["map_creator_tag"], row["creator_display"]
+        if not disp:
+            continue
+        if tag in display_by_tag and display_by_tag[tag] != disp:
+            issues.append(Issue(ERROR, "map manifest",
+                                f"creator_display for {tag} is inconsistent: "
+                                f"{display_by_tag[tag]!r} vs {disp!r}"))
+        else:
+            display_by_tag.setdefault(tag, disp)
+
+    # Every deck x layout must keep at least one eligible map, or generation can
+    # no longer fill that slot. Layout is the number before " - " in the name,
+    # matching the Lua deploymentCardLayoutIndex parse.
+    layouts_seen, eligible_seen = set(), set()
+    for row in rows:
+        m = re.search(r"\s(\d+)\s*-", row["card_name"])
+        if not m:
+            continue
+        slot = (row["deck_guid"], int(m.group(1)))
+        layouts_seen.add(slot)
+        if row["eligible"] == "true":
+            eligible_seen.add(slot)
+    for deck_guid, layout in sorted(layouts_seen - eligible_seen):
+        issues.append(Issue(ERROR, "map manifest",
+                            f"deck {deck_guid} layout {layout} has no eligible map"))
+
     return rows, issues
 
 

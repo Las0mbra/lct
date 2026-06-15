@@ -2330,6 +2330,40 @@ function resolveLayoutArtChoices(mapChoices)
     return choices
 end
 
+-- Narrow a layout's variant list to the map filter's wishes, using the baked
+-- MAP_INDEX (creator/eligible) and the Global "activeMapCreators" set written by
+-- the map-filter overlay. Drops ineligible maps; then, if any creators are
+-- active, prefers their maps but falls back to any eligible map so a layout slot
+-- is never left empty when an active creator has no map for this matchup.
+function filterDeploymentVariants(variants)
+    local index = Global.getTable("MAP_INDEX") or {}
+    local active = Global.getTable("activeMapCreators") or {}
+    local anyActive = next(active) ~= nil
+
+    local eligible = {}
+    for _, card in ipairs(variants) do
+        local meta = index[card.guid]
+        if not meta or meta.eligible ~= false then
+            table.insert(eligible, card)
+        end
+    end
+    if not anyActive then
+        return eligible
+    end
+
+    local preferred = {}
+    for _, card in ipairs(eligible) do
+        local meta = index[card.guid]
+        if meta and active[meta.creator] then
+            table.insert(preferred, card)
+        end
+    end
+    if #preferred > 0 then
+        return preferred
+    end
+    return eligible
+end
+
 function chooseDeploymentCardsFromDeckInfo(deckInfo, count)
     cacheDeploymentDeckContents()
     local choices = {}
@@ -2354,7 +2388,7 @@ function chooseDeploymentCardsFromDeckInfo(deckInfo, count)
 
     local selectedCards = {}
     for layoutIndex = 1, count do
-        local variants = cardsByLayout[layoutIndex] or {}
+        local variants = filterDeploymentVariants(cardsByLayout[layoutIndex] or {})
         if #variants > 0 then
             table.insert(selectedCards, variants[math.random(#variants)])
         elseif #cardsWithoutLayout > 0 then

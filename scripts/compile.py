@@ -237,6 +237,32 @@ def stamp_global(lua_text: str, version: str, patch: str, notes: list, debug: bo
     return lua_text
 
 
+def bake_map_index(lua_text: str) -> str:
+    """Replace the @@MAP_INDEX@@ marker in global.ttslua with a GUID-keyed table
+    baked from data/map_manifest.csv, so the runtime can look up a map card's
+    creator / eligibility without reading the CSV or the (in-deck) card's tags.
+    Mirrors stamp_global's marker-rewrite approach. Reuses the validator's CSV
+    reader so parsing and column expectations stay in one place.
+    """
+    rows, _ = validate_maps.load_map_manifest()
+    entries = []
+    for row in rows:
+        creator = row["map_creator_tag"].removeprefix(validate_maps.MAP_CREATOR_TAG_PREFIX + "_")
+        entries.append("[%s]={creator=%s,display=%s,eligible=%s}" % (
+            json.dumps(row["card_guid"]),
+            json.dumps(creator),
+            json.dumps(row["creator_display"]),
+            "true" if row["eligible"] == "true" else "false",
+        ))
+    literal = "MAP_INDEX = {" + ",".join(entries) + "}   -- @@MAP_INDEX@@"
+    lua_text, count = re.subn(r"^.*--\s*@@MAP_INDEX@@.*$", literal, lua_text, count=1, flags=re.M)
+    if count != 1:
+        warn("marker @@MAP_INDEX@@ not found in global.ttslua — map index not injected.")
+    else:
+        print(f"  Baked MAP_INDEX from map_manifest.csv ({len(entries)} map cards).")
+    return lua_text
+
+
 def stamp_save_name(line: str, version: str) -> str:
     """Append ` - <version>` to a `"SaveName"`/`"GameMode"` JSON string value.
 
@@ -365,6 +391,7 @@ def main():
     global_text = stamp_global(
         lua_files[0].read_text(encoding="utf-8"), version, patch, changelog_notes, debug_enabled
     )
+    global_text = bake_map_index(global_text)
     inject_lua_into_line(json_lines, json_lua_line_idxs[0], global_text)
     print(term.green("Done."))
 

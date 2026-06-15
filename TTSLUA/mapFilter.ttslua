@@ -1,0 +1,104 @@
+-- FTC-GUID: 369707
+-- Map Creator Filter overlay.
+--
+-- Anchored on a hidden BlockSquare placed between Generate Mission and the
+-- deployment-zone picker. It lists every map creator found in the baked
+-- MAP_INDEX (see bake_map_index in scripts/compile.py) as a row of toggle
+-- buttons. Toggling one or more creators restricts mission generation to those
+-- creators' maps; a layout with no map from an active creator falls back to any
+-- eligible creator (so a slot is never left empty).
+--
+-- State lives here (persisted in onSave) and is mirrored into the Global table
+-- "activeMapCreators", which startMenu reads during generation. Keeping the
+-- mirror means startMenu never has to depend on this object existing yet.
+
+ACTIVE_GLOBAL_KEY = "activeMapCreators"
+COLOR_ON  = "#38C172"   -- green: creator active
+COLOR_OFF = "#FFFFFF"   -- white: creator inactive
+
+-- Lifts the panel off the block's face (the THIRD number of the UI `position`,
+-- i.e. perpendicular to a face-up tile). Higher = panel further above the table.
+-- The block itself is parked under the table (negative posY in the save); this
+-- lift is what brings the panel back up to a readable height.
+UI_VERTICAL_LIFT = -150
+
+activeCreators = {}     -- { [creatorId] = true }
+
+function onSave()
+    return JSON.encode({activeCreators = activeCreators})
+end
+
+function onLoad(saved)
+    activeCreators = {}
+    if saved and saved ~= "" then
+        local ok, data = pcall(function() return JSON.decode(saved) end)
+        if ok and type(data) == "table" and type(data.activeCreators) == "table" then
+            activeCreators = data.activeCreators
+        end
+    end
+    publishActiveCreators()
+    -- Small delay so the Global script's MAP_INDEX is in place regardless of
+    -- onLoad ordering.
+    Wait.time(buildFilterUI, 1)
+end
+
+-- Distinct creators from the baked catalog, sorted by display name.
+function creatorList()
+    local index = Global.getTable("MAP_INDEX") or {}
+    local seen, list = {}, {}
+    for _, meta in pairs(index) do
+        local id = meta.creator
+        if id and not seen[id] then
+            seen[id] = true
+            table.insert(list, {id = id, display = meta.display or id})
+        end
+    end
+    table.sort(list, function(a, b) return a.display < b.display end)
+    return list
+end
+
+function creatorButtonId(id) return "crt_" .. id end
+function colorFor(id) return activeCreators[id] and COLOR_ON or COLOR_OFF end
+
+function buildFilterUI()
+    local list = creatorList()
+    local rows = {'<Text fontSize="44" color="#FFFFFF" preferredHeight="70">Map Creators</Text>'}
+    for _, c in ipairs(list) do
+        rows[#rows + 1] = string.format(
+            '<Button id="%s" onClick="onCreatorToggle" color="%s" textColor="#000000" '
+            .. 'fontSize="36" preferredWidth="520" preferredHeight="90">%s</Button>',
+            creatorButtonId(c.id), colorFor(c.id), c.display)
+    end
+    local height = 110 + #list * 100
+    local xml = string.format(
+        '<VerticalLayout position="0 0 %d" rotation="0 0 0" width="600" height="%d" '
+        .. 'padding="14 14 14 14" spacing="8" color="#101015E6" childForceExpandHeight="false">\n%s\n</VerticalLayout>',
+        UI_VERTICAL_LIFT, height, table.concat(rows, "\n"))
+    self.UI.setXml(xml)
+end
+
+function onCreatorToggle(player, value, id)
+    local creator = string.gsub(id, "^crt_", "")
+    if activeCreators[creator] then
+        activeCreators[creator] = nil
+    else
+        activeCreators[creator] = true
+    end
+    self.UI.setAttribute(id, "color", colorFor(creator))
+    publishActiveCreators()
+end
+
+-- Shallow copy so external readers can't mutate our state.
+function copyActive()
+    local copy = {}
+    for k, v in pairs(activeCreators) do copy[k] = v end
+    return copy
+end
+
+function publishActiveCreators()
+    Global.setTable(ACTIVE_GLOBAL_KEY, copyActive())
+end
+
+function getActiveCreators()
+    return copyActive()
+end
