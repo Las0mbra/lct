@@ -19,8 +19,10 @@ dispositionValues = {"Disruption", "Priority Assets", "Purge the Foe", "Reconnai
 blueDispositionSelected = 1
 redDispositionSelected = 3
 matTextureSelected = 1
-matClearButtonUsed = false
+missionSetupControlsVisible = false
 mapMat_GUID = "28865a"
+defaultMatTextureURL = "https://steamusercontent-a.akamaihd.net/ugc/15425072743099001267/B83134980FFB54308B44410C44305D245F8DF3F0/"
+gameModeMatTextureURL = "https://steamusercontent-a.akamaihd.net/ugc/11927766457912242969/CF467C9E73E87C1EABF3F2239B0B3BF47ADF00CA/"
 
 -- "Back to Selection" restore point. Captured automatically the instant a map
 -- is loaded (before its wipe), so a wrong map can be undone without reloading
@@ -69,7 +71,10 @@ function onLoad(saved_data)
         blueDispositionSelected = loaded_data.svblueDispositionSelected or blueDispositionSelected
         redDispositionSelected = loaded_data.svredDispositionSelected or redDispositionSelected
         matTextureSelected = loaded_data.svMatTextureSelected or matTextureSelected
-        matClearButtonUsed = loaded_data.svMatClearButtonUsed or false
+        missionSetupControlsVisible = loaded_data.svMissionSetupControlsVisible
+        if missionSetupControlsVisible == nil then
+            missionSetupControlsVisible = gameMode == "game" and not inGame
+        end
         -- Restore point is in-memory only (see onSave); a save+reload clears it.
     end
 
@@ -140,7 +145,7 @@ function onSave()
         svblueDispositionSelected = blueDispositionSelected,
         svredDispositionSelected = redDispositionSelected,
         svMatTextureSelected = matTextureSelected,
-        svMatClearButtonUsed = matClearButtonUsed,
+        svMissionSetupControlsVisible = missionSetupControlsVisible,
         -- NOTE: the restore point (restorePointObjects in particular) is held in
         -- memory only and deliberately NOT persisted here. It can reach ~5 MB
         -- (the game-mode objects are large decks), and JSON.encode on every
@@ -550,11 +555,32 @@ function destroyObjectByGUID(guid)
     end
 end
 
+function applySurfaceMatTexture(url)
+    mat = getObjectFromGUID(mat_GUID)
+    if not mat or not url then return end
+
+    local customInfo = mat.getCustomObject()
+    if customInfo.diffuse ~= url then
+        customInfo.diffuse = url
+        mat.setCustomObject(customInfo)
+        mat = mat.reload()
+    end
+end
+
+function applyGameModeMatTexture()
+    applySurfaceMatTexture(gameModeMatTextureURL)
+end
+
+function applyDefaultMatTexture()
+    applySurfaceMatTexture(defaultMatTextureURL)
+end
+
 function confirmSizeMat()
     gameMode= "game"
+    missionSetupControlsVisible = true
+    applyGameModeMatTexture()
     sizeConfirmed=true
-    matClearButtonUsed = false
-    mat.setScale(sizeData[mapSizeSelected].scale)
+        mat.setScale(sizeData[mapSizeSelected].scale)
     self.setRotation({0,270,0})
     if deployMode and isValidDeployMode(deployMode) then
         setDeployZonesMode(deployMode, false)
@@ -854,7 +880,7 @@ deployDownBtn = {
     position = { -arrowOffset, 5, 3}, rotation = {0, 0, 0}, height = 750, width = 800,
     font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
-dispositionControlWorldX = 36.50
+dispositionControlWorldX = 33.50
 ingameDispositionControlWorldX = 80
 blueDispositionControlWorldZ = 12.1
 redDispositionControlWorldZ = -12.1
@@ -947,6 +973,7 @@ function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunct
 end
 
 function writeDispositionMenu(locked)
+    if gameMode ~= "game" or not missionSetupControlsVisible then return end
     blueDispositionSelected = normalizeDispositionIndex(blueDispositionSelected)
     redDispositionSelected = normalizeDispositionIndex(redDispositionSelected)
     createDispositionSelector("Blue Disposition", blueDispositionSelected, blueDispositionControlWorldZ, "blueDispositionDown", "blueDispositionUp", locked)
@@ -963,10 +990,9 @@ end
 matClearZoneScale = {x = 60.12, y = 73, z = 44.04}
 matClearKeepGuids = {["28865a"] = true, ["4ee1f2"] = true, ["6012bf"] = true, ["948ce5"] = true, ["e7ca6e"] = true}
 
--- Shown once a game mode is selected (gameMode == "game"); not tied to any map.
--- Removes itself after a single use (matClearButtonUsed); reset in confirmSizeMat.
+-- Shown throughout setup after a game mode is selected; hidden once the game starts.
 function writeClearMatButton()
-    if gameMode ~= "game" or matClearButtonUsed then return end
+    if gameMode ~= "game" or inGame then return end
 
     createButtonWithBorder({
         label = "CLEAR MAT", click_function = "clearMat", function_owner = self,
@@ -978,19 +1004,20 @@ function writeClearMatButton()
     })
 end
 
--- Shown after a map is loaded (restore point captured) and before the game has
--- started -- lets the player undo a wrong map and return to the selection screen.
+-- Always shown before the game starts; enabled once a map load captures a restore point.
 -- Sits just right of the Deployment Zone picker, mirroring CLEAR MAT on the left.
 function writeBackToSelectionButton()
-    if not restorePointAvailable or gameMode ~= "game" or inGame then return end
+    if inGame then return end
 
+    local enabled = restorePointAvailable
     createButtonWithBorder({
-        label = "BACK TO SELECTION", click_function = "backToSelection", function_owner = self,
+        label = "BACK TO SELECTION", click_function = enabled and "backToSelection" or "none", function_owner = self,
         position = {deployFlankButtonLocalX, deployBtn.position[2], deployBtn.position[3]}, rotation = {0, 0, 0},
         height = dispositionButtonHeight, width = dispositionButtonWidth,
         font_size = dispositionButtonFontSize,
-        color = {0.85, 0.55, 0.1}, font_color = {1, 1, 1},
-        tooltip = "Undo the loaded map and return to map selection",
+        color = enabled and {0.85, 0.55, 0.1} or {0.35, 0.35, 0.35},
+        font_color = enabled and {1, 1, 1} or {0.75, 0.75, 0.75},
+        tooltip = enabled and "Undo the loaded map and return to map selection" or "Load a map to enable this button",
     })
 end
 
@@ -1009,8 +1036,10 @@ end
 
 function clearMat()
     returnLayoutCardsToDeck()
-    matClearButtonUsed = true
-    writeMenus()  -- redraw without the CLEAR MAT button
+    applyDefaultMatTexture()
+    missionSetupControlsVisible = false
+    destroyObjectByGUID("8f2be2")
+    writeMenus()
 
     spawnObject({
         position = {x = 0, y = 26, z = 0},
@@ -1168,7 +1197,6 @@ function applyRestoredSelectionState()
     end
     placeForceDispositionToken()
 
-    matClearButtonUsed = false  -- a fresh selection screen offers CLEAR MAT again
     applyMatTexture(false)
 
     restorePointAvailable = false
@@ -1204,7 +1232,7 @@ function redDispositionDown()
     updateDispositionSelection("Red", -1)
 end
 
-generateMissionWorldX = 35.60
+generateMissionWorldX = 34.60
 generateMissionWorldY = 1.0
 generateMissionWorldZ = 0.0
 
@@ -1676,32 +1704,32 @@ deploymentLockButtonWorldX = 36.65
 deploymentLockButtonWorldY = 1.00
 deploymentLockButtonOffsetX = -1.60
 deploymentLockButtonWorldZ = {[1] = 3.00, [2] = 0.10, [3] = -2.80}
-deploymentRandomPickButtonWorldX = 32.00
+deploymentRandomPickButtonWorldX = 31.50
 deploymentRandomPickButtonWorldY = 1.00
 deploymentRandomPickButtonWorldZ = -0.10
 
 function writeGenerateMissionButton()
     local center = self.positionToLocal({generateMissionWorldX, generateMissionWorldY, generateMissionWorldZ})
     local missionReady = gameMode == "game" and packSelected ~= nil
-    self.createButton({
-        label = "Generate Missions", click_function = missionReady and "generateMission" or "none", function_owner = self,
+    createButtonWithBorder({
+        label = "Generate Missions & Layouts", click_function = missionReady and "generateMission" or "none", function_owner = self,
         position = {center.x, center.y, center.z}, rotation = {0, 0, 0},
-        height = 1012.5, width = 4500, font_size = 440,
-        color = missionReady and {0, 0, 0} or {0.18, 0.18, 0.18}, font_color = {1, 1, 1},
+        height = dispositionButtonHeight, width = 4500, font_size = 350,
+        color = {0.191999942, 0.701, 0.167999923}, font_color = {0, 0, 0},
         tooltip = "Deal each player's primary mission for the current dispositions",
-    })
+    }, {0, 0, 0, 1})
     writeDeploymentRandomPickButton()
 end
 
 function writeDeploymentRandomPickButton()
     local btn = self.positionToLocal({deploymentRandomPickButtonWorldX, deploymentRandomPickButtonWorldY, deploymentRandomPickButtonWorldZ})
-    self.createButton({
-        label = "Random Layout", click_function = "randomMission", function_owner = self,
+    createButtonWithBorder({
+        label = "Random Single Layout", click_function = "randomMission", function_owner = self,
         position = {btn.x, btn.y, btn.z}, rotation = {0, 0, 0},
-        height = 375, width = 4500, font_size = 340,
+        height = dispositionButtonHeight, width = 4500, font_size = 340,
         color = {1, 0.86, 0.05}, font_color = {0, 0, 0},
         tooltip = "Randomly choose one of the deployment cards",
-    })
+    }, {0, 0, 0, 1})
 end
 
 function writeDeploymentLockButtons()
@@ -3433,9 +3461,7 @@ function onMapCardLoaded(params)
 
     broadcastToAll("Loading map: " .. name, {0.3, 1.0, 0.3})  -- banner + chat log
 
-    -- A loaded map owns the mat (and brings its own Clear button), so dismiss
-    -- the standalone CLEAR MAT button the same way using it would.
-    matClearButtonUsed = true
+    -- Keep the standalone CLEAR MAT button available throughout setup.
     writeMenus()
 
     -- The v2 wipe deliberately keeps the loaded card alive so its 0.5s terrain
