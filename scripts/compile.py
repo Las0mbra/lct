@@ -32,6 +32,18 @@ def warn(msg: str):
     print(term.yellow(f"  WARNING: {msg}"))
 
 
+def format_map_warning(issue) -> str:
+    """Compact validator warnings for the final build summary.
+
+    Card-level warnings start with the card GUID so the map can be found quickly.
+    """
+    match = re.match(r"card ([0-9a-fA-F]{6}) (.*)", issue.where)
+    if match:
+        guid, label = match.groups()
+        return f"{guid} map: {issue.message} [{label}]"
+    return f"map validation: {issue.message} [{issue.where}]"
+
+
 def fail(msg: str):
     print(term.red(f"ERROR: {msg}"))
     sys.exit(1)
@@ -316,7 +328,7 @@ def main():
         n_err, _ = validate_maps.report(val_issues, val_ctx)
         validate_maps.report_zone_versions(val_ctx)
         WARNINGS.extend(
-            f"map card: {i.message} [{i.where}]"
+            format_map_warning(i)
             for i in val_issues if i.level == validate_maps.WARN
         )
         if n_err:

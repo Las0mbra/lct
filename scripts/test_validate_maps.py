@@ -149,6 +149,19 @@ class ValidateMapsTest(unittest.TestCase):
         self.assertTrue(matching)
         self.assertTrue(all(i.level == validate_maps.ERROR for i in matching))
 
+    def test_objective_marker_tag_check_is_non_blocking(self):
+        states = copy.deepcopy(self.object_states)
+        card = find_guid(states, "c1d1af")
+        card["LuaScript"] = card["LuaScript"].replace("obj_home_red", "obj_missing_home")
+
+        issues, _ = validate_maps.validate(states, require_map_tags=True)
+        matching = [i for i in issues
+                    if "c1d1af" in i.where and "obj_tags" in i.message]
+        self.assertEqual(1, len(matching))
+        self.assertEqual(validate_maps.WARN, matching[0].level)
+        self.assertIn("missing 1 obj_tags", matching[0].message)
+        self.assertIn("obj_home_red", matching[0].message)
+
     def test_map_statistics_describe_current_inventory(self):
         _, ctx = validate_maps.validate(self.object_states, require_map_tags=True)
         stats = validate_maps.map_statistics(ctx)

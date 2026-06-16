@@ -55,6 +55,17 @@ KEEP_GUIDS_MUST_EXIST = {"28865a", "4ee1f2"}
 # Every card is expected to honor the per-object opt-out tag.
 EXPECTED_GM_EXCLUDE = "MapExclude"
 
+# Mission objective marker tags expected inside each baked map payload. This is
+# intentionally advisory: missing markers make deployment/objective automation
+# suspect, but should not block test/release builds while legacy maps are being
+# cleaned up.
+OBJECTIVE_HOME_TAGS = ("obj_home_red", "obj_home_blue")
+OBJECTIVE_NEUTRAL_TAG = "obj_neutral"
+OBJECTIVE_CENTER_TAGS = ("obj_center", "obj_central")
+OBJECTIVE_TRIANGLE_TAG = "obj_triangle"
+OBJECTIVE_CENTER1_TAGS = ("obj_center1", "obj_center 1", "obj_center_1")
+OBJECTIVE_CENTER2_TAGS = ("obj_center2", "obj_center 2", "obj_center_2")
+
 # --- Compile-time "Load Map" hook -------------------------------------------
 # compile.py injects a one-liner at the top of each card's loadMap so pressing
 # Load Map notifies the menu object (738804) with the card's name/GUID. The
@@ -221,6 +232,7 @@ class MapCard:
         self.terrain_count = len(_TERRAIN_GUID_RE.findall(tail))
         self.terrain_guids = set(_TERRAIN_GUID_VALUE_RE.findall(tail))
         self.terrain_entries = _OBJECTJSON_ENTRY_RE.findall(tail)
+        self.objective_tag_counts = objective_tag_counts(self.terrain_entries)
         self.logical_name = map_logical_name(self.name)
         sm = _NAME_SUFFIX_RE.match(self.logical_name)
         self.suffix = sm.group(1) if sm and sm.group(1) else None
@@ -228,6 +240,31 @@ class MapCard:
     @property
     def where(self) -> str:
         return f"card {self.guid} {self.name!r}"
+
+
+def objective_tag_counts(terrain_entries):
+    """Count map-object tags in spawned terrain payloads.
+
+    ChildObjects are present on the table with their parent, so they count.
+    Alternate States are ignored because only one state exists at a time and
+    counting them can make an incomplete map look complete by accident.
+    """
+    counts = Counter()
+
+    def visit(obj):
+        if not isinstance(obj, dict):
+            return
+        for tag in obj.get("Tags") or []:
+            counts[tag] += 1
+        for child in obj.get("ChildObjects") or []:
+            visit(child)
+
+    for entry in terrain_entries:
+        try:
+            visit(json.loads(entry))
+        except (json.JSONDecodeError, ValueError):
+            continue
+    return counts
 
 
 class MapContext:
@@ -589,6 +626,56 @@ def gm_exclude_present(ctx):
         if EXPECTED_GM_EXCLUDE not in card.gm_excludes:
             yield Issue(WARN, card.where,
                         f'wipe does not honor GM-notes "{EXPECTED_GM_EXCLUDE}" opt-out')
+
+
+@check
+def objective_marker_tags_present(ctx):
+    """Advisory check for mission/objective marker tags inside spawned terrain.
+
+    Compile always reports these warnings, but they never block builds.
+    """
+    for card in ctx.cards:
+        counts = card.objective_tag_counts
+        missing = []
+        missing_count = 0
+
+        missing_home = [tag for tag in OBJECTIVE_HOME_TAGS if counts[tag] < 1]
+        if missing_home:
+            missing_count += len(missing_home)
+            missing.append("missing " + ", ".join(missing_home))
+
+        if counts[OBJECTIVE_NEUTRAL_TAG] < 2:
+            missing_count += 2 - counts[OBJECTIVE_NEUTRAL_TAG]
+            missing.append(f"needs at least 2 {OBJECTIVE_NEUTRAL_TAG} "
+                           f"(found {counts[OBJECTIVE_NEUTRAL_TAG]})")
+
+        center_count = sum(counts[tag] for tag in OBJECTIVE_CENTER_TAGS)
+        triangle_count = counts[OBJECTIVE_TRIANGLE_TAG]
+        center1_count = sum(counts[tag] for tag in OBJECTIVE_CENTER1_TAGS)
+        center2_count = sum(counts[tag] for tag in OBJECTIVE_CENTER2_TAGS)
+        if not (center_count >= 1 or triangle_count >= 2
+                or (center1_count >= 1 and center2_count >= 1)):
+            missing_count += 1
+            missing.append("needs obj_center/obj_central, or 2 obj_triangle, "
+                           "or an obj_center1 + obj_center2 pair")
+
+        if missing:
+            relevant = {
+                tag: counts[tag]
+                for tag in (
+                    *OBJECTIVE_HOME_TAGS,
+                    OBJECTIVE_NEUTRAL_TAG,
+                    *OBJECTIVE_CENTER_TAGS,
+                    OBJECTIVE_TRIANGLE_TAG,
+                    *OBJECTIVE_CENTER1_TAGS,
+                    *OBJECTIVE_CENTER2_TAGS,
+                )
+                if counts[tag]
+            }
+            found = ", ".join(f"{tag}={count}" for tag, count in relevant.items()) or "none"
+            yield Issue(WARN, card.where,
+                        f"missing {missing_count} obj_tags: " + "; ".join(missing)
+                        + f"; found {found}")
 
 
 @check
