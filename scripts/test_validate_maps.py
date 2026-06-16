@@ -44,14 +44,12 @@ class ValidateMapsTest(unittest.TestCase):
 
     def test_creator_variant_decks_cover_all_layouts(self):
         expected_by_deck = {
-            **{guid: {"map_crt_belgium", "map_crt_cr5sh", "map_crt_izar"}
+            **{guid: {"map_crt_belgium", "map_crt_cr5sh", "map_crt_izar", "map_crt_bttf"}
                for guid in ("6e0d78", "109a6b", "1e6711", "cfeba5", "eae80b")},
-            **{guid: {"map_crt_cr5sh", "map_crt_izar"}
+            **{guid: {"map_crt_cr5sh", "map_crt_izar", "map_crt_bttf"}
                for guid in ("a22c33", "3ebbd6", "9ac38f")},
             **{guid: {"map_crt_bttf", "map_crt_cr5sh"}
-               for guid in ("793bc0", "4409ba", "2c7cd1", "f1e22b")},
-            **{guid: {"map_crt_cr5sh"}
-               for guid in ("32e34a", "7b5ba7", "dc8738")},
+               for guid in ("793bc0", "4409ba", "2c7cd1", "f1e22b", "32e34a", "7b5ba7", "dc8738")},
         }
         for deck_guid, expected_creators in expected_by_deck.items():
             deck = find_guid(self.object_states, deck_guid)
@@ -165,10 +163,10 @@ class ValidateMapsTest(unittest.TestCase):
     def test_map_statistics_describe_current_inventory(self):
         _, ctx = validate_maps.validate(self.object_states, require_map_tags=True)
         stats = validate_maps.map_statistics(ctx)
-        self.assertEqual(96, stats["cards"])
+        self.assertEqual(129, stats["cards"])
         self.assertEqual(45, stats["logical_layouts"])
         self.assertEqual(15, stats["source_containers"])
-        self.assertEqual({"comp": 96}, dict(stats["map_types"]))
+        self.assertEqual({"comp": 129}, dict(stats["map_types"]))
         self.assertEqual(25, stats["mapped_matchups"])
         self.assertEqual(25, stats["total_matchups"])
         self.assertGreater(stats["terrain_total"], 0)
