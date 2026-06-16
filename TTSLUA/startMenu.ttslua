@@ -32,6 +32,12 @@ gameModeMatTextureURL = "https://steamusercontent-a.akamaihd.net/ugc/11927766457
 restorePointAvailable = false
 restorePointMenuState = nil
 restorePointObjects = nil
+-- GUIDs (subset of restorePointObjects) of the loose mission cards -- deployment
+-- maps, their layout art, and the dealt primaries. Unlike the persistent
+-- selection objects these get scattered by a map load, so the restore destroys
+-- every live copy and respawns them from the snapshot instead of relying on the
+-- "respawn only if missing" guard alone.
+restorePointMissionCardGuids = nil
 matTextures = {
     {name = "Green", color = {0.00, 0.31, 0.03}, url = "https://steamusercontent-a.akamaihd.net/ugc/11600812045538713232/0064F3B919AEC48D35C233786977578689C81AD1/"},
     {name = "Blue", color = {0.00, 0.31, 0.44}, url = "https://steamusercontent-a.akamaihd.net/ugc/12661578557139534569/9D589BE05341F1CE8EA20369387C7C5077587AB9/"},
@@ -1089,16 +1095,64 @@ function captureRestorePoint()
         end
     end
 
-    -- Generated map cards are loose outside their source bags when Load Map is
-    -- pressed. Snapshot every loose map-tagged card wherever a player moved it;
-    -- limiting this to deployment slots loses manually moved cards during undo.
-    -- Cards still inside bags are already included in their source bag JSON.
+    -- Snapshot the loose mission cards in their current on-board display state.
+    -- Captured before the load's own moves (paired art to the side board,
+    -- primaries off to the in-game slots), so every card is still at its post-
+    -- Generate display position and scale here. Tracked in
+    -- restorePointMissionCardGuids so the restore can purge their scattered live
+    -- copies before respawning them.
+    restorePointMissionCardGuids = {}
+    local function snapshotMissionCard(obj)
+        local guid = obj.getGUID()
+        restorePointObjects[guid] = obj.getJSON()
+        restorePointMissionCardGuids[guid] = true
+    end
+
+    -- Map cards and layout art carry tags, so catch them wherever a player moved
+    -- them (limiting to slots would lose manually moved cards during undo). Cards
+    -- still inside bags are already included in their source bag JSON.
     for _, obj in ipairs(getAllObjects()) do
-        if obj.tag == "Card" and obj.hasTag and obj.hasTag("map") then
-            restorePointObjects[obj.getGUID()] = obj.getJSON()
+        if obj.tag == "Card" and obj.hasTag and (obj.hasTag("map") or obj.hasTag(layoutArtCardTag)) then
+            snapshotMissionCard(obj)
+        end
+    end
+
+    -- Primary cards have no tag; take them straight from their primary slots.
+    for _, player in ipairs({"Red", "Blue"}) do
+        local _, cards = placedPrimaryCardEntries(player)
+        for _, card in ipairs(cards) do
+            snapshotMissionCard(card)
         end
     end
     restorePointAvailable = true
+end
+
+-- Remove every live copy of a snapshotted mission card so respawnSelectionObjects
+-- recreates it from JSON (at the captured display position + 2.5 scale) instead of
+-- finding a stale survivor. After a load they are scattered: maps loose on the mat,
+-- the paired layout art parked off-board, its siblings back inside deck fb4b5d, and
+-- the primaries parked off-board at 1.0 scale -- only the on-mat ones would be hit
+-- by the wipe. Loose copies are destructed directly; deck-held copies are taken out
+-- and destructed. Runs before the wipe + restore waits, leaving ample time for the
+-- async takeObject to settle before the freed GUIDs are reused.
+function purgeRestoredMissionCards()
+    for guid in pairs(restorePointMissionCardGuids or {}) do
+        local loose, container = findDeploymentCard(guid)
+        if loose then
+            pcall(function()
+                loose.setLock(false)
+                loose.destruct()
+            end)
+        elseif container and container.takeObject then
+            pcall(function()
+                container.takeObject({
+                    guid = guid, smooth = false,
+                    callback_function = function(card) if card then card.destruct() end end,
+                })
+            end)
+        end
+    end
+    loadedLayoutArtCardGuid = nil
 end
 
 -- Entry point for the button: clear the (wrong) map, then restore the snapshot.
@@ -1117,7 +1171,9 @@ function backToSelection()
 
     destroyAllObjectives()
     destroyDeployZones()
-    returnLoadedLayoutArtCardToDeck()
+    -- Wipe out the scattered live copies (incl. the loaded layout art and the
+    -- deck-returned siblings) so they are all respawned uniformly from the snapshot.
+    purgeRestoredMissionCards()
 
     spawnObject({
         position = {x = 0, y = 26, z = 0},
@@ -1202,6 +1258,7 @@ function applyRestoredSelectionState()
     restorePointAvailable = false
     restorePointObjects = nil
     restorePointMenuState = nil
+    restorePointMissionCardGuids = nil
 
     writeMenus()
     broadcastToAll("Back to map selection.", {0.3, 1.0, 0.3})
