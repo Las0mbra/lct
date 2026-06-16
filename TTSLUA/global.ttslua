@@ -739,8 +739,6 @@ blueSecondaryName_GUIDs = {
 challengerCardZone_GUID = "cdecf2"
 
 primaryDeck_GUID = "d26e9c"
-redSecondaryDeck_GUID = "c0fb49"
-blueSecondaryDeck_GUID = "bbdb02"
 edition11RedSecondaryDeck_GUID = "8104e1"
 edition11BlueSecondaryDeck_GUID = "994347"
 
@@ -889,8 +887,8 @@ missionPackData = {
         name = "Chapter Approved 2025",
         primaryDeck_GUID = "d26e9c",
         fixedSecondaryDeck_GUID = "b55459",
-        redSecondaryDeck_GUID = "c0fb49",
-        blueSecondaryDeck_GUID = "bbdb02",
+        redSecondaryDeck_GUID = "8104e1",
+        blueSecondaryDeck_GUID = "994347",
     },
 }
 
@@ -1117,8 +1115,8 @@ function onLoad(saved_data)
         ensureHudSettings("Red")
         ensureHudSettings("Blue")
         if packSelected then
-            missionPackData[packSelected].redSecondaryDeck_GUID = loaded_data.svRedSecondaryDeckGUID or redSecondaryDeck_GUID
-            missionPackData[packSelected].blueSecondaryDeck_GUID = loaded_data.svBlueSecondaryDeckGUID or blueSecondaryDeck_GUID
+            missionPackData[packSelected].redSecondaryDeck_GUID = loaded_data.svRedSecondaryDeckGUID or edition11RedSecondaryDeck_GUID
+            missionPackData[packSelected].blueSecondaryDeck_GUID = loaded_data.svBlueSecondaryDeckGUID or edition11BlueSecondaryDeck_GUID
         end
     else
         redPlayerID = ""
@@ -1128,8 +1126,6 @@ function onLoad(saved_data)
         ensureHudSettings("Blue")
     end
     if not packSelected then
-        hideMissionDeckUntilSelected(redSecondaryDeck_GUID)
-        hideMissionDeckUntilSelected(blueSecondaryDeck_GUID)
         hideMissionDeckUntilSelected(edition11RedSecondaryDeck_GUID)
         hideMissionDeckUntilSelected(edition11BlueSecondaryDeck_GUID)
     end
@@ -1327,8 +1323,8 @@ function setMissionPack(params)
     local packData = missionPackData[packSelected]
     if not packData then return end
 
-    packData.redSecondaryDeck_GUID = params.redSecondaryDeck_GUID or redSecondaryDeck_GUID
-    packData.blueSecondaryDeck_GUID = params.blueSecondaryDeck_GUID or blueSecondaryDeck_GUID
+    packData.redSecondaryDeck_GUID = params.redSecondaryDeck_GUID or edition11RedSecondaryDeck_GUID
+    packData.blueSecondaryDeck_GUID = params.blueSecondaryDeck_GUID or edition11BlueSecondaryDeck_GUID
 end
 
 function useEdition11SecondaryDecks()
@@ -1339,20 +1335,6 @@ function useEdition11SecondaryDecks()
 
     activateMissionDeck(edition11RedSecondaryDeck_GUID, redSecondaryDeckPosition, "Red secondary mission cards")
     activateMissionDeck(edition11BlueSecondaryDeck_GUID, blueSecondaryDeckPosition, "Blue secondary mission cards")
-    destroyObjectByGUID(redSecondaryDeck_GUID)
-    destroyObjectByGUID(blueSecondaryDeck_GUID)
-end
-
-function useTenthEditionSecondaryDecks()
-    if not packSelected or not missionPackData[packSelected] then return end
-
-    missionPackData[packSelected].redSecondaryDeck_GUID = redSecondaryDeck_GUID
-    missionPackData[packSelected].blueSecondaryDeck_GUID = blueSecondaryDeck_GUID
-
-    activateMissionDeck(redSecondaryDeck_GUID, redSecondaryDeckPosition, "Red secondary mission cards")
-    activateMissionDeck(blueSecondaryDeck_GUID, blueSecondaryDeckPosition, "Blue secondary mission cards")
-    hideMissionDeckUntilSelected(edition11RedSecondaryDeck_GUID)
-    hideMissionDeckUntilSelected(edition11BlueSecondaryDeck_GUID)
 end
 
 function autoSeatPerson(_person)

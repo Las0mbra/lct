@@ -13,7 +13,9 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
-## v1.7.0b
+## v1.7.0c
+- Fixed most of the objective based bugs for maps
+- Now Back to Selection undo button returns all cards appropriately
 - Quick fix with some ui errors and primaries not moving on board 
 - Added map filter
 - All maps should now be available. If you notice any map errors, let me know!

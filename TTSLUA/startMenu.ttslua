@@ -60,7 +60,6 @@ function onLoad(saved_data)
     --getData()
     deploySelected = nil
     deployMode = nil
-    legacyPrimaryDeckEnabled = false
     if saved_data ~= "" then
         local loaded_data = JSON.decode(saved_data)
         gameMode = loaded_data.svgameMode
@@ -72,7 +71,6 @@ function onLoad(saved_data)
         sizeConfirmed = loaded_data.svsizeConfirmed
         deploySelected = loaded_data.svdeploySelected
         deployMode = loaded_data.svdeployMode
-        legacyPrimaryDeckEnabled = loaded_data.svLegacyPrimaryDeckEnabled or false
         packSelected = loaded_data.svPackSelected
         blueDispositionSelected = loaded_data.svblueDispositionSelected or blueDispositionSelected
         redDispositionSelected = loaded_data.svredDispositionSelected or redDispositionSelected
@@ -146,7 +144,6 @@ function onSave()
         svsizeConfirmed = sizeConfirmed,
         svdeploySelected = deploySelected,
         svdeployMode = deployMode,
-        svLegacyPrimaryDeckEnabled = legacyPrimaryDeckEnabled,
         svPackSelected = packSelected,
         svblueDispositionSelected = blueDispositionSelected,
         svredDispositionSelected = redDispositionSelected,
@@ -386,14 +383,12 @@ end
 function confirmForSingles()
     singlesMode = "singles"
     deployMode = "edition11"
-    legacyPrimaryDeckEnabled = false
     loadGameWithoutMapContainers()
 end
 
 function confirmStandardGame()
     singlesMode = nil
     deployMode = "edition11"
-    legacyPrimaryDeckEnabled = false
     loadGameWithoutMapContainers()
 end
 
@@ -405,32 +400,6 @@ function loadGameWithoutMapContainers()
 end
 
 legacyPrimaryDeck_GUID = "d26e9c"
-legacyPrimaryDeckPosition = {85.25, 0.95, -7.65}
-legacyPrimaryDeckHiddenPosition = {89.238, -5.0, -6.352}
-
-function setLegacyPrimaryDeckVisibility(visible)
-    local deck = getObjectFromGUID(legacyPrimaryDeck_GUID)
-    if not deck then
-        return
-    end
-
-    if visible then
-        deck.setLock(false)
-        deck.setPosition(legacyPrimaryDeckPosition)
-        deck.setRotation({0, 270, 180})
-        deck.tooltip = true
-        deck.interactable = true
-    else
-        deck.setPosition(legacyPrimaryDeckHiddenPosition)
-        deck.setLock(true)
-        deck.tooltip = false
-        deck.interactable = false
-    end
-end
-
-function showLegacyPrimaryDeck()
-    setLegacyPrimaryDeckVisibility(true)
-end
 
 function destroyLegacyPrimaryDeck()
     destroyObjectByGUID(legacyPrimaryDeck_GUID)
@@ -3948,14 +3917,6 @@ function selectMissionPack(packIndex)
     local blueFixedChoiceCardGuids = {"f68853", "7d0dc0", "27bca6", "774b53"}
     local redTacticalCardGuidToKeep = "838a9b"
     local blueTacticalCardGuidToKeep = "a847c1"
-    if legacyPrimaryDeckEnabled then
-        redSecondaryDeckGuid = Global.getVar("redSecondaryDeck_GUID")
-        blueSecondaryDeckGuid = Global.getVar("blueSecondaryDeck_GUID")
-        redFixedChoiceCardGuids = nil
-        blueFixedChoiceCardGuids = nil
-        redTacticalCardGuidToKeep = nil
-        blueTacticalCardGuidToKeep = nil
-    end
 
     Global.call("setMissionPack", {
         pack = packSelected,
@@ -3963,11 +3924,7 @@ function selectMissionPack(packIndex)
         blueSecondaryDeck_GUID = blueSecondaryDeckGuid,
     })
 
-    if legacyPrimaryDeckEnabled then
-        Global.call("useTenthEditionSecondaryDecks")
-    else
-        Global.call("useEdition11SecondaryDecks")
-    end
+    Global.call("useEdition11SecondaryDecks")
 
     redMissionManager = getObjectFromGUID(Global.getVar("redMissionManager_GUID"))
     redMissionManager.call("packSelected", {pack = packSelected, dealFixedSecondaries = dealFixedSecondaries, fixedChoiceCardGuids = redFixedChoiceCardGuids, tacticalCardGuidToKeep = redTacticalCardGuidToKeep})
@@ -3977,11 +3934,7 @@ function selectMissionPack(packIndex)
     missionPackData = Global.getTable("missionPackData")[packSelected]
     primaryDeck = getObjectFromGUID(missionPackData.primaryDeck_GUID)
 
-    if legacyPrimaryDeckEnabled then
-        showLegacyPrimaryDeck()
-    else
-        destroyLegacyPrimaryDeck()
-    end
+    destroyLegacyPrimaryDeck()
     placeGameModeObjects()
 
     writeMenus()

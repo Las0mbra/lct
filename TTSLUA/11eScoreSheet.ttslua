@@ -9,13 +9,13 @@ redDiscardPosition = { x = 77.04, y = 0.98, z = 16.60 }
 blueDiscardPosition = { x = 77.04, y = 0.98, z = -16.60 }
 redSecondaryBoard_GUID = "66def7"
 blueSecondaryBoard_GUID = "76200a"
-secondarySlotButtonSize = 162
+secondarySlotButtonSize = 200
 secondarySlotButtonFontSize = 108
 secondarySlotButtonY = 0.08
 redSecondarySlotButtonVerticalOffset = -2.15
 blueSecondarySlotButtonVerticalOffset = 2.15
 secondarySlotButtonHorizontalOffset = 0.46
-secondaryButtonSize = 162
+secondaryButtonSize = 200
 secondaryButtonFontSize = 135
 secondaryButtonColor = {1, 1, 1} -- white
 -- Centre line the draw buttons are arranged around. The double-draw button sits
