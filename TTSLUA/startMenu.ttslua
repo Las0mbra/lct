@@ -2811,7 +2811,107 @@ end
 --   "random" -> place exactly one randomly-chosen matchup card (Random Mission).
 -- Primary mission resolution, cleanup, cooldown and all resiliency are identical
 -- in both modes.
+-- ===================== Battlemaster dynamic-maps provider =====================
+-- When the "Dynamic Maps" toggle in the map filter is on (Global "battlemasterMode"),
+-- Generate Missions & Layouts runs this separate path instead of the static deck flow.
+-- It asks the Battlemaster spawner object to reconstruct the current disposition pair's
+-- layouts and spawn LCT-compatible loader cards directly into the deployment slots.
+-- (Primary mission cards are not dealt in this first integration slice.)
+BATTLEMASTER_SPAWNER_GUID = "b4d10a"
+
+battlemasterArchetypeByDisposition = {
+    ["Disruption"] = "disruption",
+    ["Priority Assets"] = "priority-assets",
+    ["Purge the Foe"] = "purge-the-foe",
+    ["Reconnaissance"] = "reconnaissance",
+    ["Take and Hold"] = "take-and-hold",
+}
+
+function battlemasterArchetypeForDisposition(index)
+    local label = dispositionValues[normalizeDispositionIndex(index)] or ""
+    return battlemasterArchetypeByDisposition[label]
+end
+
+-- Destroy every generated Battlemaster card (deployment + layout slots AND the
+-- lock target) regardless of where it sits; they have no source deck to return to.
+function destroyGeneratedBattlemasterCards()
+    local removed = 0
+    for _, obj in ipairs(getAllObjects()) do
+        if obj.hasTag and obj.hasTag("battlemaster_generated") then
+            obj.destruct()
+            removed = removed + 1
+        end
+    end
+    return removed
+end
+
+function battlemasterDeploymentSlotPositions()
+    local positions = {}
+    for _, slot in ipairs(missionSlots) do
+        if slot.role == "deployment" and slot.index ~= nil then
+            local p = slot.position
+            positions[slot.index] = {x = p[1], y = p[2], z = p[3]}
+        end
+    end
+    return positions
+end
+
+function runBattlemasterMissionGeneration(deploymentMode)
+    if gameMode ~= "game" or not packSelected then return end
+    if generateMissionCooldownActive then return end
+
+    local archetypeA = battlemasterArchetypeForDisposition(redDispositionSelected)
+    local archetypeB = battlemasterArchetypeForDisposition(blueDispositionSelected)
+    if archetypeA == nil or archetypeB == nil then
+        broadcastToAll("Battlemaster: could not map dispositions to force archetypes.", "Yellow")
+        return
+    end
+    local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
+    if spawner == nil then
+        broadcastToAll("Battlemaster spawner object not found.", "Red")
+        return
+    end
+
+    generateMissionCooldownActive = true
+    missionDealInProgress = true
+
+    -- Clear the previous set: destroy old generated cards (no source deck), and
+    -- return any static deployment/layout cards to their decks so the slots are free.
+    destroyGeneratedBattlemasterCards()
+    returnCardsInDeploymentSlotsToDeck(true)
+
+    broadcastToAll("Battlemaster: generating maps for "
+        .. tostring(dispositionValues[normalizeDispositionIndex(redDispositionSelected)]) .. " vs "
+        .. tostring(dispositionValues[normalizeDispositionIndex(blueDispositionSelected)]) .. "...", {0.4, 0.8, 1})
+
+    spawner.call("generateMatchupCards", {
+        archetypeA = archetypeA,
+        archetypeB = archetypeB,
+        mode = deploymentMode,
+        slotPositions = battlemasterDeploymentSlotPositions(),
+        rotationY = (deploymentMapCardRotation and deploymentMapCardRotation[2]) or 180,
+        callbackGuid = self.getGUID(),
+        callbackName = "onBattlemasterCardsReady",
+    })
+end
+
+-- Spawner callback (exactly-once). Clears the busy/cooldown flags in both branches.
+function onBattlemasterCardsReady(result)
+    finishMissionDeal()
+    if type(result) == "table" and result.ok then
+        broadcastToAll("Battlemaster: placed " .. tostring(result.count or 0)
+            .. " map card(s). Press Load Map on a card to spawn its terrain.", {0.4, 1, 0.7})
+    else
+        local err = type(result) == "table" and result.error or "unknown error"
+        broadcastToAll("Battlemaster generation failed: " .. tostring(err), {1, 0.4, 0.4})
+    end
+end
+
 function runMissionGeneration(deploymentMode)
+    if Global.getVar("battlemasterMode") then
+        runBattlemasterMissionGeneration(deploymentMode)
+        return
+    end
     if gameMode ~= "game" or not packSelected then
         return
     end
@@ -3655,14 +3755,27 @@ end
 -- credit, e.g. "... - Tipping Point - Team Belgium".
 function onMapCardLoaded(params)
     local name = (params and params.name) or "?"
+    local isBattlemaster = type(params) == "table" and params.provider == "battlemaster"
 
     -- Snapshot the pre-load selection state BEFORE anything mutates or the card
     -- wipes the board, so "Back to Selection" can return here.
     captureRestorePoint()
 
-    -- Move the paired layout art to the mission board before the map wipe. The
-    -- target sits outside the wipe area, so it survives without MapExclude.
-    placeLoadedLayoutArtCard(name)
+    if isBattlemaster then
+        -- Battlemaster cards are transient and have no paired static layout art.
+        -- Loading one keeps just that map: drop the other generated choice cards.
+        -- (Skip placeLoadedLayoutArtCard, which would warn about missing art.)
+        local loadedGuid = params and params.guid or nil
+        for _, obj in ipairs(getAllObjects()) do
+            if obj.hasTag and obj.hasTag("battlemaster_generated") and obj.getGUID() ~= loadedGuid then
+                obj.destruct()
+            end
+        end
+    else
+        -- Move the paired layout art to the mission board before the map wipe. The
+        -- target sits outside the wipe area, so it survives without MapExclude.
+        placeLoadedLayoutArtCard(name)
+    end
 
     -- Move primary missions off the mat before the map card starts its next-frame wipe.
     movePrimaryMissionCardsToIngameSlots(false)

@@ -1,0 +1,1133 @@
+-- FTC-GUID: b4d10a
+-- Battlemaster Dynamic Map Spawner (LCT port of the V2 Chapter-Approved API spawner)
+--
+-- Slice 1 (initial implementation): a self-contained dev object that
+--   1. smart-syncs the public Battlemaster TTS Map API (template/theme/layout payloads),
+--   2. reconstructs a layout's terrain into board-space TTS object JSON (no GMNotes markers),
+--   3. bakes that into an LCT-compatible loader card using the *canonical* map_card_machinery head.
+--
+-- It is NOT yet wired into Generate Missions & Layouts / the map filter; that integration
+-- (mutually-exclusive Battlemaster toggle + runMissionGeneration branch) is a later slice. The
+-- buttons on this object are a dev/debug convenience for proving the port end to end.
+--
+-- Ported from artifacts/tts-calibration/battlemaster-ca-api-spawner-v2.lua (saved object `bmcav2`),
+-- with the plan's adaptations: board-space output (no self transform), GMNotes stripped, union
+-- objective decoder, exactly-once async callbacks, and canonical-head card emission.
+
+-- ============================ Config ============================
+BM_API_BASE = BM_API_BASE or "https://battlemaster.onrender.com"
+BM_OWNER = BM_OWNER or "8a72d680-3166-44e1-aa3c-2f7264f92202"
+BM_DEFAULT_THEME_ID = BM_DEFAULT_THEME_ID or "tts-theme-grimdark-calibrated-v1"
+BM_BATTLEMAT_MESH_URL = BM_BATTLEMAT_MESH_URL or "https://steamusercontent-a.akamaihd.net/ugc/879750610978796176/4A5A65543B98BCFBF57E910D06EC984208223D38/"
+BM_DEFAULT_CARD_FACE_URL = BM_DEFAULT_CARD_FACE_URL or "https://steamusercontent-a.akamaihd.net/ugc/10791071673581242/E710A69735A01208EFCAE0A13B7FD487275388FB/"
+
+-- v1 omits the battlemat (LCT has its own mat + canonical zone wipe); see plan phase E.
+BM_INCLUDE_BATTLEMAT = false
+
+-- Built-in terrain footprint plates, matched to a template by width/height (style by template id).
+BM_TERRAIN_ASSETS = {
+  {id="big-rect", width=11.503, height=7.003, rugged="https://steamusercontent-a.akamaihd.net/ugc/17340806108804505934/4B46C3DBA9709342C6038E6C339E9183773F7F4F/", smooth="https://steamusercontent-a.akamaihd.net/ugc/18109999757297310215/5DB2EDC94302F2260A40CDE398054AB73C583B2D/"},
+  {id="long-line", width=10.003, height=2.503, rugged="https://steamusercontent-a.akamaihd.net/ugc/14084050877596722482/ED735D1BA2BA036645A039BBE2884DC6097D52FF/", smooth="https://steamusercontent-a.akamaihd.net/ugc/12173066766016705494/E81DD809081B33CC73B332024FC1D4672A2EE2BC/"},
+  {id="short-line", width=6.003, height=2.003, rugged="https://steamusercontent-a.akamaihd.net/ugc/15633617285222415204/5306AA649D2877AFEF7FEBDFCE3052F6E9977E98/", smooth="https://steamusercontent-a.akamaihd.net/ugc/16079218023307560393/A11A66EA4B73E650059F86573FCA12C91492E2B0/"},
+  {id="small-rect", width=6.003, height=4.003, rugged="https://steamusercontent-a.akamaihd.net/ugc/12322865955445680032/0919B948C303AE084AD0661B3EDE36FCCBF28FCF/", smooth="https://steamusercontent-a.akamaihd.net/ugc/16918139172926584908/8C6BC64D270CD20FEEA73D40FBD80633CC72A532/"},
+  {id="triangle", width=11.503, height=8.003, rugged="https://steamusercontent-a.akamaihd.net/ugc/13344184635215212518/9E3478CBEB46A6B7D03864CCC680D7E37F14B660/", smooth="https://steamusercontent-a.akamaihd.net/ugc/10828923269080544043/F6E563E60C9A956892D734DEA30B43B38BB83B50/"},
+}
+
+-- Canonical LCT map-card head, baked from data/map_card_machinery.lua at compile time. Empty
+-- default keeps uncompiled/dev builds valid; card generation warns if it is still empty.
+BM_MAP_CARD_MACHINERY = ""   -- @@MAP_CARD_MACHINERY@@
+
+-- The start-menu object that owns onMapCardLoaded (mirrors validate_maps.MENU_GUID).
+BM_MENU_GUID = "738804"
+
+BM_ARCHETYPES = {
+  {id="take-and-hold", label="Take and Hold"},
+  {id="disruption", label="Disruption"},
+  {id="purge-the-foe", label="Purge the Foe"},
+  {id="priority-assets", label="Priority Assets"},
+  {id="reconnaissance", label="Reconnaissance"},
+}
+
+-- ============================ State ============================
+BM_ARCHETYPE_A_INDEX = BM_ARCHETYPE_A_INDEX or 4
+BM_ARCHETYPE_B_INDEX = BM_ARCHETYPE_B_INDEX or 4
+BM_THEME_INDEX = BM_THEME_INDEX or 1
+BM_APPROVED_THEMES_ONLY = BM_APPROVED_THEMES_ONLY ~= false
+BM_THEMES = BM_THEMES or {
+  {id="", name="No theme", label="No theme", mappingCount=0, ownerUserId="", creatorName="", approvalState="community"},
+}
+
+BM_TEMPLATE_CATALOG = BM_TEMPLATE_CATALOG or nil
+BM_THEME_PAYLOAD = BM_THEME_PAYLOAD or nil
+BM_LAYOUT_PAYLOAD = BM_LAYOUT_PAYLOAD or nil
+BM_TEMPLATE_CATALOG_KEY = BM_TEMPLATE_CATALOG_KEY or nil
+BM_THEME_PAYLOAD_KEY = BM_THEME_PAYLOAD_KEY or nil
+BM_LAYOUT_PAYLOAD_KEY = BM_LAYOUT_PAYLOAD_KEY or nil
+BM_LAYOUT_PAYLOAD_SLOT = BM_LAYOUT_PAYLOAD_SLOT or nil
+BM_LAYOUT_CATALOG = BM_LAYOUT_CATALOG or nil
+BM_LAYOUT_CATALOG_KEY = BM_LAYOUT_CATALOG_KEY or nil
+BM_LAYOUT_CATALOG_VERSION_KEY = BM_LAYOUT_CATALOG_VERSION_KEY or nil
+BM_THEME_PAYLOAD_CACHE = BM_THEME_PAYLOAD_CACHE or {}
+BM_LAYOUT_PAYLOAD_CACHE = BM_LAYOUT_PAYLOAD_CACHE or {}
+BM_SLOT_PREVIEWS = BM_SLOT_PREVIEWS or nil
+BM_SLOT_PREVIEWS_KEY = BM_SLOT_PREVIEWS_KEY or nil
+BM_THEME_LIST_KEY = BM_THEME_LIST_KEY or nil
+BM_SYNC_MANIFEST = BM_SYNC_MANIFEST or nil
+BM_LAST_STATUS = BM_LAST_STATUS or "Cache empty. Press Sync."
+
+-- ============================ Lifecycle ============================
+function onLoad(savedData)
+  restoreSpawnerState(savedData)
+  self.setGMNotes("BattlemasterDynamicSpawner")
+  buildDevButtons()
+  if BM_TEMPLATE_CATALOG == nil or BM_LAYOUT_CATALOG == nil or BM_THEMES[1].id == "" then
+    -- Background pre-warm (the integration slice will gate this on /ready).
+    Wait.time(function() refreshCache(true) end, 0.5)
+  end
+end
+
+function onSave()
+  return JSON.encode({
+    version = 1,
+    archetypeAIndex = BM_ARCHETYPE_A_INDEX,
+    archetypeBIndex = BM_ARCHETYPE_B_INDEX,
+    themeIndex = BM_THEME_INDEX,
+    approvedThemesOnly = BM_APPROVED_THEMES_ONLY,
+    themes = BM_THEMES,
+    templateCatalog = BM_TEMPLATE_CATALOG,
+    templateCatalogKey = BM_TEMPLATE_CATALOG_KEY,
+    themePayload = BM_THEME_PAYLOAD,
+    themePayloadKey = BM_THEME_PAYLOAD_KEY,
+    themePayloadCache = BM_THEME_PAYLOAD_CACHE,
+    layoutCatalog = BM_LAYOUT_CATALOG,
+    layoutCatalogKey = BM_LAYOUT_CATALOG_KEY,
+    layoutCatalogVersionKey = BM_LAYOUT_CATALOG_VERSION_KEY,
+    layoutPayload = BM_LAYOUT_PAYLOAD,
+    layoutPayloadKey = BM_LAYOUT_PAYLOAD_KEY,
+    layoutPayloadSlot = BM_LAYOUT_PAYLOAD_SLOT,
+    layoutPayloadCache = BM_LAYOUT_PAYLOAD_CACHE,
+    slotPreviews = BM_SLOT_PREVIEWS,
+    slotPreviewsKey = BM_SLOT_PREVIEWS_KEY,
+    themeListKey = BM_THEME_LIST_KEY,
+    syncManifest = BM_SYNC_MANIFEST,
+    lastStatus = BM_LAST_STATUS,
+  })
+end
+
+function restoreSpawnerState(savedData)
+  if savedData == nil or savedData == "" then return end
+  local ok, state = pcall(function() return JSON.decode(savedData) end)
+  if not ok or state == nil then return end
+  if type(state.archetypeAIndex) == "number" then BM_ARCHETYPE_A_INDEX = clampIndex(state.archetypeAIndex, #BM_ARCHETYPES) end
+  if type(state.archetypeBIndex) == "number" then BM_ARCHETYPE_B_INDEX = clampIndex(state.archetypeBIndex, #BM_ARCHETYPES) end
+  if type(state.approvedThemesOnly) == "boolean" then BM_APPROVED_THEMES_ONLY = state.approvedThemesOnly end
+  if type(state.themes) == "table" and #state.themes > 0 then BM_THEMES = state.themes end
+  if type(state.themeIndex) == "number" then BM_THEME_INDEX = clampIndex(state.themeIndex, #BM_THEMES) end
+  if type(state.templateCatalog) == "table" then BM_TEMPLATE_CATALOG = state.templateCatalog end
+  if type(state.templateCatalogKey) == "string" then BM_TEMPLATE_CATALOG_KEY = state.templateCatalogKey end
+  if type(state.themePayload) == "table" then BM_THEME_PAYLOAD = state.themePayload end
+  if type(state.themePayloadKey) == "string" then BM_THEME_PAYLOAD_KEY = state.themePayloadKey end
+  if type(state.themePayloadCache) == "table" then BM_THEME_PAYLOAD_CACHE = state.themePayloadCache end
+  if type(state.layoutCatalog) == "table" then BM_LAYOUT_CATALOG = state.layoutCatalog end
+  if type(state.layoutCatalogKey) == "string" then BM_LAYOUT_CATALOG_KEY = state.layoutCatalogKey end
+  if type(state.layoutCatalogVersionKey) == "string" then BM_LAYOUT_CATALOG_VERSION_KEY = state.layoutCatalogVersionKey end
+  if type(state.layoutPayload) == "table" then BM_LAYOUT_PAYLOAD = state.layoutPayload end
+  if type(state.layoutPayloadKey) == "string" then BM_LAYOUT_PAYLOAD_KEY = state.layoutPayloadKey end
+  if type(state.layoutPayloadSlot) == "number" then BM_LAYOUT_PAYLOAD_SLOT = state.layoutPayloadSlot end
+  if type(state.layoutPayloadCache) == "table" then BM_LAYOUT_PAYLOAD_CACHE = state.layoutPayloadCache end
+  if type(state.slotPreviews) == "table" then BM_SLOT_PREVIEWS = state.slotPreviews end
+  if type(state.slotPreviewsKey) == "string" then BM_SLOT_PREVIEWS_KEY = state.slotPreviewsKey end
+  if type(state.themeListKey) == "string" then BM_THEME_LIST_KEY = state.themeListKey end
+  if type(state.syncManifest) == "table" then BM_SYNC_MANIFEST = state.syncManifest end
+  if type(state.lastStatus) == "string" then BM_LAST_STATUS = state.lastStatus end
+end
+
+-- ============================ Small helpers ============================
+function clampIndex(index, maxIndex)
+  local numeric = tonumber(index) or 1
+  if maxIndex == nil or maxIndex < 1 then return 1 end
+  if numeric < 1 then return 1 end
+  if numeric > maxIndex then return maxIndex end
+  return math.floor(numeric)
+end
+
+function selectedTheme() return BM_THEMES[clampIndex(BM_THEME_INDEX, #BM_THEMES)] or BM_THEMES[1] end
+function selectedArchetypeA() return BM_ARCHETYPES[clampIndex(BM_ARCHETYPE_A_INDEX, #BM_ARCHETYPES)] end
+function selectedArchetypeB() return BM_ARCHETYPES[clampIndex(BM_ARCHETYPE_B_INDEX, #BM_ARCHETYPES)] end
+
+function sortedPairKey(left, right)
+  local a, b = tostring(left or ""), tostring(right or "")
+  if a <= b then return a .. "|" .. b end
+  return b .. "|" .. a
+end
+
+function currentThemeCacheKey(theme)
+  if type(theme) ~= "table" then return "" end
+  return tostring(theme.themeKey or theme.id or "")
+end
+
+function layoutPayloadCacheKey(pairKey, slot, layoutKey)
+  return tostring(pairKey or "") .. "|slot:" .. tostring(slot or "") .. "|layout:" .. tostring(layoutKey or "unknown")
+end
+
+function layoutPairSlotKey(pairKey, slot)
+  return tostring(pairKey or "") .. "|slot:" .. tostring(slot or "")
+end
+
+function parseLayoutPayloadCacheKey(cacheKey)
+  local pairKey, slotText, layoutKey = string.match(tostring(cacheKey or ""), "^(.-)|slot:(%d+)|layout:(.*)$")
+  return pairKey, tonumber(slotText), layoutKey
+end
+
+function splitForcePairKey(pairKey)
+  return string.match(tostring(pairKey or ""), "^([^|]+)|(.+)$")
+end
+
+function themeIndexById(themeId)
+  local wanted = tostring(themeId or "")
+  if wanted == "" then return 1 end
+  for index, theme in ipairs(BM_THEMES) do
+    if tostring(theme.id or "") == wanted then return index end
+  end
+  return 1
+end
+
+function currentLayoutPreviewKey()
+  local a, b, theme = selectedArchetypeA(), selectedArchetypeB(), selectedTheme()
+  return sortedPairKey(a and a.id, b and b.id) .. "|theme:" .. tostring(theme and theme.id or "")
+end
+
+function slotPreview(slot)
+  if type(BM_SLOT_PREVIEWS) ~= "table" then return nil end
+  return BM_SLOT_PREVIEWS[slot]
+end
+
+function slotPreviewUrl(slot)
+  local preview = slotPreview(slot)
+  if type(preview) == "table" and preview.previewUrl ~= nil then return tostring(preview.previewUrl) end
+  return ""
+end
+
+function currentLayoutPayloadKey(slot)
+  local a, b = selectedArchetypeA(), selectedArchetypeB()
+  local preview = slotPreview(slot)
+  local layoutKey = preview and preview.layoutKey or nil
+  if layoutKey == nil and preview ~= nil and type(preview.layout) == "table" then
+    layoutKey = tostring(preview.layout.id or "") .. "@" .. tostring(preview.layout.updatedAt or "")
+  end
+  return layoutPayloadCacheKey(sortedPairKey(a and a.id, b and b.id), slot, layoutKey)
+end
+
+function buildLayoutCatalogMaps(catalog)
+  local byLayoutKey, byPairSlot = {}, {}
+  if type(catalog) ~= "table" or type(catalog.layouts) ~= "table" then return byLayoutKey, byPairSlot end
+  for _, layout in ipairs(catalog.layouts) do
+    if type(layout) == "table" then
+      local slot = type(layout.chapterApprovedSlot) == "table" and tonumber(layout.chapterApprovedSlot.slotIndex) or nil
+      local layoutKey, pairKey = tostring(layout.layoutKey or ""), tostring(layout.forcePairKey or "")
+      if layoutKey ~= "" and pairKey ~= "" and slot ~= nil then
+        byLayoutKey[layoutKey] = layout
+        byPairSlot[layoutPairSlotKey(pairKey, slot)] = layout
+      end
+    end
+  end
+  return byLayoutKey, byPairSlot
+end
+
+function setStatus(message, tone)
+  BM_LAST_STATUS = tostring(message or "")
+  local tint = {0.65, 0.9, 1}
+  if tone == "ok" then tint = {0.45, 1, 0.55} end
+  if tone == "warn" then tint = {1, 0.8, 0.25} end
+  if tone == "error" then tint = {1, 0.25, 0.25} end
+  broadcastToAll("Battlemaster: " .. BM_LAST_STATUS, tint)
+end
+
+-- ============================ HTTP helpers ============================
+function urlEncode(value)
+  value = tostring(value or "")
+  value = string.gsub(value, "\n", "\r\n")
+  value = string.gsub(value, "([^%w _%%%-%.~])", function(c) return string.format("%%%02X", string.byte(c)) end)
+  value = string.gsub(value, " ", "%%20")
+  return value
+end
+
+function getWebStatusCode(request)
+  return tonumber(request.response_code) or tonumber(request.responseCode)
+    or tonumber(request.status_code) or tonumber(request.statusCode) or tonumber(request.status) or 0
+end
+
+function compactText(value, maxLength)
+  local text = string.gsub(tostring(value or ""), "[\r\n\t]+", " ")
+  if string.len(text) <= maxLength then return text end
+  return string.sub(text, 1, maxLength) .. "..."
+end
+
+function decodeApiResponse(request, label)
+  local statusCode = getWebStatusCode(request)
+  if request.is_error then return nil, label .. " request failed: " .. tostring(request.error) end
+  local ok, response = pcall(function() return JSON.decode(request.text) end)
+  if not ok or response == nil then
+    local statusLabel = statusCode > 0 and ("HTTP " .. tostring(statusCode)) or "invalid response"
+    return nil, label .. " parse failed (" .. statusLabel .. "): " .. compactText(request.text, 160)
+  end
+  if response.error ~= nil then
+    local message = type(response.error) == "table" and (response.error.message or response.error.code) or (response.message or response.error)
+    local statusLabel = statusCode > 0 and ("HTTP " .. tostring(statusCode) .. ": ") or ""
+    return nil, label .. " API error: " .. statusLabel .. compactText(tostring(message or "unknown error"), 220)
+  end
+  return response, nil
+end
+
+function normalizeThemesResponse(response)
+  local nextThemes = {}
+  if type(response) ~= "table" or type(response.themes) ~= "table" then return nextThemes end
+  local sourceThemes = response.themes
+  if type(response.themes.items) == "table" then sourceThemes = response.themes.items end
+  for _, theme in ipairs(sourceThemes) do
+    if type(theme) == "table" and theme.id ~= nil and theme.name ~= nil then
+      table.insert(nextThemes, {
+        id = tostring(theme.id),
+        name = tostring(theme.name),
+        label = tostring(theme.name),
+        mappingCount = tonumber(theme.mappingCount or 0) or 0,
+        ownerUserId = tostring(theme.ownerUserId or ""),
+        creatorName = tostring(theme.creatorName or theme.ownerName or theme.ownerUserId or ""),
+        approvalState = tostring(theme.approvalState or "community"),
+        updatedAt = tostring(theme.updatedAt or ""),
+        themeKey = tostring(theme.themeKey or theme.id or ""),
+      })
+    end
+  end
+  return nextThemes
+end
+
+-- ============================ URL builders ============================
+function buildSyncManifestUrl()
+  local theme = selectedTheme()
+  local url = BM_API_BASE .. "/v1/public/tts/sync-manifest"
+    .. "?owner=" .. urlEncode(BM_OWNER)
+    .. "&approvedOnly=" .. (BM_APPROVED_THEMES_ONLY and "true" or "false")
+  if theme ~= nil and theme.id ~= nil and theme.id ~= "" then
+    url = url .. "&themeId=" .. urlEncode(theme.id)
+    if theme.ownerUserId ~= nil and theme.ownerUserId ~= "" then url = url .. "&themeOwner=" .. urlEncode(theme.ownerUserId) end
+  end
+  return url
+end
+
+function buildThemePayloadUrl(theme)
+  local url = BM_API_BASE .. "/v1/public/tts/themes/" .. urlEncode(theme.id) .. "/catalog"
+  if theme.ownerUserId ~= nil and theme.ownerUserId ~= "" then url = url .. "?owner=" .. urlEncode(theme.ownerUserId) end
+  return url
+end
+
+function buildLayoutCatalogUrl()
+  local theme = selectedTheme()
+  local url = BM_API_BASE .. "/v1/public/tts/chapter-approved-layouts" .. "?owner=" .. urlEncode(BM_OWNER)
+  if theme ~= nil and theme.id ~= nil and theme.id ~= "" then
+    url = url .. "&themeId=" .. urlEncode(theme.id)
+    if theme.ownerUserId ~= nil and theme.ownerUserId ~= "" then url = url .. "&themeOwner=" .. urlEncode(theme.ownerUserId) end
+  end
+  return url
+end
+
+function buildLayoutPayloadUrlFor(archetypeAId, archetypeBId, slot)
+  return BM_API_BASE .. "/v1/public/tts/chapter-approved-layout-lite"
+    .. "?owner=" .. urlEncode(BM_OWNER)
+    .. "&archetypeA=" .. urlEncode(archetypeAId)
+    .. "&archetypeB=" .. urlEncode(archetypeBId)
+    .. "&slot=" .. urlEncode(slot)
+end
+
+function buildLayoutPayloadUrl(slot)
+  return buildLayoutPayloadUrlFor(selectedArchetypeA().id, selectedArchetypeB().id, slot)
+end
+
+-- ============================ Smart sync ============================
+-- Each step takes (stats, done, fail). EXACTLY-ONCE contract: every path calls done() or fail(err)
+-- exactly once. (V2's originals returned on error without calling back; the integration wrapper
+-- relies on this fix so a failed sync can never strand a busy flag.)
+function refreshCache(automatic, onDone, onFail)
+  setStatus("Smart sync running...")
+  local stats = {
+    prunedThemeCache = 0, prunedLayoutCache = 0, updatedLayoutPayloads = 0,
+    failedLayoutPayloads = 0, updatedThemePayloads = 0, layoutPayloadRefreshRequests = {},
+  }
+  local function fail(err)
+    setStatus(tostring(err), "error")
+    if type(onFail) == "function" then onFail(err) end
+  end
+  smartSyncManifest(stats, function()
+    smartSyncTemplateCatalog(stats, function()
+      smartSyncThemePayload(stats, function()
+        smartSyncLayoutCatalog(stats, function()
+          smartSyncChangedLayoutPayloads(stats, function()
+            selectSlotPreviewsFromCatalog()
+            local message = "Sync OK: templates " .. tostring(stats.templateAction or "checked")
+              .. ", themes " .. tostring(stats.themeCount or 0)
+              .. ", layouts " .. tostring(stats.layoutCount or 0) .. "."
+            setStatus(message, stats.failedLayoutPayloads > 0 and "warn" or "ok")
+            if type(onDone) == "function" then onDone(stats) end
+          end, fail)
+        end, fail)
+      end, fail)
+    end, fail)
+  end, fail)
+end
+
+function smartSyncManifest(stats, done, fail)
+  WebRequest.get(buildSyncManifestUrl(), function(request)
+    local response, err = decodeApiResponse(request, "Sync manifest")
+    if err ~= nil then fail(err); return end
+    BM_SYNC_MANIFEST = response
+    local previousThemeId = selectedTheme() and selectedTheme().id or BM_DEFAULT_THEME_ID
+    local nextThemes = normalizeThemesResponse(response)
+    if #nextThemes == 0 then
+      BM_THEMES = {{id="", name="No theme", label="No approved public themes", mappingCount=0, ownerUserId="", creatorName="", approvalState="community"}}
+      BM_THEME_INDEX = 1
+      fail("Smart sync stopped: no approved public themes found.")
+      return
+    end
+    local nextThemeListKey = tostring(response.themes and response.themes.themeListKey or "")
+    stats.themeAction = (nextThemeListKey ~= "" and nextThemeListKey == BM_THEME_LIST_KEY) and "unchanged" or "updated"
+    BM_THEMES = nextThemes
+    BM_THEME_LIST_KEY = nextThemeListKey ~= "" and nextThemeListKey or BM_THEME_LIST_KEY
+    BM_THEME_INDEX = themeIndexById(previousThemeId)
+    stats.themeCount = #BM_THEMES
+    pruneThemePayloadCache(stats)
+    syncActiveThemePayloadFromCache()
+    done()
+  end)
+end
+
+function syncActiveThemePayloadFromCache()
+  local theme = selectedTheme()
+  local themeKey = currentThemeCacheKey(theme)
+  if BM_THEME_PAYLOAD_KEY ~= themeKey then
+    local cached = BM_THEME_PAYLOAD_CACHE[themeKey]
+    BM_THEME_PAYLOAD = type(cached) == "table" and cached.payload or nil
+    BM_THEME_PAYLOAD_KEY = BM_THEME_PAYLOAD ~= nil and themeKey or nil
+    BM_SLOT_PREVIEWS = nil
+    BM_SLOT_PREVIEWS_KEY = nil
+  end
+end
+
+function pruneThemePayloadCache(stats)
+  local currentKeysByThemeId = {}
+  for _, theme in ipairs(BM_THEMES) do
+    if type(theme) == "table" and theme.id ~= nil and theme.id ~= "" then
+      currentKeysByThemeId[tostring(theme.id)] = currentThemeCacheKey(theme)
+    end
+  end
+  for cacheKey, entry in pairs(BM_THEME_PAYLOAD_CACHE) do
+    local themeId = type(entry) == "table" and tostring(entry.themeId or "") or ""
+    local currentKey = currentKeysByThemeId[themeId]
+    if currentKey == nil or currentKey == "" or tostring(cacheKey) ~= currentKey then
+      BM_THEME_PAYLOAD_CACHE[cacheKey] = nil
+      stats.prunedThemeCache = stats.prunedThemeCache + 1
+    end
+  end
+end
+
+function pruneLayoutPayloadCache(stats, nextCatalog)
+  local byLayoutKey, byPairSlot = buildLayoutCatalogMaps(nextCatalog)
+  local requests, queued = {}, {}
+  for cacheKey, _ in pairs(BM_LAYOUT_PAYLOAD_CACHE) do
+    local pairKey, slot, layoutKey = parseLayoutPayloadCacheKey(cacheKey)
+    local valid = pairKey ~= nil and pairKey ~= "" and slot ~= nil and layoutKey ~= nil and layoutKey ~= "" and byLayoutKey[tostring(layoutKey)] ~= nil
+    if not valid then
+      BM_LAYOUT_PAYLOAD_CACHE[cacheKey] = nil
+      stats.prunedLayoutCache = stats.prunedLayoutCache + 1
+      if pairKey ~= nil and pairKey ~= "" and slot ~= nil then
+        local replacement = byPairSlot[layoutPairSlotKey(pairKey, slot)]
+        if type(replacement) == "table" and replacement.layoutKey ~= nil then
+          local replacementKey = layoutPayloadCacheKey(pairKey, slot, replacement.layoutKey)
+          if queued[replacementKey] ~= true and type(BM_LAYOUT_PAYLOAD_CACHE[replacementKey]) ~= "table" then
+            queued[replacementKey] = true
+            table.insert(requests, {pairKey = pairKey, slot = slot, payloadKey = replacementKey})
+          end
+        end
+      end
+    end
+  end
+  stats.layoutPayloadRefreshRequests = requests
+  if BM_LAYOUT_PAYLOAD_KEY ~= nil and type(BM_LAYOUT_PAYLOAD_CACHE[BM_LAYOUT_PAYLOAD_KEY]) ~= "table" then
+    BM_LAYOUT_PAYLOAD = nil
+    BM_LAYOUT_PAYLOAD_KEY = nil
+    BM_LAYOUT_PAYLOAD_SLOT = nil
+  end
+end
+
+function smartSyncTemplateCatalog(stats, done, fail)
+  local manifestKey = tostring(BM_SYNC_MANIFEST and BM_SYNC_MANIFEST.templateCatalog and BM_SYNC_MANIFEST.templateCatalog.templateCatalogKey or "")
+  if manifestKey ~= "" and BM_TEMPLATE_CATALOG ~= nil and BM_TEMPLATE_CATALOG_KEY == manifestKey then
+    stats.templateAction = "unchanged"; done(); return
+  end
+  WebRequest.get(BM_API_BASE .. "/v1/public/tts/template-catalog", function(request)
+    local response, err = decodeApiResponse(request, "Template catalog")
+    if err ~= nil then fail(err); return end
+    BM_TEMPLATE_CATALOG = response.templateCatalog
+    BM_TEMPLATE_CATALOG_KEY = tostring(response.templateCatalogKey or response.catalogId or "bm-terrain-11e@1")
+    stats.templateAction = "updated"
+    done()
+  end)
+end
+
+function smartSyncThemePayload(stats, done, fail)
+  local theme = selectedTheme()
+  if theme == nil or theme.id == nil or theme.id == "" then done(); return end
+  local themeKey = currentThemeCacheKey(theme)
+  local cached = BM_THEME_PAYLOAD_CACHE[themeKey]
+  if type(cached) == "table" and type(cached.payload) == "table" then
+    BM_THEME_PAYLOAD = cached.payload
+    BM_THEME_PAYLOAD_KEY = themeKey
+    done(); return
+  end
+  WebRequest.get(buildThemePayloadUrl(theme), function(request)
+    local response, err = decodeApiResponse(request, "Theme payload")
+    if err ~= nil then fail(err); return end
+    BM_THEME_PAYLOAD = response.themeCatalog
+    BM_THEME_PAYLOAD_KEY = tostring(response.themeKey or themeKey)
+    BM_THEME_PAYLOAD_CACHE[BM_THEME_PAYLOAD_KEY] = {payload = BM_THEME_PAYLOAD, themeId = theme.id}
+    stats.updatedThemePayloads = stats.updatedThemePayloads + 1
+    BM_SLOT_PREVIEWS = nil
+    BM_SLOT_PREVIEWS_KEY = nil
+    done()
+  end)
+end
+
+function smartSyncLayoutCatalog(stats, done, fail)
+  local theme = selectedTheme()
+  local localCatalogKey = "owner:" .. tostring(BM_OWNER) .. "|theme:" .. currentThemeCacheKey(theme)
+  local manifestKey = tostring(BM_SYNC_MANIFEST and BM_SYNC_MANIFEST.layouts and BM_SYNC_MANIFEST.layouts.layoutCatalogKey or "")
+  if manifestKey ~= "" and type(BM_LAYOUT_CATALOG) == "table" and BM_LAYOUT_CATALOG_VERSION_KEY == manifestKey then
+    BM_LAYOUT_CATALOG_KEY = localCatalogKey
+    stats.layoutCount = tonumber(BM_SYNC_MANIFEST.layouts.layoutCount or 0) or 0
+    stats.layoutAction = "unchanged"; done(); return
+  end
+  WebRequest.get(buildLayoutCatalogUrl(), function(request)
+    local response, err = decodeApiResponse(request, "Layout catalog")
+    if err ~= nil then fail(err); return end
+    if type(response.layouts) ~= "table" then fail("Layout catalog response did not include layouts[]."); return end
+    pruneLayoutPayloadCache(stats, response)
+    BM_LAYOUT_CATALOG = response
+    BM_LAYOUT_CATALOG_KEY = localCatalogKey
+    BM_LAYOUT_CATALOG_VERSION_KEY = tostring(response.catalogKey or manifestKey or "")
+    stats.layoutCount = tonumber(response.layoutCount or #response.layouts) or #response.layouts
+    stats.layoutAction = "updated"
+    done()
+  end)
+end
+
+function smartSyncChangedLayoutPayloads(stats, done, fail)
+  local requests = stats.layoutPayloadRefreshRequests or {}
+  local index = 1
+  local function step()
+    local requestInfo = requests[index]
+    if requestInfo == nil then done(); return end
+    index = index + 1
+    local left, right = splitForcePairKey(requestInfo.pairKey)
+    if left == nil or right == nil then
+      stats.failedLayoutPayloads = stats.failedLayoutPayloads + 1
+      step(); return
+    end
+    WebRequest.get(buildLayoutPayloadUrlFor(left, right, requestInfo.slot), function(request)
+      local response, err = decodeApiResponse(request, "Layout payload")
+      if err ~= nil or type(response) ~= "table" or type(response.litePayload) ~= "table" then
+        stats.failedLayoutPayloads = stats.failedLayoutPayloads + 1
+        step(); return
+      end
+      BM_LAYOUT_PAYLOAD_CACHE[requestInfo.payloadKey] = {payload = response.litePayload, slot = requestInfo.slot}
+      stats.updatedLayoutPayloads = stats.updatedLayoutPayloads + 1
+      if currentLayoutPayloadKey(requestInfo.slot) == requestInfo.payloadKey then
+        BM_LAYOUT_PAYLOAD = response.litePayload
+        BM_LAYOUT_PAYLOAD_KEY = requestInfo.payloadKey
+        BM_LAYOUT_PAYLOAD_SLOT = requestInfo.slot
+      end
+      step()
+    end)
+  end
+  step()
+end
+
+function selectSlotPreviewsFromCatalog()
+  local a, b = selectedArchetypeA(), selectedArchetypeB()
+  if type(BM_LAYOUT_CATALOG) ~= "table" or type(BM_LAYOUT_CATALOG.layouts) ~= "table" then return false, 0 end
+  local forcePairKey = sortedPairKey(a and a.id, b and b.id)
+  local previews = {{slot=1}, {slot=2}, {slot=3}}
+  local loaded = 0
+  for _, layout in ipairs(BM_LAYOUT_CATALOG.layouts) do
+    if type(layout) == "table" and layout.forcePairKey == forcePairKey and type(layout.chapterApprovedSlot) == "table" then
+      local slot = tonumber(layout.chapterApprovedSlot.slotIndex)
+      if slot ~= nil and slot >= 1 and slot <= 3 then
+        previews[slot] = {
+          slot = slot,
+          layout = {
+            id = layout.id, name = layout.name, owner = layout.owner,
+            collectionPath = layout.collectionPath, updatedAt = layout.updatedAt,
+            chapterApprovedSlot = layout.chapterApprovedSlot,
+            chapterApprovedDeploymentKey = layout.chapterApprovedDeploymentKey,
+          },
+          layoutKey = layout.layoutKey,
+          previewUrl = layout.previewUrl,
+        }
+        if layout.previewUrl ~= nil and layout.previewUrl ~= "" then loaded = loaded + 1 end
+      end
+    end
+  end
+  BM_SLOT_PREVIEWS = previews
+  BM_SLOT_PREVIEWS_KEY = currentLayoutPreviewKey()
+  return true, loaded
+end
+
+-- Ensure BM_LAYOUT_PAYLOAD is the lite payload for `slot`; fetch if not cached. onReady()/onFail(err).
+function ensureLayoutPayload(slot, onReady, onFail)
+  local a, b = selectedArchetypeA(), selectedArchetypeB()
+  local payloadKey = currentLayoutPayloadKey(slot)
+  local cached = BM_LAYOUT_PAYLOAD_CACHE[payloadKey]
+  if type(cached) == "table" and type(cached.payload) == "table" then
+    BM_LAYOUT_PAYLOAD = cached.payload
+    BM_LAYOUT_PAYLOAD_KEY = payloadKey
+    BM_LAYOUT_PAYLOAD_SLOT = slot
+    onReady(); return
+  end
+  setStatus("Requesting layout payload: " .. a.label .. " vs " .. b.label .. " slot " .. tostring(slot) .. "...")
+  WebRequest.get(buildLayoutPayloadUrl(slot), function(request)
+    local response, err = decodeApiResponse(request, "Layout payload")
+    if err ~= nil or type(response) ~= "table" or type(response.litePayload) ~= "table" then
+      if type(onFail) == "function" then onFail(err or "Layout payload missing litePayload.") end
+      return
+    end
+    BM_LAYOUT_PAYLOAD = response.litePayload
+    BM_LAYOUT_PAYLOAD_KEY = payloadKey
+    BM_LAYOUT_PAYLOAD_SLOT = slot
+    BM_LAYOUT_PAYLOAD_CACHE[payloadKey] = {payload = BM_LAYOUT_PAYLOAD, slot = slot}
+    onReady()
+  end)
+end
+
+-- ============================ Reconstruction (board space) ============================
+function toRadians(deg) return (tonumber(deg) or 0) * math.pi / 180 end
+
+function rotatePoint(x, y, deg)
+  local rad = toRadians(deg)
+  local c, s = math.cos(rad), math.sin(rad)
+  return {x = x * c - y * s, y = x * s + y * c}
+end
+
+function round6(value) return math.floor((tonumber(value) or 0) * 1000000 + 0.5) / 1000000 end
+
+function normalizeRotation(value)
+  local n = (tonumber(value) or 0) % 360
+  if n < 0 then n = n + 360 end
+  return round6(n)
+end
+
+function makeGuid() return string.format("%06x", math.random(0, 0xffffff)) end
+
+function tableValueAt(list, zeroIndex)
+  if type(list) ~= "table" or zeroIndex == nil or zeroIndex < 0 then return nil end
+  return list[zeroIndex + 1]
+end
+
+function hintKey(hint)
+  if type(hint) ~= "table" then return nil end
+  return string.lower(tostring(hint[1] or "")) .. "|" .. tostring(hint[2] or "") .. "|" .. tostring(hint[3] or "")
+end
+
+function buildTemplateLookup()
+  local lookup = {}
+  if BM_TEMPLATE_CATALOG == nil or type(BM_TEMPLATE_CATALOG.t) ~= "table" then return lookup end
+  for _, template in ipairs(BM_TEMPLATE_CATALOG.t) do
+    if type(template) == "table" and template[1] ~= nil then lookup[tostring(template[1])] = template end
+  end
+  return lookup
+end
+
+function buildThemeMappingLookup()
+  local byRef, byHint = {}, {}
+  if BM_THEME_PAYLOAD == nil or type(BM_THEME_PAYLOAD.m) ~= "table" then return byRef, byHint end
+  for _, mapping in ipairs(BM_THEME_PAYLOAD.m) do
+    if type(mapping) == "table" then
+      local partIndex = tonumber(mapping[1])
+      local partRef = tableValueAt(BM_THEME_PAYLOAD.p, partIndex)
+      if partRef ~= nil then byRef[tostring(partRef)] = mapping end
+      local key = hintKey(tableValueAt(BM_THEME_PAYLOAD.q, partIndex))
+      if key ~= nil then byHint[key] = mapping end
+    end
+  end
+  return byRef, byHint
+end
+
+function findThemeMappingForCatalogPart(catalogPartIndex, byRef, byHint)
+  local partRef = tableValueAt(BM_TEMPLATE_CATALOG.p, catalogPartIndex)
+  if partRef ~= nil and byRef[tostring(partRef)] ~= nil then return byRef[tostring(partRef)] end
+  local key = hintKey(tableValueAt(BM_TEMPLATE_CATALOG.q, catalogPartIndex))
+  if key ~= nil then return byHint[key] end
+  return nil
+end
+
+function findTerrainAsset(width, height)
+  for _, asset in ipairs(BM_TERRAIN_ASSETS) do
+    if math.abs((tonumber(width) or 0) - asset.width) < 0.02 and math.abs((tonumber(height) or 0) - asset.height) < 0.02 then
+      return asset
+    end
+  end
+  return nil
+end
+
+function terrainStyleForTemplate(template)
+  if string.find(string.lower(tostring(template and template[1] or "")), "smooth", 1, true) ~= nil then return "smooth" end
+  return "rugged"
+end
+
+function terrainAssetUrl(asset, style)
+  if asset == nil then return "" end
+  if style == "smooth" then return tostring(asset.smooth or asset.url or asset.rugged or "") end
+  return tostring(asset.rugged or asset.url or asset.smooth or "")
+end
+
+function oppositeTerrainStyle(style) return style == "smooth" and "rugged" or "smooth" end
+
+-- Union objective decoder: covers the API spec (c/c1/c2) AND the legacy V2 code's t; all map to
+-- tags LCT's objective system already recognizes (startMenu.ttslua objectiveMarkerByTag).
+function objectiveTagsFromCode(code)
+  local tags = {}
+  for token in string.gmatch(tostring(code or ""), "[^+]+") do
+    if token == "hb" then table.insert(tags, "obj_home_blue")
+    elseif token == "hr" then table.insert(tags, "obj_home_red")
+    elseif token == "n" then table.insert(tags, "obj_neutral")
+    elseif token == "c" then table.insert(tags, "obj_center")
+    elseif token == "c1" then table.insert(tags, "obj_center1")
+    elseif token == "c2" then table.insert(tags, "obj_center2")
+    elseif token == "t" then table.insert(tags, "obj_triangle")
+    end
+  end
+  return tags
+end
+
+function objectiveTagsFromInstance(instance)
+  if type(instance) ~= "table" then return {} end
+  return objectiveTagsFromCode(instance[6])
+end
+
+function applyTagsToObject(objectState, tags)
+  if type(tags) ~= "table" or #tags == 0 then return objectState end
+  objectState.Tags = tags
+  if type(objectState.States) == "table" then
+    for _, state in pairs(objectState.States) do
+      if type(state) == "table" then state.Tags = tags end
+    end
+  end
+  return objectState
+end
+
+function themeUrl(index)
+  local value = tableValueAt(BM_THEME_PAYLOAD and BM_THEME_PAYLOAD.u, tonumber(index))
+  return value ~= nil and tostring(value) or ""
+end
+
+-- Plain object table in BOARD coordinates. Adaptation from V2: NO GMNotes marker (the canonical
+-- zone wipe owns cleanup), so terrain spawns plain and is wiped like any other map object.
+function makeCommonObject(name, transform, nickname)
+  return {
+    GUID = makeGuid(), Name = name, Transform = transform, Nickname = nickname or "",
+    Description = "", GMNotes = "", AltLookAngle = {x=0, y=0, z=0}, ColorDiffuse = {r=1, g=1, b=1},
+    LayoutGroupSortIndex = 0, Value = 0, Locked = true, Grid = true, Snap = true, IgnoreFoW = false,
+    MeasureMovement = false, DragSelectable = true, Autoraise = true, Sticky = true, Tooltip = true,
+    GridProjection = false, HideWhenFaceDown = false, Hands = false, Tags = {},
+    LuaScript = "", LuaScriptState = "", XmlUI = "",
+  }
+end
+
+function makeTransform(posX, posY, posZ, rotY, scale, extraRot)
+  local nextScale = scale or {x=1, y=1, z=1}
+  local rotation = extraRot or {}
+  return {
+    posX = round6(posX), posY = round6(posY), posZ = round6(posZ),
+    rotX = round6(rotation.x or 0), rotY = round6(rotY or 0), rotZ = round6(rotation.z or 0),
+    scaleX = round6(nextScale.x or 1), scaleY = round6(nextScale.y or 1), scaleZ = round6(nextScale.z or 1),
+  }
+end
+
+-- Returns a terrain-plate object table (board space, no GMNotes) or nil if no asset matches.
+function buildTerrainPlate(instance, template)
+  local width = tonumber(template[2]) or 1
+  local height = tonumber(template[3]) or 1
+  local asset = findTerrainAsset(width, height)
+  if asset == nil then return nil end
+  local centerX = tonumber(instance[2]) or 0
+  local centerY = tonumber(instance[3]) or 0
+  local rotation = tonumber(instance[4]) or 0
+  local mirrorCode = type(instance[5]) == "number" and tonumber(instance[5]) or 0
+  local pivotLocal = {x = -width / 2, y = -height / 2}
+  if mirrorCode == 1 then pivotLocal = {x = width / 2, y = -height / 2} end
+  if mirrorCode == 2 then pivotLocal = {x = -width / 2, y = height / 2} end
+  local pivot = rotatePoint(pivotLocal.x, pivotLocal.y, rotation)
+  local extraRot = {x=0, z=0}
+  if mirrorCode == 1 then extraRot.z = 180 end
+  if mirrorCode == 2 then extraRot.x = 180 end
+  local posY = (mirrorCode == 1 or mirrorCode == 2) and 1.02 or 0.980388
+  local style = terrainStyleForTemplate(template)
+  local objectState = makeCommonObject("Custom_Assetbundle",
+    makeTransform(centerX + pivot.x, posY, centerY + pivot.y, normalizeRotation(360 - rotation), {x=1, y=1, z=1}, extraRot), "")
+  objectState.CustomAssetbundle = {
+    AssetbundleURL = terrainAssetUrl(asset, style), AssetbundleSecondaryURL = "",
+    MaterialIndex = 0, TypeIndex = 0, LoopingEffectIndex = 0,
+  }
+  -- Second state = opposite rugged/smooth style.
+  local altState = makeCommonObject("Custom_Assetbundle", objectState.Transform, "")
+  altState.CustomAssetbundle = {
+    AssetbundleURL = terrainAssetUrl(asset, oppositeTerrainStyle(style)), AssetbundleSecondaryURL = "",
+    MaterialIndex = 0, TypeIndex = 0, LoopingEffectIndex = 0,
+  }
+  objectState.States = {["2"] = altState}
+  applyTagsToObject(objectState, objectiveTagsFromInstance(instance))
+  return objectState
+end
+
+function mappingOptions(mapping)
+  if type(mapping) ~= "table" then return {} end
+  local kind = tostring(mapping[2] or "")
+  local candidate = nil
+  if kind == "m" then candidate = mapping[7] end
+  if kind == "a" then candidate = mapping[5] end
+  return type(candidate) == "table" and candidate or {}
+end
+
+function catalogPartHint(templatePart)
+  if type(templatePart) ~= "table" then return nil end
+  local hint = tableValueAt(BM_TEMPLATE_CATALOG and BM_TEMPLATE_CATALOG.q, tonumber(templatePart[1]))
+  return type(hint) == "table" and hint or nil
+end
+
+function ruinPartLabel(templatePart)
+  local hint = catalogPartHint(templatePart)
+  if hint ~= nil and hint[1] ~= nil and tostring(hint[1]) ~= "" then return tostring(hint[1]) end
+  local partRef = tableValueAt(BM_TEMPLATE_CATALOG and BM_TEMPLATE_CATALOG.p, tonumber(templatePart and templatePart[1]))
+  if partRef ~= nil and tostring(partRef) ~= "" then return tostring(partRef) end
+  return "Battlemaster Ruin Part"
+end
+
+function ruinPartMaterialLabel(templatePart)
+  local code = tostring(templatePart and templatePart[6] or "")
+  if code == "l" then return "Light" end
+  if code == "d" then return "Dense" end
+  if string.find(string.lower(ruinPartLabel(templatePart)), "light", 1, true) ~= nil then return "Light" end
+  return "Dense"
+end
+
+function applyRuinPartMetadata(objectState, templatePart)
+  local label = ruinPartLabel(templatePart)
+  objectState.Nickname = label
+  objectState.Description = ruinPartMaterialLabel(templatePart)
+  objectState.Tags = {label}
+  return objectState
+end
+
+function optionScale(options)
+  if type(options.sc) == "table" then
+    return {x=tonumber(options.sc[1]) or 1, y=tonumber(options.sc[2]) or 1, z=tonumber(options.sc[3]) or 1}
+  end
+  return {x=1, y=1, z=1}
+end
+
+function optionOrigin(options)
+  if type(options.o) == "table" then return {x=tonumber(options.o[1]) or 0, y=tonumber(options.o[2]) or 0} end
+  return {x=0, y=0}
+end
+
+-- Returns a ruin-part object table (board space, no GMNotes) or nil if its URL is missing.
+function buildRuinPart(instance, templatePart, mapping)
+  local centerX = tonumber(instance[2]) or 0
+  local centerY = tonumber(instance[3]) or 0
+  local layoutRotation = tonumber(instance[4]) or 0
+  local localX = tonumber(templatePart[2]) or 0
+  local localY = tonumber(templatePart[3]) or 0
+  local partRotation = tonumber(templatePart[4]) or 0
+  local options = mappingOptions(mapping)
+  local ttsOrigin = optionOrigin(options)
+  local rotatedOrigin = rotatePoint(ttsOrigin.x, ttsOrigin.y, partRotation)
+  local worldLocal = rotatePoint(localX + rotatedOrigin.x, localY + rotatedOrigin.y, layoutRotation)
+  local posX = centerX + worldLocal.x
+  local posZ = centerY + worldLocal.y
+  local posY = tonumber(options.y) or 1.08
+  local rotY = normalizeRotation(360 - layoutRotation - partRotation + (tonumber(options.ro) or 0))
+  local extraRot = {x=tonumber(options.rx) or 0, z=tonumber(options.rz) or 0}
+  local scale = optionScale(options)
+  local kind = tostring(mapping[2] or "")
+  if kind == "m" then
+    local meshUrl = themeUrl(tonumber(mapping[3]))
+    if meshUrl == "" then return nil end
+    local objectState = applyRuinPartMetadata(makeCommonObject("Custom_Model", makeTransform(posX, posY, posZ, rotY, scale, extraRot), "Battlemaster Ruin Part"), templatePart)
+    if type(options.ch) == "table" then objectState.ChildObjects = options.ch end
+    objectState.CustomMesh = {
+      MeshURL = meshUrl, DiffuseURL = themeUrl(tonumber(mapping[4])),
+      NormalURL = themeUrl(tonumber(mapping[5])), ColliderURL = themeUrl(tonumber(mapping[6])),
+      Convex = options.cv == true, MaterialIndex = tonumber(options.mi) or 3, TypeIndex = tonumber(options.ti) or 4,
+      CustomShader = {SpecularColor = {r=1, g=1, b=1}, SpecularIntensity = 0, SpecularSharpness = 2, FresnelStrength = 0},
+      CastShadows = options.cs ~= false,
+    }
+    return objectState
+  end
+  if kind == "a" then
+    local assetUrl = themeUrl(tonumber(mapping[3]))
+    if assetUrl == "" then return nil end
+    local objectState = applyRuinPartMetadata(makeCommonObject("Custom_Assetbundle", makeTransform(posX, posY, posZ, rotY, scale, extraRot), "Battlemaster Ruin Part"), templatePart)
+    objectState.CustomAssetbundle = {
+      AssetbundleURL = assetUrl, AssetbundleSecondaryURL = themeUrl(tonumber(mapping[4])),
+      MaterialIndex = 0, TypeIndex = 0, LoopingEffectIndex = 0,
+    }
+    return objectState
+  end
+  return nil
+end
+
+-- Reconstruct BM_LAYOUT_PAYLOAD into board-space object JSON strings.
+-- Returns (jsonList, spawnedCount, skippedCount).
+function reconstructObjectJSONs()
+  local jsonList = {}
+  local spawned, skipped = 0, 0
+  if type(BM_LAYOUT_PAYLOAD) ~= "table" or type(BM_LAYOUT_PAYLOAD.i) ~= "table" then
+    return jsonList, spawned, skipped
+  end
+  local templatesById = buildTemplateLookup()
+  local themeByRef, themeByHint = buildThemeMappingLookup()
+  local function push(objectState)
+    if objectState == nil then return false end
+    table.insert(jsonList, JSON.encode(objectState))
+    return true
+  end
+  for _, instance in ipairs(BM_LAYOUT_PAYLOAD.i) do
+    local template = nil
+    if type(BM_LAYOUT_PAYLOAD.t) == "table" then
+      local templateId = tableValueAt(BM_LAYOUT_PAYLOAD.t, tonumber(instance[1]))
+      template = templateId ~= nil and templatesById[tostring(templateId)] or nil
+    else
+      template = tableValueAt(BM_TEMPLATE_CATALOG.t, tonumber(instance[1]))
+    end
+    if template == nil then
+      skipped = skipped + 1
+    else
+      if push(buildTerrainPlate(instance, template)) then spawned = spawned + 1 else skipped = skipped + 1 end
+      local parts = type(template[4]) == "table" and template[4] or {}
+      for _, templatePart in ipairs(parts) do
+        local mapping = findThemeMappingForCatalogPart(tonumber(templatePart[1]), themeByRef, themeByHint)
+        if mapping ~= nil and push(buildRuinPart(instance, templatePart, mapping)) then
+          spawned = spawned + 1
+        else
+          skipped = skipped + 1
+        end
+      end
+    end
+  end
+  return jsonList, spawned, skipped
+end
+
+-- ============================ Canonical loader card emission ============================
+function luaQuotedString(value)
+  local text = tostring(value or "")
+  text = string.gsub(text, "\\", "\\\\")
+  text = string.gsub(text, "\"", "\\\"")
+  text = string.gsub(text, "\r", "\\r")
+  text = string.gsub(text, "\n", "\\n")
+  text = string.gsub(text, "\t", "\\t")
+  return "\"" .. text .. "\""
+end
+
+function makeDeckId(url)
+  local sum = 0
+  local value = tostring(url or "")
+  for index = 1, string.len(value) do sum = sum + string.byte(value, index) end
+  return 1000 + (sum % 9000)
+end
+
+-- Provider-aware Load Map hook, inserted into the canonical head's loadMap (mirrors compile.py's
+-- inject_map_card_hooks). Function-form gsub avoids `%` interpretation in the replacement.
+function insertLoadHook(machineryHead)
+  local hook = ' do local _m = getObjectFromGUID("' .. BM_MENU_GUID .. '"); '
+    .. 'if _m then _m.call("onMapCardLoaded", {name = self.getName(), guid = self.getGUID(), provider = "battlemaster"}) end end'
+  local result, count = string.gsub(machineryHead, "function%s+loadMap%s*%b()", function(match) return match .. hook end, 1)
+  if count ~= 1 then return machineryHead, false end
+  return result, true
+end
+
+function makeCanonicalCardScript(jsonList)
+  local head, hooked = insertLoadHook(BM_MAP_CARD_MACHINERY)
+  local rows = {}
+  for _, json in ipairs(jsonList) do table.insert(rows, "  " .. luaQuotedString(json)) end
+  local script = head .. "\nobjectJSONs = {\n" .. table.concat(rows, ",\n") .. "\n}\n"
+  return script, hooked
+end
+
+function makeLoaderCardObject(slot, jsonList)
+  -- Dev placement: drop the card next to this object.
+  return makeLoaderCardObjectAt(slot, jsonList, self.positionToWorld({x = 4.9, y = 1.0, z = -1.4}), 180)
+end
+
+function makeLoaderCardObjectAt(slot, jsonList, pos, rotationY)
+  local preview = slotPreview(slot)
+  local faceUrl = slotPreviewUrl(slot)
+  if faceUrl == "" then faceUrl = BM_DEFAULT_CARD_FACE_URL end
+  local deckId = makeDeckId(faceUrl)
+  local deckKey = tostring(deckId)
+  local layoutName = "Battlemaster Map"
+  if type(preview) == "table" and type(preview.layout) == "table" and preview.layout.name ~= nil then
+    layoutName = tostring(preview.layout.name)
+  end
+  local script, hooked = makeCanonicalCardScript(jsonList)
+  if BM_MAP_CARD_MACHINERY == "" then
+    setStatus("Card machinery head is empty (uncompiled build) - card will not load maps. Compile to bake @@MAP_CARD_MACHINERY@@.", "warn")
+  elseif not hooked then
+    setStatus("Could not insert Load Map hook into machinery head - card built without onMapCardLoaded.", "warn")
+  end
+  return {
+    GUID = makeGuid(), Name = "CardCustom",
+    Transform = {posX = pos.x, posY = pos.y, posZ = pos.z, rotX = 0, rotY = 180, rotZ = 0, scaleX = 1.5, scaleY = 1, scaleZ = 1.5},
+    Nickname = layoutName,
+    Description = "Battlemaster generated loader card. Press Load Map to spawn its terrain.",
+    -- Canonical contract: NO MapExclude (would self-exclude from the wipe), and NOT the `map`
+    -- tag (captureRestorePoint would resurrect it). Located for cleanup via battlemaster_generated.
+    GMNotes = "",
+    Tags = {"battlemaster_generated"},
+    AltLookAngle = {x = 0, y = 0, z = 0},
+    ColorDiffuse = {r = 0.713235259, g = 0.713235259, b = 0.713235259},
+    LayoutGroupSortIndex = 0, Value = 0, Locked = false, Grid = true, Snap = true, IgnoreFoW = false,
+    MeasureMovement = false, DragSelectable = true, Autoraise = true, Sticky = true, Tooltip = true,
+    GridProjection = false, HideWhenFaceDown = true, Hands = true,
+    CardID = deckId * 100, SidewaysCard = false,
+    CustomDeck = {[deckKey] = {FaceURL = faceUrl, BackURL = faceUrl, NumWidth = 1, NumHeight = 1, BackIsHidden = true, UniqueBack = false, Type = 0}},
+    LuaScript = script, LuaScriptState = "", XmlUI = "",
+  }
+end
+
+-- ============================ Public generation API (called by startMenu) ============================
+-- startMenu.runBattlemasterMissionGeneration calls this via object.call. params:
+--   archetypeA, archetypeB : force-disposition ids (e.g. "priority-assets")
+--   mode                   : "all" (slots 1/2/3) or "random" (middle slot only)
+--   slotPositions          : { [1]={x,y,z}, [2]=..., [3]=... } world positions of the deployment slots
+--   rotationY              : card Y rotation (deployment card rotation)
+--   callbackGuid, callbackName : startMenu object + function to invoke exactly once on completion
+-- The callback always fires once with {ok=true, count=N} or {ok=false, error=...}.
+function generateMatchupCards(params)
+  params = params or {}
+  setArchetypesFromIds(params.archetypeA, params.archetypeB)
+  local mode = params.mode or "all"
+  local slots = (mode == "random") and {2} or {1, 2, 3}
+  local function fail(err) battlemasterRespond(params, {ok = false, error = tostring(err)}) end
+  ensureReady(function()
+    spawnSlotsSequentially(slots, params, {}, function(spawnedGuids)
+      battlemasterRespond(params, {ok = true, count = #spawnedGuids})
+    end, fail)
+  end, fail)
+end
+
+function setArchetypesFromIds(aId, bId)
+  for index, archetype in ipairs(BM_ARCHETYPES) do
+    if archetype.id == aId then BM_ARCHETYPE_A_INDEX = index end
+    if archetype.id == bId then BM_ARCHETYPE_B_INDEX = index end
+  end
+end
+
+-- Make sure template/theme/layout catalogs are present (smart-sync if cold), then
+-- refresh slot previews for the selected pair. onReady()/onFail(err) fire once.
+function ensureReady(onReady, onFail)
+  if BM_TEMPLATE_CATALOG ~= nil and BM_THEME_PAYLOAD ~= nil and type(BM_LAYOUT_CATALOG) == "table" then
+    selectSlotPreviewsFromCatalog()
+    onReady()
+    return
+  end
+  refreshCache(true, function()
+    if BM_TEMPLATE_CATALOG == nil or BM_THEME_PAYLOAD == nil or type(BM_LAYOUT_CATALOG) ~= "table" then
+      onFail("Battlemaster cache incomplete after sync (missing template/theme/layout).")
+    else
+      selectSlotPreviewsFromCatalog()
+      onReady()
+    end
+  end, onFail)
+end
+
+-- Spawn a loader card per requested slot, one at a time (each spawn is async). A
+-- slot with no matching layout is skipped, not failed. Calls onDone(spawnedGuids)
+-- when every slot is processed; onFail(err) only on a hard error.
+function spawnSlotsSequentially(slots, params, spawnedGuids, onDone, onFail)
+  local index = 1
+  local function step()
+    local slot = slots[index]
+    if slot == nil then onDone(spawnedGuids); return end
+    index = index + 1
+    local pos = params.slotPositions and params.slotPositions[slot] or nil
+    if pos == nil then step(); return end
+    ensureLayoutPayload(slot, function()
+      local jsonList = reconstructObjectJSONs()
+      if #jsonList == 0 then step(); return end
+      local card = makeLoaderCardObjectAt(slot, jsonList, pos, params.rotationY or 180)
+      spawnObjectJSON({
+        json = JSON.encode(card),
+        callback_function = function(obj)
+          if obj then
+            if obj.addTag then obj.addTag("battlemaster_generated") end
+            if obj.setVar then obj.setVar("battlemasterGenerated", true) end
+            table.insert(spawnedGuids, obj.getGUID())
+          end
+          step()
+        end,
+      })
+    end, function(err)
+      -- No layout for this slot (or transient fetch error): skip it, keep going.
+      setStatus("Slot " .. tostring(slot) .. " skipped: " .. tostring(err), "warn")
+      step()
+    end)
+  end
+  step()
+end
+
+function battlemasterRespond(params, result)
+  if params.callbackGuid ~= nil and params.callbackName ~= nil then
+    local obj = getObjectFromGUID(params.callbackGuid)
+    if obj ~= nil then obj.call(params.callbackName, result) end
+  end
+  if result.ok then
+    setStatus("Generated " .. tostring(result.count or 0) .. " Battlemaster map card(s).", "ok")
+  else
+    setStatus("Battlemaster generate failed: " .. tostring(result.error), "error")
+  end
+end
+
+-- ============================ Dev buttons / actions ============================
+function buildDevButtons()
+  self.clearButtons()
+  self.createButton({label = "BATTLEMASTER\nDYNAMIC SPAWNER", click_function = "noop", function_owner = self,
+    position = {0, 0.3, -1.4}, width = 0, height = 0, font_size = 220, font_color = {0.9, 0.95, 1}})
+  self.createButton({label = "Sync", click_function = "uiSync", function_owner = self,
+    position = {-1.2, 0.3, -0.4}, width = 700, height = 320, font_size = 130, color = {0.16, 0.45, 0.7}, font_color = {1,1,1}})
+  self.createButton({label = "Spawn Card 1", click_function = "uiSpawnSlot1", function_owner = self,
+    position = {1.0, 0.3, -0.4}, width = 900, height = 320, font_size = 110, color = {0.75, 0.42, 0.08}, font_color = {1,1,1}})
+  self.createButton({label = "Spawn Card 2", click_function = "uiSpawnSlot2", function_owner = self,
+    position = {1.0, 0.3, 0.3}, width = 900, height = 320, font_size = 110, color = {0.75, 0.42, 0.08}, font_color = {1,1,1}})
+  self.createButton({label = "Spawn Card 3", click_function = "uiSpawnSlot3", function_owner = self,
+    position = {1.0, 0.3, 1.0}, width = 900, height = 320, font_size = 110, color = {0.75, 0.42, 0.08}, font_color = {1,1,1}})
+  self.createButton({label = "Status", click_function = "uiStatus", function_owner = self,
+    position = {-1.2, 0.3, 0.65}, width = 700, height = 320, font_size = 130, color = {0.18, 0.2, 0.24}, font_color = {0.95,0.97,1}})
+end
+
+function noop() end
+function uiStatus() setStatus(BM_LAST_STATUS, "ok") end
+function uiSync() refreshCache(false) end
+
+function spawnCardForSlot(slot)
+  if BM_TEMPLATE_CATALOG == nil or BM_THEME_PAYLOAD == nil then
+    setStatus("Sync first (template/theme payload not loaded).", "warn"); return
+  end
+  ensureLayoutPayload(slot, function()
+    local jsonList, spawned, skipped = reconstructObjectJSONs()
+    if #jsonList == 0 then setStatus("Slot " .. tostring(slot) .. ": reconstruction produced 0 objects.", "warn"); return end
+    local card = makeLoaderCardObject(slot, jsonList)
+    spawnObjectJSON({json = JSON.encode(card)})
+    setStatus("Generated loader card for slot " .. tostring(slot) .. " (" .. tostring(spawned) .. " objects, " .. tostring(skipped) .. " skipped).", "ok")
+  end, function(err) setStatus(tostring(err), "error") end)
+end
+
+function uiSpawnSlot1() spawnCardForSlot(1) end
+function uiSpawnSlot2() spawnCardForSlot(2) end
+function uiSpawnSlot3() spawnCardForSlot(3) end
