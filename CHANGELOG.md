@@ -13,7 +13,12 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
-## v1.7.0c
+## v1.7.0e
+- Added back Activation and Wound tokens! 
+- Small ui changes (eg. Map filter going away when game starts)
+
+## v1.7.0d
+- Deployed test version with Convex fixes.
 - Fixed most of the objective based bugs for maps
 - Now Back to Selection undo button returns all cards appropriately
 - Quick fix with some ui errors and primaries not moving on board 

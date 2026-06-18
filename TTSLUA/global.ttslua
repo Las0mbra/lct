@@ -676,6 +676,10 @@ redTurnCounter_GUID = "055302"
 blueTurnCounter_GUID = "7e4111"
 gameTurnCounter_GUID = "ee92cf"
 scoresheet_GUID = "06d627"
+-- Master activation/wound tracker tokens cloned by the Spawn buttons on the
+-- "Spawn game tools" object (a76485).
+activation_GUID = "229946"
+wounds_GUID = "ad63ba"
 
 table_GUID = "948ce5"
 felt_GUID = "28865a"

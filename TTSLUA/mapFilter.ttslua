@@ -26,7 +26,12 @@ activeCreators = {}     -- { [creatorId] = true }
 
 -- Creators toggled on the first time the panel spawns (no saved state yet).
 -- Keys are creator ids = the map_crt_* tag without the "map_crt_" prefix.
-DEFAULT_ENABLED_CREATORS = {"cr5sh", "izar"}
+DEFAULT_ENABLED_CREATORS = {"bttf"}
+
+-- The filter only applies during mission setup, so the panel is dropped once the
+-- game starts (startMenu calls hideFilterMenu). Persisted so a mid-game reload
+-- stays hidden.
+menuHidden = false
 
 function defaultActiveCreators()
     local t = {}
@@ -35,15 +40,19 @@ function defaultActiveCreators()
 end
 
 function onSave()
-    return JSON.encode({activeCreators = activeCreators})
+    return JSON.encode({activeCreators = activeCreators, menuHidden = menuHidden})
 end
 
 function onLoad(saved)
     activeCreators = nil
+    menuHidden = false
     if saved and saved ~= "" then
         local ok, data = pcall(function() return JSON.decode(saved) end)
-        if ok and type(data) == "table" and type(data.activeCreators) == "table" then
-            activeCreators = data.activeCreators
+        if ok and type(data) == "table" then
+            if type(data.activeCreators) == "table" then
+                activeCreators = data.activeCreators
+            end
+            menuHidden = data.menuHidden == true
         end
     end
     if not activeCreators then
@@ -52,7 +61,13 @@ function onLoad(saved)
     publishActiveCreators()
     -- Small delay so the Global script's MAP_INDEX is in place regardless of
     -- onLoad ordering.
-    Wait.time(buildFilterUI, 1)
+    Wait.time(function()
+        if menuHidden then
+            self.UI.setXml("")
+        else
+            buildFilterUI()
+        end
+    end, 1)
 end
 
 -- Distinct creators from the baked catalog, sorted by display name.
@@ -114,4 +129,16 @@ end
 
 function getActiveCreators()
     return copyActive()
+end
+
+-- Called by startMenu.startGame: remove the floating panel for the rest of the game.
+function hideFilterMenu()
+    menuHidden = true
+    self.UI.setXml("")
+end
+
+-- Bring the panel back (e.g. if a pre-game flow ever needs it again).
+function showFilterMenu()
+    menuHidden = false
+    buildFilterUI()
 end

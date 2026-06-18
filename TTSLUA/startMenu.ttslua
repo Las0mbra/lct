@@ -4306,12 +4306,17 @@ function startGame(obj, player, alt)
     hideDeploymentZonesForGameStart()
     showObjectivesForGameStart()
 
+    -- The map-creator filter only applies during setup; drop its panel now.
+    local mapFilter = getObjectFromGUID("369707")
+    if mapFilter then mapFilter.call("hideFilterMenu") end
+
     local scoresheet = getObjectFromGUID(Global.getVar("scoresheet_GUID"))
     scoresheet.call("startGame")
 
     startCustomTurns()
     broadcastToAll(phases[currentPhase], "Yellow")
     announceSecondarySelections(secondarySummaries)
+    resetActivationTokens()
     Notes.setNotes("")
     writeMenus()
     updateGameStateHUD()
@@ -4322,6 +4327,16 @@ function startGameDisabled()
     broadcastToAll("Choose game mode first", {1, 0.75, 0})
 end
 
+
+-- Flip every Activation token back to "not acted". Called automatically at game
+-- start and on each phase change; the manual button lives on spawnGameTools.
+function resetActivationTokens()
+    for _, obj in ipairs(getAllObjects()) do
+        if obj.getVar("BCBtype") == "ActivationToken" then
+            obj.call("resetAlredyActed")
+        end
+    end
+end
 
 function newRoundStarted()
     updateGameStateHUD()
@@ -4449,6 +4464,7 @@ function updateGameStateHUD()
 end
 
 function nextPhase(obj, player_color_click, alt_click)
+    resetActivationTokens()
     if alt_click then
         passTurn(obj, player_color_click, alt_click)
         return
