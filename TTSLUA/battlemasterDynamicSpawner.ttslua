@@ -21,8 +21,12 @@ BM_DEFAULT_THEME_ID = BM_DEFAULT_THEME_ID or "tts-theme-grimdark-calibrated-v1"
 BM_BATTLEMAT_MESH_URL = BM_BATTLEMAT_MESH_URL or "https://steamusercontent-a.akamaihd.net/ugc/879750610978796176/4A5A65543B98BCFBF57E910D06EC984208223D38/"
 BM_DEFAULT_CARD_FACE_URL = BM_DEFAULT_CARD_FACE_URL or "https://steamusercontent-a.akamaihd.net/ugc/10791071673581242/E710A69735A01208EFCAE0A13B7FD487275388FB/"
 
--- v1 omits the battlemat (LCT has its own mat + canonical zone wipe); see plan phase E.
-BM_INCLUDE_BATTLEMAT = false
+-- Include the theme battlemat (the printed board image) under the terrain. It is
+-- baked into the card like the terrain, GMNotes-stripped so the canonical zone wipe
+-- clears it with the map. BM_BATTLEMAT_POS_Y is the mesh pivot Y (the visible surface
+-- sits ~11 above it); tune if it z-fights the LCT mat or sits at the wrong height.
+BM_INCLUDE_BATTLEMAT = true
+BM_BATTLEMAT_POS_Y = BM_BATTLEMAT_POS_Y or -10.13
 
 -- Built-in terrain footprint plates, matched to a template by width/height (style by template id).
 BM_TERRAIN_ASSETS = {
@@ -750,6 +754,27 @@ function makeTransform(posX, posY, posZ, rotY, scale, extraRot)
   }
 end
 
+-- Returns the battlemat object table (board image under the terrain, no GMNotes) or
+-- nil if the theme has no battlemat. Mesh from BM_BATTLEMAT_MESH_URL, diffuse from theme.
+function buildBattlematFromTheme()
+  if BM_THEME_PAYLOAD == nil or type(BM_THEME_PAYLOAD.b) ~= "table" then return nil end
+  local battlemat = BM_THEME_PAYLOAD.b
+  local diffuseUrl = themeUrl(tonumber(battlemat[2]))
+  if diffuseUrl == "" then return nil end
+  local width = tonumber(battlemat[3]) or 60
+  local height = tonumber(battlemat[4]) or 44
+  local objectState = makeCommonObject("Custom_Model",
+    makeTransform(0, BM_BATTLEMAT_POS_Y, 0, 0, {x = width / 36, y = 1.06, z = height / 36.046}), "")
+  objectState.GridProjection = true
+  objectState.CustomMesh = {
+    MeshURL = BM_BATTLEMAT_MESH_URL, DiffuseURL = diffuseUrl, NormalURL = "", ColliderURL = "",
+    Convex = true, MaterialIndex = 3, TypeIndex = 4,
+    CustomShader = {SpecularColor = {r=1, g=1, b=1}, SpecularIntensity = 0, SpecularSharpness = 2, FresnelStrength = 0},
+    CastShadows = true,
+  }
+  return objectState
+end
+
 -- Returns a terrain-plate object table (board space, no GMNotes) or nil if no asset matches.
 function buildTerrainPlate(instance, template)
   local width = tonumber(template[2]) or 1
@@ -898,6 +923,7 @@ function reconstructObjectJSONs()
     table.insert(jsonList, JSON.encode(objectState))
     return true
   end
+  if BM_INCLUDE_BATTLEMAT and push(buildBattlematFromTheme()) then spawned = spawned + 1 end
   for _, instance in ipairs(BM_LAYOUT_PAYLOAD.i) do
     local template = nil
     if type(BM_LAYOUT_PAYLOAD.t) == "table" then
