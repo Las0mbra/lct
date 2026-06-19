@@ -73,6 +73,9 @@ BM_LAYOUT_CATALOG_KEY = BM_LAYOUT_CATALOG_KEY or nil
 BM_LAYOUT_CATALOG_VERSION_KEY = BM_LAYOUT_CATALOG_VERSION_KEY or nil
 BM_THEME_PAYLOAD_CACHE = BM_THEME_PAYLOAD_CACHE or {}
 BM_LAYOUT_PAYLOAD_CACHE = BM_LAYOUT_PAYLOAD_CACHE or {}
+-- Prebuilt loader-card LuaScripts keyed by layout payload key. These are filled
+-- by debug cache populate so Generate does not reconstruct/encode terrain JSON.
+BM_CARD_SCRIPT_CACHE = BM_CARD_SCRIPT_CACHE or {}
 BM_SLOT_PREVIEWS = BM_SLOT_PREVIEWS or nil
 BM_SLOT_PREVIEWS_KEY = BM_SLOT_PREVIEWS_KEY or nil
 BM_THEME_LIST_KEY = BM_THEME_LIST_KEY or nil
@@ -111,6 +114,7 @@ function onSave()
     layoutPayloadKey = BM_LAYOUT_PAYLOAD_KEY,
     layoutPayloadSlot = BM_LAYOUT_PAYLOAD_SLOT,
     layoutPayloadCache = BM_LAYOUT_PAYLOAD_CACHE,
+    cardScriptCache = BM_CARD_SCRIPT_CACHE,
     slotPreviews = BM_SLOT_PREVIEWS,
     slotPreviewsKey = BM_SLOT_PREVIEWS_KEY,
     themeListKey = BM_THEME_LIST_KEY,
@@ -140,6 +144,7 @@ function restoreSpawnerState(savedData)
   if type(state.layoutPayloadKey) == "string" then BM_LAYOUT_PAYLOAD_KEY = state.layoutPayloadKey end
   if type(state.layoutPayloadSlot) == "number" then BM_LAYOUT_PAYLOAD_SLOT = state.layoutPayloadSlot end
   if type(state.layoutPayloadCache) == "table" then BM_LAYOUT_PAYLOAD_CACHE = state.layoutPayloadCache end
+  if type(state.cardScriptCache) == "table" then BM_CARD_SCRIPT_CACHE = state.cardScriptCache end
   if type(state.slotPreviews) == "table" then BM_SLOT_PREVIEWS = state.slotPreviews end
   if type(state.slotPreviewsKey) == "string" then BM_SLOT_PREVIEWS_KEY = state.slotPreviewsKey end
   if type(state.themeListKey) == "string" then BM_THEME_LIST_KEY = state.themeListKey end
@@ -446,6 +451,7 @@ function pruneLayoutPayloadCache(stats, nextCatalog)
     local valid = pairKey ~= nil and pairKey ~= "" and slot ~= nil and layoutKey ~= nil and layoutKey ~= "" and byLayoutKey[tostring(layoutKey)] ~= nil
     if not valid then
       BM_LAYOUT_PAYLOAD_CACHE[cacheKey] = nil
+      BM_CARD_SCRIPT_CACHE[cacheKey] = nil
       stats.prunedLayoutCache = stats.prunedLayoutCache + 1
       if pairKey ~= nil and pairKey ~= "" and slot ~= nil then
         local replacement = byPairSlot[layoutPairSlotKey(pairKey, slot)]
@@ -460,6 +466,9 @@ function pruneLayoutPayloadCache(stats, nextCatalog)
     end
   end
   stats.layoutPayloadRefreshRequests = requests
+  for cacheKey, _ in pairs(BM_CARD_SCRIPT_CACHE) do
+    if type(BM_LAYOUT_PAYLOAD_CACHE[cacheKey]) ~= "table" then BM_CARD_SCRIPT_CACHE[cacheKey] = nil end
+  end
   if BM_LAYOUT_PAYLOAD_KEY ~= nil and type(BM_LAYOUT_PAYLOAD_CACHE[BM_LAYOUT_PAYLOAD_KEY]) ~= "table" then
     BM_LAYOUT_PAYLOAD = nil
     BM_LAYOUT_PAYLOAD_KEY = nil
@@ -707,20 +716,39 @@ function debugPopulateFullCache(params)
   refreshCache(false, function()
     local requests, stats = collectMissingLayoutPayloadRequests()
     debugCachePrint(params, "Layout catalog entries: " .. tostring(stats.total)
-      .. ", cached: " .. tostring(stats.cached) .. ", missing: " .. tostring(stats.missing) .. ".")
+      .. ", payload cached: " .. tostring(stats.cached) .. ", payload missing: " .. tostring(stats.missing) .. ".")
+
+    local function prebuildScripts(payloadStats)
+      local scriptRequests, scriptStats = collectMissingCardScriptRequests()
+      debugCachePrint(params, "Card scripts: cached " .. tostring(scriptStats.cached)
+        .. ", missing/stale " .. tostring(scriptStats.missing) .. ".")
+      if #scriptRequests == 0 then
+        BM_FULL_CACHE_POPULATE_IN_PROGRESS = false
+        local failed = tonumber(payloadStats.failed or 0) or 0
+        local tone = failed > 0 and "warn" or "ok"
+        setStatus("Full cache populated: payloads " .. tostring(payloadStats.cached + (payloadStats.fetched or 0))
+          .. ", scripts " .. tostring(scriptStats.cached) .. ", failed " .. tostring(failed) .. ".", tone)
+        debugCachePrint(params, "Done. Cache already has prebuilt scripts. Save the table/mod to preserve it.", tone == "warn" and {1, 0.8, 0.25} or {0.45, 1, 0.55})
+        return
+      end
+      prebuildCardScriptRequestsSequentially(scriptRequests, scriptStats, function(scriptResult)
+        BM_FULL_CACHE_POPULATE_IN_PROGRESS = false
+        local failed = (tonumber(payloadStats.failed or 0) or 0) + (tonumber(scriptResult.failedScripts or 0) or 0)
+        local tone = failed > 0 and "warn" or "ok"
+        setStatus("Full cache populate done: fetched " .. tostring(payloadStats.fetched or 0)
+          .. ", scripts built " .. tostring(scriptResult.built or 0) .. ", failed " .. tostring(failed) .. ".", tone)
+        debugCachePrint(params, "Done. Fetched " .. tostring(payloadStats.fetched or 0)
+          .. ", scripts built " .. tostring(scriptResult.built or 0) .. ", failed " .. tostring(failed)
+          .. ". Save the table/mod now to bake the cache.", tone == "warn" and {1, 0.8, 0.25} or {0.45, 1, 0.55})
+      end)
+    end
+
     if #requests == 0 then
-      BM_FULL_CACHE_POPULATE_IN_PROGRESS = false
-      setStatus("Full cache already populated (" .. tostring(stats.cached) .. " layout payloads cached).", "ok")
-      debugCachePrint(params, "Done. Cache already populated. Save the table/mod to preserve it.", {0.45, 1, 0.55})
+      prebuildScripts(stats)
       return
     end
     fetchLayoutPayloadRequestsSequentially(requests, stats, function(result)
-      BM_FULL_CACHE_POPULATE_IN_PROGRESS = false
-      local tone = result.failed > 0 and "warn" or "ok"
-      setStatus("Full cache populate done: fetched " .. tostring(result.fetched)
-        .. ", failed " .. tostring(result.failed) .. ", cached total " .. tostring(result.cached + result.fetched) .. ".", tone)
-      debugCachePrint(params, "Done. Fetched " .. tostring(result.fetched) .. ", failed " .. tostring(result.failed)
-        .. ". Save the table/mod now to bake the cache.", result.failed > 0 and {1, 0.8, 0.25} or {0.45, 1, 0.55})
+      prebuildScripts(result)
     end)
   end, function(err)
     BM_FULL_CACHE_POPULATE_IN_PROGRESS = false
@@ -1104,12 +1132,104 @@ function makeCanonicalCardScript(jsonList)
   return script, hooked
 end
 
+function stringChecksum(text)
+  local sum = 0
+  local value = tostring(text or "")
+  for index = 1, string.len(value) do
+    sum = (sum + (string.byte(value, index) * index)) % 1000000007
+  end
+  return sum
+end
+
+function cardScriptBuildKey()
+  return "machinery:" .. tostring(string.len(BM_MAP_CARD_MACHINERY)) .. ":" .. tostring(stringChecksum(BM_MAP_CARD_MACHINERY))
+    .. "|theme:" .. tostring(BM_THEME_PAYLOAD_KEY or "")
+    .. "|battlemat:" .. tostring(BM_INCLUDE_BATTLEMAT == true)
+end
+
+function cachedCardScriptEntry(payloadKey)
+  local entry = BM_CARD_SCRIPT_CACHE[payloadKey]
+  if type(entry) ~= "table" or type(entry.script) ~= "string" or entry.script == "" then return nil end
+  if tostring(entry.buildKey or "") ~= cardScriptBuildKey() then return nil end
+  return entry
+end
+
+function prebuildCardScriptForPayloadKey(payloadKey, slot)
+  local cached = BM_LAYOUT_PAYLOAD_CACHE[payloadKey]
+  if type(cached) ~= "table" or type(cached.payload) ~= "table" then return false, "missing payload" end
+  BM_LAYOUT_PAYLOAD = cached.payload
+  BM_LAYOUT_PAYLOAD_KEY = payloadKey
+  BM_LAYOUT_PAYLOAD_SLOT = tonumber(slot) or tonumber(cached.slot) or BM_LAYOUT_PAYLOAD_SLOT
+  local jsonList, spawned, skipped = reconstructObjectJSONs()
+  if #jsonList == 0 then return false, "reconstruction produced 0 objects" end
+  local script, hooked = makeCanonicalCardScript(jsonList)
+  if BM_MAP_CARD_MACHINERY == "" then return false, "card machinery head is empty" end
+  if not hooked then return false, "load hook insertion failed" end
+  BM_CARD_SCRIPT_CACHE[payloadKey] = {
+    script = script,
+    buildKey = cardScriptBuildKey(),
+    objectCount = spawned,
+    skippedCount = skipped,
+  }
+  return true, nil
+end
+
+function collectMissingCardScriptRequests()
+  local requests, seen = {}, {}
+  local stats = {total = 0, cached = 0, missing = 0, skipped = 0, duplicates = 0}
+  if type(BM_LAYOUT_CATALOG) ~= "table" or type(BM_LAYOUT_CATALOG.layouts) ~= "table" then return requests, stats end
+  for _, layout in ipairs(BM_LAYOUT_CATALOG.layouts) do
+    stats.total = stats.total + 1
+    local req = layoutPayloadRequestFromCatalogLayout(layout)
+    if req == nil then
+      stats.skipped = stats.skipped + 1
+    elseif seen[req.payloadKey] then
+      stats.duplicates = stats.duplicates + 1
+    else
+      seen[req.payloadKey] = true
+      if cachedCardScriptEntry(req.payloadKey) ~= nil then
+        stats.cached = stats.cached + 1
+      else
+        stats.missing = stats.missing + 1
+        table.insert(requests, req)
+      end
+    end
+  end
+  return requests, stats
+end
+
+function prebuildCardScriptRequestsSequentially(requests, stats, done)
+  local index = 1
+  stats.built = stats.built or 0
+  stats.failedScripts = stats.failedScripts or 0
+  local function step()
+    local req = requests[index]
+    if req == nil then done(stats); return end
+    index = index + 1
+    setStatus("Full cache prebuild: " .. tostring(index - 1) .. "/" .. tostring(#requests)
+      .. " (" .. tostring(req.pairKey) .. " slot " .. tostring(req.slot) .. ")")
+    local ok = false
+    local success, err = pcall(function()
+      ok, err = prebuildCardScriptForPayloadKey(req.payloadKey, req.slot)
+    end)
+    if success and ok then
+      stats.built = stats.built + 1
+    else
+      stats.failedScripts = stats.failedScripts + 1
+      BM_CARD_SCRIPT_CACHE[req.payloadKey] = nil
+      print("[BM CACHE] Script prebuild failed for " .. tostring(req.payloadKey) .. ": " .. tostring(err))
+    end
+    Wait.frames(step, 1)
+  end
+  step()
+end
+
 function makeLoaderCardObject(slot, jsonList)
   -- Dev placement: drop the card next to this object.
   return makeLoaderCardObjectAt(slot, jsonList, self.positionToWorld({x = 4.9, y = 1.0, z = -1.4}), 180)
 end
 
-function makeLoaderCardObjectAt(slot, jsonList, pos, rotationY)
+function makeLoaderCardObjectWithScriptAt(slot, script, pos, rotationY)
   local preview = slotPreview(slot)
   local faceUrl = slotPreviewUrl(slot)
   if faceUrl == "" then faceUrl = BM_DEFAULT_CARD_FACE_URL end
@@ -1118,12 +1238,6 @@ function makeLoaderCardObjectAt(slot, jsonList, pos, rotationY)
   local layoutName = "Battlemaster Map"
   if type(preview) == "table" and type(preview.layout) == "table" and preview.layout.name ~= nil then
     layoutName = tostring(preview.layout.name)
-  end
-  local script, hooked = makeCanonicalCardScript(jsonList)
-  if BM_MAP_CARD_MACHINERY == "" then
-    setStatus("Card machinery head is empty (uncompiled build) - card will not load maps. Compile to bake @@MAP_CARD_MACHINERY@@.", "warn")
-  elseif not hooked then
-    setStatus("Could not insert Load Map hook into machinery head - card built without onMapCardLoaded.", "warn")
   end
   return {
     GUID = makeGuid(), Name = "CardCustom",
@@ -1143,6 +1257,16 @@ function makeLoaderCardObjectAt(slot, jsonList, pos, rotationY)
     CustomDeck = {[deckKey] = {FaceURL = faceUrl, BackURL = faceUrl, NumWidth = 1, NumHeight = 1, BackIsHidden = true, UniqueBack = false, Type = 0}},
     LuaScript = script, LuaScriptState = "", XmlUI = "",
   }
+end
+
+function makeLoaderCardObjectAt(slot, jsonList, pos, rotationY)
+  local script, hooked = makeCanonicalCardScript(jsonList)
+  if BM_MAP_CARD_MACHINERY == "" then
+    setStatus("Card machinery head is empty (uncompiled build) - card will not load maps. Compile to bake @@MAP_CARD_MACHINERY@@.", "warn")
+  elseif not hooked then
+    setStatus("Could not insert Load Map hook into machinery head - card built without onMapCardLoaded.", "warn")
+  end
+  return makeLoaderCardObjectWithScriptAt(slot, script, pos, rotationY)
 end
 
 -- ============================ Public assembler API (called by startMenu) ============================
@@ -1198,12 +1322,11 @@ function buildSlotCardsFromCache(slots, params)
     elseif type(cached) ~= "table" or type(cached.payload) ~= "table" then
       setStatus("Slot " .. tostring(slot) .. " skipped: layout payload not in cache.", "warn")
     else
-      BM_LAYOUT_PAYLOAD = cached.payload
-      BM_LAYOUT_PAYLOAD_KEY = payloadKey
-      BM_LAYOUT_PAYLOAD_SLOT = slot
-      local jsonList = reconstructObjectJSONs()
-      if #jsonList > 0 then
-        cards[slot] = JSON.encode(makeLoaderCardObjectAt(slot, jsonList, pos, params.rotationY or 180))
+      local scriptEntry = cachedCardScriptEntry(payloadKey)
+      if scriptEntry == nil then
+        setStatus("Slot " .. tostring(slot) .. " skipped: prebuilt card script not in cache.", "warn")
+      else
+        cards[slot] = JSON.encode(makeLoaderCardObjectWithScriptAt(slot, scriptEntry.script, pos, params.rotationY or 180))
         count = count + 1
       end
     end

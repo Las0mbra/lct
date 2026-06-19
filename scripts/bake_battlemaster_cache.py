@@ -63,11 +63,13 @@ def summarize_cache(state_text):
     lc = st.get("layoutCatalog") or {}
     layouts = lc.get("layouts") if isinstance(lc, dict) else None
     lpc = st.get("layoutPayloadCache") or {}
+    csc = st.get("cardScriptCache") or {}
     return (f"template={'yes' if st.get('templateCatalog') else 'no'}, "
             f"themes={len(themes) if isinstance(themes, list) else '?'}, "
             f"themePayload={'yes' if st.get('themePayload') else 'no'}, "
             f"layoutCatalog={len(layouts) if isinstance(layouts, list) else '?'}, "
-            f"layoutPayloadCache={len(lpc) if isinstance(lpc, dict) else 0}")
+            f"layoutPayloadCache={len(lpc) if isinstance(lpc, dict) else 0}, "
+            f"cardScriptCache={len(csc) if isinstance(csc, dict) else 0}")
 
 
 def write_state_into_ftc_base(new_value_literal):
@@ -94,7 +96,8 @@ def write_state_into_ftc_base(new_value_literal):
 def cache_completeness(state_text):
     """Return (missing_count, detail). missing_count == 0 means a full warm cache:
     template + theme payload + layout catalog present, and every catalog layout has
-    a cached lite payload (mirrors the spawner's layoutPayloadCacheKey)."""
+    a cached lite payload plus a prebuilt loader-card script (mirrors the spawner's
+    layoutPayloadCacheKey)."""
     st = json.loads(state_text)
     problems = []
     if not st.get("templateCatalog"):
@@ -107,7 +110,9 @@ def cache_completeness(state_text):
         problems.append("no layoutCatalog.layouts")
         return (1 if problems else 0), "; ".join(problems)
     cache = st.get("layoutPayloadCache") or {}
+    script_cache = st.get("cardScriptCache") or {}
     missing = 0
+    missing_scripts = 0
     for layout in layouts:
         slot = (layout.get("chapterApprovedSlot") or {}).get("slotIndex", layout.get("slotIndex"))
         pair = layout.get("forcePairKey") or ""
@@ -121,9 +126,15 @@ def cache_completeness(state_text):
         entry = cache.get(payload_key)
         if not (isinstance(entry, dict) and isinstance(entry.get("payload"), dict)):
             missing += 1
+        script_entry = script_cache.get(payload_key)
+        if not (isinstance(script_entry, dict) and isinstance(script_entry.get("script"), str)
+                and script_entry.get("script")):
+            missing_scripts += 1
     if missing:
         problems.append(f"{missing}/{len(layouts)} layout payloads missing from cache")
-    return (missing + len(problems) if problems else 0), "; ".join(problems) if problems else "complete"
+    if missing_scripts:
+        problems.append(f"{missing_scripts}/{len(layouts)} prebuilt card scripts missing from cache")
+    return (missing + missing_scripts + len(problems) if problems else 0), "; ".join(problems) if problems else "complete"
 
 
 def main():
