@@ -172,3 +172,15 @@ cfeba5,Take and Hold vs Disruption,f4da61,TnH vs Dis 1 - Sweeping Engagement - A
 cfeba5,Take and Hold vs Disruption,4c353c,TnH vs Dis 2 - Crucible of Battle - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
 eae80b,Take and Hold vs Priority Assets,ae755a,TnH vs PA 1 - Crucible of Battle - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
 1e6711,Take and Hold vs Purge the Foe,fdf917,TnH vs PtF 1 - Sweeping Engagement - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+f1e22b,Disruption vs Priority Assets,06b679,Dis vs PA 1 - Sweeping Engagement - Zim,map_crt_zim,map_type_comp,Zim,true
+f1e22b,Disruption vs Priority Assets,945feb,Dis vs PA 2 - Tipping Point - Zim,map_crt_zim,map_type_comp,Zim,true
+f1e22b,Disruption vs Priority Assets,91bca5,Dis vs PA 2 - Tipping Point - Zim,map_crt_zim,map_type_comp,Zim,true
+f1e22b,Disruption vs Priority Assets,defc8f,Dis vs PA 3 - Search and Destroy - Zim,map_crt_zim,map_type_comp,Zim,true
+dc8738,Purge the Foe vs Priority Assets,c4782f,PtF vs PA 1 - Dawn of War - Zim,map_crt_zim,map_type_comp,Zim,true
+dc8738,Purge the Foe vs Priority Assets,9f44a5,PtF vs PA 2 - Search and Destroy - Zim,map_crt_zim,map_type_comp,Zim,true
+dc8738,Purge the Foe vs Priority Assets,70011f,PtF vs PA 3 - Hammer and Anvil - Zim,map_crt_zim,map_type_comp,Zim,true
+32e34a,Priority Assets vs Reconnaissance,c856b5,PA vs Rec 1 - Crucible of Battle - Zim,map_crt_zim,map_type_comp,Zim,true
+32e34a,Priority Assets vs Reconnaissance,66ed4a,PA vs Rec 2 - Tipping Point - Zim,map_crt_zim,map_type_comp,Zim,true
+32e34a,Priority Assets vs Reconnaissance,edf7f7,PA vs Rec 2 - Tipping Point - Zim,map_crt_zim,map_type_comp,Zim,true
+32e34a,Priority Assets vs Reconnaissance,7a0751,PA vs Rec 3 - Sweeping Engagement - Zim,map_crt_zim,map_type_comp,Zim,true
+eae80b,Take and Hold vs Priority Assets,2f34c6,TnH vs PA 3 - Dawn of War - Zim,map_crt_zim,map_type_comp,Zim,true

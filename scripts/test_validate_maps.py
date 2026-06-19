@@ -43,29 +43,28 @@ class ValidateMapsTest(unittest.TestCase):
         self.assertEqual([], [i for i in issues if i.level == validate_maps.ERROR])
 
     def test_creator_variant_decks_cover_all_layouts(self):
-        expected_by_deck = {
-            **{guid: {"map_crt_belgium", "map_crt_cr5sh", "map_crt_izar", "map_crt_battlemaster"}
-               for guid in ("6e0d78", "109a6b", "1e6711", "cfeba5", "eae80b")},
-            **{guid: {"map_crt_cr5sh", "map_crt_izar", "map_crt_battlemaster"}
-               for guid in ("a22c33", "3ebbd6", "9ac38f")},
-            **{guid: {"map_crt_battlemaster", "map_crt_cr5sh"}
-               for guid in ("793bc0", "4409ba", "2c7cd1", "f1e22b", "32e34a", "7b5ba7", "dc8738")},
-        }
-        for deck_guid, expected_creators in expected_by_deck.items():
+        manifest_rows, _ = validate_maps.load_map_manifest(MANIFEST_PATH)
+
+        expected = {}
+        for row in manifest_rows:
+            match = re.search(r"\s([123])\s*-\s*", row["card_name"])
+            self.assertIsNotNone(match, row["card_name"])
+            key = (row["deck_guid"], int(match.group(1)), row["map_creator_tag"])
+            expected[key] = expected.get(key, 0) + 1
+
+        actual = {}
+        for deck_guid in {row["deck_guid"] for row in manifest_rows}:
             deck = find_guid(self.object_states, deck_guid)
-            variants = {1: [], 2: [], 3: []}
+            self.assertIsNotNone(deck, deck_guid)
             for card in deck["ContainedObjects"]:
                 match = re.search(r"\s([123])\s*-\s*", card["Nickname"])
                 self.assertIsNotNone(match, card["Nickname"])
-                variants[int(match.group(1))].append(card)
+                creators = [tag for tag in card.get("Tags", []) if tag.startswith("map_crt_")]
+                self.assertEqual(1, len(creators), card["Nickname"])
+                key = (deck_guid, int(match.group(1)), creators[0])
+                actual[key] = actual.get(key, 0) + 1
 
-            expected_count = len(expected_creators)
-            self.assertEqual({1: expected_count, 2: expected_count, 3: expected_count},
-                             {layout: len(cards) for layout, cards in variants.items()})
-            for cards in variants.values():
-                creators = {tag for card in cards for tag in card.get("Tags", [])
-                            if tag.startswith("map_crt_")}
-                self.assertEqual(expected_creators, creators)
+        self.assertEqual(expected, actual)
 
     def test_duplicate_layout_art_name_is_an_error(self):
         states = copy.deepcopy(self.object_states)
@@ -161,12 +160,19 @@ class ValidateMapsTest(unittest.TestCase):
         self.assertIn("obj_home_red", matching[0].message)
 
     def test_map_statistics_describe_current_inventory(self):
+        manifest_rows, _ = validate_maps.load_map_manifest(MANIFEST_PATH)
         _, ctx = validate_maps.validate(self.object_states, require_map_tags=True)
         stats = validate_maps.map_statistics(ctx)
-        self.assertEqual(129, stats["cards"])
+
+        expected_types = {}
+        for row in manifest_rows:
+            map_type = row["map_type_tag"].removeprefix(validate_maps.MAP_TYPE_TAG_PREFIX + "_")
+            expected_types[map_type] = expected_types.get(map_type, 0) + 1
+
+        self.assertEqual(len(manifest_rows), stats["cards"])
         self.assertEqual(45, stats["logical_layouts"])
         self.assertEqual(15, stats["source_containers"])
-        self.assertEqual({"comp": 129}, dict(stats["map_types"]))
+        self.assertEqual(expected_types, dict(stats["map_types"]))
         self.assertEqual(25, stats["mapped_matchups"])
         self.assertEqual(25, stats["total_matchups"])
         self.assertGreater(stats["terrain_total"], 0)

@@ -174,6 +174,7 @@ MAP_CREATOR_DISPLAY_NAMES = {
     "map_crt_izar": "Izar",
     "map_crt_battlemaster": "Battlemaster",
     "map_crt_alvaricus": "Alvaricus",
+    "map_crt_zim": "Zim",
 }
 LAYOUT_ART_DECK_GUID = "fb4b5d"
 # A matchup map source may be a Deck or a standard Bag. Bags are the preferred
