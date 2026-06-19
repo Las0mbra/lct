@@ -1270,6 +1270,12 @@ function buildDebugPanelButtons(panel)
         color = {0.16, 0.16, 0.24}, font_color = {0.55, 0.85, 1},
         tooltip = "Debug only: fetch every missing Battlemaster lite layout payload into the spawner cache",
     })
+    panel.createButton({
+        label = "BM cache\ncheck", click_function = "debugCheckBattlemasterCache", function_owner = Global,
+        position = {0, 0.6, 2.74}, height = 320, width = 760, font_size = 86,
+        color = {0.14, 0.2, 0.18}, font_color = {0.55, 1, 0.72},
+        tooltip = "Debug only: report whether the Battlemaster spawner cache is empty",
+    })
 end
 
 function debugPerfScanRed(_, playerColor)
@@ -1299,6 +1305,16 @@ function debugPopulateBattlemasterCache(_, playerColor)
     end
     printToColor("[DEBUG] Battlemaster cache population started. Save the mod/table after it completes to bake the cache.", playerColor, {0.55, 0.85, 1})
     spawner.call("debugPopulateFullCache", {playerColor = playerColor})
+end
+
+function debugCheckBattlemasterCache(_, playerColor)
+    if DEBUG ~= true then return end
+    local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
+    if not spawner then
+        printToColor("[DEBUG] Battlemaster spawner not found.", playerColor, {1, 0.3, 0.3})
+        return
+    end
+    spawner.call("debugReportCacheState", {playerColor = playerColor})
 end
 
 -- Collect the GUIDs of whatever the clicking player has selected and bake them,

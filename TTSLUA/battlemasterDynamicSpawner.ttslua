@@ -636,6 +636,84 @@ function debugCachePrint(params, message, tint)
   end
 end
 
+function cacheTableCount(value)
+  local count = 0
+  if type(value) ~= "table" then return 0 end
+  for _, _ in pairs(value) do count = count + 1 end
+  return count
+end
+
+function realThemeCount()
+  local count = 0
+  if type(BM_THEMES) ~= "table" then return 0 end
+  for _, theme in ipairs(BM_THEMES) do
+    if type(theme) == "table" and tostring(theme.id or "") ~= "" then count = count + 1 end
+  end
+  return count
+end
+
+function layoutCatalogCount()
+  if type(BM_LAYOUT_CATALOG) ~= "table" or type(BM_LAYOUT_CATALOG.layouts) ~= "table" then return 0 end
+  return #BM_LAYOUT_CATALOG.layouts
+end
+
+function hasNonEmptyString(value)
+  return type(value) == "string" and value ~= ""
+end
+
+function debugReportCacheState(params)
+  params = params or {}
+  if not (Global and Global.getVar and Global.getVar("DEBUG") == true) then return end
+
+  local templatePresent = type(BM_TEMPLATE_CATALOG) == "table"
+  local themePayloadPresent = type(BM_THEME_PAYLOAD) == "table"
+  local layoutPayloadPresent = type(BM_LAYOUT_PAYLOAD) == "table"
+  local layoutCatalogEntries = layoutCatalogCount()
+  local themePayloadCacheCount = cacheTableCount(BM_THEME_PAYLOAD_CACHE)
+  local layoutPayloadCacheCount = cacheTableCount(BM_LAYOUT_PAYLOAD_CACHE)
+  local cardScriptCacheCount = cacheTableCount(BM_CARD_SCRIPT_CACHE)
+  local slotPreviewCount = cacheTableCount(BM_SLOT_PREVIEWS)
+  local themeCount = realThemeCount()
+  local syncManifestPresent = type(BM_SYNC_MANIFEST) == "table"
+  local keyCount = 0
+  if hasNonEmptyString(BM_TEMPLATE_CATALOG_KEY) then keyCount = keyCount + 1 end
+  if hasNonEmptyString(BM_THEME_LIST_KEY) then keyCount = keyCount + 1 end
+  if hasNonEmptyString(BM_THEME_PAYLOAD_KEY) then keyCount = keyCount + 1 end
+  if hasNonEmptyString(BM_LAYOUT_CATALOG_KEY) then keyCount = keyCount + 1 end
+  if hasNonEmptyString(BM_LAYOUT_CATALOG_VERSION_KEY) then keyCount = keyCount + 1 end
+  if hasNonEmptyString(BM_LAYOUT_PAYLOAD_KEY) then keyCount = keyCount + 1 end
+  if hasNonEmptyString(BM_SLOT_PREVIEWS_KEY) then keyCount = keyCount + 1 end
+
+  local empty = not templatePresent
+    and themeCount == 0
+    and not themePayloadPresent
+    and themePayloadCacheCount == 0
+    and layoutCatalogEntries == 0
+    and not layoutPayloadPresent
+    and layoutPayloadCacheCount == 0
+    and cardScriptCacheCount == 0
+    and slotPreviewCount == 0
+    and not syncManifestPresent
+    and keyCount == 0
+
+  if empty then
+    debugCachePrint(params, "EMPTY: no persisted Battlemaster API/cache payloads detected.", {0.45, 1, 0.55})
+    return
+  end
+
+  debugCachePrint(params, "NOT EMPTY: template=" .. (templatePresent and "yes" or "no")
+    .. ", themes=" .. tostring(themeCount)
+    .. ", themePayload=" .. (themePayloadPresent and "yes" or "no")
+    .. ", themePayloadCache=" .. tostring(themePayloadCacheCount)
+    .. ", layoutCatalog=" .. tostring(layoutCatalogEntries)
+    .. ", layoutPayload=" .. (layoutPayloadPresent and "yes" or "no")
+    .. ", layoutPayloadCache=" .. tostring(layoutPayloadCacheCount)
+    .. ", cardScriptCache=" .. tostring(cardScriptCacheCount)
+    .. ", slotPreviews=" .. tostring(slotPreviewCount)
+    .. ", syncManifest=" .. (syncManifestPresent and "yes" or "no")
+    .. ", keys=" .. tostring(keyCount) .. ".", {1, 0.8, 0.25})
+end
+
 function layoutPayloadRequestFromCatalogLayout(layout)
   if type(layout) ~= "table" then return nil, "layout entry was not a table" end
   local slot = type(layout.chapterApprovedSlot) == "table" and tonumber(layout.chapterApprovedSlot.slotIndex) or tonumber(layout.slotIndex)
