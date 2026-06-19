@@ -81,6 +81,7 @@ BM_SLOT_PREVIEWS_KEY = BM_SLOT_PREVIEWS_KEY or nil
 BM_THEME_LIST_KEY = BM_THEME_LIST_KEY or nil
 BM_SYNC_MANIFEST = BM_SYNC_MANIFEST or nil
 BM_LAST_STATUS = BM_LAST_STATUS or "Cache empty. Press Sync."
+BM_REQUESTED_SYNC_THEME_ID = BM_REQUESTED_SYNC_THEME_ID or nil
 
 -- ============================ Lifecycle ============================
 function onLoad(savedData)
@@ -394,7 +395,8 @@ function smartSyncManifest(stats, done, fail)
     -- explicitly; otherwise first sync would pick the API's first theme instead of
     -- the configured default.
     local current = selectedTheme()
-    local previousThemeId = (current and current.id ~= "" and current.id) or BM_DEFAULT_THEME_ID
+    local requestedThemeId = tostring(BM_REQUESTED_SYNC_THEME_ID or "")
+    local previousThemeId = requestedThemeId ~= "" and requestedThemeId or ((current and current.id ~= "" and current.id) or BM_DEFAULT_THEME_ID)
     local nextThemes = normalizeThemesResponse(response)
     if #nextThemes == 0 then
       BM_THEMES = {{id="", name="No theme", label="No approved public themes", mappingCount=0, ownerUserId="", creatorName="", approvalState="community"}}
@@ -789,9 +791,31 @@ function debugPopulateFullCache(params)
     debugCachePrint(params, "Populate already running.", {1, 0.8, 0.25})
     return
   end
+  local requestedThemeId = tostring(type(params) == "table" and params.themeId or "")
+  local requestedThemeName = tostring(type(params) == "table" and params.themeName or requestedThemeId)
+  if requestedThemeId ~= "" then
+    BM_REQUESTED_SYNC_THEME_ID = requestedThemeId
+    BM_THEME_INDEX = themeIndexById(requestedThemeId)
+    syncActiveThemePayloadFromCache()
+    debugCachePrint(params, "Requested theme: " .. requestedThemeName .. " (" .. requestedThemeId .. ").")
+  else
+    BM_REQUESTED_SYNC_THEME_ID = nil
+  end
   BM_FULL_CACHE_POPULATE_IN_PROGRESS = true
   debugCachePrint(params, "Smart sync first, then fetching every missing lite layout payload...")
   refreshCache(false, function()
+    BM_REQUESTED_SYNC_THEME_ID = nil
+    if requestedThemeId ~= "" then
+      local theme = selectedTheme()
+      if type(theme) ~= "table" or tostring(theme.id or "") ~= requestedThemeId then
+        BM_FULL_CACHE_POPULATE_IN_PROGRESS = false
+        local err = "Requested Battlemaster theme not found after sync: " .. requestedThemeName
+        setStatus(err, "error")
+        debugCachePrint(params, err, {1, 0.3, 0.3})
+        return
+      end
+      debugCachePrint(params, "Active theme confirmed: " .. tostring(theme.name or theme.label or theme.id) .. ".")
+    end
     local requests, stats = collectMissingLayoutPayloadRequests()
     debugCachePrint(params, "Layout catalog entries: " .. tostring(stats.total)
       .. ", payload cached: " .. tostring(stats.cached) .. ", payload missing: " .. tostring(stats.missing) .. ".")
@@ -829,6 +853,7 @@ function debugPopulateFullCache(params)
       prebuildScripts(result)
     end)
   end, function(err)
+    BM_REQUESTED_SYNC_THEME_ID = nil
     BM_FULL_CACHE_POPULATE_IN_PROGRESS = false
     debugCachePrint(params, "Smart sync failed: " .. tostring(err), {1, 0.3, 0.3})
   end)

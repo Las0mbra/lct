@@ -1204,6 +1204,7 @@ end
 DEBUG_PANEL_POS  = {71.5, 1.1, -78}
 DEBUG_PANEL_NAME = "LCT Debug Panel"
 BATTLEMASTER_SPAWNER_GUID = "b4d10a"
+BATTLEMASTER_BTTF_RUINS_THEME_ID = "tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5"
 
 -- Where the "Dump selected GUIDs" tile lands, and its name so stale dumps can be
 -- cleared before spawning a fresh one (see debugDumpSelectedGuids).
@@ -1271,8 +1272,14 @@ function buildDebugPanelButtons(panel)
         tooltip = "Debug only: fetch every missing Battlemaster lite layout payload into the spawner cache",
     })
     panel.createButton({
+        label = "BM cache\nBTTF", click_function = "debugPopulateBattlemasterBttfCache", function_owner = Global,
+        position = {-0.5, 0.6, 2.74}, height = 320, width = 760, font_size = 86,
+        color = {0.18, 0.16, 0.24}, font_color = {0.78, 0.72, 1},
+        tooltip = "Debug only: populate the Battlemaster cache using the BTTF Ruins theme",
+    })
+    panel.createButton({
         label = "BM cache\ncheck", click_function = "debugCheckBattlemasterCache", function_owner = Global,
-        position = {0, 0.6, 2.74}, height = 320, width = 760, font_size = 86,
+        position = {0.5, 0.6, 2.74}, height = 320, width = 760, font_size = 86,
         color = {0.14, 0.2, 0.18}, font_color = {0.55, 1, 0.72},
         tooltip = "Debug only: report whether the Battlemaster spawner cache is empty",
     })
@@ -1305,6 +1312,17 @@ function debugPopulateBattlemasterCache(_, playerColor)
     end
     printToColor("[DEBUG] Battlemaster cache population started. Save the mod/table after it completes to bake the cache.", playerColor, {0.55, 0.85, 1})
     spawner.call("debugPopulateFullCache", {playerColor = playerColor})
+end
+
+function debugPopulateBattlemasterBttfCache(_, playerColor)
+    if DEBUG ~= true then return end
+    local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
+    if not spawner then
+        printToColor("[DEBUG] Battlemaster spawner not found.", playerColor, {1, 0.3, 0.3})
+        return
+    end
+    printToColor("[DEBUG] Battlemaster BTTF Ruins cache population started. Save the mod/table after it completes.", playerColor, {0.78, 0.72, 1})
+    spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_BTTF_RUINS_THEME_ID, themeName = "BTTF Ruins"})
 end
 
 function debugCheckBattlemasterCache(_, playerColor)

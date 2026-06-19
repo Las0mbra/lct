@@ -173,6 +173,7 @@ MAP_CREATOR_DISPLAY_NAMES = {
     "map_crt_belgium": "Team Belgium",
     "map_crt_izar": "Izar",
     "map_crt_battlemaster": "Battlemaster",
+    "map_crt_battlemaster_bttf_ruins": "Battlemaster - BTTF Ruins",
     "map_crt_alvaricus": "Alvaricus",
     "map_crt_zim": "Zim",
 }

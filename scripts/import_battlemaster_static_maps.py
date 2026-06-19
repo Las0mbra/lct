@@ -28,8 +28,10 @@ DEFAULT_MANIFEST = ROOT / "data" / "map_manifest.csv"
 MACHINERY = ROOT / "data" / "map_card_machinery.lua"
 SPAWNER_GUID = "b4d10a"
 OBJECTJSONS_MARKER = "objectJSONs = {"
-CREATOR_TAG = "map_crt_battlemaster"
-CREATOR_DISPLAY = "Battlemaster"
+DEFAULT_CREATOR_TAG = "map_crt_battlemaster"
+DEFAULT_CREATOR_DISPLAY = "Battlemaster"
+CREATOR_TAG = DEFAULT_CREATOR_TAG
+CREATOR_DISPLAY = DEFAULT_CREATOR_DISPLAY
 TYPE_TAG = "map_type_comp"
 OLD_CREATOR_TAGS = {"map_crt_battlemaster_default", CREATOR_TAG}
 DEFAULT_BACK_URL = "https://steamusercontent-a.akamaihd.net/ugc/10791071673581242/E710A69735A01208EFCAE0A13B7FD487275388FB/"
@@ -303,13 +305,24 @@ def remove_previous_import(target):
 
 
 def main():
+    global CREATOR_TAG, CREATOR_DISPLAY, OLD_CREATOR_TAGS
     ap = argparse.ArgumentParser(description="Import Battlemaster cache as static LCT map cards.")
     ap.add_argument("source_save", help="TTS save/saved-object JSON whose spawner has a populated cardScriptCache.")
     ap.add_argument("--target", default=str(DEFAULT_TARGET), help="ftc_base.json to modify.")
     ap.add_argument("--manifest", default=str(DEFAULT_MANIFEST), help="map_manifest.csv to update.")
     ap.add_argument("--write", action="store_true", help="Write changes. Without this, only preview.")
     ap.add_argument("--allow-missing-layout-art", action="store_true", help="Do not fail if existing layout art is missing.")
+    ap.add_argument("--creator-tag", default=DEFAULT_CREATOR_TAG, help="map_crt* tag to add to imported cards and manifest rows.")
+    ap.add_argument("--creator-display", default=DEFAULT_CREATOR_DISPLAY, help="Creator/filter label to append to imported card names.")
     args = ap.parse_args()
+
+    CREATOR_TAG = args.creator_tag.strip()
+    CREATOR_DISPLAY = args.creator_display.strip()
+    if not CREATOR_TAG.startswith("map_crt") or not CREATOR_DISPLAY:
+        sys.exit("ERROR: --creator-tag must start with map_crt and --creator-display must be non-empty.")
+    OLD_CREATOR_TAGS = {CREATOR_TAG}
+    if CREATOR_TAG == DEFAULT_CREATOR_TAG:
+        OLD_CREATOR_TAGS.add("map_crt_battlemaster_default")
 
     source = json.loads(Path(args.source_save).read_text(encoding="utf-8"))
     target_path = Path(args.target)
