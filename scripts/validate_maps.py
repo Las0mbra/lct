@@ -172,7 +172,7 @@ MAP_CREATOR_DISPLAY_NAMES = {
     "map_crt_cr5sh": "Cra5hNatural",
     "map_crt_belgium": "Team Belgium",
     "map_crt_izar": "Izar",
-    "map_crt_bttf": "BTTF",
+    "map_crt_battlemaster": "Battlemaster",
 }
 LAYOUT_ART_DECK_GUID = "fb4b5d"
 # A matchup map source may be a Deck or a standard Bag. Bags are the preferred
@@ -698,8 +698,14 @@ def terrain_guid_collisions(ctx):
 @check
 def mission_matrix_resolves(ctx):
     """Every GUID referenced by startMenu's mission matrix must exist, and every
-    map card should be referenced by it (else it's unreachable in-game)."""
+    map card must be reachable through a matrix source bag.
+
+    Historical startMenu tables list individual card GUIDs. Runtime generation now
+    prefers the live contents of each source bag, so imported cards only need to be
+    inside a source bag whose GUID is present in deploymentMatrixDecks.
+    """
     refs = ctx.matrix_referenced_guids()
+    matrix_decks = ctx.matrix_deck_guids()
     if refs is None:
         return
     for g in sorted(refs):
@@ -709,9 +715,11 @@ def mission_matrix_resolves(ctx):
     # Unreachable maps are tolerated in dev builds but block test/release.
     unreachable_level = ERROR if ctx.require_map_tags else WARN
     for card in ctx.cards:
-        if card.guid not in refs:
+        reachable_by_card_ref = card.guid in refs
+        reachable_by_source_bag = matrix_decks is not None and card.deck_guid in matrix_decks
+        if not reachable_by_card_ref and not reachable_by_source_bag:
             yield Issue(unreachable_level, card.where,
-                        "not referenced by any deploymentMatrixDecks/randomDeploymentDecks entry")
+                        "not referenced by card GUID and not inside a deploymentMatrixDecks source bag")
 
 
 @check

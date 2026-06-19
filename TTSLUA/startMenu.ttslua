@@ -1293,9 +1293,6 @@ deploymentMatrixDecks = {
             {guid = "88063f", name = "TnH vs TnH 1 - TP"},
             {guid = "32f3ae", name = "TnH vs TnH 2 - DoW"},
             {guid = "c08454", name = "TnH vs TnH 3 - SnD"},
-            {guid = "931f52", name = "TnH vs TnH 1 - TP"},
-            {guid = "5ad178", name = "TnH vs TnH 2 - DoW"},
-            {guid = "732920", name = "TnH vs TnH 3 - SnD"},
 },
     },
     ["5_2"] = {
@@ -1310,9 +1307,6 @@ deploymentMatrixDecks = {
             {guid = "c0d4e5", name = "TnH vs PA 1 - CoB"},
             {guid = "e7b247", name = "TnH vs PA 2 - HnA"},
             {guid = "127066", name = "TnH vs PA 3 - DoW"},
-            {guid = "32cf71", name = "TnH vs PA 1 - CoB"},
-            {guid = "1d9c50", name = "TnH vs PA 2 - HnA"},
-            {guid = "c16f53", name = "TnH vs PA 3 - DoW"},
 },
     },
     ["2_5"] = {
@@ -1327,9 +1321,6 @@ deploymentMatrixDecks = {
             {guid = "c0d4e5", name = "TnH vs PA 1 - CoB"},
             {guid = "e7b247", name = "TnH vs PA 2 - HnA"},
             {guid = "127066", name = "TnH vs PA 3 - DoW"},
-            {guid = "32cf71", name = "TnH vs PA 1 - CoB"},
-            {guid = "1d9c50", name = "TnH vs PA 2 - HnA"},
-            {guid = "c16f53", name = "TnH vs PA 3 - DoW"},
 },
     },
     ["5_1"] = {
@@ -1344,9 +1335,6 @@ deploymentMatrixDecks = {
             {guid = "45bb37", name = "TnH vs Dis 1 - SE"},
             {guid = "b53767", name = "TnH vs Dis 2 - CoB"},
             {guid = "6261e9", name = "TnH vs Dis 3 - HnA"},
-            {guid = "b69915", name = "TnH vs Dis 1 - SE"},
-            {guid = "d82829", name = "TnH vs Dis 2 - CoB"},
-            {guid = "7faeca", name = "TnH vs Dis 3 - HnA"},
 },
     },
     ["1_5"] = {
@@ -1361,9 +1349,6 @@ deploymentMatrixDecks = {
             {guid = "45bb37", name = "TnH vs Dis 1 - SE"},
             {guid = "b53767", name = "TnH vs Dis 2 - CoB"},
             {guid = "6261e9", name = "TnH vs Dis 3 - HnA"},
-            {guid = "b69915", name = "TnH vs Dis 1 - SE"},
-            {guid = "d82829", name = "TnH vs Dis 2 - CoB"},
-            {guid = "7faeca", name = "TnH vs Dis 3 - HnA"},
 },
     },
     ["5_3"] = {
@@ -1378,9 +1363,6 @@ deploymentMatrixDecks = {
             {guid = "8ba2f3", name = "TnH vs PtF 1 - SE"},
             {guid = "67ca48", name = "TnH vs PtF 2 - SnD"},
             {guid = "acb689", name = "TnH vs PtF 3 - HnA"},
-            {guid = "5dfde6", name = "TnH vs PtF 1 - SE"},
-            {guid = "47ec95", name = "TnH vs PtF 2 - SnD"},
-            {guid = "37386c", name = "TnH vs PtF 3 - HnA"},
 },
     },
     ["3_5"] = {
@@ -1395,9 +1377,6 @@ deploymentMatrixDecks = {
             {guid = "8ba2f3", name = "TnH vs PtF 1 - SE"},
             {guid = "67ca48", name = "TnH vs PtF 2 - SnD"},
             {guid = "acb689", name = "TnH vs PtF 3 - HnA"},
-            {guid = "5dfde6", name = "TnH vs PtF 1 - SE"},
-            {guid = "47ec95", name = "TnH vs PtF 2 - SnD"},
-            {guid = "37386c", name = "TnH vs PtF 3 - HnA"},
 },
     },
     ["5_4"] = {
@@ -1412,9 +1391,6 @@ deploymentMatrixDecks = {
             {guid = "41e4dd", name = "TnH vs Rec 1 - TP"},
             {guid = "38f59f", name = "TnH vs Rec 2 - DoW"},
             {guid = "82efe8", name = "TnH vs Rec 3 - SnD"},
-            {guid = "9138b2", name = "TnH vs Rec 1 - TP"},
-            {guid = "989896", name = "TnH vs Rec 2 - DoW"},
-            {guid = "421847", name = "TnH vs Rec 3 - SnD"},
 },
     },
     ["4_5"] = {
@@ -1429,9 +1405,6 @@ deploymentMatrixDecks = {
             {guid = "41e4dd", name = "TnH vs Rec 1 - TP"},
             {guid = "38f59f", name = "TnH vs Rec 2 - DoW"},
             {guid = "82efe8", name = "TnH vs Rec 3 - SnD"},
-            {guid = "9138b2", name = "TnH vs Rec 1 - TP"},
-            {guid = "989896", name = "TnH vs Rec 2 - DoW"},
-            {guid = "421847", name = "TnH vs Rec 3 - SnD"},
 },
     },
     ["2_4"] = {
@@ -1440,9 +1413,6 @@ deploymentMatrixDecks = {
             {guid = "8fc0f1", name = "PA vs Rec 1 - CoB"},
             {guid = "cb843a", name = "PA vs Rec 2 - TP"},
             {guid = "0d4f36", name = "PA vs Rec 3 - SE"},
-                    {guid = "464422", name = "PA vs Rec 1 - CoB"},
-            {guid = "69cf50", name = "PA vs Rec 2 - TP"},
-            {guid = "206974", name = "PA vs Rec 3 - SE"},
 },
     },
     ["4_2"] = {
@@ -1451,9 +1421,6 @@ deploymentMatrixDecks = {
             {guid = "8fc0f1", name = "PA vs Rec 1 - CoB"},
             {guid = "cb843a", name = "PA vs Rec 2 - TP"},
             {guid = "0d4f36", name = "PA vs Rec 3 - SE"},
-                    {guid = "464422", name = "PA vs Rec 1 - CoB"},
-            {guid = "69cf50", name = "PA vs Rec 2 - TP"},
-            {guid = "206974", name = "PA vs Rec 3 - SE"},
 },
     },
     ["2_2"] = {
@@ -1462,9 +1429,6 @@ deploymentMatrixDecks = {
             {guid = "104223", name = "PA vs PA 1 - SE"},
             {guid = "5fa95f", name = "PA vs PA 2 - CoB"},
             {guid = "71a63a", name = "PA vs PA 3 - TP"},
-                    {guid = "a03a73", name = "PA vs PA 1 - SE"},
-            {guid = "e60755", name = "PA vs PA 2 - CoB"},
-            {guid = "6f12b1", name = "PA vs PA 3 - TP"},
 },
     },
     ["3_3"] = {
@@ -1476,9 +1440,6 @@ deploymentMatrixDecks = {
             {guid = "b1fa49", name = "PtF vs PtF 1 - SnD"},
             {guid = "aaa962", name = "PtF vs PtF 2 - TP"},
             {guid = "81f229", name = "PtF vs PtF 3 - SE"},
-            {guid = "13cdbb", name = "PtF vs PtF 1 - SnD"},
-            {guid = "82d680", name = "PtF vs PtF 2 - TP"},
-            {guid = "86aa60", name = "PtF vs PtF 3 - SE"},
 },
     },
     ["3_1"] = {
@@ -1490,9 +1451,6 @@ deploymentMatrixDecks = {
             {guid = "ce2202", name = "PtF vs Dis 1 - SnD"},
             {guid = "a76f64", name = "PtF vs Dis 2 - TP"},
             {guid = "215479", name = "PtF vs Dis 3 - SE"},
-            {guid = "afd3f5", name = "PtF vs Dis 1 - SnD"},
-            {guid = "6c172b", name = "PtF vs Dis 2 - TP"},
-            {guid = "01abe3", name = "PtF vs Dis 3 - SE"},
 },
     },
     ["1_3"] = {
@@ -1504,9 +1462,6 @@ deploymentMatrixDecks = {
             {guid = "ce2202", name = "PtF vs Dis 1 - SnD"},
             {guid = "a76f64", name = "PtF vs Dis 2 - TP"},
             {guid = "215479", name = "PtF vs Dis 3 - SE"},
-            {guid = "afd3f5", name = "PtF vs Dis 1 - SnD"},
-            {guid = "6c172b", name = "PtF vs Dis 2 - TP"},
-            {guid = "01abe3", name = "PtF vs Dis 3 - SE"},
 },
     },
     ["3_2"] = {
@@ -1515,9 +1470,6 @@ deploymentMatrixDecks = {
             {guid = "653d63", name = "PtF vs PA 1 - DoW"},
             {guid = "bc3814", name = "PtF vs PA 2 - SnD"},
             {guid = "80af80", name = "PtF vs PA 3 - HnA"},
-                    {guid = "a5a7dc", name = "PtF vs PA 1 - DoW"},
-            {guid = "147027", name = "PtF vs PA 2 - SnD"},
-            {guid = "c1c27f", name = "PtF vs PA 3 - HnA"},
 },
     },
     ["2_3"] = {
@@ -1526,9 +1478,6 @@ deploymentMatrixDecks = {
             {guid = "653d63", name = "PtF vs PA 1 - DoW"},
             {guid = "bc3814", name = "PtF vs PA 2 - SnD"},
             {guid = "80af80", name = "PtF vs PA 3 - HnA"},
-                    {guid = "a5a7dc", name = "PtF vs PA 1 - DoW"},
-            {guid = "147027", name = "PtF vs PA 2 - SnD"},
-            {guid = "c1c27f", name = "PtF vs PA 3 - HnA"},
 },
     },
     ["3_4"] = {
@@ -1540,9 +1489,6 @@ deploymentMatrixDecks = {
             {guid = "0052d1", name = "PtF vs Recon 1 - HnA"},
             {guid = "7a9f56", name = "PtF vs Recon 2 - DoW"},
             {guid = "100d5d", name = "PtF vs Recon 3 - CoB"},
-            {guid = "e2a482", name = "PtF vs Recon 1 - HnA"},
-            {guid = "0cf328", name = "PtF vs Recon 2 - DoW"},
-            {guid = "c46522", name = "PtF vs Recon 3 - CoB"},
 },
     },
     ["4_3"] = {
@@ -1554,17 +1500,11 @@ deploymentMatrixDecks = {
             {guid = "0052d1", name = "PtF vs Recon 1 - HnA"},
             {guid = "7a9f56", name = "PtF vs Recon 2 - DoW"},
             {guid = "100d5d", name = "PtF vs Recon 3 - CoB"},
-            {guid = "e2a482", name = "PtF vs Recon 1 - HnA"},
-            {guid = "0cf328", name = "PtF vs Recon 2 - DoW"},
-            {guid = "c46522", name = "PtF vs Recon 3 - CoB"},
 },
     },
     ["1_1"] = {
         guid = "4409ba", name = "Disruption vs Disruption",
         cards = {
-            {guid = "49422d", name = "Dis vs Dis 1 - CoB"},
-            {guid = "86375f", name = "Dis vs Dis 2 - TP"},
-            {guid = "245d0a", name = "Dis vs Dis 3 - SE"},
             {guid = "3fc11c", name = "Dis vs Dis 1 - CoB"},
             {guid = "796c92", name = "Dis vs Dis 2 - TP"},
             {guid = "bdfb2a", name = "Dis vs Dis 3 - SE"},
@@ -1573,9 +1513,6 @@ deploymentMatrixDecks = {
     ["4_4"] = {
         guid = "793bc0", name = "Reconnaissance vs Reconnaissance",
         cards = {
-            {guid = "e154fa", name = "Rec vs Rec 1 - SE"},
-            {guid = "4c3e76", name = "Rec vs Rec 2 - CoB"},
-            {guid = "8d3618", name = "Rec vs Rec 3 - TP"},
             {guid = "262746", name = "Rec vs Rec 1 - SE"},
             {guid = "e4117b", name = "Rec vs Rec 2 - CoB"},
             {guid = "229fed", name = "Rec vs Rec 3 - TP"},
@@ -1584,9 +1521,6 @@ deploymentMatrixDecks = {
     ["1_4"] = {
         guid = "2c7cd1", name = "Disruption vs Reconnaissance",
         cards = {
-            {guid = "bca7d1", name = "Dis vs Rec 1 - TP"},
-            {guid = "c5b652", name = "Dis vs Rec 2 - DoW"},
-            {guid = "428ff1", name = "Dis vs Rec 3 - SnD"},
             {guid = "f1a6b5", name = "Dis vs Rec 1 - TP"},
             {guid = "b3addc", name = "Dis vs Rec 2 - DoW"},
             {guid = "002262", name = "Dis vs Rec 3 - SnD"},
@@ -1595,9 +1529,6 @@ deploymentMatrixDecks = {
     ["4_1"] = {
         guid = "2c7cd1", name = "Disruption vs Reconnaissance",
         cards = {
-            {guid = "bca7d1", name = "Dis vs Rec 1 - TP"},
-            {guid = "c5b652", name = "Dis vs Rec 2 - DoW"},
-            {guid = "428ff1", name = "Dis vs Rec 3 - SnD"},
             {guid = "f1a6b5", name = "Dis vs Rec 1 - TP"},
             {guid = "b3addc", name = "Dis vs Rec 2 - DoW"},
             {guid = "002262", name = "Dis vs Rec 3 - SnD"},
@@ -1606,9 +1537,6 @@ deploymentMatrixDecks = {
     ["1_2"] = {
         guid = "f1e22b", name = "Disruption vs Priority Assets",
         cards = {
-            {guid = "58b284", name = "Dis vs PA 1 - SE"},
-            {guid = "b53c20", name = "Dis vs PA 2 - TP"},
-            {guid = "dbfc1a", name = "Dis vs PA 3 - SnD"},
             {guid = "f9769a", name = "Dis vs PA 1 - SE"},
             {guid = "f83312", name = "Dis vs PA 2 - TP"},
             {guid = "4a79c4", name = "Dis vs PA 3 - SnD"},
@@ -1617,9 +1545,6 @@ deploymentMatrixDecks = {
     ["2_1"] = {
         guid = "f1e22b", name = "Disruption vs Priority Assets",
         cards = {
-            {guid = "58b284", name = "Dis vs PA 1 - SE"},
-            {guid = "b53c20", name = "Dis vs PA 2 - TP"},
-            {guid = "dbfc1a", name = "Dis vs PA 3 - SnD"},
             {guid = "f9769a", name = "Dis vs PA 1 - SE"},
             {guid = "f83312", name = "Dis vs PA 2 - TP"},
             {guid = "4a79c4", name = "Dis vs PA 3 - SnD"},
@@ -1640,9 +1565,6 @@ randomDeploymentDecks = {
             {guid = "88063f", name = "TnH vs TnH 1 - TP"},
             {guid = "32f3ae", name = "TnH vs TnH 2 - DoW"},
             {guid = "c08454", name = "TnH vs TnH 3 - SnD"},
-            {guid = "931f52", name = "TnH vs TnH 1 - TP"},
-            {guid = "5ad178", name = "TnH vs TnH 2 - DoW"},
-            {guid = "732920", name = "TnH vs TnH 3 - SnD"},
 },
     },
     {
@@ -1657,9 +1579,6 @@ randomDeploymentDecks = {
             {guid = "c0d4e5", name = "TnH vs PA 1 - CoB"},
             {guid = "e7b247", name = "TnH vs PA 2 - HnA"},
             {guid = "127066", name = "TnH vs PA 3 - DoW"},
-            {guid = "32cf71", name = "TnH vs PA 1 - CoB"},
-            {guid = "1d9c50", name = "TnH vs PA 2 - HnA"},
-            {guid = "c16f53", name = "TnH vs PA 3 - DoW"},
 },
     },
     {
@@ -1674,9 +1593,6 @@ randomDeploymentDecks = {
             {guid = "45bb37", name = "TnH vs Dis 1 - SE"},
             {guid = "b53767", name = "TnH vs Dis 2 - CoB"},
             {guid = "6261e9", name = "TnH vs Dis 3 - HnA"},
-            {guid = "b69915", name = "TnH vs Dis 1 - SE"},
-            {guid = "d82829", name = "TnH vs Dis 2 - CoB"},
-            {guid = "7faeca", name = "TnH vs Dis 3 - HnA"},
 },
     },
     {
@@ -1691,9 +1607,6 @@ randomDeploymentDecks = {
             {guid = "8ba2f3", name = "TnH vs PtF 1 - SE"},
             {guid = "67ca48", name = "TnH vs PtF 2 - SnD"},
             {guid = "acb689", name = "TnH vs PtF 3 - HnA"},
-            {guid = "5dfde6", name = "TnH vs PtF 1 - SE"},
-            {guid = "47ec95", name = "TnH vs PtF 2 - SnD"},
-            {guid = "37386c", name = "TnH vs PtF 3 - HnA"},
 },
     },
     {
@@ -1708,9 +1621,6 @@ randomDeploymentDecks = {
             {guid = "41e4dd", name = "TnH vs Rec 1 - TP"},
             {guid = "38f59f", name = "TnH vs Rec 2 - DoW"},
             {guid = "82efe8", name = "TnH vs Rec 3 - SnD"},
-            {guid = "9138b2", name = "TnH vs Rec 1 - TP"},
-            {guid = "989896", name = "TnH vs Rec 2 - DoW"},
-            {guid = "421847", name = "TnH vs Rec 3 - SnD"},
 },
     },
     {
@@ -1719,9 +1629,6 @@ randomDeploymentDecks = {
             {guid = "8fc0f1", name = "PA vs Rec 1 - CoB"},
             {guid = "cb843a", name = "PA vs Rec 2 - TP"},
             {guid = "0d4f36", name = "PA vs Rec 3 - SE"},
-                    {guid = "464422", name = "PA vs Rec 1 - CoB"},
-            {guid = "69cf50", name = "PA vs Rec 2 - TP"},
-            {guid = "206974", name = "PA vs Rec 3 - SE"},
 },
     },
     {
@@ -1730,9 +1637,6 @@ randomDeploymentDecks = {
             {guid = "104223", name = "PA vs PA 1 - SE"},
             {guid = "5fa95f", name = "PA vs PA 2 - CoB"},
             {guid = "71a63a", name = "PA vs PA 3 - TP"},
-                    {guid = "a03a73", name = "PA vs PA 1 - SE"},
-            {guid = "e60755", name = "PA vs PA 2 - CoB"},
-            {guid = "6f12b1", name = "PA vs PA 3 - TP"},
 },
     },
     {
@@ -1744,9 +1648,6 @@ randomDeploymentDecks = {
             {guid = "b1fa49", name = "PtF vs PtF 1 - SnD"},
             {guid = "aaa962", name = "PtF vs PtF 2 - TP"},
             {guid = "81f229", name = "PtF vs PtF 3 - SE"},
-            {guid = "13cdbb", name = "PtF vs PtF 1 - SnD"},
-            {guid = "82d680", name = "PtF vs PtF 2 - TP"},
-            {guid = "86aa60", name = "PtF vs PtF 3 - SE"},
 },
     },
     {
@@ -1758,9 +1659,6 @@ randomDeploymentDecks = {
             {guid = "ce2202", name = "PtF vs Dis 1 - SnD"},
             {guid = "a76f64", name = "PtF vs Dis 2 - TP"},
             {guid = "215479", name = "PtF vs Dis 3 - SE"},
-            {guid = "afd3f5", name = "PtF vs Dis 1 - SnD"},
-            {guid = "6c172b", name = "PtF vs Dis 2 - TP"},
-            {guid = "01abe3", name = "PtF vs Dis 3 - SE"},
 },
     },
     {
@@ -1769,9 +1667,6 @@ randomDeploymentDecks = {
             {guid = "653d63", name = "PtF vs PA 1 - DoW"},
             {guid = "bc3814", name = "PtF vs PA 2 - SnD"},
             {guid = "80af80", name = "PtF vs PA 3 - HnA"},
-                    {guid = "a5a7dc", name = "PtF vs PA 1 - DoW"},
-            {guid = "147027", name = "PtF vs PA 2 - SnD"},
-            {guid = "c1c27f", name = "PtF vs PA 3 - HnA"},
 },
     },
     {
@@ -1783,17 +1678,11 @@ randomDeploymentDecks = {
             {guid = "0052d1", name = "PtF vs Recon 1 - HnA"},
             {guid = "7a9f56", name = "PtF vs Recon 2 - DoW"},
             {guid = "100d5d", name = "PtF vs Recon 3 - CoB"},
-            {guid = "e2a482", name = "PtF vs Recon 1 - HnA"},
-            {guid = "0cf328", name = "PtF vs Recon 2 - DoW"},
-            {guid = "c46522", name = "PtF vs Recon 3 - CoB"},
 },
     },
     {
         guid = "4409ba", name = "Disruption vs Disruption",
         cards = {
-            {guid = "49422d", name = "Dis vs Dis 1 - CoB"},
-            {guid = "86375f", name = "Dis vs Dis 2 - TP"},
-            {guid = "245d0a", name = "Dis vs Dis 3 - SE"},
             {guid = "3fc11c", name = "Dis vs Dis 1 - CoB"},
             {guid = "796c92", name = "Dis vs Dis 2 - TP"},
             {guid = "bdfb2a", name = "Dis vs Dis 3 - SE"},
@@ -1802,9 +1691,6 @@ randomDeploymentDecks = {
     {
         guid = "793bc0", name = "Reconnaissance vs Reconnaissance",
         cards = {
-            {guid = "e154fa", name = "Rec vs Rec 1 - SE"},
-            {guid = "4c3e76", name = "Rec vs Rec 2 - CoB"},
-            {guid = "8d3618", name = "Rec vs Rec 3 - TP"},
             {guid = "262746", name = "Rec vs Rec 1 - SE"},
             {guid = "e4117b", name = "Rec vs Rec 2 - CoB"},
             {guid = "229fed", name = "Rec vs Rec 3 - TP"},
@@ -1813,9 +1699,6 @@ randomDeploymentDecks = {
     {
         guid = "2c7cd1", name = "Disruption vs Reconnaissance",
         cards = {
-            {guid = "bca7d1", name = "Dis vs Rec 1 - TP"},
-            {guid = "c5b652", name = "Dis vs Rec 2 - DoW"},
-            {guid = "428ff1", name = "Dis vs Rec 3 - SnD"},
             {guid = "f1a6b5", name = "Dis vs Rec 1 - TP"},
             {guid = "b3addc", name = "Dis vs Rec 2 - DoW"},
             {guid = "002262", name = "Dis vs Rec 3 - SnD"},
@@ -1824,9 +1707,6 @@ randomDeploymentDecks = {
     {
         guid = "f1e22b", name = "Disruption vs Priority Assets",
         cards = {
-            {guid = "58b284", name = "Dis vs PA 1 - SE"},
-            {guid = "b53c20", name = "Dis vs PA 2 - TP"},
-            {guid = "dbfc1a", name = "Dis vs PA 3 - SnD"},
             {guid = "f9769a", name = "Dis vs PA 1 - SE"},
             {guid = "f83312", name = "Dis vs PA 2 - TP"},
             {guid = "4a79c4", name = "Dis vs PA 3 - SnD"},
@@ -2286,7 +2166,7 @@ function normalizeMissionName(s)
     return (s:lower():gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
-mapCreatorDisplaySuffixes = {"Cra5hNatural", "Team Belgium", "Izar", "BTTF"}
+mapCreatorDisplaySuffixes = {"Cra5hNatural", "Team Belgium", "Izar", "Battlemaster"}
 
 -- Map cards carry creator credit at the end of their visible nickname. Strip
 -- only a recognized creator suffix when matching shared layout art or reading
@@ -2478,9 +2358,10 @@ end
 
 -- Narrow a layout's variant list to the map filter's wishes, using the baked
 -- MAP_INDEX (creator/eligible) and the Global "activeMapCreators" set written by
--- the map-filter overlay. Drops ineligible maps; then, if any creators are
--- active, prefers their maps but falls back to any eligible map so a layout slot
--- is never left empty when an active creator has no map for this matchup.
+-- the map-filter overlay. With no active filter, every eligible map can roll. With
+-- one or more active filters, only those creators are eligible; this keeps repeat
+-- Generate clicks from silently mixing in other creators while cards are moving
+-- back to their source bags.
 function filterDeploymentVariants(variants)
     local index = Global.getTable("MAP_INDEX") or {}
     local active = Global.getTable("activeMapCreators") or {}
@@ -2504,21 +2385,51 @@ function filterDeploymentVariants(variants)
             table.insert(preferred, card)
         end
     end
-    if #preferred > 0 then
-        return preferred
+    return preferred
+end
+
+function addPlacedDeploymentCardsForDeck(cards, deckGuid)
+    if not deckGuid then return end
+    local seen = {}
+    for _, card in ipairs(cards) do
+        if card.guid then seen[card.guid] = true end
     end
-    return eligible
+
+    local slots = {}
+    for _, slot in ipairs(missionSlots) do
+        if slot.role == "deployment" then table.insert(slots, slot) end
+    end
+    table.insert(slots, {position = deploymentLockTargetPosition})
+
+    for _, slot in ipairs(slots) do
+        for _, obj in ipairs(getObjectsInMissionSlot(slot, nil)) do
+            local guid = obj.getGUID and obj.getGUID() or nil
+            if guid and not seen[guid] then
+                local sourceDeck = getDeploymentCardSourceDeck(obj)
+                if sourceDeck and sourceDeck.getGUID and sourceDeck.getGUID() == deckGuid then
+                    local name = obj.getName and obj.getName() or ""
+                    table.insert(cards, {guid = guid, nickname = name, name = name})
+                    seen[guid] = true
+                end
+            end
+        end
+    end
 end
 
 function chooseDeploymentCardsFromDeckInfo(deckInfo, count)
     cacheDeploymentDeckContents()
     local choices = {}
     local deck = deckInfo and getObjectFromGUID(deckInfo.guid) or nil
-    local cards = deckInfo and deckInfo.cards or nil
+    local cards = deck and deck.getObjects and deck.getObjects() or {}
 
-    if not cards then
-        cards = deck and deck.getObjects and deck.getObjects() or {}
+    -- The save/manifest are now the source of truth for map-card inventory. The
+    -- hand-written card lists remain as fallback metadata for unusual load states,
+    -- but normal generation reads the live source bag so imported static cards do
+    -- not also need to be duplicated into startMenu tables.
+    if #cards == 0 and deckInfo and deckInfo.cards then
+        cards = deckInfo.cards
     end
+    addPlacedDeploymentCardsForDeck(cards, deckInfo and deckInfo.guid)
 
     local cardsByLayout = {}
     local cardsWithoutLayout = {}
@@ -2537,8 +2448,18 @@ function chooseDeploymentCardsFromDeckInfo(deckInfo, count)
         local variants = filterDeploymentVariants(cardsByLayout[layoutIndex] or {})
         if #variants > 0 then
             table.insert(selectedCards, variants[math.random(#variants)])
-        elseif #cardsWithoutLayout > 0 then
-            table.insert(selectedCards, table.remove(cardsWithoutLayout, math.random(#cardsWithoutLayout)))
+        else
+            local fallbackVariants = filterDeploymentVariants(cardsWithoutLayout)
+            if #fallbackVariants > 0 then
+                local picked = fallbackVariants[math.random(#fallbackVariants)]
+                for idx, card in ipairs(cardsWithoutLayout) do
+                    if card.guid == picked.guid then
+                        table.remove(cardsWithoutLayout, idx)
+                        break
+                    end
+                end
+                table.insert(selectedCards, picked)
+            end
         end
     end
 
@@ -2811,12 +2732,10 @@ end
 --   "random" -> place exactly one randomly-chosen matchup card (Random Mission).
 -- Primary mission resolution, cleanup, cooldown and all resiliency are identical
 -- in both modes.
--- ===================== Battlemaster dynamic-maps provider =====================
--- When the "Dynamic Maps" toggle in the map filter is on (Global "battlemasterMode"),
--- Generate Missions & Layouts runs this separate path instead of the static deck flow.
--- It asks the Battlemaster spawner object to reconstruct the current disposition pair's
--- layouts and spawn LCT-compatible loader cards directly into the deployment slots.
--- (Primary mission cards are not dealt in this first integration slice.)
+-- ===================== Legacy Battlemaster dynamic-maps provider =====================
+-- Kept as dormant scaffolding for the old in-TTS dynamic card path. The visible
+-- map filter now uses static LCT map cards only, so runMissionGeneration no longer
+-- branches here.
 BATTLEMASTER_SPAWNER_GUID = "b4d10a"
 
 battlemasterArchetypeByDisposition = {
@@ -2928,10 +2847,6 @@ function onBattlemasterCardsReady(result)
 end
 
 function runMissionGeneration(deploymentMode)
-    if Global.getVar("battlemasterMode") then
-        runBattlemasterMissionGeneration(deploymentMode)
-        return
-    end
     if gameMode ~= "game" or not packSelected then
         return
     end

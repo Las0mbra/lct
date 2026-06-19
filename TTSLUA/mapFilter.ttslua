@@ -1,5 +1,5 @@
 -- FTC-GUID: 369707
--- Map Creator Filter overlay.
+-- Map Filter overlay.
 --
 -- Anchored on a hidden BlockSquare placed between Generate Mission and the
 -- deployment-zone picker. It lists every map creator found in the baked
@@ -13,11 +13,6 @@
 -- mirror means startMenu never has to depend on this object existing yet.
 
 ACTIVE_GLOBAL_KEY = "activeMapCreators"
--- "Dynamic Maps" (Battlemaster) is a separate map provider, mutually exclusive
--- with the static creators. startMenu reads this flag to branch mission generation.
-DYNAMIC_GLOBAL_KEY = "battlemasterMode"
-DYNAMIC_BUTTON_ID = "dynamicMaps"
-DYNAMIC_COLOR_ON  = "#2563EB"   -- blue: dynamic maps active
 COLOR_ON  = "#38C172"   -- green: creator active
 COLOR_OFF = "#FFFFFF"   -- white: creator inactive
 
@@ -28,11 +23,9 @@ COLOR_OFF = "#FFFFFF"   -- white: creator inactive
 UI_VERTICAL_LIFT = -150
 
 activeCreators = {}     -- { [creatorId] = true }
-dynamicMapsEnabled = false   -- Battlemaster dynamic-maps provider toggle
-
 -- Creators toggled on the first time the panel spawns (no saved state yet).
 -- Keys are creator ids = the map_crt_* tag without the "map_crt_" prefix.
-DEFAULT_ENABLED_CREATORS = {"bttf"}
+DEFAULT_ENABLED_CREATORS = {"battlemaster"}
 
 -- The filter only applies during mission setup, so the panel is dropped once the
 -- game starts (startMenu calls hideFilterMenu). Persisted so a mid-game reload
@@ -46,13 +39,12 @@ function defaultActiveCreators()
 end
 
 function onSave()
-    return JSON.encode({activeCreators = activeCreators, menuHidden = menuHidden, dynamicMapsEnabled = dynamicMapsEnabled})
+    return JSON.encode({activeCreators = activeCreators, menuHidden = menuHidden})
 end
 
 function onLoad(saved)
     activeCreators = nil
     menuHidden = false
-    dynamicMapsEnabled = false
     if saved and saved ~= "" then
         local ok, data = pcall(function() return JSON.decode(saved) end)
         if ok and type(data) == "table" then
@@ -60,17 +52,18 @@ function onLoad(saved)
                 activeCreators = data.activeCreators
             end
             menuHidden = data.menuHidden == true
-            dynamicMapsEnabled = data.dynamicMapsEnabled == true
         end
     end
     if not activeCreators then
         activeCreators = defaultActiveCreators()
     end
     publishActiveCreators()
-    publishDynamicMaps()
+    Global.setVar("battlemasterMode", false)
     -- Small delay so the Global script's MAP_INDEX is in place regardless of
     -- onLoad ordering.
     Wait.time(function()
+        sanitizeActiveCreators()
+        publishActiveCreators()
         if menuHidden then
             self.UI.setXml("")
         else
@@ -96,16 +89,42 @@ end
 
 function creatorButtonId(id) return "crt_" .. id end
 function colorFor(id) return activeCreators[id] and COLOR_ON or COLOR_OFF end
-function colorForDynamic() return dynamicMapsEnabled and DYNAMIC_COLOR_ON or COLOR_OFF end
+function knownCreatorSet()
+    local known = {}
+    for _, creator in ipairs(creatorList()) do
+        known[creator.id] = true
+    end
+    return known
+end
+
+function sanitizeActiveCreators()
+    local known = knownCreatorSet()
+    if next(known) == nil then return end
+
+    local hadAny = next(activeCreators or {}) ~= nil
+    local clean = {}
+    for creator in pairs(activeCreators or {}) do
+        if known[creator] then
+            clean[creator] = true
+        end
+    end
+    activeCreators = clean
+
+    -- Saves made before a creator rename may contain only stale IDs (e.g. bttf).
+    -- If that happens, fall back to the current default instead of silently
+    -- publishing an active filter that matches no cards and therefore widens to all.
+    if hadAny and next(activeCreators) == nil then
+        local defaults = defaultActiveCreators()
+        for creator in pairs(defaults) do
+            if known[creator] then activeCreators[creator] = true end
+        end
+    end
+end
 
 function buildFilterUI()
     local list = creatorList()
     local rows = {
-        string.format(
-            '<Button id="%s" onClick="onDynamicMapsToggle" color="%s" textColor="#FFFFFF" '
-            .. 'fontSize="34" preferredWidth="520" preferredHeight="90">Dynamic Maps</Button>',
-            DYNAMIC_BUTTON_ID, colorForDynamic()),
-        '<Text fontSize="44" color="#FFFFFF" preferredHeight="70">Map Creators</Text>',
+        '<Text fontSize="44" color="#FFFFFF" preferredHeight="70">Map Filters</Text>',
     }
     for _, c in ipairs(list) do
         rows[#rows + 1] = string.format(
@@ -113,7 +132,7 @@ function buildFilterUI()
             .. 'fontSize="36" preferredWidth="520" preferredHeight="90">%s</Button>',
             creatorButtonId(c.id), colorFor(c.id), c.display)
     end
-    local height = 210 + #list * 100
+    local height = 110 + #list * 100
     local xml = string.format(
         '<VerticalLayout position="0 0 %d" rotation="0 0 0" width="600" height="%d" '
         .. 'padding="14 14 14 14" spacing="8" color="#101015E6" childForceExpandHeight="false">\n%s\n</VerticalLayout>',
@@ -127,34 +146,9 @@ function onCreatorToggle(player, value, id)
         activeCreators[creator] = nil
     else
         activeCreators[creator] = true
-        -- Mutually exclusive: enabling a static creator turns Dynamic Maps off.
-        if dynamicMapsEnabled then
-            dynamicMapsEnabled = false
-            self.UI.setAttribute(DYNAMIC_BUTTON_ID, "color", colorForDynamic())
-            publishDynamicMaps()
-        end
     end
     self.UI.setAttribute(id, "color", colorFor(creator))
     publishActiveCreators()
-end
-
--- Dynamic Maps (Battlemaster) is mutually exclusive with the static creators:
--- turning it on clears every active creator; turning a creator on (above) clears it.
-function onDynamicMapsToggle(player, value, id)
-    dynamicMapsEnabled = not dynamicMapsEnabled
-    if dynamicMapsEnabled then
-        for creator in pairs(activeCreators) do
-            self.UI.setAttribute(creatorButtonId(creator), "color", COLOR_OFF)
-        end
-        activeCreators = {}
-        publishActiveCreators()
-    end
-    self.UI.setAttribute(DYNAMIC_BUTTON_ID, "color", colorForDynamic())
-    publishDynamicMaps()
-end
-
-function publishDynamicMaps()
-    Global.setVar(DYNAMIC_GLOBAL_KEY, dynamicMapsEnabled)
 end
 
 -- Shallow copy so external readers can't mutate our state.
