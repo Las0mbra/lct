@@ -314,7 +314,7 @@ clearLinesBtn={
 
 
 checkCoherencyBtn={
-    label='Coherency', tooltip='LEFT CLICK: Show coherency of selected models\n RIGHT CLICK: Toggle off lines\nDrawing new lines will be weird while this is on', click_function='checkCoherency', function_owner=self,
+    label='Coherency Check', tooltip='LEFT CLICK: Show coherency of selected models\n RIGHT CLICK: Toggle off lines\nDrawing new lines will be weird while this is on', click_function='checkCoherency', function_owner=self,
     position={-6.46, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=5200, scale={0.1,0.1,0.1},
     font_size=700, color='White', font_color={0,0,0}
 }
@@ -1319,7 +1319,6 @@ function onload()
         local mat = getObjectFromGUID(matGUID)
         if mat then mat.call("hotkeyClearMat", { playerColor = playerColor }) end
     end)
-    addHotkey("Coherency", checkCoherency)
     addHotkey("Custom Bubble", function(playerColor, _, _)
         if playerColor ~= "Red" and playerColor ~= "Blue" then return end
         local matGUID = (playerColor == "Red")
