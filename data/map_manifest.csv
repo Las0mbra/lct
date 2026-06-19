@@ -128,3 +128,47 @@ a22c33,Purge the Foe vs Reconnaissance,857251,PtF vs Recon 3 - Crucible of Battl
 6e0d78,Take and Hold vs Take and Hold,ac209d,TnH vs TnH 1 - Tipping Point - Battlemaster,map_crt_battlemaster,map_type_comp,Battlemaster,true
 6e0d78,Take and Hold vs Take and Hold,e2e8e4,TnH vs TnH 2 - Dawn of War - Battlemaster,map_crt_battlemaster,map_type_comp,Battlemaster,true
 6e0d78,Take and Hold vs Take and Hold,c8b04b,TnH vs TnH 3 - Search and Destroy - Battlemaster,map_crt_battlemaster,map_type_comp,Battlemaster,true
+4409ba,Disruption vs Disruption,158671,Dis vs Dis 1 - Crucible of Battle - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+7b5ba7,Priority Assets vs Priority Assets,4af126,PA vs PA 2 - Crucible of Battle - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+a22c33,Purge the Foe vs Reconnaissance,003494,PtF vs Recon 3 - Crucible of Battle - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+32e34a,Priority Assets vs Reconnaissance,d3ca9b,PA vs Rec 1 - Crucible of Battle - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+793bc0,Reconnaissance vs Reconnaissance,5b046d,Rec vs Rec 2 - Crucible of Battle - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+109a6b,Take and Hold vs Reconnaissance,0b9235,TnH vs Rec 3 - Search and Destroy - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+3ebbd6,Purge the Foe vs Purge the Foe,230bd7,PtF vs PtF 1 - Search and Destroy - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+dc8738,Purge the Foe vs Priority Assets,5c66fb,PtF vs PA 2 - Search and Destroy - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+9ac38f,Purge the Foe vs Disruption,2adc76,PtF vs Dis 1 - Search and Destroy - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+6e0d78,Take and Hold vs Take and Hold,736f80,TnH vs TnH 3 - Search and Destroy - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+1e6711,Take and Hold vs Purge the Foe,07e4c9,TnH vs PtF 2 - Search and Destroy - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+2c7cd1,Disruption vs Reconnaissance,9448fd,Dis vs Rec 3 - Search and Destroy - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+f1e22b,Disruption vs Priority Assets,79728b,Dis vs PA 3 - Search and Destroy - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+3ebbd6,Purge the Foe vs Purge the Foe,2f95cb,PtF vs PtF 2 - Tipping Point - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+6e0d78,Take and Hold vs Take and Hold,461e19,TnH vs TnH 1 - Tipping Point - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+cfeba5,Take and Hold vs Disruption,26869e,TnH vs Dis 3 - Hammer and Anvil - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+793bc0,Reconnaissance vs Reconnaissance,821ac0,Rec vs Rec 3 - Tipping Point - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+f1e22b,Disruption vs Priority Assets,3334c6,Dis vs PA 2 - Tipping Point - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+2c7cd1,Disruption vs Reconnaissance,c15611,Dis vs Rec 1 - Tipping Point - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+1e6711,Take and Hold vs Purge the Foe,19d309,TnH vs PtF 3 - Hammer and Anvil - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+7b5ba7,Priority Assets vs Priority Assets,d4b1af,PA vs PA 3 - Tipping Point - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+109a6b,Take and Hold vs Reconnaissance,43a030,TnH vs Rec 1 - Tipping Point - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+eae80b,Take and Hold vs Priority Assets,a780a5,TnH vs PA 2 - Hammer and Anvil - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+a22c33,Purge the Foe vs Reconnaissance,eb12ea,PtF vs Recon 1 - Hammer and Anvil - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+4409ba,Disruption vs Disruption,d436d6,Dis vs Dis 2 - Tipping Point - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+dc8738,Purge the Foe vs Priority Assets,b90b0b,PtF vs PA 3 - Hammer and Anvil - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+32e34a,Priority Assets vs Reconnaissance,724d06,PA vs Rec 2 - Tipping Point - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+a22c33,Purge the Foe vs Reconnaissance,6150ae,PtF vs Recon 2 - Dawn of War - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+2c7cd1,Disruption vs Reconnaissance,6a0d30,Dis vs Rec 2 - Dawn of War - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+6e0d78,Take and Hold vs Take and Hold,73d6ef,TnH vs TnH 2 - Dawn of War - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+dc8738,Purge the Foe vs Priority Assets,acaf4c,PtF vs PA 1 - Dawn of War - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+eae80b,Take and Hold vs Priority Assets,680fc5,TnH vs PA 3 - Dawn of War - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+109a6b,Take and Hold vs Reconnaissance,45d21f,TnH vs Rec 2 - Dawn of War - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+f1e22b,Disruption vs Priority Assets,93eec5,Dis vs PA 1 - Sweeping Engagement - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+9ac38f,Purge the Foe vs Disruption,de79da,PtF vs Dis 3 - Sweeping Engagement - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+793bc0,Reconnaissance vs Reconnaissance,ebd9aa,Rec vs Rec 1 - Sweeping Engagement - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+32e34a,Priority Assets vs Reconnaissance,16705f,PA vs Rec 3 - Sweeping Engagement - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+cfeba5,Take and Hold vs Disruption,f4da61,TnH vs Dis 1 - Sweeping Engagement - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+4409ba,Disruption vs Disruption,2dfdec,Dis vs Dis 3 - Sweeping Engagement - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+3ebbd6,Purge the Foe vs Purge the Foe,5722f7,PtF vs PtF 3 - Sweeping Engagement - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+7b5ba7,Priority Assets vs Priority Assets,026f1c,PA vs PA 1 - Sweeping Engagement - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+cfeba5,Take and Hold vs Disruption,4c353c,TnH vs Dis 2 - Crucible of Battle - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+eae80b,Take and Hold vs Priority Assets,ae755a,TnH vs PA 1 - Crucible of Battle - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true
+1e6711,Take and Hold vs Purge the Foe,fdf917,TnH vs PtF 1 - Sweeping Engagement - Alvaricus,map_crt_alvaricus,map_type_thematic,Alvaricus,true

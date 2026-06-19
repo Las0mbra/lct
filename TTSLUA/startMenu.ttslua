@@ -2166,7 +2166,7 @@ function normalizeMissionName(s)
     return (s:lower():gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
-mapCreatorDisplaySuffixes = {"Cra5hNatural", "Team Belgium", "Izar", "Battlemaster"}
+mapCreatorDisplaySuffixes = {"Cra5hNatural", "Team Belgium", "Izar", "Battlemaster", "Alvaricus"}
 
 -- Map cards carry creator credit at the end of their visible nickname. Strip
 -- only a recognized creator suffix when matching shared layout art or reading
