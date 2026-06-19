@@ -83,11 +83,12 @@ BM_LAST_STATUS = BM_LAST_STATUS or "Cache empty. Press Sync."
 function onLoad(savedData)
   restoreSpawnerState(savedData)
   self.setGMNotes("BattlemasterDynamicSpawner")
-  buildDevButtons()
-  if BM_TEMPLATE_CATALOG == nil or BM_LAYOUT_CATALOG == nil or BM_THEMES[1].id == "" then
-    -- Background pre-warm (the integration slice will gate this on /ready).
-    Wait.time(function() refreshCache(true) end, 0.5)
-  end
+  -- Deferred so Global.DEBUG is readable (button gating); if Global isn't ready the
+  -- safe default is the release set (no network buttons).
+  Wait.time(buildDevButtons, 0.3)
+  -- No automatic sync on load: the mission flow is cache-only. The cache is shipped
+  -- baked into the mod and/or filled via the debug "BM cache populate" tool. Manual
+  -- "Sync" (dev button) and debug populate are the only network paths.
 end
 
 function onSave()
@@ -384,7 +385,11 @@ function smartSyncManifest(stats, done, fail)
     local response, err = decodeApiResponse(request, "Sync manifest")
     if err ~= nil then fail(err); return end
     BM_SYNC_MANIFEST = response
-    local previousThemeId = selectedTheme() and selectedTheme().id or BM_DEFAULT_THEME_ID
+    -- Note: the placeholder theme id is "" (truthy in Lua), so guard against it
+    -- explicitly; otherwise first sync would pick the API's first theme instead of
+    -- the configured default.
+    local current = selectedTheme()
+    local previousThemeId = (current and current.id ~= "" and current.id) or BM_DEFAULT_THEME_ID
     local nextThemes = normalizeThemesResponse(response)
     if #nextThemes == 0 then
       BM_THEMES = {{id="", name="No theme", label="No approved public themes", mappingCount=0, ownerUserId="", creatorName="", approvalState="community"}}
@@ -607,6 +612,119 @@ function ensureLayoutPayload(slot, onReady, onFail)
     BM_LAYOUT_PAYLOAD_SLOT = slot
     BM_LAYOUT_PAYLOAD_CACHE[payloadKey] = {payload = BM_LAYOUT_PAYLOAD, slot = slot}
     onReady()
+  end)
+end
+
+-- ============================ Debug cache prewarm ============================
+BM_FULL_CACHE_POPULATE_IN_PROGRESS = BM_FULL_CACHE_POPULATE_IN_PROGRESS or false
+
+function debugCachePrint(params, message, tint)
+  local color = type(params) == "table" and params.playerColor or nil
+  if color ~= nil and color ~= "" then
+    printToColor("[BM CACHE] " .. tostring(message), color, tint or {0.55, 0.85, 1})
+  else
+    broadcastToAll("[BM CACHE] " .. tostring(message), tint or {0.55, 0.85, 1})
+  end
+end
+
+function layoutPayloadRequestFromCatalogLayout(layout)
+  if type(layout) ~= "table" then return nil, "layout entry was not a table" end
+  local slot = type(layout.chapterApprovedSlot) == "table" and tonumber(layout.chapterApprovedSlot.slotIndex) or tonumber(layout.slotIndex)
+  local pairKey = tostring(layout.forcePairKey or "")
+  local layoutKey = tostring(layout.layoutKey or "")
+  if layoutKey == "" and layout.id ~= nil then layoutKey = tostring(layout.id) .. "@" .. tostring(layout.updatedAt or "") end
+  if pairKey == "" or slot == nil or slot < 1 or slot > 3 or layoutKey == "" then
+    return nil, "missing pair/slot/layoutKey"
+  end
+  local left, right = splitForcePairKey(pairKey)
+  if left == nil or right == nil then return nil, "invalid forcePairKey" end
+  return {
+    archetypeA = left, archetypeB = right, pairKey = pairKey, slot = slot, layoutKey = layoutKey,
+    payloadKey = layoutPayloadCacheKey(pairKey, slot, layoutKey),
+  }, nil
+end
+
+function collectMissingLayoutPayloadRequests()
+  local requests, seen = {}, {}
+  local stats = {total = 0, cached = 0, skipped = 0, duplicates = 0, missing = 0}
+  if type(BM_LAYOUT_CATALOG) ~= "table" or type(BM_LAYOUT_CATALOG.layouts) ~= "table" then return requests, stats end
+  for _, layout in ipairs(BM_LAYOUT_CATALOG.layouts) do
+    stats.total = stats.total + 1
+    local req = layoutPayloadRequestFromCatalogLayout(layout)
+    if req == nil then
+      stats.skipped = stats.skipped + 1
+    elseif seen[req.payloadKey] then
+      stats.duplicates = stats.duplicates + 1
+    else
+      seen[req.payloadKey] = true
+      if type(BM_LAYOUT_PAYLOAD_CACHE[req.payloadKey]) == "table" and type(BM_LAYOUT_PAYLOAD_CACHE[req.payloadKey].payload) == "table" then
+        stats.cached = stats.cached + 1
+      else
+        stats.missing = stats.missing + 1
+        table.insert(requests, req)
+      end
+    end
+  end
+  return requests, stats
+end
+
+function fetchLayoutPayloadRequestsSequentially(requests, stats, done)
+  local index = 1
+  stats.fetched = stats.fetched or 0
+  stats.failed = stats.failed or 0
+  local function step()
+    local req = requests[index]
+    if req == nil then done(stats); return end
+    index = index + 1
+    setStatus("Full cache populate: " .. tostring(index - 1) .. "/" .. tostring(#requests)
+      .. " (" .. tostring(req.pairKey) .. " slot " .. tostring(req.slot) .. ")")
+    WebRequest.get(buildLayoutPayloadUrlFor(req.archetypeA, req.archetypeB, req.slot), function(request)
+      local response, err = decodeApiResponse(request, "Layout payload")
+      if err ~= nil or type(response) ~= "table" or type(response.litePayload) ~= "table" then
+        stats.failed = stats.failed + 1
+      else
+        BM_LAYOUT_PAYLOAD_CACHE[req.payloadKey] = {payload = response.litePayload, slot = req.slot}
+        stats.fetched = stats.fetched + 1
+      end
+      Wait.frames(step, 1)
+    end)
+  end
+  step()
+end
+
+function debugPopulateFullCache(params)
+  params = params or {}
+  if not (Global and Global.getVar and Global.getVar("DEBUG") == true) then
+    setStatus("Full cache populate is only available in debug builds.", "warn")
+    return
+  end
+  if BM_FULL_CACHE_POPULATE_IN_PROGRESS then
+    debugCachePrint(params, "Populate already running.", {1, 0.8, 0.25})
+    return
+  end
+  BM_FULL_CACHE_POPULATE_IN_PROGRESS = true
+  debugCachePrint(params, "Smart sync first, then fetching every missing lite layout payload...")
+  refreshCache(false, function()
+    local requests, stats = collectMissingLayoutPayloadRequests()
+    debugCachePrint(params, "Layout catalog entries: " .. tostring(stats.total)
+      .. ", cached: " .. tostring(stats.cached) .. ", missing: " .. tostring(stats.missing) .. ".")
+    if #requests == 0 then
+      BM_FULL_CACHE_POPULATE_IN_PROGRESS = false
+      setStatus("Full cache already populated (" .. tostring(stats.cached) .. " layout payloads cached).", "ok")
+      debugCachePrint(params, "Done. Cache already populated. Save the table/mod to preserve it.", {0.45, 1, 0.55})
+      return
+    end
+    fetchLayoutPayloadRequestsSequentially(requests, stats, function(result)
+      BM_FULL_CACHE_POPULATE_IN_PROGRESS = false
+      local tone = result.failed > 0 and "warn" or "ok"
+      setStatus("Full cache populate done: fetched " .. tostring(result.fetched)
+        .. ", failed " .. tostring(result.failed) .. ", cached total " .. tostring(result.cached + result.fetched) .. ".", tone)
+      debugCachePrint(params, "Done. Fetched " .. tostring(result.fetched) .. ", failed " .. tostring(result.failed)
+        .. ". Save the table/mod now to bake the cache.", result.failed > 0 and {1, 0.8, 0.25} or {0.45, 1, 0.55})
+    end)
+  end, function(err)
+    BM_FULL_CACHE_POPULATE_IN_PROGRESS = false
+    debugCachePrint(params, "Smart sync failed: " .. tostring(err), {1, 0.3, 0.3})
   end)
 end
 
@@ -1009,7 +1127,7 @@ function makeLoaderCardObjectAt(slot, jsonList, pos, rotationY)
   end
   return {
     GUID = makeGuid(), Name = "CardCustom",
-    Transform = {posX = pos.x, posY = pos.y, posZ = pos.z, rotX = 0, rotY = 180, rotZ = 0, scaleX = 1.5, scaleY = 1, scaleZ = 1.5},
+    Transform = {posX = pos.x, posY = pos.y, posZ = pos.z, rotX = 0, rotY = rotationY or 180, rotZ = 0, scaleX = 1.5, scaleY = 1, scaleZ = 1.5},
     Nickname = layoutName,
     Description = "Battlemaster generated loader card. Press Load Map to spawn its terrain.",
     -- Canonical contract: NO MapExclude (would self-exclude from the wipe), and NOT the `map`
@@ -1027,25 +1145,70 @@ function makeLoaderCardObjectAt(slot, jsonList, pos, rotationY)
   }
 end
 
--- ============================ Public generation API (called by startMenu) ============================
--- startMenu.runBattlemasterMissionGeneration calls this via object.call. params:
+-- ============================ Public assembler API (called by startMenu) ============================
+-- This object is a PROVIDER/ASSEMBLER only: it fetches, reconstructs, and returns prepared
+-- loader-card JSON. It does NOT spawn anything or touch the table for the mission flow — startMenu
+-- owns all table mutation so it can roll back cleanly if assembly fails. startMenu calls this via
+-- object.call. params:
 --   archetypeA, archetypeB : force-disposition ids (e.g. "priority-assets")
 --   mode                   : "all" (slots 1/2/3) or "random" (middle slot only)
---   slotPositions          : { [1]={x,y,z}, [2]=..., [3]=... } world positions of the deployment slots
+--   slotPositions          : { [1]={x,y,z}, ... } world positions of the deployment slots
 --   rotationY              : card Y rotation (deployment card rotation)
 --   callbackGuid, callbackName : startMenu object + function to invoke exactly once on completion
--- The callback always fires once with {ok=true, count=N} or {ok=false, error=...}.
-function generateMatchupCards(params)
+-- The callback always fires once with {ok=true, cards={[slot]=cardJSON,...}, count=N} or {ok=false, error=...}.
+--
+-- CACHE-ONLY: the mission flow never makes HTTP calls. It reads only the local
+-- (saved/baked) cache. If the catalogs aren't cached it fails fast with guidance;
+-- a per-slot cache miss is skipped, not fetched. The only network paths are the
+-- dev "Sync"/"Spawn Card" buttons and the debug "BM cache populate" tool.
+function requestMatchupCards(params)
   params = params or {}
   setArchetypesFromIds(params.archetypeA, params.archetypeB)
   local mode = params.mode or "all"
   local slots = (mode == "random") and {2} or {1, 2, 3}
-  local function fail(err) battlemasterRespond(params, {ok = false, error = tostring(err)}) end
-  ensureReady(function()
-    spawnSlotsSequentially(slots, params, {}, function(spawnedGuids)
-      battlemasterRespond(params, {ok = true, count = #spawnedGuids})
-    end, fail)
-  end, fail)
+  if BM_TEMPLATE_CATALOG == nil or BM_THEME_PAYLOAD == nil or type(BM_LAYOUT_CATALOG) ~= "table" then
+    battlemasterRespond(params, {ok = false,
+      error = "cache not populated (no template/theme/layout catalog). Run 'BM cache populate' in debug, then save the mod."})
+    return
+  end
+  selectSlotPreviewsFromCatalog()
+  local cards, count = buildSlotCardsFromCache(slots, params)
+  -- All-or-nothing: if any requested slot could not be built from cache, fail so
+  -- startMenu rolls back (leaves the table unchanged) instead of clearing the old
+  -- cards and placing a partial/empty set.
+  if count < #slots then
+    battlemasterRespond(params, {ok = false, count = count,
+      error = "cache incomplete for this matchup (built " .. tostring(count) .. "/" .. tostring(#slots)
+        .. " slots). Run 'BM cache populate' in debug and save the mod."})
+    return
+  end
+  battlemasterRespond(params, {ok = true, cards = cards, count = count})
+end
+
+-- Synchronous, cache-only card assembly. A slot whose lite payload is not cached is
+-- skipped (no fetch). Returns cards[slot] = card JSON string, and the count built.
+function buildSlotCardsFromCache(slots, params)
+  local cards, count = {}, 0
+  for _, slot in ipairs(slots) do
+    local pos = params.slotPositions and params.slotPositions[slot] or nil
+    local payloadKey = currentLayoutPayloadKey(slot)
+    local cached = BM_LAYOUT_PAYLOAD_CACHE[payloadKey]
+    if pos == nil then
+      -- no slot position requested; nothing to do
+    elseif type(cached) ~= "table" or type(cached.payload) ~= "table" then
+      setStatus("Slot " .. tostring(slot) .. " skipped: layout payload not in cache.", "warn")
+    else
+      BM_LAYOUT_PAYLOAD = cached.payload
+      BM_LAYOUT_PAYLOAD_KEY = payloadKey
+      BM_LAYOUT_PAYLOAD_SLOT = slot
+      local jsonList = reconstructObjectJSONs()
+      if #jsonList > 0 then
+        cards[slot] = JSON.encode(makeLoaderCardObjectAt(slot, jsonList, pos, params.rotationY or 180))
+        count = count + 1
+      end
+    end
+  end
+  return cards, count
 end
 
 function setArchetypesFromIds(aId, bId)
@@ -1073,40 +1236,6 @@ function ensureReady(onReady, onFail)
   end, onFail)
 end
 
--- Spawn a loader card per requested slot, one at a time (each spawn is async). A
--- slot with no matching layout is skipped, not failed. Calls onDone(spawnedGuids)
--- when every slot is processed; onFail(err) only on a hard error.
-function spawnSlotsSequentially(slots, params, spawnedGuids, onDone, onFail)
-  local index = 1
-  local function step()
-    local slot = slots[index]
-    if slot == nil then onDone(spawnedGuids); return end
-    index = index + 1
-    local pos = params.slotPositions and params.slotPositions[slot] or nil
-    if pos == nil then step(); return end
-    ensureLayoutPayload(slot, function()
-      local jsonList = reconstructObjectJSONs()
-      if #jsonList == 0 then step(); return end
-      local card = makeLoaderCardObjectAt(slot, jsonList, pos, params.rotationY or 180)
-      spawnObjectJSON({
-        json = JSON.encode(card),
-        callback_function = function(obj)
-          if obj then
-            if obj.addTag then obj.addTag("battlemaster_generated") end
-            if obj.setVar then obj.setVar("battlemasterGenerated", true) end
-            table.insert(spawnedGuids, obj.getGUID())
-          end
-          step()
-        end,
-      })
-    end, function(err)
-      -- No layout for this slot (or transient fetch error): skip it, keep going.
-      setStatus("Slot " .. tostring(slot) .. " skipped: " .. tostring(err), "warn")
-      step()
-    end)
-  end
-  step()
-end
 
 function battlemasterRespond(params, result)
   if params.callbackGuid ~= nil and params.callbackName ~= nil then
@@ -1114,17 +1243,26 @@ function battlemasterRespond(params, result)
     if obj ~= nil then obj.call(params.callbackName, result) end
   end
   if result.ok then
-    setStatus("Generated " .. tostring(result.count or 0) .. " Battlemaster map card(s).", "ok")
+    setStatus("Prepared " .. tostring(result.count or 0) .. " Battlemaster map card(s).", "ok")
   else
-    setStatus("Battlemaster generate failed: " .. tostring(result.error), "error")
+    setStatus("Battlemaster assemble failed: " .. tostring(result.error), "error")
   end
 end
 
 -- ============================ Dev buttons / actions ============================
+-- The Sync / Spawn Card buttons make HTTP calls, so they exist ONLY in debug builds.
+-- Release builds get just a status button; the production path is cache-only Generate.
+function isDebugMode()
+  return Global ~= nil and Global.getVar ~= nil and Global.getVar("DEBUG") == true
+end
+
 function buildDevButtons()
   self.clearButtons()
   self.createButton({label = "BATTLEMASTER\nDYNAMIC SPAWNER", click_function = "noop", function_owner = self,
     position = {0, 0.3, -1.4}, width = 0, height = 0, font_size = 220, font_color = {0.9, 0.95, 1}})
+  self.createButton({label = "Status", click_function = "uiStatus", function_owner = self,
+    position = {-1.2, 0.3, 0.65}, width = 700, height = 320, font_size = 130, color = {0.18, 0.2, 0.24}, font_color = {0.95,0.97,1}})
+  if not isDebugMode() then return end
   self.createButton({label = "Sync", click_function = "uiSync", function_owner = self,
     position = {-1.2, 0.3, -0.4}, width = 700, height = 320, font_size = 130, color = {0.16, 0.45, 0.7}, font_color = {1,1,1}})
   self.createButton({label = "Spawn Card 1", click_function = "uiSpawnSlot1", function_owner = self,
@@ -1133,15 +1271,17 @@ function buildDevButtons()
     position = {1.0, 0.3, 0.3}, width = 900, height = 320, font_size = 110, color = {0.75, 0.42, 0.08}, font_color = {1,1,1}})
   self.createButton({label = "Spawn Card 3", click_function = "uiSpawnSlot3", function_owner = self,
     position = {1.0, 0.3, 1.0}, width = 900, height = 320, font_size = 110, color = {0.75, 0.42, 0.08}, font_color = {1,1,1}})
-  self.createButton({label = "Status", click_function = "uiStatus", function_owner = self,
-    position = {-1.2, 0.3, 0.65}, width = 700, height = 320, font_size = 130, color = {0.18, 0.2, 0.24}, font_color = {0.95,0.97,1}})
 end
 
 function noop() end
 function uiStatus() setStatus(BM_LAST_STATUS, "ok") end
-function uiSync() refreshCache(false) end
+function uiSync()
+  if not isDebugMode() then setStatus("Sync is debug-only.", "warn"); return end
+  refreshCache(false)
+end
 
 function spawnCardForSlot(slot)
+  if not isDebugMode() then setStatus("Spawn Card is debug-only.", "warn"); return end
   if BM_TEMPLATE_CATALOG == nil or BM_THEME_PAYLOAD == nil then
     setStatus("Sync first (template/theme payload not loaded).", "warn"); return
   end

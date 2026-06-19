@@ -1203,6 +1203,7 @@ end
 -- relevant object, so the panel needs no script of its own.
 DEBUG_PANEL_POS  = {71.5, 1.1, -78}
 DEBUG_PANEL_NAME = "LCT Debug Panel"
+BATTLEMASTER_SPAWNER_GUID = "b4d10a"
 
 -- Where the "Dump selected GUIDs" tile lands, and its name so stale dumps can be
 -- cleared before spawning a fresh one (see debugDumpSelectedGuids).
@@ -1263,6 +1264,12 @@ function buildDebugPanelButtons(panel)
         color = {0.15, 0.2, 0.15}, font_color = {0.4, 1, 0.4},
         tooltip = "Select objects first, then click: writes their GUIDs into a tile's description to copy/paste",
     })
+    panel.createButton({
+        label = "BM cache\npopulate", click_function = "debugPopulateBattlemasterCache", function_owner = Global,
+        position = {0, 0.6, 2.01}, height = 320, width = 760, font_size = 86,
+        color = {0.16, 0.16, 0.24}, font_color = {0.55, 0.85, 1},
+        tooltip = "Debug only: fetch every missing Battlemaster lite layout payload into the spawner cache",
+    })
 end
 
 function debugPerfScanRed(_, playerColor)
@@ -1281,6 +1288,17 @@ function debugRngTest(_, playerColor)
     local roller = getObjectFromGUID(redCustomDiceRoller_GUID)
     if not roller then printToColor("[DEBUG] Red dice roller not found.", playerColor, {1, 0.3, 0.3}); return end
     roller.call("debugRngCheck")
+end
+
+function debugPopulateBattlemasterCache(_, playerColor)
+    if DEBUG ~= true then return end
+    local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
+    if not spawner then
+        printToColor("[DEBUG] Battlemaster spawner not found.", playerColor, {1, 0.3, 0.3})
+        return
+    end
+    printToColor("[DEBUG] Battlemaster cache population started. Save the mod/table after it completes to bake the cache.", playerColor, {0.55, 0.85, 1})
+    spawner.call("debugPopulateFullCache", {playerColor = playerColor})
 end
 
 -- Collect the GUIDs of whatever the clicking player has selected and bake them,

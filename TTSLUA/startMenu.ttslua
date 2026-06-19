@@ -2875,16 +2875,15 @@ function runBattlemasterMissionGeneration(deploymentMode)
     generateMissionCooldownActive = true
     missionDealInProgress = true
 
-    -- Clear the previous set: destroy old generated cards (no source deck), and
-    -- return any static deployment/layout cards to their decks so the slots are free.
-    destroyGeneratedBattlemasterCards()
-    returnCardsInDeploymentSlotsToDeck(true)
-
+    -- Ownership: the spawner only ASSEMBLES (fetch + reconstruct + return card JSON).
+    -- We do NOT mutate the table here. If assembly fails the table is left untouched
+    -- (clean rollback); all clearing/spawning happens in onBattlemasterCardsReady once
+    -- the card JSON is in hand.
     broadcastToAll("Battlemaster: generating maps for "
         .. tostring(dispositionValues[normalizeDispositionIndex(redDispositionSelected)]) .. " vs "
         .. tostring(dispositionValues[normalizeDispositionIndex(blueDispositionSelected)]) .. "...", {0.4, 0.8, 1})
 
-    spawner.call("generateMatchupCards", {
+    spawner.call("requestMatchupCards", {
         archetypeA = archetypeA,
         archetypeB = archetypeB,
         mode = deploymentMode,
@@ -2895,16 +2894,37 @@ function runBattlemasterMissionGeneration(deploymentMode)
     })
 end
 
--- Spawner callback (exactly-once). Clears the busy/cooldown flags in both branches.
+-- Spawner callback (exactly-once). startMenu owns all table mutation here: on failure
+-- nothing changed (rollback); on success we clear the old set and spawn the new cards.
 function onBattlemasterCardsReady(result)
-    finishMissionDeal()
-    if type(result) == "table" and result.ok then
-        broadcastToAll("Battlemaster: placed " .. tostring(result.count or 0)
-            .. " map card(s). Press Load Map on a card to spawn its terrain.", {0.4, 1, 0.7})
-    else
+    if type(result) ~= "table" or not result.ok then
+        finishMissionDeal()
         local err = type(result) == "table" and result.error or "unknown error"
-        broadcastToAll("Battlemaster generation failed: " .. tostring(err), {1, 0.4, 0.4})
+        broadcastToAll("Battlemaster generation failed: " .. tostring(err) .. " (table unchanged).", {1, 0.4, 0.4})
+        return
     end
+
+    -- Success: now it is safe to clear the previous set and place the new cards.
+    destroyGeneratedBattlemasterCards()
+    returnCardsInDeploymentSlotsToDeck(true)
+
+    local placed = 0
+    for _, cardJson in pairs(result.cards or {}) do
+        spawnObjectJSON({
+            json = cardJson,
+            callback_function = function(obj)
+                if obj then
+                    if obj.addTag then obj.addTag("battlemaster_generated") end
+                    if obj.setVar then obj.setVar("battlemasterGenerated", true) end
+                end
+            end,
+        })
+        placed = placed + 1
+    end
+
+    finishMissionDeal()
+    broadcastToAll("Battlemaster: placed " .. tostring(placed)
+        .. " map card(s). Press Load Map on a card to spawn its terrain.", {0.4, 1, 0.7})
 end
 
 function runMissionGeneration(deploymentMode)
@@ -4411,6 +4431,10 @@ function startGame(obj, player, alt)
     resetSecondaryForceStartCountdown()
 
     returnCardsInDeploymentSlotsToDeck(false)
+    -- Transient Battlemaster cards have no source deck and may be locked in, so the
+    -- return path above skips them; destroy them explicitly (scans the whole table,
+    -- including the lock target) so none survive into the game.
+    destroyGeneratedBattlemasterCards()
     movePrimaryMissionCardsToIngameSlots()
     pushScoringContext()
 
