@@ -1,16 +1,31 @@
 -- FTC-GUID: e446f7,deb9f2
--- Polls the built-in Counter value every 0.5s and pushes changes to the VP Scores HUD.
--- This catches direct widget interactions that bypass startMenu's updateCpHUD().
+-- Clean-token CP counter. Polls the token value every 0.5s and pushes changes
+-- to the VP Scores HUD. This catches direct token interactions that bypass
+-- startMenu's updateCpHUD().
+
+FONT_COLOR_LIGHT = {1, 1, 1, 100}
+FONT_COLOR_DARK  = {0, 0, 0, 100}
+FONT_SIZE        = 750
+FONT_SIZE_SMALL  = 500
+VALUE_POS        = {0, 0.1, -0.45}
+VALUE_POS_SMALL  = {0, 0.1, -0.2}
+TRANSPARENT      = {0, 0, 0, 0}
 
 local _lastValue = nil
 local _watchId   = nil
 local _timerId   = nil
 
-function onLoad()
-    _lastValue = self.Counter.getValue()
+function onLoad(save_state)
+    loadCounterState(save_state)
+    createUserInterface()
+    _lastValue = getValue()
     local isP1 = (self.getGUID() == "deb9f2")
     _watchId   = isP1 and "CPWatch1" or "CPWatch2"
     _timerId   = Wait.time(checkValue, 0.5, -1)
+end
+
+function onSave()
+    return JSON.encode(script_state)
 end
 
 function onDestroy()
@@ -20,8 +35,116 @@ function onDestroy()
     end
 end
 
+function loadCounterState(save_state)
+    if save_state == nil or save_state == "" then
+        script_state = defaultCounterState()
+        return
+    end
+    local ok, decoded = pcall(JSON.decode, save_state)
+    script_state = (ok and type(decoded) == "table") and decoded or defaultCounterState()
+    normalizeCounterState()
+end
+
+function defaultCounterState()
+    return {
+        value = 0,
+        label = self.getName(),
+        use_prefix = false,
+        light_font = true,
+    }
+end
+
+function normalizeCounterState()
+    if script_state == nil then script_state = defaultCounterState() end
+    script_state.value = tonumber(script_state.value) or 0
+    if script_state.label == nil or script_state.label == "" then
+        script_state.label = self.getName()
+    end
+    if script_state.use_prefix == nil then script_state.use_prefix = false end
+    if script_state.light_font == nil then script_state.light_font = true end
+end
+
+function createUserInterface()
+    self.createButton({
+        click_function = "onIncrementDecrementClick",
+        tooltip        = "+/-",
+        function_owner = self,
+        position       = {0, 0.1, 1},
+        height         = 600,
+        width          = 1500,
+        font_size      = 250,
+        color          = TRANSPARENT
+    })
+    self.createButton({
+        click_function = "onIncrementDecrementClick",
+        function_owner = self,
+        label          = getValue(),
+        position       = VALUE_POS,
+        height         = 800,
+        width          = 1500,
+        font_size      = FONT_SIZE,
+        color          = TRANSPARENT,
+        font_color     = FONT_COLOR_LIGHT
+    })
+    self.addContextMenuItem("Toggle Prefix", togglePrefix, false)
+    self.addContextMenuItem("Toggle Font Color", toggleFont, false)
+    refreshTokenUI()
+end
+
+function togglePrefix()
+    script_state.use_prefix = not script_state.use_prefix
+    refreshTokenUI()
+end
+
+function toggleFont()
+    script_state.light_font = not script_state.light_font
+    refreshTokenUI()
+end
+
+function onIncrementDecrementClick(obj, color, alt)
+    if alt then
+        decrement()
+    else
+        increment()
+    end
+end
+
+function refreshTokenUI()
+    script_state.label = self.getName()
+    local display_font_size = FONT_SIZE
+    local display_value_pos  = VALUE_POS
+    if script_state.use_prefix then
+        if math.abs(script_state.value) > 99 then
+            display_font_size = FONT_SIZE_SMALL
+            display_value_pos  = VALUE_POS_SMALL
+        end
+    else
+        if script_state.value > 999 or script_state.value < -99 then
+            display_font_size = FONT_SIZE_SMALL
+            display_value_pos  = VALUE_POS_SMALL
+        end
+    end
+    local display_font_color = script_state.light_font and FONT_COLOR_LIGHT or FONT_COLOR_DARK
+    local display_value = tostring(script_state.value)
+    if script_state.use_prefix then
+        display_value = (script_state.value >= 0 and "+" or "") .. tostring(script_state.value)
+    end
+    self.editButton({
+        index      = 0,
+        label      = script_state.label,
+        font_color = display_font_color,
+    })
+    self.editButton({
+        index      = 1,
+        label      = display_value,
+        font_size  = display_font_size,
+        position   = display_value_pos,
+        font_color = display_font_color,
+    })
+end
+
 function checkValue()
-    local current = self.Counter.getValue()
+    local current = getValue()
     if current ~= _lastValue then
         local previous = _lastValue
         _lastValue = current
@@ -33,7 +156,7 @@ end
 -- Called by startMenu right after an automatic turn-pass CP gain so this poller
 -- treats the new value as its baseline and doesn't re-announce it as a manual change.
 function markBaseline()
-    _lastValue = self.Counter.getValue()
+    _lastValue = getValue()
 end
 
 -- Announce a manual CP change (HUD +/- buttons, overlay, or clicking the token).
@@ -47,10 +170,22 @@ function announceCpChange(previous, current)
     printToAll(label .. " - Player " .. playerColor .. " " .. action .. " a CP " .. previous .. " -> " .. current, "Yellow")
 end
 
+function getValue()
+    normalizeCounterState()
+    return script_state.value
+end
+
+function setValue(value)
+    normalizeCounterState()
+    script_state.value = tonumber(value) or 0
+    refreshTokenUI()
+    return script_state.value
+end
+
 function increment()
-    self.Counter.increment()
+    return setValue(getValue() + 1)
 end
 
 function decrement()
-    self.Counter.decrement()
+    return setValue(getValue() - 1)
 end

@@ -9,6 +9,7 @@ Usage:
 """
 
 import argparse
+import csv
 import json
 import os
 import platform
@@ -55,6 +56,7 @@ JSON_NAME  = "ftc_base"
 XML_NAME   = "ftc_base_ui"
 OUT_NAME   = "lct_base"
 CHANGELOG  = SCRIPT_DIR.parent / "CHANGELOG.md"
+CITY_MAT_CSV = SCRIPT_DIR.parent / "data" / "all_mats.csv"
 GLOBAL_LUA = "global.ttslua"
 
 # The Battlemaster dynamic spawner bakes the canonical map-card machinery into
@@ -273,10 +275,12 @@ def bake_map_index(lua_text: str) -> str:
     entries = []
     for row in rows:
         creator = row["map_creator_tag"].removeprefix(validate_maps.MAP_CREATOR_TAG_PREFIX + "_")
-        entries.append("[%s]={creator=%s,display=%s,eligible=%s}" % (
+        map_type = row["map_type_tag"].removeprefix(validate_maps.MAP_TYPE_TAG_PREFIX + "_")
+        entries.append("[%s]={creator=%s,display=%s,type=%s,eligible=%s}" % (
             json.dumps(row["card_guid"]),
             json.dumps(creator),
             json.dumps(row["creator_display"]),
+            json.dumps(map_type),
             "true" if row["eligible"] == "true" else "false",
         ))
     literal = "MAP_INDEX = {" + ",".join(entries) + "}   -- @@MAP_INDEX@@"
@@ -309,6 +313,42 @@ def bake_map_card_machinery(lua_text: str) -> str:
     else:
         print(f"  Baked MAP_CARD_MACHINERY from {validate_maps.MAP_CARD_MACHINERY.name} "
               f"({len(machinery)} chars).")
+    return lua_text
+
+
+def bake_city_mat_urls(lua_text: str) -> str:
+    """Replace the @@CITY_MAT_URLS@@ / @@CITY_MAT_NAMES@@ markers with parallel Lua
+    arrays of mat image URLs and their display names, baked from data/all_mats.csv.
+    The runtime uses the URLs to re-skin a Battlemaster map's mat (random on load,
+    or a specific pick from the Mat Randomizer menu) and the names to label the
+    picker, since TTS Lua cannot read the local CSV. No-op for object scripts
+    without the markers. Mirrors bake_map_index's marker rewrite.
+    """
+    if "@@CITY_MAT_URLS@@" not in lua_text and "@@CITY_MAT_NAMES@@" not in lua_text:
+        return lua_text
+    names, urls = [], []
+    with CITY_MAT_CSV.open(encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            url = (row.get("url") or "").strip()
+            if url:
+                urls.append(url)
+                names.append((row.get("terrain") or "").strip())
+
+    def bake(marker, varname, values):
+        nonlocal lua_text
+        if "@@" + marker + "@@" not in lua_text:
+            return
+        literal = (varname + " = {" + ",".join(json.dumps(v) for v in values)
+                   + "}   -- @@" + marker + "@@")
+        lua_text, count = re.subn(r"^.*--\s*@@" + marker + r"@@.*$", lambda _m: literal,
+                                  lua_text, count=1, flags=re.M)
+        if count != 1:
+            warn(f"marker @@{marker}@@ present but not rewritten — not injected.")
+        else:
+            print(f"  Baked {varname} from all_mats.csv ({len(values)} entries).")
+
+    bake("CITY_MAT_URLS", "CITY_MAT_URLS", urls)
+    bake("CITY_MAT_NAMES", "CITY_MAT_NAMES", names)
     return lua_text
 
 
@@ -462,6 +502,9 @@ def main():
                 # Bake the canonical map-card machinery into any object that opts in
                 # (the Battlemaster spawner). No-op for everything else.
                 object_lua = bake_map_card_machinery(object_lua)
+                # Bake the random city-mat URL pool into any object that opts in
+                # (startMenu, for onMapCardLoaded). No-op for everything else.
+                object_lua = bake_city_mat_urls(object_lua)
                 if find_guid == BATTLEMASTER_SPAWNER_GUID:
                     hook_skip_line_idxs.append(lua_slot_idx)
                 inject_lua_into_line(json_lines, lua_slot_idx, object_lua)

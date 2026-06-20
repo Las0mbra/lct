@@ -118,9 +118,50 @@ function cpCounterForColor(color)
     return nil
 end
 
+function counterValue(counter)
+    if not counter then return 0 end
+    local ok, value = pcall(function() return counter.call("getValue") end)
+    if ok and value ~= nil then return tonumber(value) or 0 end
+    if counter.Counter then return counter.Counter.getValue() end
+    return 0
+end
+
+function counterSetValue(counter, value)
+    if not counter then return 0 end
+    local ok, result = pcall(function() return counter.call("setValue", value) end)
+    if ok and result ~= nil then return tonumber(result) or 0 end
+    if counter.Counter then
+        counter.Counter.setValue(value)
+        return counter.Counter.getValue()
+    end
+    return 0
+end
+
+function counterIncrement(counter)
+    if not counter then return 0 end
+    local ok, result = pcall(function() return counter.call("increment") end)
+    if ok and result ~= nil then return tonumber(result) or counterValue(counter) end
+    if counter.Counter then
+        counter.Counter.increment()
+        return counter.Counter.getValue()
+    end
+    return 0
+end
+
+function counterDecrement(counter)
+    if not counter then return 0 end
+    local ok, result = pcall(function() return counter.call("decrement") end)
+    if ok and result ~= nil then return tonumber(result) or counterValue(counter) end
+    if counter.Counter then
+        counter.Counter.decrement()
+        return counter.Counter.getValue()
+    end
+    return 0
+end
+
 function currentBattleRound()
     local roundObj = getObjectFromGUID(gameTurnCounter_GUID)
-    return (roundObj and roundObj.Counter.getValue()) or 0
+    return counterValue(roundObj)
 end
 
 -- Shared GAIN CP logic. Used by both the HUD overlay button (hudGainCP) and the
@@ -138,7 +179,7 @@ function gainCPForColor(color)
         return false
     end
     cpGainRoundUsed[color] = round
-    counter.Counter.increment()
+    counterIncrement(counter)
     return true
 end
 
@@ -151,7 +192,7 @@ function hudUseCP(player, value, id)
     if color ~= "Red" and color ~= "Blue" then return end
     local counter = cpCounterForColor(color)
     if not counter then return end
-    counter.Counter.decrement()
+    counterDecrement(counter)
 end
 
 -- ===== Minimalist HUD (per player, toggled by the "-" control button) =====
@@ -458,7 +499,7 @@ function refreshScoringOverlay()
     applyScoringContextToOverlay()
 
     local roundCounter = getObjectFromGUID(gameTurnCounter_GUID)
-    local roundNum = (roundCounter and roundCounter.Counter and roundCounter.Counter.getValue()) or 0
+    local roundNum = counterValue(roundCounter)
     -- Title: "⚔ <Deploy Zone> - Round N ⚔" (deploy zone is static, set at game start).
     local zone = scoringContext.deployZone or ""
     local titleText = (zone ~= "") and ("⚔ " .. zone .. " - Round " .. roundNum .. " ⚔")
@@ -746,8 +787,8 @@ primaryDeck_GUID = "d26e9c"
 edition11RedSecondaryDeck_GUID = "8104e1"
 edition11BlueSecondaryDeck_GUID = "994347"
 
-redSecondaryDeckPosition = {x = 77.04, y = 0.98, z = 8.45}
-blueSecondaryDeckPosition = {x = 77.04, y = 0.98, z = -8.45}
+redSecondaryDeckPosition = {x = 68.04, y = 0.98, z = 8.45}
+blueSecondaryDeckPosition = {x = 68.04, y = 0.98, z = -8.45}
 hiddenMissionDeckPosition = {85.0, -5.0, 4.75}
 
 -- Blue player sits on the -Z side, red on +Z (matches the mission managers,
@@ -1641,10 +1682,10 @@ end
 
 function getSecondaryDiscardPosition(color)
     if color == "Red" then
-        return {x = 77.04, y = 0.98, z = 16.60}
+        return {x = 68.04, y = 0.98, z = 16.60}
     end
 
-    return {x = 77.04, y = 0.98, z = -16.60}
+    return {x = 68.04, y = 0.98, z = -16.60}
 end
 
 function refreshSecondaryNamesForColor(color)

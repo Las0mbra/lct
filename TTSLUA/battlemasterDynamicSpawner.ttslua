@@ -1015,6 +1015,10 @@ function buildBattlematFromTheme()
   local objectState = makeCommonObject("Custom_Model",
     makeTransform(0, BM_BATTLEMAT_POS_Y, 0, 0, {x = width / 36, y = 1.06, z = height / 36.046}), "")
   objectState.GridProjection = true
+  -- Tag so startMenu's onMapCardLoaded can find and re-skin this mat with a random
+  -- city-mat image after the map loads. Wipe-safe: not MapExclude, not the `map`
+  -- tag, so it is wiped with the map and never captured by restore points.
+  objectState.Tags = {"battlemaster_battlemat"}
   objectState.CustomMesh = {
     MeshURL = BM_BATTLEMAT_MESH_URL, DiffuseURL = diffuseUrl, NormalURL = "", ColliderURL = "",
     Convex = true, MaterialIndex = 3, TypeIndex = 4,
@@ -1111,6 +1115,137 @@ function optionOrigin(options)
   return {x=0, y=0}
 end
 
+-- Preserve nested TTS object states supplied by a theme mapping. Children are
+-- normalized for map-card spawning: fresh GUIDs, no GMNotes, and no container
+-- payloads accidentally kept as top-level bags/decks.
+function deepCopyTable(value)
+  if type(value) ~= "table" then return value end
+  local copy = {}
+  for key, child in pairs(value) do copy[key] = deepCopyTable(child) end
+  return copy
+end
+
+function normalizeNestedObjectList(value, depth)
+  local list = {}
+  if type(value) ~= "table" or (tonumber(depth) or 0) > 6 then return list end
+  if type(value.Name) == "string" or type(value.GUID) == "string" then
+    local objectState = normalizeNestedObjectState(value, depth)
+    if objectState ~= nil then table.insert(list, objectState) end
+    return list
+  end
+  for _, child in ipairs(value) do
+    local objectState = normalizeNestedObjectState(child, depth)
+    if objectState ~= nil then table.insert(list, objectState) end
+  end
+  if #list > 0 then return list end
+  for _, child in pairs(value) do
+    if type(child) == "table" then
+      local objectState = normalizeNestedObjectState(child, depth)
+      if objectState ~= nil then table.insert(list, objectState) end
+    end
+  end
+  return list
+end
+
+function normalizeNestedObjectState(value, depth)
+  if type(value) ~= "table" or (tonumber(depth) or 0) > 6 then return nil end
+  local objectState = deepCopyTable(value)
+  objectState.GUID = makeGuid()
+  objectState.GMNotes = ""
+  objectState.Locked = true
+
+  local childSource = objectState.ChildObjects
+  if type(childSource) ~= "table" and type(objectState.ContainedObjects) == "table" then childSource = objectState.ContainedObjects end
+  local children = normalizeNestedObjectList(childSource, (tonumber(depth) or 0) + 1)
+  objectState.ChildObjects = #children > 0 and children or nil
+  objectState.ContainedObjects = nil
+
+  if type(objectState.States) == "table" then
+    for key, state in pairs(objectState.States) do
+      objectState.States[key] = normalizeNestedObjectState(state, (tonumber(depth) or 0) + 1)
+    end
+  end
+  return objectState
+end
+
+function childObjectsFromOptions(options)
+  if type(options) ~= "table" then return nil end
+  local children = normalizeNestedObjectList(options.ch, 1)
+  if #children > 0 then return children end
+  children = normalizeNestedObjectList(options.ChildObjects, 1)
+  if #children > 0 then return children end
+  children = normalizeNestedObjectList(options.childObjects, 1)
+  if #children > 0 then return children end
+  children = normalizeNestedObjectList(options.ContainedObjects, 1)
+  if #children > 0 then return children end
+  children = normalizeNestedObjectList(options.containedObjects, 1)
+  if #children > 0 then return children end
+  return nil
+end
+
+function applyChildObjectsFromOptions(objectState, options)
+  local children = childObjectsFromOptions(options)
+  if children ~= nil then objectState.ChildObjects = children end
+  return objectState
+end
+
+function tableHasEntries(value)
+  if type(value) ~= "table" then return false end
+  for _, _ in pairs(value) do return true end
+  return false
+end
+
+function normalizeAlternateObjectState(sourceState, baseState)
+  if type(sourceState) ~= "table" or type(baseState) ~= "table" then return nil end
+  local objectState = deepCopyTable(sourceState)
+  objectState.GUID = makeGuid()
+  objectState.Transform = deepCopyTable(baseState.Transform)
+  objectState.Nickname = baseState.Nickname or objectState.Nickname or ""
+  objectState.Description = baseState.Description or objectState.Description or ""
+  objectState.Tags = deepCopyTable(baseState.Tags or {})
+  objectState.GMNotes = ""
+  objectState.Locked = true
+  objectState.LuaScript = ""
+  objectState.LuaScriptState = ""
+  objectState.XmlUI = ""
+
+  local childSource = objectState.ChildObjects
+  if type(childSource) ~= "table" and type(objectState.ContainedObjects) == "table" then childSource = objectState.ContainedObjects end
+  local children = normalizeNestedObjectList(childSource, 1)
+  objectState.ChildObjects = #children > 0 and children or nil
+  objectState.ContainedObjects = nil
+  objectState.States = nil
+
+  objectState.Name = objectState.Name or baseState.Name
+  objectState.AltLookAngle = objectState.AltLookAngle or deepCopyTable(baseState.AltLookAngle or {x=0, y=0, z=0})
+  objectState.ColorDiffuse = objectState.ColorDiffuse or deepCopyTable(baseState.ColorDiffuse or {r=1, g=1, b=1})
+  objectState.LayoutGroupSortIndex = tonumber(objectState.LayoutGroupSortIndex) or tonumber(baseState.LayoutGroupSortIndex) or 0
+  objectState.Value = tonumber(objectState.Value) or tonumber(baseState.Value) or 0
+  if objectState.Grid == nil then objectState.Grid = baseState.Grid end
+  if objectState.Snap == nil then objectState.Snap = baseState.Snap end
+  if objectState.IgnoreFoW == nil then objectState.IgnoreFoW = baseState.IgnoreFoW end
+  if objectState.MeasureMovement == nil then objectState.MeasureMovement = baseState.MeasureMovement end
+  if objectState.DragSelectable == nil then objectState.DragSelectable = baseState.DragSelectable end
+  if objectState.Autoraise == nil then objectState.Autoraise = baseState.Autoraise end
+  if objectState.Sticky == nil then objectState.Sticky = baseState.Sticky end
+  if objectState.Tooltip == nil then objectState.Tooltip = baseState.Tooltip end
+  if objectState.GridProjection == nil then objectState.GridProjection = baseState.GridProjection end
+  if objectState.HideWhenFaceDown == nil then objectState.HideWhenFaceDown = baseState.HideWhenFaceDown end
+  if objectState.Hands == nil then objectState.Hands = baseState.Hands end
+  return objectState
+end
+
+function applyAlternateStatesFromOptions(objectState, options)
+  if type(objectState) ~= "table" or type(options) ~= "table" or type(options.st) ~= "table" then return objectState end
+  local states = {}
+  for key, sourceState in pairs(options.st) do
+    local state = normalizeAlternateObjectState(sourceState, objectState)
+    if state ~= nil then states[tostring(key)] = state end
+  end
+  if tableHasEntries(states) then objectState.States = states end
+  return objectState
+end
+
 -- Returns a ruin-part object table (board space, no GMNotes) or nil if its URL is missing.
 function buildRuinPart(instance, templatePart, mapping)
   local centerX = tonumber(instance[2]) or 0
@@ -1133,8 +1268,7 @@ function buildRuinPart(instance, templatePart, mapping)
   if kind == "m" then
     local meshUrl = themeUrl(tonumber(mapping[3]))
     if meshUrl == "" then return nil end
-    local objectState = applyRuinPartMetadata(makeCommonObject("Custom_Model", makeTransform(posX, posY, posZ, rotY, scale, extraRot), "Battlemaster Ruin Part"), templatePart)
-    if type(options.ch) == "table" then objectState.ChildObjects = options.ch end
+    local objectState = applyChildObjectsFromOptions(applyRuinPartMetadata(makeCommonObject("Custom_Model", makeTransform(posX, posY, posZ, rotY, scale, extraRot), "Battlemaster Ruin Part"), templatePart), options)
     objectState.CustomMesh = {
       MeshURL = meshUrl, DiffuseURL = themeUrl(tonumber(mapping[4])),
       NormalURL = themeUrl(tonumber(mapping[5])), ColliderURL = themeUrl(tonumber(mapping[6])),
@@ -1142,17 +1276,17 @@ function buildRuinPart(instance, templatePart, mapping)
       CustomShader = {SpecularColor = {r=1, g=1, b=1}, SpecularIntensity = 0, SpecularSharpness = 2, FresnelStrength = 0},
       CastShadows = options.cs ~= false,
     }
-    return objectState
+    return applyAlternateStatesFromOptions(objectState, options)
   end
   if kind == "a" then
     local assetUrl = themeUrl(tonumber(mapping[3]))
     if assetUrl == "" then return nil end
-    local objectState = applyRuinPartMetadata(makeCommonObject("Custom_Assetbundle", makeTransform(posX, posY, posZ, rotY, scale, extraRot), "Battlemaster Ruin Part"), templatePart)
+    local objectState = applyChildObjectsFromOptions(applyRuinPartMetadata(makeCommonObject("Custom_Assetbundle", makeTransform(posX, posY, posZ, rotY, scale, extraRot), "Battlemaster Ruin Part"), templatePart), options)
     objectState.CustomAssetbundle = {
       AssetbundleURL = assetUrl, AssetbundleSecondaryURL = themeUrl(tonumber(mapping[4])),
       MaterialIndex = 0, TypeIndex = 0, LoopingEffectIndex = 0,
     }
-    return objectState
+    return applyAlternateStatesFromOptions(objectState, options)
   end
   return nil
 end

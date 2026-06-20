@@ -5,8 +5,8 @@ secondary11ZoneObj = getObjectFromGUID(Global.getVar("secondary11CardZone_GUID")
 secondary12ZoneObj = getObjectFromGUID(Global.getVar("secondary12CardZone_GUID"))
 secondary21ZoneObj = getObjectFromGUID(Global.getVar("secondary21CardZone_GUID"))
 secondary22ZoneObj = getObjectFromGUID(Global.getVar("secondary22CardZone_GUID"))
-redDiscardPosition = { x = 77.04, y = 0.98, z = 16.60 }
-blueDiscardPosition = { x = 77.04, y = 0.98, z = -16.60 }
+redDiscardPosition = { x = 68.04, y = 0.98, z = 16.60 }
+blueDiscardPosition = { x = 68.04, y = 0.98, z = -16.60 }
 redSecondaryBoard_GUID = "66def7"
 blueSecondaryBoard_GUID = "76200a"
 secondarySlotButtonSize = 200
@@ -354,7 +354,7 @@ function onload(save_data)
 		return
 	end
 
-	Wait.frames(function() self.setPosition({71.50,0.95,0.00}) end, 1)
+	Wait.frames(function() self.setPosition({62.50,0.95,0.00}) end, 1)
 	self.setLock(true)
 
 	self.createButton( playerOneTitle )
