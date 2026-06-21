@@ -138,6 +138,13 @@ function onLoad(saved_data)
         ttsDebugLog("gameTurnCounter not found during onLoad")
     end
     writeMenus()
+    announceHotkeyReset()
+end
+
+-- Purple, all-caps patch notice shown both on screen and in chat (broadcastToAll
+-- does both) so players know to rebind their TTS hotkeys after the patch.
+function announceHotkeyReset()
+    broadcastToAll("RESET ALL YOUR TTS HOTKEYS DUE TO PATCH CHANGES", {0.6, 0.2, 0.9})
 end
 
 function onSave()
@@ -897,13 +904,9 @@ deployDownBtn = {
     font_size = deployPickerArrowFontSize, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
 dispositionControlWorldX = 33.50
-ingameDispositionControlWorldX = 80
 blueDispositionControlWorldZ = 12.1
 redDispositionControlWorldZ = -12.1
-ingameBlueDispositionControlWorldZ = 11.1186075
-ingameRedDispositionControlWorldZ = -11.1186075
 dispositionControlWorldY = 1.0
-ingameDispositionControlWorldY = 1.0
 
 function normalizeDispositionIndex(index)
     if index > #dispositionValues then
@@ -918,13 +921,10 @@ end
 dispositionScale = 0.4125
 dispositionButtonHeight = deployPickerButtonHeight
 dispositionButtonWidth = 4500
-ingameDispositionButtonHeight = dispositionButtonHeight * 0.595
-ingameDispositionButtonWidth = dispositionButtonWidth * 0.80
 dispositionArrowHeight = 562.5
 dispositionArrowWidth = 600
 dispositionArrowFontSize = 300
 dispositionButtonFontSize = 380
-ingameDispositionButtonFontSize = dispositionButtonFontSize * 0.5625
 dispositionArrowOffset = 5.75
 -- CLEAR MAT and BACK TO SELECTION flank the Deployment Zone picker symmetrically,
 -- on the same row (local z/y taken from deployBtn): CLEAR MAT just outside the
@@ -946,33 +946,18 @@ function getDispositionButtonColor(selectedValue)
     return dispositionButtonColors[selectedValue] or {1, 1, 1}
 end
 
-function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunction, upFunction, locked)
+function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunction, upFunction)
     local selectedValue = dispositionValues[selectedIndex] or dispositionValues[1]
     local selectedColor = getDispositionButtonColor(selectedValue)
-    local worldX = locked and ingameDispositionControlWorldX or dispositionControlWorldX
-    local worldZ = centerWorldZ
-    if locked and label == "Blue Disposition" then
-        worldZ = ingameBlueDispositionControlWorldZ
-    elseif locked and label == "Red Disposition" then
-        worldZ = ingameRedDispositionControlWorldZ
-    end
-    local buttonHeight = locked and ingameDispositionButtonHeight or dispositionButtonHeight
-    local buttonWidth = locked and ingameDispositionButtonWidth or dispositionButtonWidth
-    local buttonFontSize = locked and ingameDispositionButtonFontSize or dispositionButtonFontSize
-    local worldY = locked and ingameDispositionControlWorldY or dispositionControlWorldY
-    local center = self.positionToLocal({worldX, worldY, worldZ})
+    local center = self.positionToLocal({dispositionControlWorldX, dispositionControlWorldY, centerWorldZ})
     local cx, cy, cz = center.x, center.y, center.z
     local dispositionButton = {
         label = selectedValue, click_function = "none", function_owner = self,
         position = {cx, cy, cz}, rotation = {0, 0, 0},
-        height = buttonHeight, width = buttonWidth, font_size = buttonFontSize,
+        height = dispositionButtonHeight, width = dispositionButtonWidth, font_size = dispositionButtonFontSize,
         color = selectedColor, font_color = {0, 0, 0}, tooltip = label,
     }
     createButtonWithBorder(dispositionButton)
-
-    if locked then
-        return
-    end
 
     self.createButton({
         label = "->", click_function = upFunction, function_owner = self,
@@ -988,16 +973,13 @@ function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunct
     })
 end
 
-function writeDispositionMenu(locked)
+function writeDispositionMenu()
     if gameMode ~= "game" or not missionSetupControlsVisible then return end
     blueDispositionSelected = normalizeDispositionIndex(blueDispositionSelected)
     redDispositionSelected = normalizeDispositionIndex(redDispositionSelected)
-    createDispositionSelector("Blue Disposition", blueDispositionSelected, blueDispositionControlWorldZ, "blueDispositionDown", "blueDispositionUp", locked)
-    createDispositionSelector("Red Disposition", redDispositionSelected, redDispositionControlWorldZ, "redDispositionDown", "redDispositionUp", locked)
-
-    if not locked then
-        writeGenerateMissionButton()
-    end
+    createDispositionSelector("Blue Disposition", blueDispositionSelected, blueDispositionControlWorldZ, "blueDispositionDown", "blueDispositionUp")
+    createDispositionSelector("Red Disposition", redDispositionSelected, redDispositionControlWorldZ, "redDispositionDown", "redDispositionUp")
+    writeGenerateMissionButton()
 end
 
 -- Mat wipe area + survivors, mirroring the map cards' own Clear/Load wipe so
@@ -1309,16 +1291,16 @@ generateMissionWorldZ = 0.0
 -- map slot has a neighboring layout-art slot fed by layoutArtDeck_GUID.
 layoutArtDeck_GUID = "fb4b5d"
 missionSlots = {
-    {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  4.67}, displayPosition = {13.00, 1.00,  10.85}},
-    {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  2.55}, displayPosition = {13.00, 1.00,   5.68}},
+    {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {60.75, 1.01,  4.67}, displayPosition = {13.00, 1.00,  10.85}},
+    {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {60.75, 1.01,  2.55}, displayPosition = {13.00, 1.00,   5.68}},
     {role = "deployment", index = 1, position = {23.70, 1.02,  17.65}},
     {role = "layout",     index = 1, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.02,  12.35}},
     {role = "deployment", index = 2, position = {23.70, 1.02,   2.65}},
     {role = "layout",     index = 2, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.02,  -2.65}},
     {role = "deployment", index = 3, position = {23.70, 1.02, -12.35}},
     {role = "layout",     index = 3, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.02, -17.65}},
-    {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -2.55}, displayPosition = {13.00, 1.00,  -5.68}},
-    {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -4.67}, displayPosition = {13.00, 1.00, -10.85}},
+    {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {60.75, 1.01, -2.55}, displayPosition = {13.00, 1.00,  -5.68}},
+    {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {60.75, 1.01, -4.67}, displayPosition = {13.00, 1.00, -10.85}},
 }
 
 deploymentMatrixDecks = {
@@ -1758,11 +1740,11 @@ deploymentCardSourceDeckByGuid = {}
 deploymentCardSourceDeckByName = {}
 layoutArtCardTag = "layout_art_card"
 loadedLayoutArtCardGuid = nil
-loadedLayoutArtTargetPosition = {75.35, 0.97, 0.00}
+loadedLayoutArtTargetPosition = {60.75, 0.97, 0.00}
 loadedLayoutArtTargetScale = {0.97, 1.00, 1.03}
 layoutArtDeckScale = {2.00, 1.00, 2.10}
 
-deploymentLockTargetPosition = {75.37, 1.02, 0.00}
+deploymentLockTargetPosition = {60.75, 1.02, 0.00}
 -- Map (deployment) cards should always settle face up at y=180. Layout-art helper
 -- cards keep their own rotation (they have their own orientation handling).
 -- Absolute (not a +180 toggle) so a re-press is idempotent.
@@ -4479,7 +4461,9 @@ function writeIngameMenu()
         nextPhaseBtn.label = phases[currentPhase].."\nPass Turn"
     end
     createButtonWithBorder(nextPhaseBtn)
-    writeDispositionMenu(true)
+    -- Disposition pickers are setup-only: once the game starts they are removed
+    -- entirely (not relocated). The chosen dispositions live on in the scoring
+    -- overlay via pushScoringContext, so no on-table label is needed here.
 end
 
 function getMissionManagerForColor(color)

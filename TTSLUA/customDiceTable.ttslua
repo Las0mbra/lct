@@ -289,39 +289,33 @@ restoreBtn={
 }
 
 gap2Btn={
-    label='1" Gap', tooltip='Arrange models with 1" spacing', click_function='arrangeModelsWith1Inch', function_owner=self,
-    position={-7.8, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=2500, scale={0.1,0.1,0.1},
-    font_size=750, color='White', font_color={0,0,0}
-}
-
-gap1Btn={
-    label='2" Gap', tooltip='Arrange models with 2" spacing', click_function='arrangeModelsWith2Inch', function_owner=self,
-    position={-7.27, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=2500, scale={0.1,0.1,0.1},
-    font_size=750, color='White', font_color={0,0,0}
+    label='1"/2" Gap', tooltip='LMB: 1" Gap\nRMB: 2" Gap', click_function='arrangeModelsWithGap', function_owner=self,
+    position={-6.24, Yoffset ,-1.65}, rotation={0,0,0}, height=1000, width=3200, scale={0.1,0.1,0.1},
+    font_size=700, color='White', font_color={0,0,0}
 }
 
 clearMeasureAllBtn={
     label='Clear Bubbles', tooltip='LEFT CLICK: Clear all measuring bubbles from the table\nRIGHT CLICK: Clear all measuring bubbles from highlighted objects only', click_function='clearMeasuringCircles', function_owner=self,
-    position={-7.45, Yoffset ,-1.65}, rotation={0,0,0}, height=1000, width=5200, scale={0.1,0.1,0.1},
+    position={-7.93, Yoffset ,-1.65}, rotation={0,0,0}, height=1000, width=4200, scale={0.1,0.1,0.1},
     font_size=700, color='White', font_color={0,0,0}
 }
 
 clearLinesBtn={
     label='Clear Lines', tooltip='Clear all hand-drawn lines, keep measuring bubbles', click_function='clearHandDrawnLines', function_owner=self,
-    position={-6.35, Yoffset ,-1.65}, rotation={0,0,0}, height=1000, width=5200, scale={0.1,0.1,0.1},
+    position={-7.03, Yoffset ,-1.65}, rotation={0,0,0}, height=1000, width=4200, scale={0.1,0.1,0.1},
     font_size=700, color='White', font_color={0,0,0}
 }
 
 
 checkCoherencyBtn={
     label='Coherency Check', tooltip='LEFT CLICK: Show coherency of selected models\n RIGHT CLICK: Toggle off lines\nDrawing new lines will be weird while this is on', click_function='checkCoherency', function_owner=self,
-    position={-6.46, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=5200, scale={0.1,0.1,0.1},
+    position={-6.58, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=5200, scale={0.1,0.1,0.1},
     font_size=700, color='White', font_color={0,0,0}
 }
 
 engagementRangeBtn={
     label='Engagement Range', tooltip='LEFT CLICK: Highlight every model within 2" of the selected model(s) for 15s\nRIGHT CLICK: Clear the highlights now', click_function='showEngagementRange', function_owner=self,
-    position={-6.46, Yoffset ,-1.90}, rotation={0,0,0}, height=1000, width=5200, scale={0.1,0.1,0.1},
+    position={-7.76, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=5800, scale={0.1,0.1,0.1},
     font_size=700, color='White', font_color={0,0,0}
 }
 
@@ -1456,7 +1450,6 @@ function onload()
     createToolButtonWithBorder(checkCoherencyBtn)
     createToolButtonWithBorder(engagementRangeBtn)
     createToolButtonWithBorder(gap2Btn)
-    createToolButtonWithBorder(gap1Btn)
     self.createButton(customDiceSpawnButton)
     if self.getPosition().z < 0 then selectedColor="Blue" else selectedColor="Red" end modifyMenu(selectedColor)
 
@@ -1963,6 +1956,16 @@ function arrangeModelsWith2Inch(a, b, c)
     end
 
     print("Arranged " .. #items .. " models with a 2-inch gap along the detected orientation.")
+end
+
+-- Single button handler: left-click arranges with a 1" gap, right-click with 2".
+-- For button clicks the third argument (alt_click) is true on a right-click.
+function arrangeModelsWithGap(obj, playerColor, alt_click)
+    if alt_click then
+        arrangeModelsWith2Inch(obj, playerColor, alt_click)
+    else
+        arrangeModelsWith1Inch(obj, playerColor, alt_click)
+    end
 end
 
 function arrangeModelsWith1Inch(a, b, c)
