@@ -868,20 +868,21 @@ DeployZonesCombatPatrol = {
 }
 
 DeployZonesCombatPatrolGame = {
-    {name = "Combat Patrol - 1", draw = {
+    {name = "Combat Patrol 1", draw = {
         -- Points are measured like the mission image: red (0,0) is the lower-left corner,
         -- x runs across the 30" width, y runs up the 44" height. Teal mirrors this.
         --[[1]]{type = "cornerPolyline", color = "Red", position = "bottomLeft", points = {{0, 22}, {15, 11}, {15, 0}}},
         --[[2]]{type = "cornerPolyline", color = "Teal", position = "topRight", points = {{0, 22}, {15, 11}, {15, 0}}}},
-        territory = {{position = "bottomLeft", color = "Yellow", points = {{0, 44}, {30, 0}}}}},
-    {name = "Combat Patrol - 2", draw = {
+        territory = {{position = "bottomLeft", color = "Yellow", points = {{0, 22}, {30, 22}}}}},
+    {name = "Combat Patrol 2", draw = {
         --[[1]]{type = "cornerPolyline", color = "Red", position = "bottomLeft", points = {{0, 16}, {30, 0}}},
         --[[2]]{type = "cornerPolyline", color = "Teal", position = "topRight", points = {{0, 16}, {30, 0}}}},
-        territory = {{position = "bottomLeft", color = "Yellow", points = {{0, 30}, {30, 14}}}}},
-    {name = "Combat Patrol - 3", draw = {
+        territory = {{position = "bottomLeft", color = "Yellow", points = {{0, 22}, {30, 22}}}}},
+    {name = "Combat Patrol 3", draw = {
         --[[1]]{type = "cornerPolyline", color = "Red", position = "bottomLeft", points = {{0, 11}, {14, 11}, {14, 0}}},
         --[[2]]{type = "cornerPolyline", color = "Teal", position = "topRight", points = {{0, 11}, {14, 11}, {14, 0}}}},
-        territory = {{position = "bottomLeft", color = "Yellow", points = {{0, 44}, {30, 0}}}}},
+        territory = {{position = "bottomLeft", color = "Yellow", points = {{0, 22}, {30, 22}}}}},
+    {name = "No Deployment Zone", draw = {type = "none"}},
 }
 
 DeployZonesColosseum = {
