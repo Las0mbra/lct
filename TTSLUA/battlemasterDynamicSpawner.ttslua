@@ -1015,6 +1015,9 @@ function buildBattlematFromTheme()
   local objectState = makeCommonObject("Custom_Model",
     makeTransform(0, BM_BATTLEMAT_POS_Y, 0, 0, {x = width / 36, y = 1.06, z = height / 36.046}), "")
   objectState.GridProjection = true
+  objectState.DragSelectable = false
+  objectState.Tooltip = false
+  objectState.Interactable = false
   -- Tag so startMenu's onMapCardLoaded can find and re-skin this mat with a random
   -- city-mat image after the map loads. Wipe-safe: not MapExclude, not the `map`
   -- tag, so it is wiped with the map and never captured by restore points.

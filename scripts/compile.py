@@ -57,6 +57,7 @@ XML_NAME   = "ftc_base_ui"
 OUT_NAME   = "lct_base"
 CHANGELOG  = SCRIPT_DIR.parent / "CHANGELOG.md"
 CITY_MAT_CSV = SCRIPT_DIR.parent / "data" / "all_mats.csv"
+CURATED_MAT_CSV = SCRIPT_DIR.parent / "data" / "curated_maps.csv"
 GLOBAL_LUA = "global.ttslua"
 
 # The Battlemaster dynamic spawner bakes the canonical map-card machinery into
@@ -316,25 +317,45 @@ def bake_map_card_machinery(lua_text: str) -> str:
     return lua_text
 
 
-def bake_city_mat_urls(lua_text: str) -> str:
-    """Replace the @@CITY_MAT_URLS@@ / @@CITY_MAT_NAMES@@ markers with parallel Lua
-    arrays of mat image URLs and their display names, baked from data/all_mats.csv.
-    The runtime uses the URLs to re-skin a Battlemaster map's mat (random on load,
-    or a specific pick from the Mat Randomizer menu) and the names to label the
-    picker, since TTS Lua cannot read the local CSV. No-op for object scripts
-    without the markers. Mirrors bake_map_index's marker rewrite.
-    """
-    if "@@CITY_MAT_URLS@@" not in lua_text and "@@CITY_MAT_NAMES@@" not in lua_text:
-        return lua_text
+def read_mat_csv(path: Path) -> tuple[list[str], list[str]]:
+    """Read either `terrain,url` CSVs or simple two-column name/url lists."""
     names, urls = [], []
-    with CITY_MAT_CSV.open(encoding="utf-8") as fh:
-        for row in csv.DictReader(fh):
-            url = (row.get("url") or "").strip()
-            if url:
-                urls.append(url)
-                names.append((row.get("terrain") or "").strip())
+    with path.open(encoding="utf-8-sig", newline="") as fh:
+        rows = list(csv.reader(fh))
+    if not rows:
+        return names, urls
 
-    def bake(marker, varname, values):
+    start = 0
+    header = [cell.strip().lower() for cell in rows[0]]
+    if "url" in header:
+        start = 1
+        name_idx = header.index("terrain") if "terrain" in header else 0
+        url_idx = header.index("url")
+    else:
+        name_idx, url_idx = 0, 1
+
+    for row in rows[start:]:
+        if len(row) <= url_idx:
+            continue
+        url = row[url_idx].strip()
+        if not url:
+            continue
+        urls.append(url)
+        names.append(row[name_idx].strip() if len(row) > name_idx else "")
+    return names, urls
+
+
+def bake_city_mat_urls(lua_text: str) -> str:
+    """Bake mat URL pools into startMenu for the manual picker and BTTF auto-reskin."""
+    markers = ("@@CITY_MAT_URLS@@", "@@CITY_MAT_NAMES@@",
+               "@@BTTF_RUINS_MAT_URLS@@", "@@BTTF_RUINS_MAT_NAMES@@")
+    if not any(marker in lua_text for marker in markers):
+        return lua_text
+
+    city_names, city_urls = read_mat_csv(CITY_MAT_CSV)
+    curated_names, curated_urls = read_mat_csv(CURATED_MAT_CSV)
+
+    def bake(marker, varname, values, source_name):
         nonlocal lua_text
         if "@@" + marker + "@@" not in lua_text:
             return
@@ -345,10 +366,12 @@ def bake_city_mat_urls(lua_text: str) -> str:
         if count != 1:
             warn(f"marker @@{marker}@@ present but not rewritten — not injected.")
         else:
-            print(f"  Baked {varname} from all_mats.csv ({len(values)} entries).")
+            print(f"  Baked {varname} from {source_name} ({len(values)} entries).")
 
-    bake("CITY_MAT_URLS", "CITY_MAT_URLS", urls)
-    bake("CITY_MAT_NAMES", "CITY_MAT_NAMES", names)
+    bake("CITY_MAT_URLS", "CITY_MAT_URLS", city_urls, CITY_MAT_CSV.name)
+    bake("CITY_MAT_NAMES", "CITY_MAT_NAMES", city_names, CITY_MAT_CSV.name)
+    bake("BTTF_RUINS_MAT_URLS", "BTTF_RUINS_MAT_URLS", curated_urls, CURATED_MAT_CSV.name)
+    bake("BTTF_RUINS_MAT_NAMES", "BTTF_RUINS_MAT_NAMES", curated_names, CURATED_MAT_CSV.name)
     return lua_text
 
 

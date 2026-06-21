@@ -22,12 +22,14 @@ matTextureSelected = 1
 missionSetupControlsVisible = false
 mapMat_GUID = "28865a"
 -- Random city-mat image URLs, baked from data/all_mats.csv at compile time. The
--- empty default keeps an uncompiled/dev build valid. onMapCardLoaded picks one to
--- re-skin a Battlemaster map's own mat after it loads.
+-- empty default keeps an uncompiled/dev build valid for the manual picker.
 CITY_MAT_URLS = {}   -- @@CITY_MAT_URLS@@
 -- Display names paralleling CITY_MAT_URLS (same order), used to label the Mat
 -- Randomizer picker. Baked from the all_mats.csv "terrain" column.
 CITY_MAT_NAMES = {}   -- @@CITY_MAT_NAMES@@
+-- Curated mat image pool for automatic Battlemaster - BTTF Ruins reskins.
+BTTF_RUINS_MAT_URLS = {}   -- @@BTTF_RUINS_MAT_URLS@@
+BTTF_RUINS_MAT_NAMES = {}   -- @@BTTF_RUINS_MAT_NAMES@@
 defaultMatTextureURL = "https://steamusercontent-a.akamaihd.net/ugc/15425072743099001267/B83134980FFB54308B44410C44305D245F8DF3F0/"
 gameModeMatTextureURL = "https://steamusercontent-a.akamaihd.net/ugc/11927766457912242969/CF467C9E73E87C1EABF3F2239B0B3BF47ADF00CA/"
 
@@ -2189,7 +2191,7 @@ function normalizeMissionName(s)
     return (s:lower():gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
-mapCreatorDisplaySuffixes = {"Cra5hNatural", "Team Belgium", "Izar", "Battlemaster", "Battlemaster - BTTF Ruins", "Alvaricus", "Zim"}
+mapCreatorDisplaySuffixes = {"Cra5hNatural", "Team Belgium", "Izar", "Battlemaster - BTTF Ruins", "Alvaricus", "Zim"}
 
 -- Map cards carry creator credit at the end of their visible nickname. Strip
 -- only a recognized creator suffix when matching shared layout art or reading
@@ -3714,14 +3716,14 @@ end
 BM_MAT_PIVOT_Y = -10.13
 BM_MAT_PIVOT_TOLERANCE = 0.25
 
--- A loaded map is "Battlemaster" if either the dynamic spawner tagged the load
--- (params.provider) or the baked MAP_INDEX marks the card's creator. The latter
--- covers the imported static Battlemaster deck cards, which carry no provider.
-function mapCreatorIsBattlemaster(params)
+-- Automatic mat randomization is limited to static Battlemaster - BTTF Ruins
+-- cards. The baked MAP_INDEX lets us identify them while the card is still
+-- inside a source bag and its tags are not directly readable.
+function mapCreatorIsBattlemasterBttfRuins(params)
     local guid = params and params.guid
     if not guid then return false end
     local meta = (Global.getTable("MAP_INDEX") or {})[guid]
-    return type(meta) == "table" and meta.creator == "battlemaster"
+    return type(meta) == "table" and meta.creator == "battlemaster_bttf_ruins"
 end
 
 -- Find the just-loaded map's own mat(s): the spawner-tagged battlemat, or any
@@ -3764,17 +3766,19 @@ end
 -- Swap a mat's diffuse image and reload so the change renders (TTS requires the
 -- reload for custom models). Same primitive the mat URL tool uses.
 function applyMatDiffuse(mat, url)
+    local wasLocked = mat.getLock()
+    local wasInteractable = mat.interactable
     local customInfo = mat.getCustomObject()
     customInfo.diffuse = url
     mat.setCustomObject(customInfo)
-    mat.reload()
+    restoreMatFlags(mat.reload(), wasLocked, wasInteractable)
 end
 
--- After a Battlemaster map loads, swap its own mat's image for a random city-mat
--- URL (baked from data/all_mats.csv). The mat spawns a few frames after the Load
--- Map press (post-wipe), so we defer past the terrain spawn and retry a few times
--- in case a heavy theme spawns late. Same diffuse-swap + reload pattern the mat
--- URL tool uses on the table surface.
+-- After a Battlemaster - BTTF Ruins map loads, swap its own mat image for a
+-- random curated mat URL baked from data/curated_maps.csv. The mat spawns a
+-- few frames after Load Map (post-wipe), so we defer past terrain spawn and
+-- retry in case a heavy theme spawns late. Same diffuse-swap + reload pattern
+-- the mat URL tool uses on the table surface.
 -- Temporary diagnostic toggle: prints to the host's chat so we can see whether
 -- detection/find/apply each fire. Set false once the feature is confirmed.
 BM_MAT_DEBUG = true
@@ -3789,12 +3793,35 @@ BM_MAT_FLOOR_FRAMES = 10
 BM_MAT_POLL_FRAMES = 3
 BM_MAT_MAX_FRAMES = 90
 
-function reskinBattlemasterMat()
-    if type(CITY_MAT_URLS) ~= "table" or #CITY_MAT_URLS == 0 then
-        bmMatDebug("CITY_MAT_URLS empty -- not baked into this build.")
+function makeBattlemasterMatNonInteractive(mat)
+    if not mat then return end
+    mat.setLock(true)
+    mat.interactable = false
+    mat.tooltip = false
+end
+
+function enforceBattlemasterMatsNonInteractive()
+    local budget = BM_MAT_MAX_FRAMES
+    local function poll()
+        local mats = findBattlemasterMats()
+        if #mats > 0 then
+            for _, mat in ipairs(mats) do
+                makeBattlemasterMatNonInteractive(mat)
+            end
+            return
+        end
+        budget = budget - BM_MAT_POLL_FRAMES
+        if budget > 0 then Wait.frames(poll, BM_MAT_POLL_FRAMES) end
+    end
+    Wait.frames(poll, BM_MAT_FLOOR_FRAMES)
+end
+
+function reskinBattlemasterBttfRuinsMat()
+    if type(BTTF_RUINS_MAT_URLS) ~= "table" or #BTTF_RUINS_MAT_URLS == 0 then
+        bmMatDebug("BTTF_RUINS_MAT_URLS empty -- not baked into this build.")
         return
     end
-    local url = CITY_MAT_URLS[math.random(#CITY_MAT_URLS)]
+    local url = BTTF_RUINS_MAT_URLS[math.random(#BTTF_RUINS_MAT_URLS)]
     -- Poll for the freshly spawned mat and apply the instant it appears: fast, and
     -- early enough that the map's original mat image often hasn't finished loading,
     -- so the swap reads as smooth rather than a visible re-texture.
@@ -3804,6 +3831,7 @@ function reskinBattlemasterMat()
         if #mats > 0 then
             bmMatDebug("applying " .. url .. " to " .. #mats .. " mat(s)")
             for _, mat in ipairs(mats) do
+                makeBattlemasterMatNonInteractive(mat)
                 captureMatOriginal(mat)
                 applyMatDiffuse(mat, url)
             end
@@ -3943,15 +3971,15 @@ function onMapCardLoaded(params)
         placeLoadedLayoutArtCard(name)
     end
 
-    -- Re-skin the map's own mat with a random city-mat image -- for BOTH dynamic
-    -- spawner cards and the imported static Battlemaster deck cards (detected via
-    -- baked MAP_INDEX creator). Independent of the branch above so static cards
-    -- keep their layout-art handling.
+    -- Re-skin only Battlemaster - BTTF Ruins maps with a random curated mat.
     bmMatDebug("onMapCardLoaded guid=" .. tostring(params and params.guid)
         .. " provider=" .. tostring(params and params.provider)
-        .. " creatorBM=" .. tostring(mapCreatorIsBattlemaster(params)))
-    if isBattlemaster or mapCreatorIsBattlemaster(params) then
-        reskinBattlemasterMat()
+        .. " creatorBttfRuins=" .. tostring(mapCreatorIsBattlemasterBttfRuins(params)))
+    if isBattlemaster then
+        enforceBattlemasterMatsNonInteractive()
+    end
+    if mapCreatorIsBattlemasterBttfRuins(params) then
+        reskinBattlemasterBttfRuinsMat()
     end
 
     -- Move primary missions off the mat before the map card starts its next-frame wipe.
