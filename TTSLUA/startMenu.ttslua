@@ -434,9 +434,8 @@ function writeSizeMenu()
     self.createButton(sizeDownBtn)
     createButtonWithBorder(confirmBtn)
     createButtonWithBorder(confirmBtn4)
-    -- Combat Patrol and Crusade buttons hidden for now; logic kept for later.
-    -- createButtonWithBorder(confirmBtn5)
-    -- createButtonWithBorder(confirmBtn6)
+    createButtonWithBorder(confirmBtn5)
+    createButtonWithBorder(confirmBtn6)
     mat.setScale(sizeData[mapSizeSelected].scale)
     mat.setPosition(positionValue)
 end
@@ -487,7 +486,17 @@ end
 function confirmCombatPatrol()
     singlesMode = "singles"
     combatPatrolMode = true
-    deployMode = "combatPatrol"
+    deployMode = "combatPatrolGame"
+    -- Combat Patrol is always played on the 44" x 30" battlefield. Force that size
+    -- here so it applies even if the player never touched the Battlefield Size
+    -- picker; confirmSizeMat() (via loadGameWithoutMapContainers) then scales the
+    -- mat to match. Found by id so it survives any reordering of sizeData.
+    for i, s in ipairs(sizeData) do
+        if s.id == 2 then
+            mapSizeSelected = i
+            break
+        end
+    end
     loadGameWithoutMapContainers()
     destroyGameModeObjects()
 end
@@ -666,7 +675,11 @@ end
 function confirmSizeMat()
     gameMode= "game"
     missionSetupControlsVisible = true
-    applyGameModeMatTexture()
+    if combatPatrolMode then
+        applyDefaultMatTexture()
+    else
+        applyGameModeMatTexture()
+    end
     sizeConfirmed=true
         mat.setScale(sizeData[mapSizeSelected].scale)
     self.setRotation({0,270,0})
@@ -854,6 +867,23 @@ DeployZonesCombatPatrol = {
     {name = "No Deployment Zone", draw = {type = "none"}},
 }
 
+DeployZonesCombatPatrolGame = {
+    {name = "Combat Patrol - 1", draw = {
+        -- Points are measured like the mission image: red (0,0) is the lower-left corner,
+        -- x runs across the 30" width, y runs up the 44" height. Teal mirrors this.
+        --[[1]]{type = "cornerPolyline", color = "Red", position = "bottomLeft", points = {{0, 22}, {15, 11}, {15, 0}}},
+        --[[2]]{type = "cornerPolyline", color = "Teal", position = "topRight", points = {{0, 22}, {15, 11}, {15, 0}}}},
+        territory = {{position = "bottomLeft", color = "Yellow", points = {{0, 44}, {30, 0}}}}},
+    {name = "Combat Patrol - 2", draw = {
+        --[[1]]{type = "cornerPolyline", color = "Red", position = "bottomLeft", points = {{0, 16}, {30, 0}}},
+        --[[2]]{type = "cornerPolyline", color = "Teal", position = "topRight", points = {{0, 16}, {30, 0}}}},
+        territory = {{position = "bottomLeft", color = "Yellow", points = {{0, 30}, {30, 14}}}}},
+    {name = "Combat Patrol - 3", draw = {
+        --[[1]]{type = "cornerPolyline", color = "Red", position = "bottomLeft", points = {{0, 11}, {14, 11}, {14, 0}}},
+        --[[2]]{type = "cornerPolyline", color = "Teal", position = "topRight", points = {{0, 11}, {14, 11}, {14, 0}}}},
+        territory = {{position = "bottomLeft", color = "Yellow", points = {{0, 44}, {30, 0}}}}},
+}
+
 DeployZonesColosseum = {
     {name = "King of the Colosseum", objectivesID = 301, draw = {
         --[[1]]{type = "line", color = "Teal", position = "-z", fromSide = 9},
@@ -896,7 +926,7 @@ DeployZonesData = DeployZonesDefault
 deployMode = "strikeForce"
 
 function isValidDeployMode(mode)
-    return mode == "colosseum" or mode == "combatPatrol" or mode == "incursion" or mode == "strikeForce" or mode == "boardingAction" or mode == "edition11"
+    return mode == "colosseum" or mode == "combatPatrol" or mode == "combatPatrolGame" or mode == "incursion" or mode == "strikeForce" or mode == "boardingAction" or mode == "edition11"
 end
 
 function setDeployZonesForSize(preserveSelected)
@@ -923,6 +953,7 @@ function setDeployZonesMode(mode, preserveSelected)
     local byMode = {
         colosseum = DeployZonesColosseum,
         combatPatrol = DeployZonesCombatPatrol,
+        combatPatrolGame = DeployZonesCombatPatrolGame,
         incursion = DeployZonesIncursion,
         strikeForce = DeployZonesStrikeForce,
         boardingAction = DeployZonesBoardingAction,
@@ -3098,6 +3129,9 @@ function drawDeployZone(zone)
         if drawData.type == "circleDeployment" then
             drawCircleDeployment(drawData)
         end
+        if drawData.type == "cornerPolyline" then
+            drawCornerPolyline(drawData)
+        end
     end
     setDeployHeight()
 end
@@ -3356,6 +3390,69 @@ function drawQuarter(drawData)
         linePos.x = -linePos.x
     end
     spawnLine(linePos, lineRot, lineScale, drawData.color, "deployZone") -- long line
+end
+
+function drawSegment(x1, z1, x2, z2, color, type)
+    local dx = x2 - x1
+    local dz = z2 - z1
+    local length = math.sqrt(dx * dx + dz * dz)
+    if length <= 0 then
+        return
+    end
+
+    -- Yaw is negated vs a plain atan2(dz,dx): TTS's Y rotation is the opposite
+    -- handedness to our (x,z) math, so without this diagonals come out mirrored
+    -- (slope flipped) while axis-aligned segments look fine either way.
+    local yaw
+    if math.abs(dx) < 1e-6 then
+        yaw = dz >= 0 and -90 or 90
+    else
+        yaw = -math.deg(math.atan(dz / dx))
+        if dx < 0 then
+            yaw = yaw + 180
+        end
+    end
+
+    spawnLine(
+        {x = (x1 + x2) / 2, y = deployLineYPos, z = (z1 + z2) / 2},
+        {x = 0, y = yaw, z = 0},
+        {x = length, y = deployLineHeight, z = 0.02},
+        color,
+        type
+    )
+end
+
+function drawCornerPolyline(drawData, tag)
+    local mat = getObjectFromGUID(mat_GUID)
+    if not mat or not drawData.points then return end
+    tag = tag or "deployZone"
+
+    local mapWidth = mat.getScale().z * sizeMulti
+    local mapHeight = mat.getScale().x * sizeMulti
+    local halfWidth = mapWidth / 2
+    local halfHeight = mapHeight / 2
+    local pos = drawData.position or "bottomLeft"
+
+    local function worldPoint(point)
+        local fromLeft = math.min(point[1] or 0, mapWidth)
+        local fromBottom = math.min(point[2] or 0, mapHeight)
+        if pos == "topRight" then
+            return {
+                x = halfHeight - fromBottom,
+                z = -halfWidth + fromLeft,
+            }
+        end
+        return {
+            x = -halfHeight + fromBottom,
+            z = halfWidth - fromLeft,
+        }
+    end
+
+    for i = 1, #drawData.points - 1 do
+        local a = worldPoint(drawData.points[i])
+        local b = worldPoint(drawData.points[i + 1])
+        drawSegment(a.x, a.z, b.x, b.z, drawData.color, tag)
+    end
 end
 
 function drawCircle(drawData, type)
@@ -5066,6 +5163,26 @@ end
 function drawTerritoryLine()
     local mat = getObjectFromGUID(mat_GUID)
     if not mat then return end
+
+    -- If the selected zone declares its divider explicitly, draw those specs
+    -- through the same cornerPolyline path (tagged "territory") and skip the
+    -- type/position derivation below. Used by the Combat Patrol zones, whose
+    -- cornerPolyline shapes the derivation logic can't infer an angle from.
+    local selected = selectedDeployment()
+    if selected and selected.territory then
+        for _, spec in ipairs(selected.territory) do
+            drawCornerPolyline(spec, "territory")
+        end
+        for _, guid in ipairs(territoryOverlayGUIDs) do
+            local found = getObjectFromGUID(guid)
+            if found then
+                local p = found.getPosition()
+                found.setPosition({p[1], defaultDeployHeight + deployOffset, p[3]})
+            end
+        end
+        return
+    end
+
     local longEdge  = mat.getScale().x * sizeMulti -- along X
     local shortEdge = mat.getScale().z * sizeMulti -- along Z
     local hx = longEdge / 2
