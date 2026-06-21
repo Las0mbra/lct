@@ -434,8 +434,9 @@ function writeSizeMenu()
     self.createButton(sizeDownBtn)
     createButtonWithBorder(confirmBtn)
     createButtonWithBorder(confirmBtn4)
-    createButtonWithBorder(confirmBtn5)
-    createButtonWithBorder(confirmBtn6)
+    -- Combat Patrol and Crusade buttons hidden for now; logic kept for later.
+    -- createButtonWithBorder(confirmBtn5)
+    -- createButtonWithBorder(confirmBtn6)
     mat.setScale(sizeData[mapSizeSelected].scale)
     mat.setPosition(positionValue)
 end
@@ -938,10 +939,12 @@ end
 deployLineHeight = 2.1
 deployLineYPos = deployLineHeight-0.1
 sizeMulti = 36
-arrowOffset = 7.5
+-- Arrow offset/size mirror the disposition picker (dispositionArrowOffset 5.75,
+-- arrow width 600, font 300) so the Deployment Zone row matches them visually.
+arrowOffset = 5.75
 deployPickerButtonHeight = 562.5
 deployPickerButtonFontSize = 320
-deployPickerArrowFontSize = 260
+deployPickerArrowFontSize = 300
 
 defaultDeployHeight=2
 deployOffset = 0
@@ -956,21 +959,21 @@ deployHeaderBtn = {
     font_size = 600, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
 -- Menu object is rotated rotY=270, so worldX = menuX - localZ. Adding 3.5 to local
--- z shifts these -3.5 in world X. Clear Mat / Back to Selection read
+-- z shifts these -3.5 in world X. Clear Table / Back to Selection read
 -- deployBtn.position[3], so they follow.
 deployBtn = {
     index = i, label = "", click_function = "none", function_owner = self,
-    position = { 0, 5, 6.5}, rotation = {0, 0, 0}, height = deployPickerButtonHeight, width = 6000,
+    position = { 0, 5, 6.5}, rotation = {0, 0, 0}, height = deployPickerButtonHeight, width = 4500,
     font_size = deployPickerButtonFontSize, color = {1, 1, 1}, font_color = {0, 0, 0}
 }
 deployUpBtn = {
     index = 1, label = "->", click_function = "deployUp", function_owner = self,
-    position = { arrowOffset, 5, 6.5}, rotation = {0, 0, 0}, height = deployPickerButtonHeight, width = 800,
+    position = { arrowOffset, 5, 6.5}, rotation = {0, 0, 0}, height = deployPickerButtonHeight, width = 600,
     font_size = deployPickerArrowFontSize, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
 deployDownBtn = {
     index = 1, label = "<-", click_function = "deployDown", function_owner = self,
-    position = { -arrowOffset, 5, 6.5}, rotation = {0, 0, 0}, height = deployPickerButtonHeight, width = 800,
+    position = { -arrowOffset, 5, 6.5}, rotation = {0, 0, 0}, height = deployPickerButtonHeight, width = 600,
     font_size = deployPickerArrowFontSize, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
 dispositionControlWorldX = 33.50
@@ -996,13 +999,17 @@ dispositionArrowWidth = 600
 dispositionArrowFontSize = 300
 dispositionButtonFontSize = 380
 dispositionArrowOffset = 5.75
--- CLEAR MAT and BACK TO SELECTION flank the Deployment Zone picker symmetrically,
--- on the same row (local z/y taken from deployBtn): CLEAR MAT just outside the
--- left "<-" arrow, BACK TO SELECTION just outside the right "->" arrow. Defined in
--- the menu's local frame so they track the picker if it ever moves. The picker
--- arrows sit at local x ±arrowOffset (±7.5); this offset clears the arrow plus the
--- flank button's own half-width (width 4500 ~= 5 local units) with a small gap.
-deployFlankButtonLocalX = 14.0
+-- CLEAR TABLE and BACK TO SELECTION flank the Deployment Zone picker on its row
+-- (world X/Y taken from deployBtn), but are aligned to the same world Z as the
+-- disposition buttons directly below them so the two rows line up vertically:
+-- CLEAR TABLE over the red disposition (left, -12.1), BACK TO SELECTION over the
+-- blue disposition (right, +12.1). Placed via positionToLocal off those world Z
+-- values, mirroring createDispositionSelector, so the alignment holds under any
+-- menu scale/rotation.
+function deployFlankButtonLocal(dispositionWorldZ)
+    local row = self.positionToWorld({0, deployBtn.position[2], deployBtn.position[3]})
+    return self.positionToLocal({row.x, row.y, dispositionWorldZ})
+end
 
 dispositionButtonColors = {
     ["Disruption"] = {0.36, 0.62, 1.00},
@@ -1062,25 +1069,27 @@ matClearKeepGuids = {["28865a"] = true, ["4ee1f2"] = true, ["6012bf"] = true, ["
 function writeClearMatButton()
     if inGame then return end
 
+    local pos = deployFlankButtonLocal(redDispositionControlWorldZ)
     createButtonWithBorder({
-        label = "Clear Mat", click_function = "clearMat", function_owner = self,
-        position = {-deployFlankButtonLocalX, deployBtn.position[2], deployBtn.position[3]}, rotation = {0, 0, 0},
+        label = "Clear Table", click_function = "clearMat", function_owner = self,
+        position = {pos.x, pos.y, pos.z}, rotation = {0, 0, 0},
         height = dispositionButtonHeight, width = dispositionButtonWidth,
         font_size = dispositionButtonFontSize,
         color = {0.90, 0.35, 0.35}, font_color = {0, 0, 0},
-        tooltip = "Remove everything placed on the mat",
+        tooltip = "Remove everything placed on the table",
     })
 end
 
 -- Always shown before the game starts; enabled once a map load captures a restore point.
--- Sits just right of the Deployment Zone picker, mirroring CLEAR MAT on the left.
+-- Sits just right of the Deployment Zone picker, mirroring CLEAR TABLE on the left.
 function writeBackToSelectionButton()
     if inGame then return end
 
     local enabled = restorePointAvailable
+    local pos = deployFlankButtonLocal(blueDispositionControlWorldZ)
     createButtonWithBorder({
         label = "Back to Selection", click_function = enabled and "backToSelection" or "none", function_owner = self,
-        position = {deployFlankButtonLocalX, deployBtn.position[2], deployBtn.position[3]}, rotation = {0, 0, 0},
+        position = {pos.x, pos.y, pos.z}, rotation = {0, 0, 0},
         height = dispositionButtonHeight, width = dispositionButtonWidth,
         font_size = dispositionButtonFontSize,
         color = enabled and {0.90, 0.62, 0.20} or {0.55, 0.55, 0.55},
