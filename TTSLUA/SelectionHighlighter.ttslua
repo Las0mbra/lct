@@ -2,6 +2,7 @@
 
 -- This script highlights objects in green when they are selected by a player.
 local selectedObjects = {}
+local externalHolds = {}   -- guids another script owns; we won't touch their highlight
 local checkInterval = 0.25
 local checkWaitId = nil
 local activeHighlighterGuid = "27de4f"
@@ -42,6 +43,21 @@ function onDestroy()
     clearAllHighlights()
 end
 
+-- Public API for other scripts (e.g. the coherency / engagement monitors) to
+-- take exclusive ownership of a model's highlight. While held, this highlighter
+-- ignores the model entirely -- it won't snapshot, recolour, or restore it -- so
+-- the owning script's glow can't be captured as an "original" and re-applied on
+-- deselect. The owner must releaseHighlight when it's done.
+function holdHighlight(params)
+    local guid = params.guid
+    externalHolds[guid] = true
+    selectedObjects[guid] = nil   -- stop tracking it as a selection highlight
+end
+
+function releaseHighlight(params)
+    externalHolds[params.guid] = nil
+end
+
 function checkSelections()
     local currentSelections = {}
 
@@ -53,7 +69,7 @@ function checkSelections()
         for _, obj in ipairs(selected) do
             local guid = obj.getGUID()
 
-            if (obj.tag == "Figurine" or obj.tag == "Generic" or obj.tag == "Custom_Model") and not selectedObjects[guid] then
+            if (obj.tag == "Figurine" or obj.tag == "Generic" or obj.tag == "Custom_Model") and not selectedObjects[guid] and not externalHolds[guid] then
                 selectedObjects[guid] = {
                     object = obj,
                     originalColor = obj.getHighlightColor()

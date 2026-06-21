@@ -326,13 +326,36 @@ function applyMatTexture(rewriteMenu)
     local customInfo = mapMat.getCustomObject()
     if customInfo.image ~= selected.url then
         customInfo.image = selected.url
+        -- reload() respawns the mat, which resets its interaction flags back to the
+        -- object's saved defaults -- making it clickable/draggable again after a theme
+        -- change. Snapshot the current flags and restore them once the reloaded copy
+        -- finishes spawning, so the mat stays locked and uninteractable as it is now.
+        local wasLocked = mapMat.getLock()
+        local wasInteractable = mapMat.interactable
         mapMat.setCustomObject(customInfo)
-        mapMat.reload()
+        restoreMatFlags(mapMat.reload(), wasLocked, wasInteractable)
     end
 
     if rewriteMenu then
         Wait.frames(function() writeMenus() end, 2)
     end
+end
+
+-- Re-apply the mat's lock/interactable/tooltip after a reload. reload() is async
+-- (the object respawns over a few frames), so wait for spawning to finish before
+-- writing the flags; otherwise they land on the old, about-to-be-destroyed copy.
+function restoreMatFlags(reloaded, locked, interactable)
+    local function mat() return reloaded or getObjectFromGUID(mapMat_GUID) end
+    Wait.condition(function()
+        local m = mat()
+        if not m then return end
+        m.setLock(locked)
+        m.interactable = interactable
+        m.tooltip = interactable
+    end, function()
+        local m = mat()
+        return m ~= nil and not m.spawning
+    end)
 end
 
 function setMatTexture(index)
@@ -344,6 +367,11 @@ function setMatTexture1() setMatTexture(1) end
 function setMatTexture2() setMatTexture(2) end
 function setMatTexture3() setMatTexture(3) end
 function setMatTexture4() setMatTexture(4) end
+
+-- Read by the Table Theme swatches in mapFilter.ttslua (GUID 369707) so its XML
+-- buttons can mark the active theme. The swatch buttons there forward back to the
+-- setMatTexture<i> functions above.
+function matTextureSelectedIndex() return matTextureSelected end
 
 function writeSizeMenu()
     self.clearButtons()
@@ -4417,34 +4445,6 @@ function writeStartMenu()
     createButtonWithBorder(firstPlayerBtn)
 end
 
-matTextureButtonZ = 4.8
-matTextureButtonSpacing = 1.0
-matTextureButtonSize = 360
-matTextureBorderThickness = 70
-
-function writeMatTexturePickerMenu()
-    for i, texture in ipairs(matTextures) do
-        local offset = (i - ((#matTextures + 1) / 2)) * matTextureButtonSpacing
-        local isSelected = (i == matTextureSelected)
-        local borderColor = isSelected and {1, 1, 1} or {0.1, 0.1, 0.1}
-        -- Border: a slightly larger button rendered behind the swatch (TTS buttons have no outline).
-        self.createButton({
-            label = "", click_function = "setMatTexture" .. i, function_owner = self,
-            position = {offset, 5, matTextureButtonZ - 20}, rotation = {0, 0, 0},
-            height = matTextureButtonSize + matTextureBorderThickness,
-            width = matTextureButtonSize + matTextureBorderThickness, font_size = 1,
-            color = borderColor, tooltip = texture.name,
-        })
-        -- Color swatch on top (raised slightly in y so it renders above the border).
-        self.createButton({
-            label = isSelected and "✓" or "", click_function = "setMatTexture" .. i, function_owner = self,
-            position = {offset, 5.01, matTextureButtonZ - 20}, rotation = {0, 0, 0},
-            height = matTextureButtonSize, width = matTextureButtonSize, font_size = 180,
-            color = texture.color, font_color = {1, 1, 1}, tooltip = texture.name,
-        })
-    end
-end
-
 function writeDeployPickerMenu()
     if not deploySelected or not DeployZonesData[deploySelected] then
         deploySelected = #DeployZonesData
@@ -4457,7 +4457,8 @@ end
 
 function writeDeployMenu()
     writeDeployPickerMenu()
-    writeMatTexturePickerMenu()
+    -- Table-texture swatches moved to the Table Theme row of the Map Mat Picker
+    -- overlay (mapFilter.ttslua, GUID 369707); no physical buttons here anymore.
     writeDispositionMenu()
     -- self.createButton(nineFromDeployBtn)
 

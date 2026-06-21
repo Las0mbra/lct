@@ -256,31 +256,42 @@ function currentMatRandoLabel()
     return "Default"
 end
 
--- Picker geometry. Width matches the filter so the two boxes line up; height is
--- sized to the controls (title + picker row + Apply + Default) instead of the
--- filter's full height, so nothing stretches and the arrows stay square-ish.
+-- Picker geometry. Width matches the filter so the two boxes line up. The panel
+-- keeps the filter's full height (so the two boxes are the same size) but the
+-- controls only fill the top; the empty space below the "Table Theme" heading is
+-- reserved for the table-theme controls being added next.
 -- Vertical sizes trimmed ~10% (from 70/100/90/50/8) to keep the panel compact.
-MAT_RANDO_TITLE_H = 63
-MAT_RANDO_ROW_H = 90     -- picker row (arrows + value); halved, padded out by spacers
-MAT_RANDO_BTN_H = 81     -- Apply / Random / Default buttons
+MAT_RANDO_TITLE_H = 63   -- "Map Mat Picker" title and the "Table Theme" heading
+MAT_RANDO_ROW_H = 90     -- picker row (arrows + value)
+MAT_RANDO_BTN_H = 81     -- shared Apply / Random / Default row
 MAT_RANDO_ARROW_W = 160  -- fixed width of each arrow button
--- Transparent filler rows above and below the picker row. They carry no controls;
--- they just keep the box the same overall size after the picker row was halved, so
--- the arrows/value sit centered in the upper area rather than filling it.
-MAT_RANDO_SPACER_H = 45
-MAT_RANDO_RULE_H = 4     -- thin rule under the header (matches the filter's separator)
+MAT_RANDO_RULE_H = 4     -- thin rule (matches the filter's separator)
 MAT_RANDO_PAD = 14
 MAT_RANDO_SPACING = 7
 
-function matRandoSpacerHeights(targetHeight)
-    -- 8 children (title, rule, top spacer, row, bottom spacer, Apply, Random, Default)
-    -- => 7 gaps. Split any extra height into the transparent spacer rows so the
-    -- Mat Picker outer panel exactly matches the Map Filters panel beside it.
-    local fixedHeight = MAT_RANDO_PAD * 2 + MAT_RANDO_TITLE_H + MAT_RANDO_RULE_H
-        + MAT_RANDO_ROW_H + MAT_RANDO_BTN_H * 3 + MAT_RANDO_SPACING * 7
-    local spacerTotal = math.max(MAT_RANDO_SPACER_H * 2, (targetHeight or 0) - fixedHeight)
-    local topSpacer = math.floor(spacerTotal / 2)
-    return topSpacer, spacerTotal - topSpacer
+-- Table Theme swatches. These mirror startMenu's `matTextures` table (same order):
+-- the button labels are the texture names and the button colors approximate each
+-- texture's RGB so the swatch reads as that theme. `colorOn` is a brightened version
+-- used to highlight the active swatch. Clicking one forwards to startMenu's
+-- setMatTexture<i>, which owns the swap (it holds matTextures + the selected index).
+-- The list order here MUST stay in sync with matTextures over there.
+TABLE_THEMES = {
+    {label = "Green",  color = "#004F08", colorOn = "#22C235"},
+    {label = "Blue",   color = "#004F70", colorOn = "#27A3D6"},
+    {label = "Grey",   color = "#616657", colorOn = "#AEB4A0"},
+    {label = "Purple", color = "#5C4269", colorOn = "#A077B8"},
+}
+TABLE_THEME_ROW_H = 81
+
+-- Currently-selected theme index, read from startMenu so the panel can mark the
+-- active swatch. 0 if the menu isn't ready (nothing marked).
+function currentTableThemeIndex()
+    local sm = startMenuObj()
+    if sm then
+        local ok, idx = pcall(function() return sm.call("matTextureSelectedIndex") end)
+        if ok and type(idx) == "number" then return idx end
+    end
+    return 0
 end
 
 function buildMatRandoPanel(width, height)
@@ -289,17 +300,28 @@ function buildMatRandoPanel(width, height)
     -- other without overlapping. position is in unscaled UI units; rendered width is
     -- width * FILTER_SCALE, so the center-to-center offset must clear that.
     local offsetX = math.floor(width * FILTER_SCALE) + MAT_RANDO_GAP
-    -- Apply/Default are half the inner width, centered by transparent flexible
-    -- spacers on each side (childForceExpandWidth=false so the fixed-width button
-    -- keeps its size and the spacers absorb the rest).
-    local btnW = math.floor((width - MAT_RANDO_PAD * 2) * 0.5)
-    local topSpacerH, bottomSpacerH = matRandoSpacerHeights(height)
+    -- Children take their preferred heights (childForceExpandHeight=false) and pack
+    -- to the top; whatever height is left over sits empty below the Table Theme row.
+    -- Table Theme swatch row: one button per theme, splitting the width evenly. The
+    -- active theme is painted in its brighter `colorOn` so you can see the selection.
+    local selectedTheme = currentTableThemeIndex()
+    local themeCells = {}
+    for i, theme in ipairs(TABLE_THEMES) do
+        local color = (i == selectedTheme) and theme.colorOn or theme.color
+        themeCells[#themeCells + 1] = string.format(
+            '<Button id="theme%d" onClick="onTableThemeSwatch" color="%s" textColor="#FFFFFF" '
+            .. 'fontSize="30">%s</Button>',
+            i, color, theme.label)
+    end
+    local themeRow = string.format(
+        '<HorizontalLayout preferredHeight="%d" flexibleHeight="0" spacing="10" '
+        .. 'childForceExpandWidth="true">\n%s\n</HorizontalLayout>',
+        TABLE_THEME_ROW_H, table.concat(themeCells, "\n"))
     return string.format(
         '<VerticalLayout position="%d 0 %d" rotation="0 0 0" scale="%s %s 1" width="%d" height="%d" '
         .. 'padding="%d %d %d %d" spacing="%d" color="#101015E6" childForceExpandHeight="false">\n'
         .. '<Text fontSize="44" color="#FFFFFF" preferredHeight="%d">Map Mat Picker</Text>\n'
-        .. '<Panel preferredHeight="4" color="#FFFFFF40" />\n'
-        .. '<Panel color="#101015E6" minHeight="%d" preferredHeight="%d" flexibleHeight="0" />\n'
+        .. '<Panel preferredHeight="%d" color="#FFFFFF40" flexibleHeight="0" />\n'
         .. '<HorizontalLayout spacing="12" preferredHeight="%d" flexibleHeight="0" childForceExpandWidth="false">\n'
         .. '<Button id="matRandoPrev" onClick="onMatRandoPrev" color="#000000" textColor="#FFFFFF" '
         .. 'fontSize="50" preferredWidth="%d" flexibleWidth="0">&lt;-</Button>\n'
@@ -308,31 +330,26 @@ function buildMatRandoPanel(width, height)
         .. '<Button id="matRandoNext" onClick="onMatRandoNext" color="#000000" textColor="#FFFFFF" '
         .. 'fontSize="50" preferredWidth="%d" flexibleWidth="0">-&gt;</Button>\n'
         .. '</HorizontalLayout>\n'
-        .. '<Panel color="#101015E6" minHeight="%d" preferredHeight="%d" flexibleHeight="0" />\n'
-        .. '<HorizontalLayout preferredHeight="%d" flexibleHeight="0" spacing="0" childForceExpandWidth="false">\n'
-        .. '<Panel color="#00000000" flexibleWidth="1" />\n'
+        -- Apply / Random / Default share one row: childForceExpandWidth makes the
+        -- three buttons split the inner width evenly with the spacing between them.
+        .. '<HorizontalLayout preferredHeight="%d" flexibleHeight="0" spacing="12" childForceExpandWidth="true">\n'
         .. '<Button id="matRandoApply" onClick="onMatRandoApply" color="#62C257" textColor="#000000" '
-        .. 'fontSize="40" preferredWidth="%d" flexibleWidth="0">Apply</Button>\n'
-        .. '<Panel color="#00000000" flexibleWidth="1" />\n'
-        .. '</HorizontalLayout>\n'
-        .. '<HorizontalLayout preferredHeight="%d" flexibleHeight="0" spacing="0" childForceExpandWidth="false">\n'
-        .. '<Panel color="#00000000" flexibleWidth="1" />\n'
+        .. 'fontSize="36">Apply</Button>\n'
         .. '<Button id="matRandoRandom" onClick="onMatRandoRandom" color="#4A78C2" textColor="#FFFFFF" '
-        .. 'fontSize="40" preferredWidth="%d" flexibleWidth="0">Random</Button>\n'
-        .. '<Panel color="#00000000" flexibleWidth="1" />\n'
-        .. '</HorizontalLayout>\n'
-        .. '<HorizontalLayout preferredHeight="%d" flexibleHeight="0" spacing="0" childForceExpandWidth="false">\n'
-        .. '<Panel color="#00000000" flexibleWidth="1" />\n'
+        .. 'fontSize="36">Random</Button>\n'
         .. '<Button id="matRandoDefault" onClick="onMatRandoDefault" color="#3D4852" textColor="#FFFFFF" '
-        .. 'fontSize="40" preferredWidth="%d" flexibleWidth="0">Default</Button>\n'
-        .. '<Panel color="#00000000" flexibleWidth="1" />\n'
+        .. 'fontSize="36">Default</Button>\n'
         .. '</HorizontalLayout>\n'
+        .. '<Panel preferredHeight="%d" color="#FFFFFF40" flexibleHeight="0" />\n'
+        .. '<Text fontSize="44" color="#FFFFFF" preferredHeight="%d">Table Theme</Text>\n'
+        .. '<Panel preferredHeight="%d" color="#FFFFFF40" flexibleHeight="0" />\n'
+        .. '%s\n'
         .. '</VerticalLayout>',
         offsetX, UI_VERTICAL_LIFT, FILTER_SCALE, FILTER_SCALE, width, height,
         MAT_RANDO_PAD, MAT_RANDO_PAD, MAT_RANDO_PAD, MAT_RANDO_PAD, MAT_RANDO_SPACING,
-        MAT_RANDO_TITLE_H, topSpacerH, topSpacerH, MAT_RANDO_ROW_H, MAT_RANDO_ARROW_W,
-        currentMatRandoLabel(), MAT_RANDO_ARROW_W, bottomSpacerH, bottomSpacerH,
-        MAT_RANDO_BTN_H, btnW, MAT_RANDO_BTN_H, btnW, MAT_RANDO_BTN_H, btnW)
+        MAT_RANDO_TITLE_H, MAT_RANDO_RULE_H, MAT_RANDO_ROW_H, MAT_RANDO_ARROW_W,
+        currentMatRandoLabel(), MAT_RANDO_ARROW_W, MAT_RANDO_BTN_H,
+        MAT_RANDO_RULE_H, MAT_RANDO_TITLE_H, MAT_RANDO_RULE_H, themeRow)
 end
 
 -- Thin forwarders: TTS routes an XML button's onClick to its own object's script,
@@ -358,6 +375,16 @@ end
 function onMatRandoRandom(player, value, id)
     local sm = startMenuObj()
     if sm then sm.call("matRandomizerRandom") end
+end
+
+-- Table Theme swatch: button id is "theme<i>", forwarding to startMenu's
+-- setMatTexture<i> (which owns the swatch list + swap). Rebuild afterwards so the
+-- check mark moves to the newly selected swatch.
+function onTableThemeSwatch(player, value, id)
+    local sm = startMenuObj()
+    if not sm then return end
+    sm.call("setMatTexture" .. string.match(id, "%d+"))
+    buildFilterUI()
 end
 
 function onCreatorToggle(player, value, id)
