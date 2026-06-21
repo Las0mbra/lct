@@ -131,7 +131,7 @@ function refreshTokenUI()
     end
     self.editButton({
         index      = 0,
-        label      = script_state.label,
+        label      = "",
         font_color = display_font_color,
     })
     self.editButton({

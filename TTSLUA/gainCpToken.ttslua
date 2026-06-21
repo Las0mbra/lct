@@ -1,15 +1,15 @@
--- FTC-GUID: 59c35a,46b855
+-- FTC-GUID: af8032,5e882b
 -- Physical "Gain CP" tokens. Clicking the token grants that player one CP for
 -- the current battle round, deferring to Global.gainCPForColor so it behaves
 -- exactly like the HUD overlay "Gain CP" button and shares the same
 -- once-per-battle-round cap (gaining via the token or the overlay locks out the
 -- other for the rest of that round).
---   59c35a = Red (Gain CP Red), 46b855 = Blue (Gain CP Blue).
+--   af8032 = Red (Gain CP Red), 5e882b = Blue (Gain CP Blue).
 
 local _color = nil
 
 function onLoad()
-    _color = (self.getGUID() == "46b855") and "Blue" or "Red"
+    _color = (self.getGUID() == "5e882b") and "Blue" or "Red"
     -- Invisible hit area covering the token face; the model's own texture is the
     -- visible "Gain CP" label, so the button itself draws nothing.
     self.createButton({

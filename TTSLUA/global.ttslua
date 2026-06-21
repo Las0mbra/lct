@@ -165,7 +165,7 @@ function currentBattleRound()
 end
 
 -- Shared GAIN CP logic. Used by both the HUD overlay button (hudGainCP) and the
--- physical "Gain CP" tokens (59c35a Red / 46b855 Blue). Because both paths read
+-- physical "Gain CP" tokens (af8032 Red / 5e882b Blue). Because both paths read
 -- and write the same cpGainRoundUsed table here, the once-per-battle-round cap is
 -- shared: gaining via either the token or the overlay locks out the other for the
 -- rest of that round. Returns true if a CP was granted.
@@ -787,8 +787,8 @@ primaryDeck_GUID = "d26e9c"
 edition11RedSecondaryDeck_GUID = "8104e1"
 edition11BlueSecondaryDeck_GUID = "994347"
 
-redSecondaryDeckPosition = {x = 68.04, y = 0.98, z = 8.45}
-blueSecondaryDeckPosition = {x = 68.04, y = 0.98, z = -8.45}
+redSecondaryDeckPosition = {x = 62.54, y = 0.98, z = 8.45}
+blueSecondaryDeckPosition = {x = 62.54, y = 0.98, z = -8.45}
 hiddenMissionDeckPosition = {85.0, -5.0, 4.75}
 
 -- Blue player sits on the -Z side, red on +Z (matches the mission managers,
@@ -1682,10 +1682,10 @@ end
 
 function getSecondaryDiscardPosition(color)
     if color == "Red" then
-        return {x = 68.04, y = 0.98, z = 16.60}
+        return {x = 62.54, y = 0.98, z = 16.60}
     end
 
-    return {x = 68.04, y = 0.98, z = -16.60}
+    return {x = 62.54, y = 0.98, z = -16.60}
 end
 
 function refreshSecondaryNamesForColor(color)
