@@ -1300,6 +1300,30 @@ function onload()
     -- Remove any coherency distance labels that leaked into the save.
     cleanupOrphanCoherencyLabels()
 
+    -- TTS sorts the Options -> Game Keys list alphabetically by label (call order
+    -- is ignored), so these six are prefixed 1.-6. to pin them to the top in the
+    -- desired order. The numeric prefixes change the labels, which orphans any
+    -- prior player bindings -- hence the "RESET ALL YOUR TTS HOTKEYS" broadcast.
+    addHotkey("1. Save Position", savePositionClicked)
+    addHotkey("2. Restore Position", restorePositionClicked)
+    addHotkey("3. Custom Bubble", function(playerColor, _, _)
+        if playerColor ~= "Red" and playerColor ~= "Blue" then return end
+        local matGUID = (playerColor == "Red")
+            and Global.getVar("redCustomDiceMat_GUID")
+            or  Global.getVar("blueCustomDiceMat_GUID")
+        Global.call("openBubbleInput", {color = playerColor, mat = matGUID})
+    end)
+    addHotkey("4. Coherency Check", checkCoherency)
+    addHotkey("5. Engagement Range", showEngagementRange)
+    addHotkey("6. Roll All Dice", function(playerColor, _, _)
+        local matGUID = (playerColor == "Red")
+            and Global.getVar("redCustomDiceMat_GUID")
+            or  Global.getVar("blueCustomDiceMat_GUID")
+        local mat = getObjectFromGUID(matGUID)
+        if mat then mat.call("hotkeyRollAllDice", { playerColor = playerColor }) end
+    end)
+
+    -- Remaining hotkeys; these sort alphabetically below the numbered group.
     addHotkey("Auto 1 Inch Gap", arrangeModelsWith1Inch)
     addHotkey("Auto 2 Inch Gap", arrangeModelsWith2Inch)
     addHotkey("Clear Bubbles", function(playerColor, _, _)
@@ -1319,22 +1343,6 @@ function onload()
         local mat = getObjectFromGUID(matGUID)
         if mat then mat.call("hotkeyClearMat", { playerColor = playerColor }) end
     end)
-    addHotkey("Custom Bubble", function(playerColor, _, _)
-        if playerColor ~= "Red" and playerColor ~= "Blue" then return end
-        local matGUID = (playerColor == "Red")
-            and Global.getVar("redCustomDiceMat_GUID")
-            or  Global.getVar("blueCustomDiceMat_GUID")
-        Global.call("openBubbleInput", {color = playerColor, mat = matGUID})
-    end)
-    addHotkey('Restore position', restorePositionClicked)
-    addHotkey("Roll All Dice", function(playerColor, _, _)
-        local matGUID = (playerColor == "Red")
-            and Global.getVar("redCustomDiceMat_GUID")
-            or  Global.getVar("blueCustomDiceMat_GUID")
-        local mat = getObjectFromGUID(matGUID)
-        if mat then mat.call("hotkeyRollAllDice", { playerColor = playerColor }) end
-    end)
-    addHotkey('Save position', savePositionClicked)
     addHotkey("Show Scoreboard", function(playerColor, _, _)
         Global.call("hotkeyToggleScoringOverlay", { playerColor = playerColor })
     end)
