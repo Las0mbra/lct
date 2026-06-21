@@ -69,10 +69,12 @@ function onLoad(saved_data)
     --getData()
     deploySelected = nil
     deployMode = nil
+    combatPatrolMode = false
     if saved_data ~= "" then
         local loaded_data = JSON.decode(saved_data)
         gameMode = loaded_data.svgameMode
         singlesMode = loaded_data.svsSinglesMode
+        combatPatrolMode = loaded_data.svCombatPatrolMode or false
         inGame = loaded_data.svinGame
         currentTurn = loaded_data.svcurrentTurn
         currentPhase = loaded_data.svcurrentPhase
@@ -131,7 +133,7 @@ function onLoad(saved_data)
             ttsDebugLog("missionPackData not available during onLoad; clearing packSelected")
         end
     end
-    if packSelected then
+    if packSelected and not combatPatrolMode then
         placeGameModeObjects()
     else
         hideGameModeObjects()
@@ -154,6 +156,7 @@ function onSave()
         svinGame = inGame,
         svgameMode = gameMode,
         svsSinglesMode = singlesMode,
+        svCombatPatrolMode = combatPatrolMode,
         svcurrentTurn = currentTurn,
         svcurrentPhase = currentPhase,
         svmapSizeSelected = mapSizeSelected,
@@ -312,6 +315,42 @@ confirmBtn4 = {
     press_color    = { 0.08, 0.4, 0.82, 1 }
 }
 
+-- Combat Patrol sits directly under 1v1 (same x), Crusade under Solo; both one
+-- row further out in z (+2.65 from the 1v1/Solo row).
+confirmBtn5 = {
+    index          = i,
+    label          = "Combat Patrol",
+    click_function = "confirmCombatPatrol",
+    function_owner = self,
+    position       = { -menuSizeX - 6.0, menuSizeY, menuSizeZ + 5.30 },
+    rotation       = { 0, 0, 0 },
+    height         = 810,
+    width          = 4500,
+    scale          = { 1, 1, 1 },
+    font_size      = 375,
+    color          = { 0.70, 0.16, 0.16 },  -- Red
+    font_color     = { 1.0, 1.0, 1.0 },  -- Pure White
+    hover_color    = { 0.82, 0.22, 0.22, 1 },
+    press_color    = { 0.55, 0.10, 0.10, 1 }
+}
+
+confirmBtn6 = {
+    index          = i,
+    label          = "Crusade",
+    click_function = "confirmCrusade",
+    function_owner = self,
+    position       = { -menuSizeX + 6.0, menuSizeY, menuSizeZ + 5.30 },
+    rotation       = { 0, 0, 0 },
+    height         = 810,
+    width          = 4500,
+    scale          = { 1, 1, 1 },
+    font_size      = 375,
+    color          = { 0.50, 0.20, 0.80 },  -- Purple
+    font_color     = { 1.0, 1.0, 1.0 },  -- Pure White
+    hover_color    = { 0.60, 0.28, 0.90, 1 },
+    press_color    = { 0.38, 0.14, 0.62, 1 }
+}
+
 function refreshMat()
     mat = getObjectFromGUID(mat_GUID)
 end
@@ -395,6 +434,8 @@ function writeSizeMenu()
     self.createButton(sizeDownBtn)
     createButtonWithBorder(confirmBtn)
     createButtonWithBorder(confirmBtn4)
+    createButtonWithBorder(confirmBtn5)
+    createButtonWithBorder(confirmBtn6)
     mat.setScale(sizeData[mapSizeSelected].scale)
     mat.setPosition(positionValue)
 end
@@ -426,14 +467,41 @@ end
 
 function confirmForSingles()
     singlesMode = "singles"
+    combatPatrolMode = false
     deployMode = "edition11"
     loadGameWithoutMapContainers()
 end
 
 function confirmStandardGame()
     singlesMode = nil
+    combatPatrolMode = false
     deployMode = "edition11"
     loadGameWithoutMapContainers()
+end
+
+-- Combat Patrol plays like Solo (one player drives both sides), but uses the
+-- Combat Patrol deployment zones and drops the mission-matrix props -- those
+-- reference bags/tiles aren't used in a Combat Patrol game. combatPatrolMode is
+-- the flag that later makes Generate Missions skip the fb4b5d layout art.
+function confirmCombatPatrol()
+    singlesMode = "singles"
+    combatPatrolMode = true
+    deployMode = "combatPatrol"
+    loadGameWithoutMapContainers()
+    destroyGameModeObjects()
+end
+
+-- Crusade is not implemented yet; just surface a centred purple banner.
+function confirmCrusade()
+    broadcastToAll("Coming soon :)", {0.6, 0.2, 0.9})
+end
+
+-- Permanently remove the mission-matrix bags/tiles for this session (Combat
+-- Patrol). They normally only hide at y=-5; here we destroy them outright.
+function destroyGameModeObjects()
+    for _, entry in ipairs(GAME_MODE_OBJECTS) do
+        destroyObjectByGUID(entry.guid)
+    end
 end
 
 function loadGameWithoutMapContainers()
@@ -1072,6 +1140,7 @@ function captureRestorePoint()
         gameMode = gameMode,
         inGame = inGame,
         singlesMode = singlesMode,
+        combatPatrolMode = combatPatrolMode,
         sizeConfirmed = sizeConfirmed,
         mapSizeSelected = mapSizeSelected,
         deployMode = deployMode,
@@ -1215,6 +1284,7 @@ function applyRestoredSelectionState()
     gameMode = s.gameMode or "game"
     inGame = s.inGame or false
     singlesMode = s.singlesMode
+    combatPatrolMode = s.combatPatrolMode or false
     sizeConfirmed = s.sizeConfirmed
     mapSizeSelected = s.mapSizeSelected or mapSizeSelected
     deployMode = s.deployMode
@@ -1241,7 +1311,11 @@ function applyRestoredSelectionState()
         if missionPackTable and missionPackTable[packSelected] then
             missionPackData = missionPackTable[packSelected]
         end
-        placeGameModeObjects()
+        if not combatPatrolMode then
+            placeGameModeObjects()
+        else
+            hideGameModeObjects()
+        end
     else
         hideGameModeObjects()
     end
@@ -1762,8 +1836,9 @@ deploymentRandomPickButtonWorldZ = generateMissionWorldZ
 function writeGenerateMissionButton()
     local center = self.positionToLocal({generateMissionWorldX, generateMissionWorldY, generateMissionWorldZ})
     local missionReady = gameMode == "game" and packSelected ~= nil
+    local generateLabel = combatPatrolMode and "Generate Missions" or "Generate Missions & Layouts"
     createButtonWithBorder({
-        label = "Generate Missions & Layouts", click_function = missionReady and "generateMission" or "none", function_owner = self,
+        label = generateLabel, click_function = missionReady and "generateMission" or "none", function_owner = self,
         position = {center.x, center.y, center.z}, rotation = {0, 0, 0},
         height = dispositionButtonHeight, width = 4500, font_size = 350,
         color = {0.191999942, 0.701, 0.167999923}, font_color = {0, 0, 0},
@@ -2935,7 +3010,9 @@ function runMissionGeneration(deploymentMode)
                     if info and info.guid then
                         table.insert(deploymentPlacements, {role = "deployment", deck = info.deck, guid = info.guid, position = slot.position, rotation = deploymentMapCardRotation, sourceDeckGuid = info.deckGuid, flip = false, lock = true})
                     end
-                elseif slot.role == "layout" then
+                elseif slot.role == "layout" and not combatPatrolMode then
+                    -- Combat Patrol generates missions only -- no layout art from
+                    -- deck fb4b5d, so skip placing any "layout" slot in that mode.
                     local info = layoutChoices[slot.index]
                     if info and info.guid then
                         table.insert(deploymentPlacements, {role = "layout", deck = info.deck, guid = info.guid, position = slot.position, sourceDeckGuid = info.deckGuid, flip = true, lock = true})

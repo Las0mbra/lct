@@ -149,7 +149,7 @@ add25d6Btn={
 }
 add1d3Btn={
     label="+ 1d3", click_function="spawnDice1d3", function_owner=self,
-    tooltip="Spawns 1d3 dice",
+    tooltip="Left click: Spawns 1d3\nRight click: Quick-roll 1d3 (instant)",
     position={2.79, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
@@ -1078,7 +1078,13 @@ function spawnD3(n, player, alt)
             callback_function = function(obj)
                 if selectedColor ~= nil then obj.setColorTint(selectedColor) end
                 table.insert(spawnedDice, obj)
-                -- Spawn-only (legacy behaviour); no auto-roll. See spawnDice.
+                -- Right-click (alt) quick-rolls just like the +Nd6 buttons: set values
+                -- from the roller's xoshiro stream (faces=3) without ever entering the
+                -- bag. Dice arrive via async takeObject callbacks, so fire once the last
+                -- one lands. Left-click stays spawn-only (press Roll All to roll).
+                if alt and #spawnedDice == n then
+                    quickRollSpawnedDice(player, spawnedDice, 3, "d3")
+                end
             end
         })
         col = col + 1
@@ -1176,10 +1182,12 @@ local lastQuickRollColorIndex = 0
 -- appear instantly rolled, without ever entering the bag. Falls back to
 -- math.random only if the roller object can't be reached. All dice in the roll
 -- share one random palette colour.
-function quickRollSpawnedDice(player, dice)
+function quickRollSpawnedDice(player, dice, faces, dieLabel)
+    faces = faces or 6
+    dieLabel = dieLabel or "d6"
     local vals
     if roller then
-        vals = roller.call("rollFacesForQuick", { n = #dice, faces = 6 })
+        vals = roller.call("rollFacesForQuick", { n = #dice, faces = faces })
     end
     -- Pick one palette colour for the whole roll, never repeating the previous
     -- roll's colour so batches stay visually distinct.
@@ -1191,12 +1199,12 @@ function quickRollSpawnedDice(player, dice)
     local tint = quickRollPalette[idx]
     local total = 0
     for i, die in ipairs(dice) do
-        local v = (vals and tonumber(vals[i])) or math.random(6)
+        local v = (vals and tonumber(vals[i])) or math.random(faces)
         die.setValue(v)
         die.setColorTint(tint)
         total = total + v
     end
-    printToAll(Player[player].steam_name .. " quick-rolled " .. tostring(total) .. " on " .. #dice .. "d6", "White")
+    printToAll(Player[player].steam_name .. " quick-rolled " .. tostring(total) .. " on " .. #dice .. dieLabel, "White")
 end
 
 -- Cross-object entry point for the stats board. Object.call() can only pass a
