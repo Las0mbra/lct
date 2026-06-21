@@ -302,46 +302,65 @@ function getAttackInfo(weaponData)
   return result
 end
 
+-- Lay weapon dice out using the dice mat's own bounded 5x5 grid -- the same
+-- contained layout the mat's +Nd6 buttons use -- instead of the old open-ended
+-- 20-wide march. Big batches (e.g. 27 then 48 attacks) used to overflow the mat
+-- in both axes and land where the mat's getDice() can no longer see them, so
+-- they couldn't be rolled or cleared. Anchoring on the mat keeps every die
+-- inside the mat's footprint. Per-weapon colour and the AP/weapon tooltip are
+-- unchanged. The mat object is only READ here (positionToWorld/getRotation); no
+-- mat script is modified.
 function spawnDices(count, color, weaponName, offset, ap, strength, dmg, melta, devastating, ignoreCover)
-  local ratioX = math.cos(math.rad(self.getRotation()[2]))
-  local ratioY = math.sin(math.rad(self.getRotation()[2]))
-  local rowSize = 20
   local previousTrayDiceConfig = activeCustomTrayDiceConfig
   activeCustomTrayDiceConfig = readCustomTrayDiceConfig()
+
+  -- Anchor the grid on the dice mat so dice land where the mat can manage them.
+  -- Fall back to this object only if the mat can't be resolved.
+  local anchor = getStatsHelperCustomDiceMat() or self
+  local anchorRotation = anchor.getRotation() + Vector(0.0, 180.0, 0.0)
+
+  -- Hard-cap total stats dice at 128, matching the mat's own spawn limit, so a
+  -- huge attack count can never exceed the grid's footprint.
+  local diceLimit = 128
+  if offset + count > diceLimit then
+    printMessage("Dice limit reached!")
+    count = math.max(0, diceLimit - offset)
+  end
+
+  -- Advance grid/row/col to the running offset so each weapon's batch tiles
+  -- after the previous one (5 columns x 5 rows per grid block).
+  local grid, row, col = 0, 0, 0
+  for i = 1, offset do
+    col = col + 1
+    if col > 4 then col = 0; row = row + 1
+      if row > 4 then row = 0; grid = grid + 1 end
+    end
+  end
+
+  local apStr    = tostring(ap or "0")
+  local meltaStr = (melta and melta ~= "") and " [ffffff](Melta "..melta..")[-]" or ""
+  local devStr   = devastating == true and " [ffffff](Dev)[-]" or ""
+  local igorStr  = ignoreCover == true and " [ffffff](Ig Cover)[-]" or ""
+  local tooltip  = "[000000]|[-][ffff00] AP: "..apStr.." "..weaponName.."[-]"..devStr..meltaStr..igorStr
+
   for i = 1, count do
-    local column = (i + offset - 1) % rowSize + 1
-    local row = math.ceil((i + offset) / rowSize)
-    local startingPosition = spawnPosition or self.getPosition()
-    local rowShift = spawnPosition == nil and 3 or 0
-
-    local x = startingPosition[1] + column * ratioX + ratioY * (rowShift + row)
-    local z = startingPosition[3] + (rowShift + row) * ratioX - column * ratioY
-
-      local apStr       = tostring(ap or "0")
-      local strengthStr = tostring(strength or "?")
-      local dmgStr      = tostring(dmg or "?")
-      local meltaStr    = (melta and melta ~= "") and " [ffffff](Melta "..melta..")[-]" or ""
-      local devStr      = devastating == true and " [ffffff](Dev)[-]" or ""
-      local igorStr      = ignoreCover == true and " [ffffff](Ig Cover)[-]" or ""
-
-      -- Example ASCII-ish “table”
-      -- The lines may need more or fewer dashes to look centered for your text.
-      local tooltip =
-      "[000000]|[-][ffff00] AP: "..apStr.." "..weaponName.."[-]"..devStr..meltaStr..igorStr
-        -- "\n[ffff00]--------------------------------[-]\n"..
-        -- "[ffff00]|[-]  AP: "..apStr.."   S: "..strengthStr.."   D: "..dmgStr.."  [ffff00]|[-]\n"..
-        -- "[ffff00]--------------------------------[-]"
-
     local die = spawnObject({
       type = getDiceType(),
-      position = {x, self.getPosition()[2] + 1, z},
+      position = anchor.positionToWorld({4 - grid * 1.5 - col * 0.25, 0.5, -0.3 + row * 0.25}),
+      rotation = anchorRotation,
       callback_function = function(dice)
         setDieTint(dice, color)
         dice.setName(tooltip)
       end
     })
     setDieCustomObject(die)
+
+    col = col + 1
+    if col > 4 then col = 0; row = row + 1
+      if row > 4 then row = 0; grid = grid + 1 end
+    end
   end
+
   activeCustomTrayDiceConfig = previousTrayDiceConfig
 end
 
