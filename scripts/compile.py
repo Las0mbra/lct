@@ -59,6 +59,7 @@ CHANGELOG  = SCRIPT_DIR.parent / "CHANGELOG.md"
 CITY_MAT_CSV = SCRIPT_DIR.parent / "data" / "all_mats.csv"
 CURATED_MAT_CSV = SCRIPT_DIR.parent / "data" / "curated_maps.csv"
 DESERT_MAT_CSV = SCRIPT_DIR.parent / "data" / "desert.csv"
+BM_MAT_RANDOMIZER_ENABLED = False
 GLOBAL_LUA = "global.ttslua"
 
 # The Battlemaster dynamic spawner bakes the canonical map-card machinery into
@@ -349,6 +350,7 @@ def read_mat_csv(path: Path) -> tuple[list[str], list[str]]:
 def bake_city_mat_urls(lua_text: str) -> str:
     """Bake mat URL pools into startMenu for the manual picker and BTTF auto-reskin."""
     markers = ("@@CITY_MAT_URLS@@", "@@CITY_MAT_NAMES@@",
+               "@@BM_MAT_RANDOMIZER_ENABLED@@",
                "@@BTTF_RUINS_MAT_URLS@@", "@@BTTF_RUINS_MAT_NAMES@@",
                "@@DESERT_MAT_URLS@@", "@@DESERT_MAT_NAMES@@")
     if not any(marker in lua_text for marker in markers):
@@ -371,6 +373,19 @@ def bake_city_mat_urls(lua_text: str) -> str:
         else:
             print(f"  Baked {varname} from {source_name} ({len(values)} entries).")
 
+    def bake_bool(marker, varname, value):
+        nonlocal lua_text
+        if "@@" + marker + "@@" not in lua_text:
+            return
+        literal = f"{varname} = {'true' if value else 'false'}   -- @@{marker}@@"
+        lua_text, count = re.subn(r"^.*--\s*@@" + marker + r"@@.*$", lambda _m: literal,
+                                  lua_text, count=1, flags=re.M)
+        if count != 1:
+            warn(f"marker @@{marker}@@ present but not rewritten — not injected.")
+        else:
+            print(f"  Baked {varname} = {'true' if value else 'false'}.")
+
+    bake_bool("BM_MAT_RANDOMIZER_ENABLED", "BM_MAT_RANDOMIZER_ENABLED", BM_MAT_RANDOMIZER_ENABLED)
     bake("CITY_MAT_URLS", "CITY_MAT_URLS", city_urls, CITY_MAT_CSV.name)
     bake("CITY_MAT_NAMES", "CITY_MAT_NAMES", city_names, CITY_MAT_CSV.name)
     bake("BTTF_RUINS_MAT_URLS", "BTTF_RUINS_MAT_URLS", curated_urls, CURATED_MAT_CSV.name)

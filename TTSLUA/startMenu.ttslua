@@ -28,6 +28,7 @@ CITY_MAT_URLS = {}   -- @@CITY_MAT_URLS@@
 -- Randomizer picker. Baked from the all_mats.csv "terrain" column.
 CITY_MAT_NAMES = {}   -- @@CITY_MAT_NAMES@@
 -- Curated mat image pools for automatic Battlemaster theme reskins.
+BM_MAT_RANDOMIZER_ENABLED = false   -- @@BM_MAT_RANDOMIZER_ENABLED@@
 BTTF_RUINS_MAT_URLS = {}   -- @@BTTF_RUINS_MAT_URLS@@
 BTTF_RUINS_MAT_NAMES = {}   -- @@BTTF_RUINS_MAT_NAMES@@
 DESERT_MAT_URLS = {}   -- @@DESERT_MAT_URLS@@
@@ -4252,6 +4253,7 @@ function enforceBattlemasterMatsNonInteractive()
 end
 
 function reskinBattlemasterMatFromPool(urls, label)
+    if not BM_MAT_RANDOMIZER_ENABLED then return end
     if type(urls) ~= "table" or #urls == 0 then
         bmMatDebug(label .. " empty -- not baked into this build.")
         return
@@ -4416,16 +4418,20 @@ function onMapCardLoaded(params)
 
     -- Re-skin selected static Battlemaster maps from creator-specific mat pools.
     local loadedCreator = loadedMapCreator(params)
-    bmMatDebug("onMapCardLoaded guid=" .. tostring(params and params.guid)
-        .. " provider=" .. tostring(params and params.provider)
-        .. " creator=" .. tostring(loadedCreator))
+    if BM_MAT_RANDOMIZER_ENABLED then
+        bmMatDebug("onMapCardLoaded guid=" .. tostring(params and params.guid)
+            .. " provider=" .. tostring(params and params.provider)
+            .. " creator=" .. tostring(loadedCreator))
+    end
     if isBattlemaster then
         enforceBattlemasterMatsNonInteractive()
     end
-    if loadedCreator == "battlemaster_bttf_ruins" or loadedCreator == "battlemaster_bttf" then
-        reskinBattlemasterBttfRuinsMat()
-    elseif loadedCreator == "battlemaster_armageddon_desert" then
-        reskinBattlemasterDesertMat()
+    if BM_MAT_RANDOMIZER_ENABLED then
+        if loadedCreator == "battlemaster_bttf_ruins" or loadedCreator == "battlemaster_bttf" then
+            reskinBattlemasterBttfRuinsMat()
+        elseif loadedCreator == "battlemaster_armageddon_desert" then
+            reskinBattlemasterDesertMat()
+        end
     end
 
     -- Move primary missions off the mat before the map card starts its next-frame wipe.
