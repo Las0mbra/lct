@@ -27,9 +27,11 @@ CITY_MAT_URLS = {}   -- @@CITY_MAT_URLS@@
 -- Display names paralleling CITY_MAT_URLS (same order), used to label the Mat
 -- Randomizer picker. Baked from the all_mats.csv "terrain" column.
 CITY_MAT_NAMES = {}   -- @@CITY_MAT_NAMES@@
--- Curated mat image pool for automatic Battlemaster - BTTF Ruins reskins.
+-- Curated mat image pools for automatic Battlemaster theme reskins.
 BTTF_RUINS_MAT_URLS = {}   -- @@BTTF_RUINS_MAT_URLS@@
 BTTF_RUINS_MAT_NAMES = {}   -- @@BTTF_RUINS_MAT_NAMES@@
+DESERT_MAT_URLS = {}   -- @@DESERT_MAT_URLS@@
+DESERT_MAT_NAMES = {}   -- @@DESERT_MAT_NAMES@@
 defaultMatTextureURL = "https://steamusercontent-a.akamaihd.net/ugc/15425072743099001267/B83134980FFB54308B44410C44305D245F8DF3F0/"
 gameModeMatTextureURL = "https://steamusercontent-a.akamaihd.net/ugc/11927766457912242969/CF467C9E73E87C1EABF3F2239B0B3BF47ADF00CA/"
 
@@ -2469,7 +2471,7 @@ function normalizeMissionName(s)
     return (s:lower():gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
-mapCreatorDisplaySuffixes = {"Cra5hNatural", "Team Belgium", "Izar", "Battlemaster - BTTF Ruins", "Alvaricus", "Zim"}
+mapCreatorDisplaySuffixes = {"Cra5hNatural", "Team Belgium", "Izar", "BTTF", "Battlemaster - BTTF Ruins", "Battlemaster - Desert", "Alvaricus", "Zim"}
 
 -- Map cards carry creator credit at the end of their visible nickname. Strip
 -- only a recognized creator suffix when matching shared layout art or reading
@@ -4141,14 +4143,26 @@ end
 BM_MAT_PIVOT_Y = -10.13
 BM_MAT_PIVOT_TOLERANCE = 0.25
 
--- Automatic mat randomization is limited to static Battlemaster - BTTF Ruins
--- cards. The baked MAP_INDEX lets us identify them while the card is still
--- inside a source bag and its tags are not directly readable.
-function mapCreatorIsBattlemasterBttfRuins(params)
+-- Automatic mat randomization is keyed by the baked MAP_INDEX. That lets us
+-- identify a just-loaded static map while it is still inside a source bag,
+-- without reading card tags at runtime.
+function loadedMapCreator(params)
     local guid = params and params.guid
-    if not guid then return false end
+    if not guid then return nil end
     local meta = (Global.getTable("MAP_INDEX") or {})[guid]
-    return type(meta) == "table" and meta.creator == "battlemaster_bttf_ruins"
+    return type(meta) == "table" and meta.creator or nil
+end
+
+function mapCreatorIsBattlemasterBttfRuins(params)
+    return loadedMapCreator(params) == "battlemaster_bttf_ruins"
+end
+
+function mapCreatorIsBattlemasterBttf(params)
+    return loadedMapCreator(params) == "battlemaster_bttf"
+end
+
+function mapCreatorIsBattlemasterDesert(params)
+    return loadedMapCreator(params) == "battlemaster_armageddon_desert"
 end
 
 -- Find the just-loaded map's own mat(s): the spawner-tagged battlemat, or any
@@ -4159,15 +4173,11 @@ end
 function findBattlemasterMats()
     local found = {}
     for _, obj in ipairs(getAllObjects()) do
-        if obj.getGUID() ~= mat_GUID then
-            local isMat = obj.hasTag and obj.hasTag("battlemaster_battlemat")
-            if not isMat and math.abs(obj.getPosition().y - BM_MAT_PIVOT_Y) < BM_MAT_PIVOT_TOLERANCE then
-                local ok, custom = pcall(function() return obj.getCustomObject() end)
-                if ok and type(custom) == "table" and type(custom.mesh) == "string" and custom.mesh ~= "" then
-                    isMat = true
-                end
+        if obj.getGUID() ~= mat_GUID and math.abs(obj.getPosition().y - BM_MAT_PIVOT_Y) < BM_MAT_PIVOT_TOLERANCE then
+            local ok, custom = pcall(function() return obj.getCustomObject() end)
+            if ok and type(custom) == "table" and type(custom.mesh) == "string" and custom.mesh ~= "" then
+                table.insert(found, obj)
             end
-            if isMat then table.insert(found, obj) end
         end
     end
     return found
@@ -4199,11 +4209,11 @@ function applyMatDiffuse(mat, url)
     restoreMatFlags(mat.reload(), wasLocked, wasInteractable)
 end
 
--- After a Battlemaster - BTTF Ruins map loads, swap its own mat image for a
--- random curated mat URL baked from data/curated_maps.csv. The mat spawns a
--- few frames after Load Map (post-wipe), so we defer past terrain spawn and
--- retry in case a heavy theme spawns late. Same diffuse-swap + reload pattern
--- the mat URL tool uses on the table surface.
+-- After selected Battlemaster static maps load, swap their own mat image for a
+-- random URL baked from that theme's mat CSV. The mat spawns a few frames after
+-- Load Map (post-wipe), so we defer past terrain spawn and retry in case a heavy
+-- theme spawns late. Same diffuse-swap + reload pattern the mat URL tool uses on
+-- the table surface.
 -- Temporary diagnostic toggle: prints to the host's chat so we can see whether
 -- detection/find/apply each fire. Set false once the feature is confirmed.
 BM_MAT_DEBUG = true
@@ -4241,12 +4251,12 @@ function enforceBattlemasterMatsNonInteractive()
     Wait.frames(poll, BM_MAT_FLOOR_FRAMES)
 end
 
-function reskinBattlemasterBttfRuinsMat()
-    if type(BTTF_RUINS_MAT_URLS) ~= "table" or #BTTF_RUINS_MAT_URLS == 0 then
-        bmMatDebug("BTTF_RUINS_MAT_URLS empty -- not baked into this build.")
+function reskinBattlemasterMatFromPool(urls, label)
+    if type(urls) ~= "table" or #urls == 0 then
+        bmMatDebug(label .. " empty -- not baked into this build.")
         return
     end
-    local url = BTTF_RUINS_MAT_URLS[math.random(#BTTF_RUINS_MAT_URLS)]
+    local url = urls[math.random(#urls)]
     -- Poll for the freshly spawned mat and apply the instant it appears: fast, and
     -- early enough that the map's original mat image often hasn't finished loading,
     -- so the swap reads as smooth rather than a visible re-texture.
@@ -4270,6 +4280,14 @@ function reskinBattlemasterBttfRuinsMat()
         end
     end
     Wait.frames(poll, BM_MAT_FLOOR_FRAMES)
+end
+
+function reskinBattlemasterBttfRuinsMat()
+    reskinBattlemasterMatFromPool(BTTF_RUINS_MAT_URLS, "BTTF_RUINS_MAT_URLS")
+end
+
+function reskinBattlemasterDesertMat()
+    reskinBattlemasterMatFromPool(DESERT_MAT_URLS, "DESERT_MAT_URLS")
 end
 
 -- ===================== Mat Randomizer manual picker =====================
@@ -4396,15 +4414,18 @@ function onMapCardLoaded(params)
         placeLoadedLayoutArtCard(name)
     end
 
-    -- Re-skin only Battlemaster - BTTF Ruins maps with a random curated mat.
+    -- Re-skin selected static Battlemaster maps from creator-specific mat pools.
+    local loadedCreator = loadedMapCreator(params)
     bmMatDebug("onMapCardLoaded guid=" .. tostring(params and params.guid)
         .. " provider=" .. tostring(params and params.provider)
-        .. " creatorBttfRuins=" .. tostring(mapCreatorIsBattlemasterBttfRuins(params)))
+        .. " creator=" .. tostring(loadedCreator))
     if isBattlemaster then
         enforceBattlemasterMatsNonInteractive()
     end
-    if mapCreatorIsBattlemasterBttfRuins(params) then
+    if loadedCreator == "battlemaster_bttf_ruins" or loadedCreator == "battlemaster_bttf" then
         reskinBattlemasterBttfRuinsMat()
+    elseif loadedCreator == "battlemaster_armageddon_desert" then
+        reskinBattlemasterDesertMat()
     end
 
     -- Move primary missions off the mat before the map card starts its next-frame wipe.

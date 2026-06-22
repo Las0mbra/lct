@@ -168,11 +168,16 @@ MAP_MANIFEST_COLUMNS = {"deck_guid", "deck_name", "card_guid", "card_name", "map
 REQUIRED_MAP_TAG = "map"
 MAP_CREATOR_TAG_PREFIX = "map_crt"
 MAP_TYPE_TAG_PREFIX = "map_type"
+# Thematic (narrative/crusade) maps don't use the standard mission objective
+# layout, so the advisory objective-marker-tag check is skipped for them.
+MAP_TYPE_THEMATIC_TAG = "map_type_thematic"
 MAP_CREATOR_DISPLAY_NAMES = {
     "map_crt_cr5sh": "Cra5hNatural",
     "map_crt_belgium": "Team Belgium",
     "map_crt_izar": "Izar",
+    "map_crt_battlemaster_bttf": "BTTF",
     "map_crt_battlemaster_bttf_ruins": "Battlemaster - BTTF Ruins",
+    "map_crt_battlemaster_armageddon_desert": "Battlemaster - Desert",
     "map_crt_alvaricus": "Alvaricus",
     "map_crt_zim": "Zim",
 }
@@ -252,6 +257,11 @@ class MapCard:
     @property
     def where(self) -> str:
         return f"card {self.guid} {self.name!r}"
+
+    @property
+    def is_thematic(self) -> bool:
+        """Narrative/crusade map outside the competitive Generate Mission system."""
+        return MAP_TYPE_THEMATIC_TAG in self.tags
 
 
 def objective_tag_counts(terrain_entries):
@@ -644,9 +654,12 @@ def gm_exclude_present(ctx):
 def objective_marker_tags_present(ctx):
     """Advisory check for mission/objective marker tags inside spawned terrain.
 
-    Compile always reports these warnings, but they never block builds.
+    Compile always reports these warnings, but they never block builds. Thematic
+    maps use bespoke objective layouts, so they are skipped entirely.
     """
     for card in ctx.cards:
+        if card.is_thematic:
+            continue
         counts = card.objective_tag_counts
         missing = []
         missing_count = 0
@@ -742,16 +755,22 @@ def layout_art_names_resolve(ctx):
         helper_by_name.setdefault(card["name"].strip().casefold(), []).append(card)
 
     maps_by_name = {}
+    competitive_names = set()
     for card in ctx.cards:
-        maps_by_name.setdefault(card.logical_name.strip().casefold(), card.logical_name.strip())
+        normalized = card.logical_name.strip().casefold()
+        maps_by_name.setdefault(normalized, card.logical_name.strip())
+        if not card.is_thematic:
+            competitive_names.add(normalized)
 
     # Missing layout art breaks Generate Mission / Random Layout, so block
-    # test/release builds; warn only in dev.
+    # test/release builds; warn only in dev. Thematic-only names don't drive
+    # Generate Mission, so a missing helper there is advisory regardless.
     missing_level = ERROR if ctx.require_map_tags else WARN
     for normalized, map_name in sorted(maps_by_name.items(), key=lambda item: item[1]):
         matches = helper_by_name.get(normalized, [])
         if not matches:
-            yield Issue(missing_level, "layout art deck",
+            level = missing_level if normalized in competitive_names else WARN
+            yield Issue(level, "layout art deck",
                         f"no helper card matches map name {map_name!r}")
         elif len(matches) > 1:
             guids = ", ".join(card["guid"] for card in matches)

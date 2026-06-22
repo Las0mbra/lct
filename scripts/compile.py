@@ -58,6 +58,7 @@ OUT_NAME   = "lct_base"
 CHANGELOG  = SCRIPT_DIR.parent / "CHANGELOG.md"
 CITY_MAT_CSV = SCRIPT_DIR.parent / "data" / "all_mats.csv"
 CURATED_MAT_CSV = SCRIPT_DIR.parent / "data" / "curated_maps.csv"
+DESERT_MAT_CSV = SCRIPT_DIR.parent / "data" / "desert.csv"
 GLOBAL_LUA = "global.ttslua"
 
 # The Battlemaster dynamic spawner bakes the canonical map-card machinery into
@@ -348,12 +349,14 @@ def read_mat_csv(path: Path) -> tuple[list[str], list[str]]:
 def bake_city_mat_urls(lua_text: str) -> str:
     """Bake mat URL pools into startMenu for the manual picker and BTTF auto-reskin."""
     markers = ("@@CITY_MAT_URLS@@", "@@CITY_MAT_NAMES@@",
-               "@@BTTF_RUINS_MAT_URLS@@", "@@BTTF_RUINS_MAT_NAMES@@")
+               "@@BTTF_RUINS_MAT_URLS@@", "@@BTTF_RUINS_MAT_NAMES@@",
+               "@@DESERT_MAT_URLS@@", "@@DESERT_MAT_NAMES@@")
     if not any(marker in lua_text for marker in markers):
         return lua_text
 
     city_names, city_urls = read_mat_csv(CITY_MAT_CSV)
     curated_names, curated_urls = read_mat_csv(CURATED_MAT_CSV)
+    desert_names, desert_urls = read_mat_csv(DESERT_MAT_CSV)
 
     def bake(marker, varname, values, source_name):
         nonlocal lua_text
@@ -372,6 +375,8 @@ def bake_city_mat_urls(lua_text: str) -> str:
     bake("CITY_MAT_NAMES", "CITY_MAT_NAMES", city_names, CITY_MAT_CSV.name)
     bake("BTTF_RUINS_MAT_URLS", "BTTF_RUINS_MAT_URLS", curated_urls, CURATED_MAT_CSV.name)
     bake("BTTF_RUINS_MAT_NAMES", "BTTF_RUINS_MAT_NAMES", curated_names, CURATED_MAT_CSV.name)
+    bake("DESERT_MAT_URLS", "DESERT_MAT_URLS", desert_urls, DESERT_MAT_CSV.name)
+    bake("DESERT_MAT_NAMES", "DESERT_MAT_NAMES", desert_names, DESERT_MAT_CSV.name)
     return lua_text
 
 
