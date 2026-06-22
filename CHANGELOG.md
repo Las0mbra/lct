@@ -13,7 +13,7 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
-## v1.8.0
+## v1.8.1
 - Added a lof of new maps from creators. But most of them came from Battlemaster, made by Superwutz.
 - Combat Patrol & Narrattive/Support.
 - Added an Advanced control menu on top

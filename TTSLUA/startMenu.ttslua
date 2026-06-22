@@ -73,13 +73,11 @@ function onLoad(saved_data)
     deploySelected = nil
     deployMode = nil
     combatPatrolMode = false
-    narrativeMode = false
     if saved_data ~= "" then
         local loaded_data = JSON.decode(saved_data)
         gameMode = loaded_data.svgameMode
         singlesMode = loaded_data.svsSinglesMode
         combatPatrolMode = loaded_data.svCombatPatrolMode or false
-        narrativeMode = loaded_data.svNarrativeMode or false
         inGame = loaded_data.svinGame
         currentTurn = loaded_data.svcurrentTurn
         currentPhase = loaded_data.svcurrentPhase
@@ -144,19 +142,20 @@ function onLoad(saved_data)
         hideGameModeObjects()
     end
     -- Combat Patrol map bag follows the same hidden-until-selected rule. If a
-    -- 1v1/Solo (or Narrative) game destroyed it earlier, getObjectFromGUID is nil
-    -- and both helpers no-op.
+    -- 1v1/Solo game destroyed it earlier, getObjectFromGUID is nil and both
+    -- helpers no-op.
     if combatPatrolMode then
         showCombatPatrolBag()
     else
         hideCombatPatrolBag()
     end
-    -- Narrative mode objects: shown only in Narrative, else hidden (destroyed
-    -- outright by the other modes, in which case hide no-ops).
-    if narrativeMode then
-        placeNarrativeModeObjects()
+    -- Dominatus components: shown on the 1v1/Solo games (a confirmed game mode
+    -- that is not Combat Patrol), hidden otherwise. sizeConfirmed is only set once
+    -- a mode is chosen, so this stays hidden on the pre-mode selection screen.
+    if sizeConfirmed and not combatPatrolMode then
+        placeDominatusObjects()
     else
-        hideNarrativeModeObjects()
+        hideDominatusObjects()
     end
     if not gameTurnCounter then
         ttsDebugLog("gameTurnCounter not found during onLoad")
@@ -177,7 +176,6 @@ function onSave()
         svgameMode = gameMode,
         svsSinglesMode = singlesMode,
         svCombatPatrolMode = combatPatrolMode,
-        svNarrativeMode = narrativeMode,
         svcurrentTurn = currentTurn,
         svcurrentPhase = currentPhase,
         svmapSizeSelected = mapSizeSelected,
@@ -336,8 +334,9 @@ confirmBtn4 = {
     press_color    = { 0.08, 0.4, 0.82, 1 }
 }
 
--- Combat Patrol sits directly under 1v1 (same x), Narrative under Solo; both one
--- row further out in z (+2.65 from the 1v1/Solo row).
+-- Combat Patrol sits directly under 1v1 (same x), one row further out in z
+-- (+2.65 from the 1v1/Solo row). (The Narrative button that used to sit under Solo
+-- was removed; its Dominatus components now show on the 1v1/Solo games instead.)
 confirmBtn5 = {
     index          = i,
     label          = "Combat Patrol",
@@ -353,23 +352,6 @@ confirmBtn5 = {
     font_color     = { 1.0, 1.0, 1.0 },  -- Pure White
     hover_color    = { 0.82, 0.22, 0.22, 1 },
     press_color    = { 0.55, 0.10, 0.10, 1 }
-}
-
-confirmBtn6 = {
-    index          = i,
-    label          = "Narrative",
-    click_function = "confirmNarrative",
-    function_owner = self,
-    position       = { -menuSizeX + 6.0, menuSizeY, menuSizeZ + 5.30 },
-    rotation       = { 0, 0, 0 },
-    height         = 810,
-    width          = 4500,
-    scale          = { 1, 1, 1 },
-    font_size      = 375,
-    color          = { 0.50, 0.20, 0.80 },  -- Purple
-    font_color     = { 1.0, 1.0, 1.0 },  -- Pure White
-    hover_color    = { 0.60, 0.28, 0.90, 1 },
-    press_color    = { 0.38, 0.14, 0.62, 1 }
 }
 
 function refreshMat()
@@ -456,7 +438,6 @@ function writeSizeMenu()
     createButtonWithBorder(confirmBtn)
     createButtonWithBorder(confirmBtn4)
     createButtonWithBorder(confirmBtn5)
-    createButtonWithBorder(confirmBtn6)
     mat.setScale(sizeData[mapSizeSelected].scale)
     mat.setPosition(positionValue)
 end
@@ -489,21 +470,19 @@ end
 function confirmForSingles()
     singlesMode = "singles"
     combatPatrolMode = false
-    narrativeMode = false
     deployMode = "edition11"
     loadGameWithoutMapContainers()
     destroyCombatPatrolBag()
-    destroyNarrativeModeObjects()
+    placeDominatusObjects()
 end
 
 function confirmStandardGame()
     singlesMode = nil
     combatPatrolMode = false
-    narrativeMode = false
     deployMode = "edition11"
     loadGameWithoutMapContainers()
     destroyCombatPatrolBag()
-    destroyNarrativeModeObjects()
+    placeDominatusObjects()
 end
 
 -- Combat Patrol plays like Solo (one player drives both sides), but uses the
@@ -513,7 +492,6 @@ end
 function confirmCombatPatrol()
     singlesMode = "singles"
     combatPatrolMode = true
-    narrativeMode = false
     deployMode = "combatPatrolGame"
     -- Combat Patrol is always played on the 44" x 30" battlefield. Force that size
     -- here so it applies even if the player never touched the Battlefield Size
@@ -527,23 +505,8 @@ function confirmCombatPatrol()
     end
     loadGameWithoutMapContainers()
     destroyGameModeObjects()
-    destroyNarrativeModeObjects()
+    hideDominatusObjects()
     showCombatPatrolBag()
-end
-
--- Narrative (WIP) runs on a blank mat: no mission-matrix props/logos and no
--- Combat Patrol bag. Generate Mission still deals the primary missions, but no
--- deployment maps or layout art (see the narrativeMode guards in
--- runMissionGeneration). singlesMode is left nil (standard 1v1 ownership) for now.
-function confirmNarrative()
-    singlesMode = nil
-    combatPatrolMode = false
-    narrativeMode = true
-    deployMode = "edition11"
-    loadGameWithoutMapContainers()
-    destroyGameModeObjects()
-    destroyCombatPatrolBag()
-    placeNarrativeModeObjects()
 end
 
 -- Permanently remove the mission-matrix bags/tiles for this session (Combat
@@ -699,49 +662,53 @@ function destroyCombatPatrolBag()
 end
 
 -- ********************
--- NARRATIVE MODE OBJECTS
+-- DOMINATUS OBJECTS
 -- ********************
--- The Narrative (Dominatus) components (merged from the legacy save by
+-- The Dominatus components (merged from the legacy save by
 -- scripts/import_narrative_objects.py). Like the mission-matrix props, they are
--- hidden until a mode is chosen: shown on Narrative, destroyed on 1v1/Solo/
--- Combat Patrol. Positions/rotations are the layout from the source save; lock
--- is per object (the rules PDF stays locked, the play decks/bags do not).
-NARRATIVE_MODE_OBJECTS = {
-    {guid="813dfe", pos={-14.5674171, 0.9614988, 0.0}, rot={0, 269.9971, 0}, lock=true},   -- Dominatus Rules
-    {guid="a9f390", pos={0.0, 0.9968711, -6.93134}, rot={0, 270.0039, 180}, lock=false},   -- Raider's Agendas Achieved
-    {guid="021888", pos={0.0, 1.00649917, -4.41044331}, rot={0, 270.0, 180}, lock=false},  -- Raider's Relics
-    {guid="2416e0", pos={0.0, 1.00649917, -1.32228458}, rot={0, 270.0184, 180}, lock=false}, -- Oppressor's Relics
-    {guid="5c9320", pos={0.0, 0.9968711, 1.25499117}, rot={0, 270.0008, 180}, lock=false},  -- Oppressors' Agendas Achieved
-    {guid="3df7da", pos={-4.0, 0.7764661, 0.0}, rot={0, 180.0144, 0}, lock=false},          -- Phase 2
-    {guid="69d348", pos={-4.0, 0.7764659, -4.208468}, rot={0, 180.0142, 0}, lock=false},    -- Phase 3
-    {guid="b574de", pos={-4.0, 0.776465535, 4.54564}, rot={0, 180.0006, 0}, lock=false},    -- Phase 1
-    {guid="5d128a", pos={0.0, 1.00649929, 4.92093658}, rot={0, 270.0018, 180}, lock=false}, -- Liberator's Relic
-    {guid="2cf446", pos={0.0, 0.9968712, 7.42160034}, rot={0, 270.0044, 180}, lock=false},  -- Liberators' Agendas Achieved
-    {guid="ad038d", pos={-8.0085, 1.0113132, 8.5}, rot={0, 270.0, 180}, lock=false},        -- Twist Deck
-    {guid="877bb3", pos={-8.209458, 1.02575541, -8.5}, rot={0, 270.0132, 180}, lock=false}, -- Battle Skills
+-- hidden until a mode is chosen: shown on the 1v1/Solo games, hidden on Combat
+-- Patrol. Positions/rotations are the layout from the source save; lock is per
+-- object (the rules PDF stays locked, the play decks/bags do not).
+-- Transforms (position/rotation/scale) are the exact values from the source save
+-- (Legacy/TS_Save_122.json). Scale matters: the Twist Deck, Battle Skills and the
+-- Dominatus Rules sheet are not 1.0, so placeDominatusObject applies scale too.
+DOMINATUS_OBJECTS = {
+    {guid="813dfe", pos={-22.86413, 0.9614989, -16.535288}, rot={0, 269.9829, 0}, scale={3.15, 1.0, 3.15}, lock=true},  -- Dominatus Rules
+    {guid="a9f390", pos={-10.751027, 0.9968712, -20.30137}, rot={0, 270.0277, 180}, scale={1.0, 1.0, 1.0}, lock=false}, -- Raider's Agendas Achieved
+    {guid="021888", pos={-10.750561, 1.00649917, -17.7772}, rot={0, 270.0272, 180}, scale={1.0, 1.0, 1.0}, lock=false}, -- Raider's Relics
+    {guid="2416e0", pos={-10.751986, 1.00649917, -14.694046}, rot={0, 270.0176, 180}, scale={1.0, 1.0, 1.0}, lock=false}, -- Oppressor's Relics
+    {guid="5c9320", pos={-10.750926, 0.9968712, -12.11274}, rot={0, 270.0233, 180}, scale={1.0, 1.0, 1.0}, lock=false}, -- Oppressors' Agendas Achieved
+    {guid="3df7da", pos={-14.139417, 0.7764657, -16.472097}, rot={0, 179.9897, 0}, scale={1.0, 1.0, 1.0}, lock=false},  -- Phase 2
+    {guid="69d348", pos={-14.258667, 0.7764642, -19.414818}, rot={0, 180.0001, 0}, scale={1.0, 1.0, 1.0}, lock=false},  -- Phase 3
+    {guid="b574de", pos={-14.287575, 0.7764645, -13.144204}, rot={0, 180.0052, 0}, scale={1.0, 1.0, 1.0}, lock=false},  -- Phase 1
+    {guid="5d128a", pos={-10.751687, 1.00649917, -8.450874}, rot={0, 270.0212, 180}, scale={1.0, 1.0, 1.0}, lock=false}, -- Liberator's Relics
+    {guid="2cf446", pos={-10.75049, 0.9968712, -5.945488}, rot={0, 270.0262, 180}, scale={1.0, 1.0, 1.0}, lock=false}, -- Liberators' Agendas Achieved
+    {guid="ad038d", pos={-14.848606, 1.01131332, -9.595743}, rot={0, 270.0060, 180}, scale={1.3, 1.0, 1.3}, lock=false}, -- Twist Deck
+    {guid="877bb3", pos={-14.880478, 1.02575541, -6.152566}, rot={0, 270.0056, 180}, scale={1.25, 1.0, 1.25}, lock=false}, -- Battle Skills
 }
 
 -- Quiet placement: unlike placeObjectAtPosition this never broadcasts if an
--- object is missing (a Narrative game it was destroyed in, or wiped by a map
--- load), so the show path can be called unconditionally.
-function placeNarrativeObject(entry)
+-- object is missing (e.g. wiped by a map load), so the show path can be called
+-- unconditionally.
+function placeDominatusObject(entry)
     local obj = getObjectFromGUID(entry.guid)
     if not obj then return end
     obj.setPosition(entry.pos)
     obj.setRotation(entry.rot)
+    if entry.scale then obj.setScale(entry.scale) end
     obj.setLock(entry.lock == true)
     obj.tooltip = true
     obj.interactable = true
 end
 
-function placeNarrativeModeObjects()
-    for _, entry in ipairs(NARRATIVE_MODE_OBJECTS) do
-        placeNarrativeObject(entry)
+function placeDominatusObjects()
+    for _, entry in ipairs(DOMINATUS_OBJECTS) do
+        placeDominatusObject(entry)
     end
 end
 
-function hideNarrativeModeObjects()
-    for _, entry in ipairs(NARRATIVE_MODE_OBJECTS) do
+function hideDominatusObjects()
+    for _, entry in ipairs(DOMINATUS_OBJECTS) do
         local obj = getObjectFromGUID(entry.guid)
         if obj then
             obj.setPosition({entry.pos[1], -5.0, entry.pos[3]})
@@ -749,12 +716,6 @@ function hideNarrativeModeObjects()
             obj.tooltip = false
             obj.interactable = false
         end
-    end
-end
-
-function destroyNarrativeModeObjects()
-    for _, entry in ipairs(NARRATIVE_MODE_OBJECTS) do
-        destroyObjectByGUID(entry.guid)
     end
 end
 
@@ -817,9 +778,9 @@ end
 
 -- The mission-matrix reference props/logos (GAME_MODE_OBJECTS) and the printed
 -- game-mode mat art are used only by the standard 1v1/Solo game. Combat Patrol
--- and Narrative both run on a blank mat, so they place neither.
+-- runs on a blank mat, so it places neither.
 function gameModeUsesMatrixProps()
-    return not combatPatrolMode and not narrativeMode
+    return not combatPatrolMode
 end
 
 function applyGameModeMatTexture()
@@ -1347,7 +1308,6 @@ function captureRestorePoint()
         inGame = inGame,
         singlesMode = singlesMode,
         combatPatrolMode = combatPatrolMode,
-        narrativeMode = narrativeMode,
         sizeConfirmed = sizeConfirmed,
         mapSizeSelected = mapSizeSelected,
         deployMode = deployMode,
@@ -1492,7 +1452,6 @@ function applyRestoredSelectionState()
     inGame = s.inGame or false
     singlesMode = s.singlesMode
     combatPatrolMode = s.combatPatrolMode or false
-    narrativeMode = s.narrativeMode or false
     sizeConfirmed = s.sizeConfirmed
     mapSizeSelected = s.mapSizeSelected or mapSizeSelected
     deployMode = s.deployMode
@@ -1527,10 +1486,10 @@ function applyRestoredSelectionState()
     else
         hideGameModeObjects()
     end
-    if narrativeMode then
-        placeNarrativeModeObjects()
+    if sizeConfirmed and not combatPatrolMode then
+        placeDominatusObjects()
     else
-        hideNarrativeModeObjects()
+        hideDominatusObjects()
     end
     placeForceDispositionToken()
 
@@ -3218,19 +3177,18 @@ function runMissionGeneration(deploymentMode)
                     -- scale, which is already the intended preview size, so they are
                     -- not resized at generation (only on game start, to 1.0).
                     table.insert(primaryPlacements, {order = order, deck = deck, guid = info and info.guid or nil, position = slot.displayPosition or slot.position})
-                elseif slot.role == "deployment" and not combatPatrolMode and not narrativeMode then
+                elseif slot.role == "deployment" and not combatPatrolMode then
                     -- Combat Patrol fills the deployment map slots from its own
-                    -- map bag (see dealCombatPatrolMaps), and Narrative places no
-                    -- maps at all, so both skip the matchup matrix here --
-                    -- otherwise a Take-and-Hold disposition would stack a matrix
-                    -- map under the dealt Combat Patrol card.
+                    -- map bag (see dealCombatPatrolMaps), so it skips the matchup
+                    -- matrix here -- otherwise a Take-and-Hold disposition would
+                    -- stack a matrix map under the dealt Combat Patrol card.
                     local info = deploymentChoices[slot.index]
                     if info and info.guid then
                         table.insert(deploymentPlacements, {role = "deployment", deck = info.deck, guid = info.guid, position = slot.position, rotation = deploymentMapCardRotation, sourceDeckGuid = info.deckGuid, flip = false, lock = true})
                     end
-                elseif slot.role == "layout" and not combatPatrolMode and not narrativeMode then
-                    -- Combat Patrol and Narrative generate missions only -- no
-                    -- layout art from deck fb4b5d, so skip placing any layout slot.
+                elseif slot.role == "layout" and not combatPatrolMode then
+                    -- Combat Patrol generates missions only -- no layout art from
+                    -- deck fb4b5d, so skip placing any layout slot.
                     local info = layoutChoices[slot.index]
                     if info and info.guid then
                         table.insert(deploymentPlacements, {role = "layout", deck = info.deck, guid = info.guid, position = slot.position, sourceDeckGuid = info.deckGuid, flip = true, lock = true})
@@ -4802,8 +4760,8 @@ function selectMissionPack(packIndex)
     primaryDeck = getObjectFromGUID(missionPackData.primaryDeck_GUID)
 
     destroyLegacyPrimaryDeck()
-    -- Combat Patrol and Narrative run on a blank mat -- skip the matrix props/logos
-    -- here too, so selecting a pack in those modes can't re-place them.
+    -- Combat Patrol runs on a blank mat -- skip the matrix props/logos here too,
+    -- so selecting a pack in that mode can't re-place them.
     if gameModeUsesMatrixProps() then
         placeGameModeObjects()
     end

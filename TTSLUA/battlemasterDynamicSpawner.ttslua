@@ -87,9 +87,9 @@ BM_REQUESTED_SYNC_THEME_ID = BM_REQUESTED_SYNC_THEME_ID or nil
 function onLoad(savedData)
   restoreSpawnerState(savedData)
   self.setGMNotes("BattlemasterDynamicSpawner")
-  -- Deferred so Global.DEBUG is readable (button gating); if Global isn't ready the
-  -- safe default is the release set (no network buttons).
-  Wait.time(buildDevButtons, 0.3)
+  -- Deferred so Global.DEBUG is readable; if Global isn't ready the safe default is
+  -- the release path (hide the spawner -- it is dev-only scaffolding).
+  Wait.time(applySpawnerVisibility, 0.3)
   -- No automatic sync on load: the mission flow is cache-only. The cache is shipped
   -- baked into the mod and/or filled via the debug "BM cache populate" tool. Manual
   -- "Sync" (dev button) and debug populate are the only network paths.
@@ -1617,6 +1617,20 @@ end
 -- Release builds get just a status button; the production path is cache-only Generate.
 function isDebugMode()
   return Global ~= nil and Global.getVar ~= nil and Global.getVar("DEBUG") == true
+end
+
+-- The spawner is dev-only scaffolding. On --test builds (DEBUG = true) it stays
+-- out on the table with its dev buttons; on --release builds (DEBUG = false) it
+-- destroys itself so it never ships in a player-facing game. Destroying is safe:
+-- the only code that calls it by GUID (startMenu's runBattlemasterMissionGeneration
+-- -> requestMatchupCards) is dormant and unreferenced, and that lookup already
+-- handles a nil spawner.
+function applySpawnerVisibility()
+  if isDebugMode() then
+    buildDevButtons()
+  else
+    self.destruct()
+  end
 end
 
 function buildDevButtons()

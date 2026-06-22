@@ -1200,8 +1200,21 @@ function quickRollSpawnedDice(player, dice, faces, dieLabel)
     local total = 0
     for i, die in ipairs(dice) do
         local v = (vals and tonumber(vals[i])) or math.random(faces)
-        die.setValue(v)
         die.setColorTint(tint)
+        -- Custom dice are spawned with setCustomObject, which reloads the object
+        -- asynchronously. Setting the value synchronously here races that reload
+        -- and the value is lost when the die snaps back to its spawn orientation,
+        -- so every die shows the same default face. Defer the value (and snap the
+        -- rotation explicitly, like the bag roll's setValueCallback does) until the
+        -- reload has settled. Plain dice don't reload, but the short defer is
+        -- harmless for them.
+        Wait.frames(function()
+            die.setValue(v)
+            local rotValues = die.getRotationValues()
+            if rotValues and rotValues[v] then
+                die.setRotation(rotValues[v].rotation + Vector(0, 180, 0))
+            end
+        end, 2)
         total = total + v
     end
     printToAll(Player[player].steam_name .. " quick-rolled " .. tostring(total) .. " on " .. #dice .. dieLabel, "White")
