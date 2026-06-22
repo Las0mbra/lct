@@ -27,6 +27,12 @@ activeCreators = {}     -- { [creatorId] = true }
 -- Keys are creator ids = the map_crt_* tag without the "map_crt_" prefix.
 DEFAULT_ENABLED_CREATORS = {"battlemaster_bttf", "battlemaster_bttf_ruins", "battlemaster_armageddon_desert", "cr5sh", "zim"}
 
+-- UI-only display names for creator buttons. The baked MAP_INDEX display remains
+-- authoritative for card suffix validation and summaries.
+CREATOR_DISPLAY_OVERRIDES = {
+    battlemaster_bttf = "Battlemaster - Grimdark",
+}
+
 -- The filter only applies during mission setup, so the panel is dropped once the
 -- game starts (startMenu calls hideFilterMenu). Persisted so a mid-game reload
 -- stays hidden.
@@ -81,7 +87,7 @@ function creatorList()
         local id = meta.creator
         if id and not seen[id] then
             seen[id] = true
-            table.insert(list, {id = id, display = meta.display or id, type = meta.type})
+            table.insert(list, {id = id, display = CREATOR_DISPLAY_OVERRIDES[id] or meta.display or id, type = meta.type})
         end
     end
     table.sort(list, function(a, b) return a.display < b.display end)
@@ -142,7 +148,7 @@ function sanitizeActiveCreators()
 end
 
 -- Uniform scale applied to the whole panel (1.0 = native size).
-FILTER_SCALE = 1.3
+FILTER_SCALE = 2.0
 
 -- Two-column grid: creators are listed alphabetically down then across, so the
 -- panel stays a readable height even as more map creators get baked in.
