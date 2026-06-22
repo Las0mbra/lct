@@ -181,6 +181,16 @@ LAYOUT_ART_DECK_GUID = "fb4b5d"
 # form: a Deck collapses once it drops below two cards, but a Bag keeps its GUID
 # and never collapses, so cards can be taken/returned by GUID across generations.
 MAP_SOURCE_CONTAINER_NAMES = {"Deck", "Bag"}
+# Containers whose map cards are a self-contained game-mode pool (e.g. Combat
+# Patrol), NOT part of the Generate Mission map system. Cards held directly in
+# one of these are skipped by map-card detection entirely: they are not in
+# map_manifest.csv, carry no publishing tags, and are never wired into the
+# disposition matrix, so the standard checks would (correctly, for a real map)
+# flag them. They still ship their own canonical load/clear machinery; they are
+# simply outside the validated map inventory.
+MAP_VALIDATION_IGNORE_CONTAINER_GUIDS = {
+    "fdf6e7": "Combat Patrol Maps",
+}
 _GUID_RE = re.compile(r"^[0-9a-fA-F]{6}$")
 _MATRIX_GUID_RE = re.compile(r'guid\s*=\s*"([0-9a-fA-F]{6})"')
 _MATCHUP_KEY_RE = re.compile(r'\["([1-5]_[1-5])"\]')
@@ -447,7 +457,7 @@ def build_context(object_states, require_map_tags=False, manifest_path=MAP_MANIF
             if g:
                 scene_guids.add(g)
                 objects_by_guid.setdefault(g, []).append((o, parent_deck_guid))
-            if _is_map_card(o):
+            if _is_map_card(o) and parent_deck_guid not in MAP_VALIDATION_IGNORE_CONTAINER_GUIDS:
                 detected_cards[g] = MapCard(o, parent_deck_guid)
             if "ContainedObjects" in o:
                 child_parent = g if o.get("Name") in MAP_SOURCE_CONTAINER_NAMES else parent_deck_guid
