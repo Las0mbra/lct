@@ -1242,6 +1242,13 @@ end
 
 function writeDispositionMenu()
     if gameMode ~= "game" or not missionSetupControlsVisible then return end
+    -- Once a map is loaded (restore point captured in onMapCardLoaded), hide the
+    -- mission-setup controls -- both disposition selectors + their arrows, Generate
+    -- Missions & Layouts, and Random Single Layout -- so they can't be re-run on top
+    -- of a loaded board. Back to Selection clears restorePointAvailable and re-runs
+    -- writeMenus, which brings them all back; Start Game drops the whole deploy menu,
+    -- so they are gone in-game without any extra handling here.
+    if restorePointAvailable then return end
     blueDispositionSelected = normalizeDispositionIndex(blueDispositionSelected)
     redDispositionSelected = normalizeDispositionIndex(redDispositionSelected)
     createDispositionSelector("Blue Disposition", blueDispositionSelected, blueDispositionControlWorldZ, "blueDispositionDown", "blueDispositionUp")
