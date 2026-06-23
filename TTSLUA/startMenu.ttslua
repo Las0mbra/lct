@@ -94,6 +94,7 @@ function onLoad(saved_data)
             missionSetupControlsVisible = gameMode == "game" and not inGame
         end
         -- Restore point is in-memory only (see onSave); a save+reload clears it.
+        debugMapTagData = loaded_data.svDebugMapTagData or {}
     end
 
     if sizeConfirmed then
@@ -187,6 +188,10 @@ function onSave()
         svredDispositionSelected = redDispositionSelected,
         svMatTextureSelected = matTextureSelected,
         svMissionSetupControlsVisible = missionSetupControlsVisible,
+        -- DEBUG tag-editing accumulator. Small (~45 maps x a few markers), so
+        -- safe to persist on every save -- this is the whole point: it carries an
+        -- editing session out to scripts/apply_map_tags_from_save.py.
+        svDebugMapTagData = debugMapTagData,
         -- NOTE: the restore point (restorePointObjects in particular) is held in
         -- memory only and deliberately NOT persisted here. It can reach ~5 MB
         -- (the game-mode objects are large decks), and JSON.encode on every
@@ -474,6 +479,9 @@ function confirmForSingles()
     loadGameWithoutMapContainers()
     destroyCombatPatrolBag()
     placeDominatusObjects()
+    if selectedSizeIsOnslaught() then
+        applyOnslaughtButtonLayout()
+    end
 end
 
 function confirmStandardGame()
@@ -483,6 +491,9 @@ function confirmStandardGame()
     loadGameWithoutMapContainers()
     destroyCombatPatrolBag()
     placeDominatusObjects()
+    if selectedSizeIsOnslaught() then
+        applyOnslaughtButtonLayout()
+    end
 end
 
 -- Combat Patrol plays like Solo (one player drives both sides), but uses the
@@ -667,24 +678,14 @@ end
 -- The Dominatus components (merged from the legacy save by
 -- scripts/import_narrative_objects.py). Like the mission-matrix props, they are
 -- hidden until a mode is chosen: shown on the 1v1/Solo games, hidden on Combat
--- Patrol. Positions/rotations are the layout from the source save; lock is per
--- object (the rules PDF stays locked, the play decks/bags do not).
+-- Patrol. Positions/rotations are the layout from the source save; the play
+-- decks/bags live inside the Dominatus Bag.
 -- Transforms (position/rotation/scale) are the exact values from the source save
--- (Legacy/TS_Save_122.json). Scale matters: the Twist Deck, Battle Skills and the
--- Dominatus Rules sheet are not 1.0, so placeDominatusObject applies scale too.
+-- (Legacy/TS_Save_122.json). Scale matters: the Dominatus Rules sheet and
+-- Dominatus Bag are not 1.0, so placeDominatusObject applies scale too.
 DOMINATUS_OBJECTS = {
-    {guid="813dfe", pos={-22.86413, 0.9614989, -16.535288}, rot={0, 269.9829, 0}, scale={3.15, 1.0, 3.15}, lock=true},  -- Dominatus Rules
-    {guid="a9f390", pos={-10.751027, 0.9968712, -20.30137}, rot={0, 270.0277, 180}, scale={1.0, 1.0, 1.0}, lock=false}, -- Raider's Agendas Achieved
-    {guid="021888", pos={-10.750561, 1.00649917, -17.7772}, rot={0, 270.0272, 180}, scale={1.0, 1.0, 1.0}, lock=false}, -- Raider's Relics
-    {guid="2416e0", pos={-10.751986, 1.00649917, -14.694046}, rot={0, 270.0176, 180}, scale={1.0, 1.0, 1.0}, lock=false}, -- Oppressor's Relics
-    {guid="5c9320", pos={-10.750926, 0.9968712, -12.11274}, rot={0, 270.0233, 180}, scale={1.0, 1.0, 1.0}, lock=false}, -- Oppressors' Agendas Achieved
-    {guid="3df7da", pos={-14.139417, 0.7764657, -16.472097}, rot={0, 179.9897, 0}, scale={1.0, 1.0, 1.0}, lock=false},  -- Phase 2
-    {guid="69d348", pos={-14.258667, 0.7764642, -19.414818}, rot={0, 180.0001, 0}, scale={1.0, 1.0, 1.0}, lock=false},  -- Phase 3
-    {guid="b574de", pos={-14.287575, 0.7764645, -13.144204}, rot={0, 180.0052, 0}, scale={1.0, 1.0, 1.0}, lock=false},  -- Phase 1
-    {guid="5d128a", pos={-10.751687, 1.00649917, -8.450874}, rot={0, 270.0212, 180}, scale={1.0, 1.0, 1.0}, lock=false}, -- Liberator's Relics
-    {guid="2cf446", pos={-10.75049, 0.9968712, -5.945488}, rot={0, 270.0262, 180}, scale={1.0, 1.0, 1.0}, lock=false}, -- Liberators' Agendas Achieved
-    {guid="ad038d", pos={-14.848606, 1.01131332, -9.595743}, rot={0, 270.0060, 180}, scale={1.3, 1.0, 1.3}, lock=false}, -- Twist Deck
-    {guid="877bb3", pos={-14.880478, 1.02575541, -6.152566}, rot={0, 270.0056, 180}, scale={1.25, 1.0, 1.25}, lock=false}, -- Battle Skills
+    {guid="813dfe", pos={-22.8449535, 0.9614989, -16.8781948}, rot={0, 269.999237, 0}, scale={3.15, 1.0, 3.15}, lock=true}, -- Dominatus Rules
+    {guid="832110", pos={-18.8804836, 0.9065949, -10.5289011}, rot={2.431763, 89.94151, 357.285736}, scale={1.5, 1.0, 1.5}, lock=true}, -- Dominatus Bag
 }
 
 -- Quiet placement: unlike placeObjectAtPosition this never broadcasts if an
@@ -808,6 +809,81 @@ function confirmSizeMat()
         setDeployZonesForSize(false)
     end
     writeMenus()
+end
+
+-- Onslaught (id 5, 44"x90") is long enough that the default deployment toggle
+-- button row sits over the battlefield. On a 1v1 Onslaught game only, relocate
+-- the six interactive buttons into a single column off the long edge (x=50,
+-- y=-1) with evenly stepped z. Matched by sizeData id so it survives reordering.
+-- Buttons reset to their baked ftc_base.json transforms on game reload.
+ONSLAUGHT_SIZE_ID = 5
+onslaughtButtonLayout = {
+    {guid = "7b7ab8", pos = {50, 1, 10}},  -- Strat Reserves
+    {guid = "8c71ab", pos = {50, 1, 17}},  -- Area Denial
+    {guid = "7e7711", pos = {50, 1, 24}},  -- Territory Line
+    {guid = "59decf", pos = {50, 1, -10}},  -- Table Quarters
+    {guid = "8aba11", pos = {50, 1, -17}},  -- Deployment Zone
+    {guid = "15d652", pos = {50, 1, -24}},  -- Show Objectives
+}
+
+function selectedSizeIsOnslaught()
+    local entry = sizeData[mapSizeSelected]
+    return entry ~= nil and entry.id == ONSLAUGHT_SIZE_ID
+end
+
+function applyOnslaughtButtonLayout()
+    destroyObjectByGUID(ONSLAUGHT_SETUP_GUID_TO_REMOVE)
+    for _, b in ipairs(onslaughtButtonLayout) do
+        local obj = getObjectFromGUID(b.guid)
+        if obj then
+            obj.setPosition(b.pos)
+        end
+    end
+end
+
+-- On a 1v1/Solo Onslaught game the discord tile (8f2be2) is removed and the
+-- mission-setup controls are repositioned to clear the longer battlefield:
+--   * MID row -- Generate Missions & Layouts, Random Single Layout, Dispositions --
+--     is lifted +X so it sits just above the CP/Turn/Round counter row (the Game
+--     Rounds token ee92cf is at world X=67). MID +39: Random->70.5, Disposition->
+--     72.5, Generate->73.6. (This leaves the printed LAYOUTS/MISSIONS bracket art
+--     on backdrop 28865a behind -- expected.)
+--   * TOP row -- Start Game, First-player toggle, Deployment Zone picker (+ arrows
+--     and the Clear Table / Back to Selection flanks) -- is lifted +X to sit just
+--     above the MID row (Generate/Dispositions). DX is tuned so the cluster lands a
+--     few X-units above the MID row rather than out past the table edge.
+-- Applied at render time so it tracks the selected size and survives reload.
+ONSLAUGHT_SETUP_GUID_TO_REMOVE = "8f2be2"
+ONSLAUGHT_MID_ROW_X_OFFSET = 39   -- world +X for the Generate/Random/Disposition row
+ONSLAUGHT_TOP_ROW_DX = 19         -- world +X delta for the Start/First/Deployment cluster
+ONSLAUGHT_TOP_ROW_DZ = 0          -- world +Z delta (0 = directly above the MID row)
+
+-- True only once a game mode is confirmed (gameMode == "game") and the chosen size
+-- is Onslaught -- so nothing shifts during size preview or for other sizes.
+function onslaughtSetupActive()
+    return gameMode == "game" and selectedSizeIsOnslaught()
+end
+
+-- World +X the MID row is shifted by (0 when not an Onslaught game).
+function setupMidRowXOffset()
+    return onslaughtSetupActive() and ONSLAUGHT_MID_ROW_X_OFFSET or 0
+end
+
+-- World (dx, dz) the TOP-row cluster is translated by (0,0 when not Onslaught).
+function topRowDX() return onslaughtSetupActive() and ONSLAUGHT_TOP_ROW_DX or 0 end
+function topRowDZ() return onslaughtSetupActive() and ONSLAUGHT_TOP_ROW_DZ or 0 end
+
+-- The menu object is rotated rotY=270, so world +X = local -Z and world +Z = local
+-- +X. Returns a copy of a top-row button definition translated by (topRowDX,
+-- topRowDZ) in world space, preserving the cluster's internal layout. Returns the
+-- original table when there is no translation.
+function withSetupXOffset(btnDef)
+    local dx, dz = topRowDX(), topRowDZ()
+    if dx == 0 and dz == 0 then return btnDef end
+    local copy = {}
+    for k, v in pairs(btnDef) do copy[k] = v end
+    copy.position = {btnDef.position[1] + dz, btnDef.position[2], btnDef.position[3] - dx}
+    return copy
 end
 
 function updateDeployObjectivesSelection()
@@ -1158,8 +1234,10 @@ dispositionArrowOffset = 5.75
 -- values, mirroring createDispositionSelector, so the alignment holds under any
 -- menu scale/rotation.
 function deployFlankButtonLocal(dispositionWorldZ)
-    local row = self.positionToWorld({0, deployBtn.position[2], deployBtn.position[3]})
-    return self.positionToLocal({row.x, row.y, dispositionWorldZ})
+    -- Translate by the same (dx, dz) as the rest of the top-row cluster so these
+    -- stay glued to the (possibly relocated) Deployment Zone picker row.
+    local row = self.positionToWorld({0, deployBtn.position[2], deployBtn.position[3] - topRowDX()})
+    return self.positionToLocal({row.x, row.y, dispositionWorldZ + topRowDZ()})
 end
 
 dispositionButtonColors = {
@@ -1177,7 +1255,7 @@ end
 function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunction, upFunction)
     local selectedValue = dispositionValues[selectedIndex] or dispositionValues[1]
     local selectedColor = getDispositionButtonColor(selectedValue)
-    local center = self.positionToLocal({dispositionControlWorldX, dispositionControlWorldY, centerWorldZ})
+    local center = self.positionToLocal({dispositionControlWorldX + setupMidRowXOffset(), dispositionControlWorldY, centerWorldZ})
     local cx, cy, cz = center.x, center.y, center.z
     local dispositionButton = {
         label = selectedValue, click_function = "none", function_owner = self,
@@ -1254,6 +1332,95 @@ function writeBackToSelectionButton()
         font_color = enabled and {0, 0, 0} or {0.20, 0.20, 0.20},
         tooltip = enabled and "Undo the loaded map and return to map selection" or "Load a map to enable this button",
     })
+end
+
+-- ******************
+-- DEBUG: SAVE TAGS (objective-marker tagging tool, --test builds only)
+-- ******************
+-- Build-wide debug flag, true on --test builds only (mirrors objectiveDebug).
+-- The whole tag-editing tool below is gated on this so it never renders for
+-- players in a release build.
+function mapTagDebugEnabled()
+    return Global.getVar("DEBUG") == true
+end
+
+-- Accumulated tag edits, keyed by map card GUID:
+--   debugMapTagData[cardGuid] = { name = mapName, objects = { [objGuid] = {tags, nickname, pos} } }
+-- Persisted in onSave so a whole editing session survives into the save file,
+-- where scripts/apply_map_tags_from_save.py reads it back. Small by construction
+-- (~45 maps x a handful of markers), so unlike the restore point it is cheap to
+-- JSON.encode on every autosave.
+debugMapTagData = debugMapTagData or {}
+
+-- Drops onto the (now-free) disposition row: once a map is loaded the disposition
+-- selectors are hidden (writeDispositionMenu early-returns on restorePointAvailable),
+-- so this sits centered under the Deployment Zone picker without overlapping anything.
+function writeBackToSelectionDebugButton()
+    if inGame then return end
+    if not mapTagDebugEnabled() then return end
+    if not restorePointAvailable then return end
+
+    local center = self.positionToLocal({dispositionControlWorldX, dispositionControlWorldY, 0})
+    createButtonWithBorder({
+        label = "Back to Selection (SAVE TAGS)", click_function = "backToSelectionDebug", function_owner = self,
+        position = {center.x, center.y, center.z}, rotation = {0, 0, 0},
+        height = dispositionButtonHeight, width = dispositionButtonWidth,
+        font_size = dispositionButtonFontSize,
+        color = {0.85, 0.45, 0.95}, font_color = {0, 0, 0},
+        tooltip = "DEBUG: record this map's obj_* tags, then return to selection",
+    })
+end
+
+-- Record every object on the table carrying an obj_* tag into debugMapTagData
+-- under the currently loaded map. The live object's GUID equals the baked
+-- objectJSON GUID (only one map is loaded at a time, so the GUID is free and
+-- preserved on spawn) -- that is the join key the Python transfer uses; nickname
+-- and position are stored as a fallback / human-readable check.
+function collectObjectiveTagEdits()
+    local objects = {}
+    local count = 0
+    for _, obj in ipairs(getAllObjects()) do
+        if obj.getTags then
+            local tags = obj.getTags()
+            local hasObjTag = false
+            for _, tag in ipairs(tags) do
+                if string.sub(tag, 1, 4) == "obj_" then hasObjTag = true break end
+            end
+            if hasObjTag then
+                local pos = obj.getPosition()
+                objects[obj.getGUID()] = {
+                    tags = tags,
+                    nickname = obj.getName(),
+                    pos = {x = pos.x, y = pos.y, z = pos.z},
+                }
+                count = count + 1
+            end
+        end
+    end
+    return objects, count
+end
+
+-- DEBUG button entry point: snapshot this map's obj_* tags, then return to
+-- selection via the normal restore flow (debugMapTagData is plain Lua state and
+-- survives the wipe). Load the next map and repeat; one save at the end carries
+-- every map's edits out to apply_map_tags_from_save.py.
+function backToSelectionDebug()
+    if not mapTagDebugEnabled() then return end
+    if not restorePointAvailable then return end
+    if not debugCurrentMapGuid then
+        broadcastToAll("SAVE TAGS: no loaded map tracked; cannot record.", {1, 0.4, 0.4})
+        return
+    end
+
+    local objects, count = collectObjectiveTagEdits()
+    debugMapTagData[debugCurrentMapGuid] = {
+        name = debugCurrentMapName or "?",
+        objects = objects,
+    }
+    broadcastToAll("SAVE TAGS: recorded " .. tostring(count) .. " obj_* object(s) for \""
+        .. tostring(debugCurrentMapName) .. "\". Returning to selection.", {0.85, 0.45, 0.95})
+
+    backToSelection()
 end
 
 -- Deferred wipe: destroy every object the scripting zone overlaps except the
@@ -2006,7 +2173,7 @@ deploymentRandomPickButtonWorldY = 1.00
 deploymentRandomPickButtonWorldZ = generateMissionWorldZ
 
 function writeGenerateMissionButton()
-    local center = self.positionToLocal({generateMissionWorldX, generateMissionWorldY, generateMissionWorldZ})
+    local center = self.positionToLocal({generateMissionWorldX + setupMidRowXOffset(), generateMissionWorldY, generateMissionWorldZ})
     local missionReady = gameMode == "game" and packSelected ~= nil
     local generateLabel = gameModeUsesMatrixProps() and "Generate Missions & Layouts" or "Generate Missions"
     createButtonWithBorder({
@@ -2020,7 +2187,7 @@ function writeGenerateMissionButton()
 end
 
 function writeDeploymentRandomPickButton()
-    local btn = self.positionToLocal({deploymentRandomPickButtonWorldX, deploymentRandomPickButtonWorldY, deploymentRandomPickButtonWorldZ})
+    local btn = self.positionToLocal({deploymentRandomPickButtonWorldX + setupMidRowXOffset(), deploymentRandomPickButtonWorldY, deploymentRandomPickButtonWorldZ})
     createButtonWithBorder({
         label = "Random Single Layout", click_function = "randomMission", function_owner = self,
         position = {btn.x, btn.y, btn.z}, rotation = {0, 0, 0},
@@ -2438,7 +2605,7 @@ function normalizeMissionName(s)
     return (s:lower():gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
-mapCreatorDisplaySuffixes = {"Cra5hNatural", "Team Belgium", "Izar", "BTTF", "Battlemaster - BTTF Ruins", "Battlemaster - Desert", "Alvaricus", "Zim"}
+mapCreatorDisplaySuffixes = {"Cra5hNatural", "Team Belgium", "Izar", "BTTF", "Battlemaster - BTTF Ruins", "Battlemaster - Desert", "Alvaricus", "Zim", "T5S2"}
 
 -- Map cards carry creator credit at the end of their visible nickname. Strip
 -- only a recognized creator suffix when matching shared layout art or reading
@@ -4365,6 +4532,11 @@ function onMapCardLoaded(params)
     -- wipes the board, so "Back to Selection" can return here.
     captureRestorePoint()
 
+    -- DEBUG tag tool: remember which map is loaded so backToSelectionDebug can
+    -- key its recorded obj_* tags by this card's GUID.
+    debugCurrentMapGuid = params and params.guid or nil
+    debugCurrentMapName = name
+
     if isBattlemaster then
         -- Battlemaster cards are transient and have no paired static layout art.
         -- Loading one keeps just that map: drop the other generated choice cards.
@@ -4843,6 +5015,7 @@ function writeMenus()
     end
     writeClearMatButton()
     writeBackToSelectionButton()
+    writeBackToSelectionDebugButton()
     syncMapSetupOverlay()
 end
 
@@ -4872,8 +5045,8 @@ end
 
 function writeStartMenu()
     if gameMode ~= "game" then return end
-    createButtonWithBorder(startBtn)
-    createButtonWithBorder(firstPlayerBtn)
+    createButtonWithBorder(withSetupXOffset(startBtn))
+    createButtonWithBorder(withSetupXOffset(firstPlayerBtn))
 end
 
 function writeDeployPickerMenu()
@@ -4881,9 +5054,9 @@ function writeDeployPickerMenu()
         deploySelected = #DeployZonesData
     end
     deployBtn.label = DeployZonesData[deploySelected].name
-    createButtonWithBorder(deployBtn)
-    createButtonWithBorder(deployUpBtn)
-    createButtonWithBorder(deployDownBtn)
+    createButtonWithBorder(withSetupXOffset(deployBtn))
+    createButtonWithBorder(withSetupXOffset(deployUpBtn))
+    createButtonWithBorder(withSetupXOffset(deployDownBtn))
 end
 
 function writeDeployMenu()
