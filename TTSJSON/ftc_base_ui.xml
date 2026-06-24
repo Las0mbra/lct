@@ -49,6 +49,45 @@
   <Button text="X" fontSize="24" textColor="#FFFFFF" color="#B52020" width="44" height="44" roundEdges="true" outline="#2a2a4aCC" outlineSize="3" offsetXY="242 140" onClick="closeBubbleOverlay" tooltip="Close"/>
 </Panel>
 
+<!-- DEBUG TOOLS panel (screen-space). Hidden by default; Global.onLoad activates it
+     only on DEBUG (test) builds, so release builds carry it but never show it.
+     Every onClick/onValueChanged handler lives in Global (function definitions in
+     global.ttslua). Replaces the old spawned "LCT Debug Panel" tile. -->
+<Panel id="DebugTools" active="false" rectAlignment="UpperLeft" offsetXY="20 -20" scale="0.8 0.8 0.8" width="460" height="660" color="#10141EF2" outline="#31415F" outlineSize="4" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+  <VerticalLayout padding="18 18 16 16" spacing="10" childForceExpandHeight="false">
+    <Text fontSize="30" fontStyle="Bold" color="#F3F6FA" alignment="MiddleCenter" preferredHeight="42">DEBUG TOOLS</Text>
+    <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0"/>
+
+    <Text fontSize="20" fontStyle="Bold" color="#AFC1D8" alignment="MiddleLeft" preferredHeight="26">Diagnostics</Text>
+    <HorizontalLayout spacing="10" preferredHeight="78" flexibleHeight="0" childForceExpandWidth="true">
+      <Button onClick="debugPerfScanRed" color="#262626" textColor="#66E5FF" fontSize="22" tooltip="getAllObjects() vs Physics.cast box on the Red dice mat">PERF scan&#10;Red mat</Button>
+      <Button onClick="debugPerfScanBlue" color="#262626" textColor="#66E5FF" fontSize="22" tooltip="getAllObjects() vs Physics.cast box on the Blue dice mat">PERF scan&#10;Blue mat</Button>
+    </HorizontalLayout>
+    <HorizontalLayout spacing="10" preferredHeight="78" flexibleHeight="0" childForceExpandWidth="true">
+      <Button onClick="debugRngTest" color="#333300" textColor="#FFFF55" fontSize="24" tooltip="Run the RNG diagnostic on the Red dice roller">RNG Test</Button>
+      <Button onClick="debugDumpSelectedGuids" color="#26331F" textColor="#66FF66" fontSize="22" tooltip="Select objects first, then click: writes their GUIDs into a tile's description to copy/paste">Dump selected&#10;GUIDs</Button>
+    </HorizontalLayout>
+
+    <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0"/>
+    <Text fontSize="20" fontStyle="Bold" color="#AFC1D8" alignment="MiddleLeft" preferredHeight="26">Battlemaster cache</Text>
+    <HorizontalLayout spacing="10" preferredHeight="70" flexibleHeight="0" childForceExpandWidth="true">
+      <Button onClick="debugPopulateBattlemasterCache" color="#29293D" textColor="#8CD9FF" fontSize="22" tooltip="Debug only: fetch every missing Battlemaster lite layout payload into the spawner cache">populate</Button>
+      <Button onClick="debugCheckBattlemasterCache" color="#243330" textColor="#8CFFB8" fontSize="22" tooltip="Debug only: report whether the Battlemaster spawner cache is empty">check</Button>
+    </HorizontalLayout>
+    <HorizontalLayout spacing="10" preferredHeight="70" flexibleHeight="0" childForceExpandWidth="true">
+      <Button onClick="debugPopulateBattlemasterBttfRuinsCache" color="#2E293D" textColor="#C7B8FF" fontSize="22" tooltip="Debug only: populate the Battlemaster cache using the BTTF Ruins theme">Ruins</Button>
+      <Button onClick="debugPopulateBattlemasterArmageddonDesertCache" color="#332B1F" textColor="#FFC76B" fontSize="22" tooltip="Debug only: populate the Battlemaster cache using the Armageddon Desert theme">Desert</Button>
+      <Button onClick="debugPopulateBattlemasterBttfCache" color="#29303D" textColor="#8CD9FF" fontSize="22" tooltip="Debug only: populate the Battlemaster cache using the Grimdark Calibration/BTTF theme">BTTF</Button>
+    </HorizontalLayout>
+
+    <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0"/>
+    <Text fontSize="20" fontStyle="Bold" color="#AFC1D8" alignment="MiddleLeft" preferredHeight="26">Custom table mat URL</Text>
+    <InputField id="debugMatUrlField" placeholder="paste mat image URL" fontSize="22" color="#FFFFFF" textColor="#10141E" onValueChanged="cacheDebugMatUrl" onEndEdit="onDebugMatApply" preferredHeight="64"/>
+    <Button onClick="onDebugMatApply" color="#C28A2B" textColor="#10141E" fontSize="26" fontStyle="Bold" preferredHeight="62">Set mat from URL</Button>
+  </VerticalLayout>
+  <Button text="X" fontSize="24" textColor="#FFFFFF" color="#B52020" width="44" height="44" roundEdges="true" outline="#2a2a4aCC" outlineSize="3" offsetXY="200 300" onClick="closeDebugTools" tooltip="Close"/>
+</Panel>
+
 <Panel id="RedHud_VPScores" visibility="Red" active="true" scale="0.43 0.43 0.43" width="1216" height="228" rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <HorizontalLayout spacing="6" padding="0" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="UpperLeft">
   <Panel id="RedHud_MainPanel" flexibleWidth="0" preferredWidth="1160" minWidth="1160" preferredHeight="228" minHeight="228" flexibleHeight="0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3">

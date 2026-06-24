@@ -433,6 +433,27 @@ function setMatTexture2() setMatTexture(2) end
 function setMatTexture3() setMatTexture(3) end
 function setMatTexture4() setMatTexture(4) end
 
+-- DEBUG-only: apply an arbitrary image URL to the map mat, bypassing the
+-- matTextures presets. Mirrors applyMatTexture's reload + flag-restore so the mat
+-- stays locked/uninteractable across the swap. matTextureSelected is left
+-- untouched (this URL is not persisted), so a save+reload reverts to the selected
+-- Table Theme swatch. Used by the "Custom URL" row on the Map Mat Picker overlay.
+function setMatTextureFromUrl(url)
+    if Global.getVar("DEBUG") ~= true then return end
+    if type(url) ~= "string" then return end
+    url = url:gsub("^%s+", ""):gsub("%s+$", "")
+    if url == "" then return end
+    local mapMat = getObjectFromGUID(mapMat_GUID)
+    if not mapMat then return end
+    local customInfo = mapMat.getCustomObject()
+    if customInfo.image == url then return end
+    customInfo.image = url
+    local wasLocked = mapMat.getLock()
+    local wasInteractable = mapMat.interactable
+    mapMat.setCustomObject(customInfo)
+    restoreMatFlags(mapMat.reload(), wasLocked, wasInteractable)
+end
+
 -- Read by the Table Theme swatches in mapFilter.ttslua (GUID 369707) so its XML
 -- buttons can mark the active theme. The swatch buttons there forward back to the
 -- setMatTexture<i> functions above.

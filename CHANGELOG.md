@@ -13,7 +13,11 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
-## v1.8.2
+
+## v1.8.2b
+- Added more space to the board when Onslaught mode is set
+- Fixed minor overlay bugs
+- Added tags to T5S2 maps for objective tokens
 - Added Dominatus items on main page (1v1 and Solo). 
 - Added T5S2 maps on the list.
 - Minor bug fixes (Removed Mission gen when map loads,quick roll custom dice bug)

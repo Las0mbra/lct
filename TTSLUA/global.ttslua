@@ -1233,17 +1233,17 @@ function onLoad(saved_data)
 	        refreshBlueSecondaryNames()
 	    end, 2)
 
-    -- Shared debug panel: only on --test builds, after objects have settled.
-    if DEBUG == true then Wait.time(spawnDebugPanel, 2.5) end
+    -- Shared debug panel: the DebugTools XML panel ships hidden in every build;
+    -- reveal it only on --test (DEBUG) builds.
+    if DEBUG == true then Global.UI.setAttribute("DebugTools", "active", "true") end
 end
 
 -- ── SHARED DEBUG PANEL (--test builds only) ──────────────────────────────────
--- A single tile at a fixed world spot that hosts every debug tool, so they
--- aren't scattered across gameplay objects. Spawned from onLoad on DEBUG builds.
--- Buttons are owned by Global (function_owner = Global) and call into the
--- relevant object, so the panel needs no script of its own.
-DEBUG_PANEL_POS  = {71.5, 1.1, -78}
-DEBUG_PANEL_NAME = "LCT Debug Panel"
+-- Every debug tool lives on the DebugTools screen-space XML panel (ftc_base_ui.xml),
+-- hidden by default and revealed from onLoad only on DEBUG builds. The panel routes
+-- its onClick/onValueChanged handlers to the functions below (Global owns the UI, so
+-- no per-object script is needed). XML callbacks pass (player, value, id), so the
+-- handlers take the Player object and read its .color.
 BATTLEMASTER_SPAWNER_GUID = "b4d10a"
 BATTLEMASTER_BTTF_THEME_ID = "tts-theme-grimdark-calibrated-v1"
 BATTLEMASTER_BTTF_RUINS_THEME_ID = "tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5"
@@ -1254,111 +1254,45 @@ BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID = "tts-theme-6c414c7a-9827-48cf-a89e-aa8
 GUID_DUMP_POS  = {68.0, 1.1, -78}
 GUID_DUMP_NAME = "Selected GUIDs"
 
-function none() end   -- no-op for non-interactive panel labels
-
-function spawnDebugPanel()
-    -- Drop any stale panel from a previous reload before spawning a fresh one,
-    -- so panels never accumulate across save/load.
-    for _, o in ipairs(getAllObjects()) do
-        if o.getName() == DEBUG_PANEL_NAME then o.destroy() end
-    end
-
-    spawnObject({
-        type     = "BlockSquare",
-        position = DEBUG_PANEL_POS,
-        rotation = {0, 0, 0},
-        scale    = {2.4, 0.2, 2.4},
-        sound    = false,
-        callback_function = function(panel)
-            panel.setName(DEBUG_PANEL_NAME)
-            panel.setColorTint({0.08, 0.08, 0.10})
-            panel.setLock(true)
-            buildDebugPanelButtons(panel)
-        end,
-    })
+-- "Set mat from URL" row: cache keystrokes, apply the cached URL on demand. The
+-- swap itself is owned by startMenu (it holds the map mat + reload/flag logic and
+-- re-checks DEBUG). onDebugMatApply fires from both the button (onClick) and Enter
+-- (onEndEdit); startMenu's setMatTextureFromUrl no-ops if the URL is unchanged.
+debugMatUrlPending = ""
+function cacheDebugMatUrl(player, value, id)
+    debugMatUrlPending = value or ""
+end
+function onDebugMatApply(player, value, id)
+    local menu = getObjectFromGUID(startMenu_GUID)
+    if menu then menu.call("setMatTextureFromUrl", debugMatUrlPending) end
+end
+function closeDebugTools(player, value, id)
+    Global.UI.setAttribute("DebugTools", "active", "false")
 end
 
-function buildDebugPanelButtons(panel)
-    panel.createButton({
-        label = "DEBUG TOOLS", click_function = "none", function_owner = Global,
-        position = {0, 0.6, -0.78}, height = 0, width = 0, font_size = 95,
-        font_color = {1, 1, 1},
-    })
-    panel.createButton({
-        label = "PERF scan\nRed mat", click_function = "debugPerfScanRed", function_owner = Global,
-        position = {-0.5, 0.6, -0.18}, height = 320, width = 760, font_size = 90,
-        color = {0.15, 0.15, 0.15}, font_color = {0.4, 0.9, 1},
-        tooltip = "getAllObjects() vs Physics.cast box on the Red dice mat",
-    })
-    panel.createButton({
-        label = "PERF scan\nBlue mat", click_function = "debugPerfScanBlue", function_owner = Global,
-        position = {0.5, 0.6, -0.18}, height = 320, width = 760, font_size = 90,
-        color = {0.15, 0.15, 0.15}, font_color = {0.4, 0.9, 1},
-        tooltip = "getAllObjects() vs Physics.cast box on the Blue dice mat",
-    })
-    panel.createButton({
-        label = "RNG Test", click_function = "debugRngTest", function_owner = Global,
-        position = {0, 0.6, 0.55}, height = 320, width = 760, font_size = 100,
-        color = {0.2, 0.2, 0.2}, font_color = {1, 1, 0},
-        tooltip = "Run the RNG diagnostic on the Red dice roller",
-    })
-    panel.createButton({
-        label = "Dump selected\nGUIDs", click_function = "debugDumpSelectedGuids", function_owner = Global,
-        position = {0, 0.6, 1.28}, height = 320, width = 760, font_size = 90,
-        color = {0.15, 0.2, 0.15}, font_color = {0.4, 1, 0.4},
-        tooltip = "Select objects first, then click: writes their GUIDs into a tile's description to copy/paste",
-    })
-    panel.createButton({
-        label = "BM cache\npopulate", click_function = "debugPopulateBattlemasterCache", function_owner = Global,
-        position = {0, 0.6, 2.01}, height = 320, width = 760, font_size = 86,
-        color = {0.16, 0.16, 0.24}, font_color = {0.55, 0.85, 1},
-        tooltip = "Debug only: fetch every missing Battlemaster lite layout payload into the spawner cache",
-    })
-    panel.createButton({
-        label = "BM cache\nRuins", click_function = "debugPopulateBattlemasterBttfRuinsCache", function_owner = Global,
-        position = {-0.5, 0.6, 2.74}, height = 320, width = 760, font_size = 86,
-        color = {0.18, 0.16, 0.24}, font_color = {0.78, 0.72, 1},
-        tooltip = "Debug only: populate the Battlemaster cache using the BTTF Ruins theme",
-    })
-    panel.createButton({
-        label = "BM cache\nDesert", click_function = "debugPopulateBattlemasterArmageddonDesertCache", function_owner = Global,
-        position = {0.5, 0.6, 2.74}, height = 320, width = 760, font_size = 86,
-        color = {0.2, 0.17, 0.12}, font_color = {1, 0.78, 0.42},
-        tooltip = "Debug only: populate the Battlemaster cache using the Armageddon Desert theme",
-    })
-    panel.createButton({
-        label = "BM cache\nBTTF", click_function = "debugPopulateBattlemasterBttfCache", function_owner = Global,
-        position = {-0.5, 0.6, 3.47}, height = 320, width = 760, font_size = 86,
-        color = {0.16, 0.18, 0.24}, font_color = {0.55, 0.85, 1},
-        tooltip = "Debug only: populate the Battlemaster cache using the Grimdark Calibration/BTTF theme",
-    })
-    panel.createButton({
-        label = "BM cache\ncheck", click_function = "debugCheckBattlemasterCache", function_owner = Global,
-        position = {0.5, 0.6, 3.47}, height = 320, width = 760, font_size = 86,
-        color = {0.14, 0.2, 0.18}, font_color = {0.55, 1, 0.72},
-        tooltip = "Debug only: report whether the Battlemaster spawner cache is empty",
-    })
-end
-
-function debugPerfScanRed(_, playerColor)
+function debugPerfScanRed(player)
+    local playerColor = player and player.color
     local mat = getObjectFromGUID(redCustomDiceMat_GUID)
     if not mat then printToColor("[DEBUG] Red dice mat not found.", playerColor, {1, 0.3, 0.3}); return end
     mat.call("runDiceScanBenchmark", {color = playerColor})
 end
 
-function debugPerfScanBlue(_, playerColor)
+function debugPerfScanBlue(player)
+    local playerColor = player and player.color
     local mat = getObjectFromGUID(blueCustomDiceMat_GUID)
     if not mat then printToColor("[DEBUG] Blue dice mat not found.", playerColor, {1, 0.3, 0.3}); return end
     mat.call("runDiceScanBenchmark", {color = playerColor})
 end
 
-function debugRngTest(_, playerColor)
+function debugRngTest(player)
+    local playerColor = player and player.color
     local roller = getObjectFromGUID(redCustomDiceRoller_GUID)
     if not roller then printToColor("[DEBUG] Red dice roller not found.", playerColor, {1, 0.3, 0.3}); return end
     roller.call("debugRngCheck")
 end
 
-function debugPopulateBattlemasterCache(_, playerColor)
+function debugPopulateBattlemasterCache(player)
+    local playerColor = player and player.color
     if DEBUG ~= true then return end
     local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
     if not spawner then
@@ -1369,7 +1303,8 @@ function debugPopulateBattlemasterCache(_, playerColor)
     spawner.call("debugPopulateFullCache", {playerColor = playerColor})
 end
 
-function debugPopulateBattlemasterBttfRuinsCache(_, playerColor)
+function debugPopulateBattlemasterBttfRuinsCache(player)
+    local playerColor = player and player.color
     if DEBUG ~= true then return end
     local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
     if not spawner then
@@ -1380,7 +1315,8 @@ function debugPopulateBattlemasterBttfRuinsCache(_, playerColor)
     spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_BTTF_RUINS_THEME_ID, themeName = "BTTF Ruins"})
 end
 
-function debugPopulateBattlemasterBttfCache(_, playerColor)
+function debugPopulateBattlemasterBttfCache(player)
+    local playerColor = player and player.color
     if DEBUG ~= true then return end
     local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
     if not spawner then
@@ -1391,7 +1327,8 @@ function debugPopulateBattlemasterBttfCache(_, playerColor)
     spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_BTTF_THEME_ID, themeName = "BTTF"})
 end
 
-function debugPopulateBattlemasterArmageddonDesertCache(_, playerColor)
+function debugPopulateBattlemasterArmageddonDesertCache(player)
+    local playerColor = player and player.color
     if DEBUG ~= true then return end
     local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
     if not spawner then
@@ -1402,7 +1339,8 @@ function debugPopulateBattlemasterArmageddonDesertCache(_, playerColor)
     spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID, themeName = "armageddon desert"})
 end
 
-function debugCheckBattlemasterCache(_, playerColor)
+function debugCheckBattlemasterCache(player)
+    local playerColor = player and player.color
     if DEBUG ~= true then return end
     local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
     if not spawner then
@@ -1416,8 +1354,8 @@ end
 -- one per line, into a spawned tile's description. Chat_copy is unreliable on
 -- Linux, so this gives a copyable text field instead. A previous dump is cleared
 -- first so the tiles don't accumulate across clicks.
-function debugDumpSelectedGuids(_, playerColor)
-    local player = Player[playerColor]
+function debugDumpSelectedGuids(player)
+    local playerColor = player and player.color
     local selected = player and player.getSelectedObjects() or {}
     if #selected == 0 then
         printToColor("[DEBUG] No objects selected. Select objects first, then click.", playerColor, {1, 0.3, 0.3})
