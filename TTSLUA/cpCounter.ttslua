@@ -21,6 +21,11 @@ function onLoad(save_state)
     _lastValue = getValue()
     local isP1 = (self.getGUID() == "deb9f2")
     _watchId   = isP1 and "CPWatch1" or "CPWatch2"
+    updateHUD()
+    -- Re-push once Global.UI is guaranteed live: this object's onLoad can run
+    -- before the (non-persistent) overlay is ready, in which case the immediate
+    -- push above is silently dropped by the pcall in Global.setHudAttribute.
+    Wait.time(updateHUD, 1)
     _timerId   = Wait.time(checkValue, 0.5, -1)
 end
 
@@ -151,6 +156,13 @@ function checkValue()
         Global.call("setHudAttribute", {id = _watchId, attr = "text", value = "CP: " .. current})
         announceCpChange(previous, current)
     end
+end
+
+-- Push the current CP value into the overlay without announcing it in chat.
+-- Used on load (the overlay is non-persistent and resets to "CP: 0") and shares
+-- the same id mapping as the change poller above.
+function updateHUD()
+    Global.call("setHudAttribute", {id = _watchId, attr = "text", value = "CP: " .. getValue()})
 end
 
 -- Called by startMenu right after an automatic turn-pass CP gain so this poller

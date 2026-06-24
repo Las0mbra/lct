@@ -41,6 +41,9 @@ function onLoad(save_state)
     scoreSheet=getObjectFromGUID(Global.getVar("scoreSheet_GUID"))
     _lastValue = getValue()
     updateHUD()
+    -- Re-push once Global.UI is guaranteed live (see note in cpCounter): the
+    -- overlay is non-persistent and the immediate push can lose the load race.
+    Wait.time(updateHUD, 1)
     _timerId = Wait.time(checkValue, 0.5, -1)
 end
 

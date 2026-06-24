@@ -19,6 +19,9 @@ function onLoad(save_state)
     _lastValue = getValue()
     _watchId   = (self.getGUID() == "7e4111") and "TVWatch1" or "TVWatch2"
     updateHUD()
+    -- Re-push once Global.UI is guaranteed live (see note in cpCounter): the
+    -- overlay is non-persistent and the immediate push can lose the load race.
+    Wait.time(updateHUD, 1)
     _timerId = Wait.time(checkValue, 0.5, -1)
 end
 

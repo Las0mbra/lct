@@ -2,12 +2,24 @@
 """Import prebuilt Battlemaster cache entries as normal LCT map cards.
 
 Workflow:
-  1. Build/load a debug table and click "BM cache populate". The spawner stores
-     fetched API payloads plus prebuilt card scripts in its LuaScriptState.
+  1. Build/load a debug table and click the debug "BM cache <theme>" button that
+     matches the terrain theme you want (BM cache Ruins / Desert / BTTF), not the
+     generic "BM cache populate". The spawner stores fetched API payloads plus
+     prebuilt card scripts in its LuaScriptState.
   2. Save that table.
-  3. Run this script with the saved JSON. It copies the terrain blobs into
-     canonical LCT map cards, places them in the existing matchup source bags,
-     and appends map_manifest rows.
+  3. Run this script with the saved JSON, passing --creator-tag/--creator-display
+     for that theme. It copies the terrain blobs into canonical LCT map cards,
+     places them in the existing matchup source bags, and appends map_manifest
+     rows. A prior import of the same creator tag is removed first, so rerunning a
+     theme is idempotent.
+  4. Run `bake_battlemaster_cache.py --clear` to drop the now-redundant spawner
+     cache blob (the static cards carry the geometry; the spawner no longer needs
+     a warm cache), then validate and compile.
+
+Each terrain theme ships as its own creator filter (e.g.
+map_crt_battlemaster_bttf_ruins / "Battlemaster - BTTF Ruins"). The default
+map_crt_battlemaster / "Battlemaster" creator is NOT shipped — run with the
+themed flags or you will create a duplicate fourth set of cards.
 
 The imported cards are static map cards. The Battlemaster provider hook is
 intentionally stripped; compile.py will inject the normal map-card load hook.

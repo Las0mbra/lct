@@ -162,6 +162,15 @@ function onLoad(saved_data)
         ttsDebugLog("gameTurnCounter not found during onLoad")
     end
     writeMenus()
+    -- The phase highlight and active-turn strip colours live only in the
+    -- non-persistent Global overlay, so they reset to the XML defaults on reload.
+    -- Re-push them from the restored game state (immediate + a race-safe retry in
+    -- case the overlay isn't live yet when this object's onLoad runs). Guarded by
+    -- inGame so the pre-game setup screen keeps all phase glyphs dimmed.
+    if inGame then
+        updateGameStateHUD()
+        Wait.time(updateGameStateHUD, 1)
+    end
     announceHotkeyReset()
 end
 
