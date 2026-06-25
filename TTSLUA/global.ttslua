@@ -118,13 +118,54 @@ function cpCounterForColor(color)
     return nil
 end
 
+function counterValue(counter)
+    if not counter then return 0 end
+    local ok, value = pcall(function() return counter.call("getValue") end)
+    if ok and value ~= nil then return tonumber(value) or 0 end
+    if counter.Counter then return counter.Counter.getValue() end
+    return 0
+end
+
+function counterSetValue(counter, value)
+    if not counter then return 0 end
+    local ok, result = pcall(function() return counter.call("setValue", value) end)
+    if ok and result ~= nil then return tonumber(result) or 0 end
+    if counter.Counter then
+        counter.Counter.setValue(value)
+        return counter.Counter.getValue()
+    end
+    return 0
+end
+
+function counterIncrement(counter)
+    if not counter then return 0 end
+    local ok, result = pcall(function() return counter.call("increment") end)
+    if ok and result ~= nil then return tonumber(result) or counterValue(counter) end
+    if counter.Counter then
+        counter.Counter.increment()
+        return counter.Counter.getValue()
+    end
+    return 0
+end
+
+function counterDecrement(counter)
+    if not counter then return 0 end
+    local ok, result = pcall(function() return counter.call("decrement") end)
+    if ok and result ~= nil then return tonumber(result) or counterValue(counter) end
+    if counter.Counter then
+        counter.Counter.decrement()
+        return counter.Counter.getValue()
+    end
+    return 0
+end
+
 function currentBattleRound()
     local roundObj = getObjectFromGUID(gameTurnCounter_GUID)
-    return (roundObj and roundObj.Counter.getValue()) or 0
+    return counterValue(roundObj)
 end
 
 -- Shared GAIN CP logic. Used by both the HUD overlay button (hudGainCP) and the
--- physical "Gain CP" tokens (59c35a Red / 46b855 Blue). Because both paths read
+-- physical "Gain CP" tokens (af8032 Red / 5e882b Blue). Because both paths read
 -- and write the same cpGainRoundUsed table here, the once-per-battle-round cap is
 -- shared: gaining via either the token or the overlay locks out the other for the
 -- rest of that round. Returns true if a CP was granted.
@@ -138,7 +179,7 @@ function gainCPForColor(color)
         return false
     end
     cpGainRoundUsed[color] = round
-    counter.Counter.increment()
+    counterIncrement(counter)
     return true
 end
 
@@ -151,7 +192,7 @@ function hudUseCP(player, value, id)
     if color ~= "Red" and color ~= "Blue" then return end
     local counter = cpCounterForColor(color)
     if not counter then return end
-    counter.Counter.decrement()
+    counterDecrement(counter)
 end
 
 -- ===== Minimalist HUD (per player, toggled by the "-" control button) =====
@@ -458,7 +499,7 @@ function refreshScoringOverlay()
     applyScoringContextToOverlay()
 
     local roundCounter = getObjectFromGUID(gameTurnCounter_GUID)
-    local roundNum = (roundCounter and roundCounter.Counter and roundCounter.Counter.getValue()) or 0
+    local roundNum = counterValue(roundCounter)
     -- Title: "⚔ <Deploy Zone> - Round N ⚔" (deploy zone is static, set at game start).
     local zone = scoringContext.deployZone or ""
     local titleText = (zone ~= "") and ("⚔ " .. zone .. " - Round " .. roundNum .. " ⚔")
@@ -746,8 +787,8 @@ primaryDeck_GUID = "d26e9c"
 edition11RedSecondaryDeck_GUID = "8104e1"
 edition11BlueSecondaryDeck_GUID = "994347"
 
-redSecondaryDeckPosition = {x = 77.04, y = 0.98, z = 8.45}
-blueSecondaryDeckPosition = {x = 77.04, y = 0.98, z = -8.45}
+redSecondaryDeckPosition = {x = 62.54, y = 0.98, z = 8.45}
+blueSecondaryDeckPosition = {x = 62.54, y = 0.98, z = -8.45}
 hiddenMissionDeckPosition = {85.0, -5.0, 4.75}
 
 -- Blue player sits on the -Z side, red on +Z (matches the mission managers,
@@ -1192,103 +1233,129 @@ function onLoad(saved_data)
 	        refreshBlueSecondaryNames()
 	    end, 2)
 
-    -- Shared debug panel: only on --test builds, after objects have settled.
-    if DEBUG == true then Wait.time(spawnDebugPanel, 2.5) end
+    -- Shared debug panel: the DebugTools XML panel ships hidden in every build;
+    -- reveal it only on --test (DEBUG) builds.
+    if DEBUG == true then Global.UI.setAttribute("DebugTools", "active", "true") end
 end
 
 -- ── SHARED DEBUG PANEL (--test builds only) ──────────────────────────────────
--- A single tile at a fixed world spot that hosts every debug tool, so they
--- aren't scattered across gameplay objects. Spawned from onLoad on DEBUG builds.
--- Buttons are owned by Global (function_owner = Global) and call into the
--- relevant object, so the panel needs no script of its own.
-DEBUG_PANEL_POS  = {71.5, 1.1, -78}
-DEBUG_PANEL_NAME = "LCT Debug Panel"
+-- Every debug tool lives on the DebugTools screen-space XML panel (ftc_base_ui.xml),
+-- hidden by default and revealed from onLoad only on DEBUG builds. The panel routes
+-- its onClick/onValueChanged handlers to the functions below (Global owns the UI, so
+-- no per-object script is needed). XML callbacks pass (player, value, id), so the
+-- handlers take the Player object and read its .color.
+BATTLEMASTER_SPAWNER_GUID = "b4d10a"
+BATTLEMASTER_BTTF_THEME_ID = "tts-theme-grimdark-calibrated-v1"
+BATTLEMASTER_BTTF_RUINS_THEME_ID = "tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5"
+BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID = "tts-theme-6c414c7a-9827-48cf-a89e-aa8ddff66491"
 
 -- Where the "Dump selected GUIDs" tile lands, and its name so stale dumps can be
 -- cleared before spawning a fresh one (see debugDumpSelectedGuids).
 GUID_DUMP_POS  = {68.0, 1.1, -78}
 GUID_DUMP_NAME = "Selected GUIDs"
 
-function none() end   -- no-op for non-interactive panel labels
-
-function spawnDebugPanel()
-    -- Drop any stale panel from a previous reload before spawning a fresh one,
-    -- so panels never accumulate across save/load.
-    for _, o in ipairs(getAllObjects()) do
-        if o.getName() == DEBUG_PANEL_NAME then o.destroy() end
-    end
-
-    spawnObject({
-        type     = "BlockSquare",
-        position = DEBUG_PANEL_POS,
-        rotation = {0, 0, 0},
-        scale    = {2.4, 0.2, 2.4},
-        sound    = false,
-        callback_function = function(panel)
-            panel.setName(DEBUG_PANEL_NAME)
-            panel.setColorTint({0.08, 0.08, 0.10})
-            panel.setLock(true)
-            buildDebugPanelButtons(panel)
-        end,
-    })
+-- "Set mat from URL" row: cache keystrokes, apply the cached URL on demand. The
+-- swap itself is owned by startMenu (it holds the map mat + reload/flag logic and
+-- re-checks DEBUG). onDebugMatApply fires from both the button (onClick) and Enter
+-- (onEndEdit); startMenu's setMatTextureFromUrl no-ops if the URL is unchanged.
+debugMatUrlPending = ""
+function cacheDebugMatUrl(player, value, id)
+    debugMatUrlPending = value or ""
+end
+function onDebugMatApply(player, value, id)
+    local menu = getObjectFromGUID(startMenu_GUID)
+    if menu then menu.call("setMatTextureFromUrl", debugMatUrlPending) end
+end
+function closeDebugTools(player, value, id)
+    Global.UI.setAttribute("DebugTools", "active", "false")
 end
 
-function buildDebugPanelButtons(panel)
-    panel.createButton({
-        label = "DEBUG TOOLS", click_function = "none", function_owner = Global,
-        position = {0, 0.6, -0.78}, height = 0, width = 0, font_size = 95,
-        font_color = {1, 1, 1},
-    })
-    panel.createButton({
-        label = "PERF scan\nRed mat", click_function = "debugPerfScanRed", function_owner = Global,
-        position = {-0.5, 0.6, -0.18}, height = 320, width = 760, font_size = 90,
-        color = {0.15, 0.15, 0.15}, font_color = {0.4, 0.9, 1},
-        tooltip = "getAllObjects() vs Physics.cast box on the Red dice mat",
-    })
-    panel.createButton({
-        label = "PERF scan\nBlue mat", click_function = "debugPerfScanBlue", function_owner = Global,
-        position = {0.5, 0.6, -0.18}, height = 320, width = 760, font_size = 90,
-        color = {0.15, 0.15, 0.15}, font_color = {0.4, 0.9, 1},
-        tooltip = "getAllObjects() vs Physics.cast box on the Blue dice mat",
-    })
-    panel.createButton({
-        label = "RNG Test", click_function = "debugRngTest", function_owner = Global,
-        position = {0, 0.6, 0.55}, height = 320, width = 760, font_size = 100,
-        color = {0.2, 0.2, 0.2}, font_color = {1, 1, 0},
-        tooltip = "Run the RNG diagnostic on the Red dice roller",
-    })
-    panel.createButton({
-        label = "Dump selected\nGUIDs", click_function = "debugDumpSelectedGuids", function_owner = Global,
-        position = {0, 0.6, 1.28}, height = 320, width = 760, font_size = 90,
-        color = {0.15, 0.2, 0.15}, font_color = {0.4, 1, 0.4},
-        tooltip = "Select objects first, then click: writes their GUIDs into a tile's description to copy/paste",
-    })
-end
-
-function debugPerfScanRed(_, playerColor)
+function debugPerfScanRed(player)
+    local playerColor = player and player.color
     local mat = getObjectFromGUID(redCustomDiceMat_GUID)
     if not mat then printToColor("[DEBUG] Red dice mat not found.", playerColor, {1, 0.3, 0.3}); return end
     mat.call("runDiceScanBenchmark", {color = playerColor})
 end
 
-function debugPerfScanBlue(_, playerColor)
+function debugPerfScanBlue(player)
+    local playerColor = player and player.color
     local mat = getObjectFromGUID(blueCustomDiceMat_GUID)
     if not mat then printToColor("[DEBUG] Blue dice mat not found.", playerColor, {1, 0.3, 0.3}); return end
     mat.call("runDiceScanBenchmark", {color = playerColor})
 end
 
-function debugRngTest(_, playerColor)
+function debugRngTest(player)
+    local playerColor = player and player.color
     local roller = getObjectFromGUID(redCustomDiceRoller_GUID)
     if not roller then printToColor("[DEBUG] Red dice roller not found.", playerColor, {1, 0.3, 0.3}); return end
     roller.call("debugRngCheck")
+end
+
+function debugPopulateBattlemasterCache(player)
+    local playerColor = player and player.color
+    if DEBUG ~= true then return end
+    local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
+    if not spawner then
+        printToColor("[DEBUG] Battlemaster spawner not found.", playerColor, {1, 0.3, 0.3})
+        return
+    end
+    printToColor("[DEBUG] Battlemaster cache population started. Save the mod/table after it completes to bake the cache.", playerColor, {0.55, 0.85, 1})
+    spawner.call("debugPopulateFullCache", {playerColor = playerColor})
+end
+
+function debugPopulateBattlemasterBttfRuinsCache(player)
+    local playerColor = player and player.color
+    if DEBUG ~= true then return end
+    local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
+    if not spawner then
+        printToColor("[DEBUG] Battlemaster spawner not found.", playerColor, {1, 0.3, 0.3})
+        return
+    end
+    printToColor("[DEBUG] Battlemaster BTTF Ruins cache population started. Save the mod/table after it completes.", playerColor, {0.78, 0.72, 1})
+    spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_BTTF_RUINS_THEME_ID, themeName = "BTTF Ruins"})
+end
+
+function debugPopulateBattlemasterBttfCache(player)
+    local playerColor = player and player.color
+    if DEBUG ~= true then return end
+    local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
+    if not spawner then
+        printToColor("[DEBUG] Battlemaster spawner not found.", playerColor, {1, 0.3, 0.3})
+        return
+    end
+    printToColor("[DEBUG] Battlemaster BTTF cache population started. Save the mod/table after it completes.", playerColor, {0.55, 0.85, 1})
+    spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_BTTF_THEME_ID, themeName = "BTTF"})
+end
+
+function debugPopulateBattlemasterArmageddonDesertCache(player)
+    local playerColor = player and player.color
+    if DEBUG ~= true then return end
+    local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
+    if not spawner then
+        printToColor("[DEBUG] Battlemaster spawner not found.", playerColor, {1, 0.3, 0.3})
+        return
+    end
+    printToColor("[DEBUG] Battlemaster Armageddon Desert cache population started. Save the mod/table after it completes.", playerColor, {1, 0.78, 0.42})
+    spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID, themeName = "armageddon desert"})
+end
+
+function debugCheckBattlemasterCache(player)
+    local playerColor = player and player.color
+    if DEBUG ~= true then return end
+    local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
+    if not spawner then
+        printToColor("[DEBUG] Battlemaster spawner not found.", playerColor, {1, 0.3, 0.3})
+        return
+    end
+    spawner.call("debugReportCacheState", {playerColor = playerColor})
 end
 
 -- Collect the GUIDs of whatever the clicking player has selected and bake them,
 -- one per line, into a spawned tile's description. Chat_copy is unreliable on
 -- Linux, so this gives a copyable text field instead. A previous dump is cleared
 -- first so the tiles don't accumulate across clicks.
-function debugDumpSelectedGuids(_, playerColor)
-    local player = Player[playerColor]
+function debugDumpSelectedGuids(player)
+    local playerColor = player and player.color
     local selected = player and player.getSelectedObjects() or {}
     if #selected == 0 then
         printToColor("[DEBUG] No objects selected. Select objects first, then click.", playerColor, {1, 0.3, 0.3})
@@ -1589,10 +1656,10 @@ end
 
 function getSecondaryDiscardPosition(color)
     if color == "Red" then
-        return {x = 77.04, y = 0.98, z = 16.60}
+        return {x = 62.54, y = 0.98, z = 16.60}
     end
 
-    return {x = 77.04, y = 0.98, z = -16.60}
+    return {x = 62.54, y = 0.98, z = -16.60}
 end
 
 function refreshSecondaryNamesForColor(color)

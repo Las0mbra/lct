@@ -21,6 +21,18 @@ redDispositionSelected = 3
 matTextureSelected = 1
 missionSetupControlsVisible = false
 mapMat_GUID = "28865a"
+-- Random city-mat image URLs, baked from data/all_mats.csv at compile time. The
+-- empty default keeps an uncompiled/dev build valid for the manual picker.
+CITY_MAT_URLS = {}   -- @@CITY_MAT_URLS@@
+-- Display names paralleling CITY_MAT_URLS (same order), used to label the Mat
+-- Randomizer picker. Baked from the all_mats.csv "terrain" column.
+CITY_MAT_NAMES = {}   -- @@CITY_MAT_NAMES@@
+-- Curated mat image pools for automatic Battlemaster theme reskins.
+BM_MAT_RANDOMIZER_ENABLED = false   -- @@BM_MAT_RANDOMIZER_ENABLED@@
+BTTF_RUINS_MAT_URLS = {}   -- @@BTTF_RUINS_MAT_URLS@@
+BTTF_RUINS_MAT_NAMES = {}   -- @@BTTF_RUINS_MAT_NAMES@@
+DESERT_MAT_URLS = {}   -- @@DESERT_MAT_URLS@@
+DESERT_MAT_NAMES = {}   -- @@DESERT_MAT_NAMES@@
 defaultMatTextureURL = "https://steamusercontent-a.akamaihd.net/ugc/15425072743099001267/B83134980FFB54308B44410C44305D245F8DF3F0/"
 gameModeMatTextureURL = "https://steamusercontent-a.akamaihd.net/ugc/11927766457912242969/CF467C9E73E87C1EABF3F2239B0B3BF47ADF00CA/"
 
@@ -60,10 +72,12 @@ function onLoad(saved_data)
     --getData()
     deploySelected = nil
     deployMode = nil
+    combatPatrolMode = false
     if saved_data ~= "" then
         local loaded_data = JSON.decode(saved_data)
         gameMode = loaded_data.svgameMode
         singlesMode = loaded_data.svsSinglesMode
+        combatPatrolMode = loaded_data.svCombatPatrolMode or false
         inGame = loaded_data.svinGame
         currentTurn = loaded_data.svcurrentTurn
         currentPhase = loaded_data.svcurrentPhase
@@ -80,6 +94,7 @@ function onLoad(saved_data)
             missionSetupControlsVisible = gameMode == "game" and not inGame
         end
         -- Restore point is in-memory only (see onSave); a save+reload clears it.
+        debugMapTagData = loaded_data.svDebugMapTagData or {}
     end
 
     if sizeConfirmed then
@@ -122,15 +137,47 @@ function onLoad(saved_data)
             ttsDebugLog("missionPackData not available during onLoad; clearing packSelected")
         end
     end
-    if packSelected then
+    if packSelected and gameModeUsesMatrixProps() then
         placeGameModeObjects()
     else
         hideGameModeObjects()
+    end
+    -- Combat Patrol map bag follows the same hidden-until-selected rule. If a
+    -- 1v1/Solo game destroyed it earlier, getObjectFromGUID is nil and both
+    -- helpers no-op.
+    if combatPatrolMode then
+        showCombatPatrolBag()
+    else
+        hideCombatPatrolBag()
+    end
+    -- Dominatus components: shown on the 1v1/Solo games (a confirmed game mode
+    -- that is not Combat Patrol), hidden otherwise. sizeConfirmed is only set once
+    -- a mode is chosen, so this stays hidden on the pre-mode selection screen.
+    if sizeConfirmed and not combatPatrolMode then
+        placeDominatusObjects()
+    else
+        hideDominatusObjects()
     end
     if not gameTurnCounter then
         ttsDebugLog("gameTurnCounter not found during onLoad")
     end
     writeMenus()
+    -- The phase highlight and active-turn strip colours live only in the
+    -- non-persistent Global overlay, so they reset to the XML defaults on reload.
+    -- Re-push them from the restored game state (immediate + a race-safe retry in
+    -- case the overlay isn't live yet when this object's onLoad runs). Guarded by
+    -- inGame so the pre-game setup screen keeps all phase glyphs dimmed.
+    if inGame then
+        updateGameStateHUD()
+        Wait.time(updateGameStateHUD, 1)
+    end
+    announceHotkeyReset()
+end
+
+-- Purple, all-caps patch notice shown both on screen and in chat (broadcastToAll
+-- does both) so players know to rebind their TTS hotkeys after the patch.
+function announceHotkeyReset()
+    broadcastToAll("RESET ALL YOUR TTS HOTKEYS DUE TO PATCH CHANGES", {0.6, 0.2, 0.9})
 end
 
 function onSave()
@@ -138,6 +185,7 @@ function onSave()
         svinGame = inGame,
         svgameMode = gameMode,
         svsSinglesMode = singlesMode,
+        svCombatPatrolMode = combatPatrolMode,
         svcurrentTurn = currentTurn,
         svcurrentPhase = currentPhase,
         svmapSizeSelected = mapSizeSelected,
@@ -149,6 +197,10 @@ function onSave()
         svredDispositionSelected = redDispositionSelected,
         svMatTextureSelected = matTextureSelected,
         svMissionSetupControlsVisible = missionSetupControlsVisible,
+        -- DEBUG tag-editing accumulator. Small (~45 maps x a few markers), so
+        -- safe to persist on every save -- this is the whole point: it carries an
+        -- editing session out to scripts/apply_map_tags_from_save.py.
+        svDebugMapTagData = debugMapTagData,
         -- NOTE: the restore point (restorePointObjects in particular) is held in
         -- memory only and deliberately NOT persisted here. It can reach ~5 MB
         -- (the game-mode objects are large decks), and JSON.encode on every
@@ -296,6 +348,26 @@ confirmBtn4 = {
     press_color    = { 0.08, 0.4, 0.82, 1 }
 }
 
+-- Combat Patrol sits directly under 1v1 (same x), one row further out in z
+-- (+2.65 from the 1v1/Solo row). (The Narrative button that used to sit under Solo
+-- was removed; its Dominatus components now show on the 1v1/Solo games instead.)
+confirmBtn5 = {
+    index          = i,
+    label          = "Combat Patrol",
+    click_function = "confirmCombatPatrol",
+    function_owner = self,
+    position       = { -menuSizeX - 6.0, menuSizeY, menuSizeZ + 5.30 },
+    rotation       = { 0, 0, 0 },
+    height         = 810,
+    width          = 4500,
+    scale          = { 1, 1, 1 },
+    font_size      = 375,
+    color          = { 0.70, 0.16, 0.16 },  -- Red
+    font_color     = { 1.0, 1.0, 1.0 },  -- Pure White
+    hover_color    = { 0.82, 0.22, 0.22, 1 },
+    press_color    = { 0.55, 0.10, 0.10, 1 }
+}
+
 function refreshMat()
     mat = getObjectFromGUID(mat_GUID)
 end
@@ -319,13 +391,36 @@ function applyMatTexture(rewriteMenu)
     local customInfo = mapMat.getCustomObject()
     if customInfo.image ~= selected.url then
         customInfo.image = selected.url
+        -- reload() respawns the mat, which resets its interaction flags back to the
+        -- object's saved defaults -- making it clickable/draggable again after a theme
+        -- change. Snapshot the current flags and restore them once the reloaded copy
+        -- finishes spawning, so the mat stays locked and uninteractable as it is now.
+        local wasLocked = mapMat.getLock()
+        local wasInteractable = mapMat.interactable
         mapMat.setCustomObject(customInfo)
-        mapMat.reload()
+        restoreMatFlags(mapMat.reload(), wasLocked, wasInteractable)
     end
 
     if rewriteMenu then
         Wait.frames(function() writeMenus() end, 2)
     end
+end
+
+-- Re-apply the mat's lock/interactable/tooltip after a reload. reload() is async
+-- (the object respawns over a few frames), so wait for spawning to finish before
+-- writing the flags; otherwise they land on the old, about-to-be-destroyed copy.
+function restoreMatFlags(reloaded, locked, interactable)
+    local function mat() return reloaded or getObjectFromGUID(mapMat_GUID) end
+    Wait.condition(function()
+        local m = mat()
+        if not m then return end
+        m.setLock(locked)
+        m.interactable = interactable
+        m.tooltip = interactable
+    end, function()
+        local m = mat()
+        return m ~= nil and not m.spawning
+    end)
 end
 
 function setMatTexture(index)
@@ -337,6 +432,32 @@ function setMatTexture1() setMatTexture(1) end
 function setMatTexture2() setMatTexture(2) end
 function setMatTexture3() setMatTexture(3) end
 function setMatTexture4() setMatTexture(4) end
+
+-- DEBUG-only: apply an arbitrary image URL to the map mat, bypassing the
+-- matTextures presets. Mirrors applyMatTexture's reload + flag-restore so the mat
+-- stays locked/uninteractable across the swap. matTextureSelected is left
+-- untouched (this URL is not persisted), so a save+reload reverts to the selected
+-- Table Theme swatch. Used by the "Custom URL" row on the Map Mat Picker overlay.
+function setMatTextureFromUrl(url)
+    if Global.getVar("DEBUG") ~= true then return end
+    if type(url) ~= "string" then return end
+    url = url:gsub("^%s+", ""):gsub("%s+$", "")
+    if url == "" then return end
+    local mapMat = getObjectFromGUID(mapMat_GUID)
+    if not mapMat then return end
+    local customInfo = mapMat.getCustomObject()
+    if customInfo.image == url then return end
+    customInfo.image = url
+    local wasLocked = mapMat.getLock()
+    local wasInteractable = mapMat.interactable
+    mapMat.setCustomObject(customInfo)
+    restoreMatFlags(mapMat.reload(), wasLocked, wasInteractable)
+end
+
+-- Read by the Table Theme swatches in mapFilter.ttslua (GUID 369707) so its XML
+-- buttons can mark the active theme. The swatch buttons there forward back to the
+-- setMatTexture<i> functions above.
+function matTextureSelectedIndex() return matTextureSelected end
 
 function writeSizeMenu()
     self.clearButtons()
@@ -351,6 +472,7 @@ function writeSizeMenu()
     self.createButton(sizeDownBtn)
     createButtonWithBorder(confirmBtn)
     createButtonWithBorder(confirmBtn4)
+    createButtonWithBorder(confirmBtn5)
     mat.setScale(sizeData[mapSizeSelected].scale)
     mat.setPosition(positionValue)
 end
@@ -382,14 +504,58 @@ end
 
 function confirmForSingles()
     singlesMode = "singles"
+    combatPatrolMode = false
     deployMode = "edition11"
     loadGameWithoutMapContainers()
+    destroyCombatPatrolBag()
+    placeDominatusObjects()
+    if selectedSizeIsOnslaught() then
+        applyOnslaughtButtonLayout()
+    end
 end
 
 function confirmStandardGame()
     singlesMode = nil
+    combatPatrolMode = false
     deployMode = "edition11"
     loadGameWithoutMapContainers()
+    destroyCombatPatrolBag()
+    placeDominatusObjects()
+    if selectedSizeIsOnslaught() then
+        applyOnslaughtButtonLayout()
+    end
+end
+
+-- Combat Patrol plays like Solo (one player drives both sides), but uses the
+-- Combat Patrol deployment zones and drops the mission-matrix props -- those
+-- reference bags/tiles aren't used in a Combat Patrol game. combatPatrolMode is
+-- the flag that later makes Generate Missions skip the fb4b5d layout art.
+function confirmCombatPatrol()
+    singlesMode = "singles"
+    combatPatrolMode = true
+    deployMode = "combatPatrolGame"
+    -- Combat Patrol is always played on the 44" x 30" battlefield. Force that size
+    -- here so it applies even if the player never touched the Battlefield Size
+    -- picker; confirmSizeMat() (via loadGameWithoutMapContainers) then scales the
+    -- mat to match. Found by id so it survives any reordering of sizeData.
+    for i, s in ipairs(sizeData) do
+        if s.id == 2 then
+            mapSizeSelected = i
+            break
+        end
+    end
+    loadGameWithoutMapContainers()
+    destroyGameModeObjects()
+    hideDominatusObjects()
+    showCombatPatrolBag()
+end
+
+-- Permanently remove the mission-matrix bags/tiles for this session (Combat
+-- Patrol). They normally only hide at y=-5; here we destroy them outright.
+function destroyGameModeObjects()
+    for _, entry in ipairs(GAME_MODE_OBJECTS) do
+        destroyObjectByGUID(entry.guid)
+    end
 end
 
 function loadGameWithoutMapContainers()
@@ -485,6 +651,105 @@ function placeGameModeObjects()
     end
 end
 
+-- ********************
+-- COMBAT PATROL MAP POOL
+-- ********************
+-- Self-contained bag of Combat Patrol map cards (merged from the legacy save by
+-- scripts/import_combat_patrol_maps.py; ignored by the map validator). It is
+-- hidden like the mission-matrix props until a mode is chosen: destroyed on
+-- 1v1/Solo, shown on Combat Patrol. On Generate Mission in Combat Patrol mode,
+-- 3 of its cards are dealt at random into the deployment map slots. This whole
+-- section is additive -- nothing here runs unless combatPatrolMode is set.
+COMBAT_PATROL_BAG_GUID = "fdf6e7"
+combatPatrolBagPosition = {-10.5798788, 0.776465, -4.463058}
+combatPatrolBagRotation = {0, 0, 0}
+-- Runtime-only tag on a dealt CP map card so a re-press can recall it. Added
+-- in-game, never in source JSON, so the map validator never sees it.
+combatPatrolMapCardTag = "combat_patrol_map_dealt"
+
+-- Where the 3 dealt Combat Patrol map cards land, and their facing. These are
+-- CP-ONLY and read by nothing else -- edit them freely without touching the
+-- matchup system's deployment slots (missionSlots). Order is slot 1, 2, 3; they
+-- are seeded to the standard deployment-slot positions so behavior is unchanged
+-- until you move them. {x, y, z}.
+combatPatrolMapSlotPositions = {
+    {4.50, 1.00,  8.80},
+    {4.50, 1.00,  0.00},
+    {4.50, 1.00, -8.80},
+}
+combatPatrolMapCardRotation = {0, 180, 0}
+
+function showCombatPatrolBag()
+    local bag = getObjectFromGUID(COMBAT_PATROL_BAG_GUID)
+    if not bag then return end
+    bag.setPosition(combatPatrolBagPosition)
+    bag.setRotation(combatPatrolBagRotation)
+    bag.setLock(true)
+    bag.tooltip = true
+    bag.interactable = true
+end
+
+function hideCombatPatrolBag()
+    local bag = getObjectFromGUID(COMBAT_PATROL_BAG_GUID)
+    if not bag then return end
+    bag.setPosition({combatPatrolBagPosition[1], -5.0, combatPatrolBagPosition[3]})
+    bag.setLock(true)
+    bag.tooltip = false
+    bag.interactable = false
+end
+
+function destroyCombatPatrolBag()
+    destroyObjectByGUID(COMBAT_PATROL_BAG_GUID)
+end
+
+-- ********************
+-- DOMINATUS OBJECTS
+-- ********************
+-- The Dominatus components (merged from the legacy save by
+-- scripts/import_narrative_objects.py). Like the mission-matrix props, they are
+-- hidden until a mode is chosen: shown on the 1v1/Solo games, hidden on Combat
+-- Patrol. Positions/rotations are the layout from the source save; the play
+-- decks/bags live inside the Dominatus Bag.
+-- Transforms (position/rotation/scale) are the exact values from the source save
+-- (Legacy/TS_Save_122.json). Scale matters: the Dominatus Rules sheet and
+-- Dominatus Bag are not 1.0, so placeDominatusObject applies scale too.
+DOMINATUS_OBJECTS = {
+    {guid="813dfe", pos={-22.8449535, 0.9614989, -16.8781948}, rot={0, 269.999237, 0}, scale={3.15, 1.0, 3.15}, lock=true}, -- Dominatus Rules
+    {guid="832110", pos={-18.8804836, 0.9065949, -10.5289011}, rot={2.431763, 89.94151, 357.285736}, scale={1.5, 1.0, 1.5}, lock=true}, -- Dominatus Bag
+}
+
+-- Quiet placement: unlike placeObjectAtPosition this never broadcasts if an
+-- object is missing (e.g. wiped by a map load), so the show path can be called
+-- unconditionally.
+function placeDominatusObject(entry)
+    local obj = getObjectFromGUID(entry.guid)
+    if not obj then return end
+    obj.setPosition(entry.pos)
+    obj.setRotation(entry.rot)
+    if entry.scale then obj.setScale(entry.scale) end
+    obj.setLock(entry.lock == true)
+    obj.tooltip = true
+    obj.interactable = true
+end
+
+function placeDominatusObjects()
+    for _, entry in ipairs(DOMINATUS_OBJECTS) do
+        placeDominatusObject(entry)
+    end
+end
+
+function hideDominatusObjects()
+    for _, entry in ipairs(DOMINATUS_OBJECTS) do
+        local obj = getObjectFromGUID(entry.guid)
+        if obj then
+            obj.setPosition({entry.pos[1], -5.0, entry.pos[3]})
+            obj.setLock(true)
+            obj.tooltip = false
+            obj.interactable = false
+        end
+    end
+end
+
 -- "Force dispositions" reference token was removed from the save.
 forceDispositionToken_GUID = nil
 forceDispositionTokenPosition = {-15.7271786, 1.06149852, -0.134739235}
@@ -542,6 +807,13 @@ function applySurfaceMatTexture(url)
     end
 end
 
+-- The mission-matrix reference props/logos (GAME_MODE_OBJECTS) and the printed
+-- game-mode mat art are used only by the standard 1v1/Solo game. Combat Patrol
+-- runs on a blank mat, so it places neither.
+function gameModeUsesMatrixProps()
+    return not combatPatrolMode
+end
+
 function applyGameModeMatTexture()
     applySurfaceMatTexture(gameModeMatTextureURL)
 end
@@ -553,7 +825,13 @@ end
 function confirmSizeMat()
     gameMode= "game"
     missionSetupControlsVisible = true
-    applyGameModeMatTexture()
+    -- Onslaught drops the mission-matrix props (see applyOnslaughtButtonLayout), so
+    -- it uses the plain default mat art rather than the matrix-themed game-mode art.
+    if gameModeUsesMatrixProps() and not selectedSizeIsOnslaught() then
+        applyGameModeMatTexture()
+    else
+        applyDefaultMatTexture()
+    end
     sizeConfirmed=true
         mat.setScale(sizeData[mapSizeSelected].scale)
     self.setRotation({0,270,0})
@@ -563,6 +841,95 @@ function confirmSizeMat()
         setDeployZonesForSize(false)
     end
     writeMenus()
+end
+
+-- Onslaught (id 5, 44"x90") is long enough that the default deployment toggle
+-- button row sits over the battlefield. On a 1v1 Onslaught game only, relocate
+-- the six interactive buttons into a single column off the long edge (x=50,
+-- y=-1) with evenly stepped z. Matched by sizeData id so it survives reordering.
+-- Buttons reset to their baked ftc_base.json transforms on game reload.
+ONSLAUGHT_SIZE_ID = 5
+onslaughtButtonLayout = {
+    {guid = "7b7ab8", pos = {50, 1, 10}},  -- Strat Reserves
+    {guid = "8c71ab", pos = {50, 1, 17}},  -- Area Denial
+    {guid = "7e7711", pos = {50, 1, 24}},  -- Territory Line
+    {guid = "59decf", pos = {50, 1, -10}},  -- Table Quarters
+    {guid = "8aba11", pos = {50, 1, -17}},  -- Deployment Zone
+    {guid = "15d652", pos = {50, 1, -24}},  -- Show Objectives
+    {guid = "369707", pos = {61, 0, -25.5}},  -- Map Mat Picker overlay (MAP_FILTER_GUID)
+}
+
+-- Mission-matrix props (matchup bags + their art tiles) that Onslaught doesn't use;
+-- destroyed on an Onslaught 1v1/Solo confirm.
+onslaughtDestroyGuids = {
+    "066fd3", "793bc0", "32e34a", "7b5ba7", "4a1bbd", "e88089", "4409ba", "2c7cd1",
+    "f1e22b", "9a274c", "888613", "6a1d02", "3ebbd6", "444551", "dc8738", "703a8c",
+    "a22c33", "41bf2c", "9ac38f", "2aef7f", "109a6b", "1e6711", "cfeba5", "eae80b",
+    "6e0d78", "642d0d", "3f56e1", "97d33f", "65439e", "80eda8",
+}
+
+function selectedSizeIsOnslaught()
+    local entry = sizeData[mapSizeSelected]
+    return entry ~= nil and entry.id == ONSLAUGHT_SIZE_ID
+end
+
+function applyOnslaughtButtonLayout()
+    destroyObjectByGUID(ONSLAUGHT_SETUP_GUID_TO_REMOVE)
+    for _, guid in ipairs(onslaughtDestroyGuids) do
+        destroyObjectByGUID(guid)
+    end
+    for _, b in ipairs(onslaughtButtonLayout) do
+        local obj = getObjectFromGUID(b.guid)
+        if obj then
+            obj.setPosition(b.pos)
+        end
+    end
+    broadcastToAll("Onslaught mode enabled, menus are moved to the top of the table", {1, 0.6, 0.1})
+end
+
+-- On a 1v1/Solo Onslaught game the discord tile (8f2be2) is removed and the
+-- mission-setup controls are repositioned to clear the longer battlefield:
+--   * MID row -- Generate Missions & Layouts, Random Single Layout, Dispositions --
+--     is lifted +X so it sits just above the CP/Turn/Round counter row (the Game
+--     Rounds token ee92cf is at world X=67). MID +39: Random->70.5, Disposition->
+--     72.5, Generate->73.6. (This leaves the printed LAYOUTS/MISSIONS bracket art
+--     on backdrop 28865a behind -- expected.)
+--   * TOP row -- Start Game, First-player toggle, Deployment Zone picker (+ arrows
+--     and the Clear Table / Back to Selection flanks) -- is lifted +X to sit just
+--     above the MID row (Generate/Dispositions). DX is tuned so the cluster lands a
+--     few X-units above the MID row rather than out past the table edge.
+-- Applied at render time so it tracks the selected size and survives reload.
+ONSLAUGHT_SETUP_GUID_TO_REMOVE = "8f2be2"
+ONSLAUGHT_MID_ROW_X_OFFSET = 39   -- world +X for the Generate/Random/Disposition row
+ONSLAUGHT_TOP_ROW_DX = 19         -- world +X delta for the Start/First/Deployment cluster
+ONSLAUGHT_TOP_ROW_DZ = 0          -- world +Z delta (0 = directly above the MID row)
+
+-- True only once a game mode is confirmed (gameMode == "game") and the chosen size
+-- is Onslaught -- so nothing shifts during size preview or for other sizes.
+function onslaughtSetupActive()
+    return gameMode == "game" and selectedSizeIsOnslaught()
+end
+
+-- World +X the MID row is shifted by (0 when not an Onslaught game).
+function setupMidRowXOffset()
+    return onslaughtSetupActive() and ONSLAUGHT_MID_ROW_X_OFFSET or 0
+end
+
+-- World (dx, dz) the TOP-row cluster is translated by (0,0 when not Onslaught).
+function topRowDX() return onslaughtSetupActive() and ONSLAUGHT_TOP_ROW_DX or 0 end
+function topRowDZ() return onslaughtSetupActive() and ONSLAUGHT_TOP_ROW_DZ or 0 end
+
+-- The menu object is rotated rotY=270, so world +X = local -Z and world +Z = local
+-- +X. Returns a copy of a top-row button definition translated by (topRowDX,
+-- topRowDZ) in world space, preserving the cluster's internal layout. Returns the
+-- original table when there is no translation.
+function withSetupXOffset(btnDef)
+    local dx, dz = topRowDX(), topRowDZ()
+    if dx == 0 and dz == 0 then return btnDef end
+    local copy = {}
+    for k, v in pairs(btnDef) do copy[k] = v end
+    copy.position = {btnDef.position[1] + dz, btnDef.position[2], btnDef.position[3] - dx}
+    return copy
 end
 
 function updateDeployObjectivesSelection()
@@ -741,6 +1108,24 @@ DeployZonesCombatPatrol = {
     {name = "No Deployment Zone", draw = {type = "none"}},
 }
 
+DeployZonesCombatPatrolGame = {
+    {name = "Combat Patrol 1", draw = {
+        -- Points are measured like the mission image: red (0,0) is the lower-left corner,
+        -- x runs across the 30" width, y runs up the 44" height. Teal mirrors this.
+        --[[1]]{type = "cornerPolyline", color = "Red", position = "bottomLeft", points = {{0, 22}, {15, 11}, {15, 0}}},
+        --[[2]]{type = "cornerPolyline", color = "Teal", position = "topRight", points = {{0, 22}, {15, 11}, {15, 0}}}},
+        territory = {{position = "bottomLeft", color = "Yellow", points = {{0, 22}, {30, 22}}}}},
+    {name = "Combat Patrol 2", draw = {
+        --[[1]]{type = "cornerPolyline", color = "Red", position = "bottomLeft", points = {{0, 16}, {30, 0}}},
+        --[[2]]{type = "cornerPolyline", color = "Teal", position = "topRight", points = {{0, 16}, {30, 0}}}},
+        territory = {{position = "bottomLeft", color = "Yellow", points = {{0, 22}, {30, 22}}}}},
+    {name = "Combat Patrol 3", draw = {
+        --[[1]]{type = "cornerPolyline", color = "Red", position = "bottomLeft", points = {{0, 11}, {14, 11}, {14, 0}}},
+        --[[2]]{type = "cornerPolyline", color = "Teal", position = "topRight", points = {{0, 11}, {14, 11}, {14, 0}}}},
+        territory = {{position = "bottomLeft", color = "Yellow", points = {{0, 22}, {30, 22}}}}},
+    {name = "No Deployment Zone", draw = {type = "none"}},
+}
+
 DeployZonesColosseum = {
     {name = "King of the Colosseum", objectivesID = 301, draw = {
         --[[1]]{type = "line", color = "Teal", position = "-z", fromSide = 9},
@@ -783,7 +1168,7 @@ DeployZonesData = DeployZonesDefault
 deployMode = "strikeForce"
 
 function isValidDeployMode(mode)
-    return mode == "colosseum" or mode == "combatPatrol" or mode == "incursion" or mode == "strikeForce" or mode == "boardingAction" or mode == "edition11"
+    return mode == "colosseum" or mode == "combatPatrol" or mode == "combatPatrolGame" or mode == "incursion" or mode == "strikeForce" or mode == "boardingAction" or mode == "edition11"
 end
 
 function setDeployZonesForSize(preserveSelected)
@@ -810,6 +1195,7 @@ function setDeployZonesMode(mode, preserveSelected)
     local byMode = {
         colosseum = DeployZonesColosseum,
         combatPatrol = DeployZonesCombatPatrol,
+        combatPatrolGame = DeployZonesCombatPatrolGame,
         incursion = DeployZonesIncursion,
         strikeForce = DeployZonesStrikeForce,
         boardingAction = DeployZonesBoardingAction,
@@ -826,7 +1212,12 @@ end
 deployLineHeight = 2.1
 deployLineYPos = deployLineHeight-0.1
 sizeMulti = 36
-arrowOffset = 7.5
+-- Arrow offset/size mirror the disposition picker (dispositionArrowOffset 5.75,
+-- arrow width 600, font 300) so the Deployment Zone row matches them visually.
+arrowOffset = 5.75
+deployPickerButtonHeight = 562.5
+deployPickerButtonFontSize = 320
+deployPickerArrowFontSize = 300
 
 defaultDeployHeight=2
 deployOffset = 0
@@ -840,29 +1231,28 @@ deployHeaderBtn = {
     position = { -menuX, 5, -0.5 }, rotation = {0, 0, 0}, height = 0, width = 6000,
     font_size = 600, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
+-- Menu object is rotated rotY=270, so worldX = menuX - localZ. Adding 3.5 to local
+-- z shifts these -3.5 in world X. Clear Table / Back to Selection read
+-- deployBtn.position[3], so they follow.
 deployBtn = {
     index = i, label = "", click_function = "none", function_owner = self,
-    position = { 0, 5, 3}, rotation = {0, 0, 0}, height = 750, width = 6000,
-    font_size = 400, color = {1, 1, 1}, font_color = {0, 0, 0}
+    position = { 0, 5, 6.5}, rotation = {0, 0, 0}, height = deployPickerButtonHeight, width = 4500,
+    font_size = deployPickerButtonFontSize, color = {1, 1, 1}, font_color = {0, 0, 0}
 }
 deployUpBtn = {
     index = 1, label = "->", click_function = "deployUp", function_owner = self,
-    position = { arrowOffset, 5, 3}, rotation = {0, 0, 0}, height = 750, width = 800,
-    font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
+    position = { arrowOffset, 5, 6.5}, rotation = {0, 0, 0}, height = deployPickerButtonHeight, width = 600,
+    font_size = deployPickerArrowFontSize, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
 deployDownBtn = {
     index = 1, label = "<-", click_function = "deployDown", function_owner = self,
-    position = { -arrowOffset, 5, 3}, rotation = {0, 0, 0}, height = 750, width = 800,
-    font_size = 300, color = {0, 0, 0}, font_color = {1, 1, 1}
+    position = { -arrowOffset, 5, 6.5}, rotation = {0, 0, 0}, height = deployPickerButtonHeight, width = 600,
+    font_size = deployPickerArrowFontSize, color = {0, 0, 0}, font_color = {1, 1, 1}
 }
 dispositionControlWorldX = 33.50
-ingameDispositionControlWorldX = 80
 blueDispositionControlWorldZ = 12.1
 redDispositionControlWorldZ = -12.1
-ingameBlueDispositionControlWorldZ = 11.1186075
-ingameRedDispositionControlWorldZ = -11.1186075
 dispositionControlWorldY = 1.0
-ingameDispositionControlWorldY = 1.0
 
 function normalizeDispositionIndex(index)
     if index > #dispositionValues then
@@ -875,23 +1265,26 @@ function normalizeDispositionIndex(index)
 end
 
 dispositionScale = 0.4125
-dispositionButtonHeight = 562.5
+dispositionButtonHeight = deployPickerButtonHeight
 dispositionButtonWidth = 4500
-ingameDispositionButtonHeight = dispositionButtonHeight * 0.595
-ingameDispositionButtonWidth = dispositionButtonWidth * 0.80
 dispositionArrowHeight = 562.5
 dispositionArrowWidth = 600
 dispositionArrowFontSize = 300
 dispositionButtonFontSize = 380
-ingameDispositionButtonFontSize = dispositionButtonFontSize * 0.5625
 dispositionArrowOffset = 5.75
--- CLEAR MAT and BACK TO SELECTION flank the Deployment Zone picker symmetrically,
--- on the same row (local z/y taken from deployBtn): CLEAR MAT just outside the
--- left "<-" arrow, BACK TO SELECTION just outside the right "->" arrow. Defined in
--- the menu's local frame so they track the picker if it ever moves. The picker
--- arrows sit at local x ±arrowOffset (±7.5); this offset clears the arrow plus the
--- flank button's own half-width (width 4500 ~= 5 local units) with a small gap.
-deployFlankButtonLocalX = 14.0
+-- CLEAR TABLE and BACK TO SELECTION flank the Deployment Zone picker on its row
+-- (world X/Y taken from deployBtn), but are aligned to the same world Z as the
+-- disposition buttons directly below them so the two rows line up vertically:
+-- CLEAR TABLE over the red disposition (left, -12.1), BACK TO SELECTION over the
+-- blue disposition (right, +12.1). Placed via positionToLocal off those world Z
+-- values, mirroring createDispositionSelector, so the alignment holds under any
+-- menu scale/rotation.
+function deployFlankButtonLocal(dispositionWorldZ)
+    -- Translate by the same (dx, dz) as the rest of the top-row cluster so these
+    -- stay glued to the (possibly relocated) Deployment Zone picker row.
+    local row = self.positionToWorld({0, deployBtn.position[2], deployBtn.position[3] - topRowDX()})
+    return self.positionToLocal({row.x, row.y, dispositionWorldZ + topRowDZ()})
+end
 
 dispositionButtonColors = {
     ["Disruption"] = {0.36, 0.62, 1.00},
@@ -905,33 +1298,18 @@ function getDispositionButtonColor(selectedValue)
     return dispositionButtonColors[selectedValue] or {1, 1, 1}
 end
 
-function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunction, upFunction, locked)
+function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunction, upFunction)
     local selectedValue = dispositionValues[selectedIndex] or dispositionValues[1]
     local selectedColor = getDispositionButtonColor(selectedValue)
-    local worldX = locked and ingameDispositionControlWorldX or dispositionControlWorldX
-    local worldZ = centerWorldZ
-    if locked and label == "Blue Disposition" then
-        worldZ = ingameBlueDispositionControlWorldZ
-    elseif locked and label == "Red Disposition" then
-        worldZ = ingameRedDispositionControlWorldZ
-    end
-    local buttonHeight = locked and ingameDispositionButtonHeight or dispositionButtonHeight
-    local buttonWidth = locked and ingameDispositionButtonWidth or dispositionButtonWidth
-    local buttonFontSize = locked and ingameDispositionButtonFontSize or dispositionButtonFontSize
-    local worldY = locked and ingameDispositionControlWorldY or dispositionControlWorldY
-    local center = self.positionToLocal({worldX, worldY, worldZ})
+    local center = self.positionToLocal({dispositionControlWorldX + setupMidRowXOffset(), dispositionControlWorldY, centerWorldZ})
     local cx, cy, cz = center.x, center.y, center.z
     local dispositionButton = {
         label = selectedValue, click_function = "none", function_owner = self,
         position = {cx, cy, cz}, rotation = {0, 0, 0},
-        height = buttonHeight, width = buttonWidth, font_size = buttonFontSize,
+        height = dispositionButtonHeight, width = dispositionButtonWidth, font_size = dispositionButtonFontSize,
         color = selectedColor, font_color = {0, 0, 0}, tooltip = label,
     }
     createButtonWithBorder(dispositionButton)
-
-    if locked then
-        return
-    end
 
     self.createButton({
         label = "->", click_function = upFunction, function_owner = self,
@@ -947,16 +1325,20 @@ function createDispositionSelector(label, selectedIndex, centerWorldZ, downFunct
     })
 end
 
-function writeDispositionMenu(locked)
+function writeDispositionMenu()
     if gameMode ~= "game" or not missionSetupControlsVisible then return end
+    -- Once a map is loaded (restore point captured in onMapCardLoaded), hide the
+    -- mission-setup controls -- both disposition selectors + their arrows, Generate
+    -- Missions & Layouts, and Random Single Layout -- so they can't be re-run on top
+    -- of a loaded board. Back to Selection clears restorePointAvailable and re-runs
+    -- writeMenus, which brings them all back; Start Game drops the whole deploy menu,
+    -- so they are gone in-game without any extra handling here.
+    if restorePointAvailable then return end
     blueDispositionSelected = normalizeDispositionIndex(blueDispositionSelected)
     redDispositionSelected = normalizeDispositionIndex(redDispositionSelected)
-    createDispositionSelector("Blue Disposition", blueDispositionSelected, blueDispositionControlWorldZ, "blueDispositionDown", "blueDispositionUp", locked)
-    createDispositionSelector("Red Disposition", redDispositionSelected, redDispositionControlWorldZ, "redDispositionDown", "redDispositionUp", locked)
-
-    if not locked then
-        writeGenerateMissionButton()
-    end
+    createDispositionSelector("Blue Disposition", blueDispositionSelected, blueDispositionControlWorldZ, "blueDispositionDown", "blueDispositionUp")
+    createDispositionSelector("Red Disposition", redDispositionSelected, redDispositionControlWorldZ, "redDispositionDown", "redDispositionUp")
+    writeGenerateMissionButton()
 end
 
 -- Mat wipe area + survivors, mirroring the map cards' own Clear/Load wipe so
@@ -969,31 +1351,122 @@ matClearKeepGuids = {["28865a"] = true, ["4ee1f2"] = true, ["6012bf"] = true, ["
 function writeClearMatButton()
     if inGame then return end
 
+    local pos = deployFlankButtonLocal(redDispositionControlWorldZ)
     createButtonWithBorder({
-        label = "Clear Mat", click_function = "clearMat", function_owner = self,
-        position = {-deployFlankButtonLocalX, deployBtn.position[2], deployBtn.position[3]}, rotation = {0, 0, 0},
+        label = "Clear Table", click_function = "clearMat", function_owner = self,
+        position = {pos.x, pos.y, pos.z}, rotation = {0, 0, 0},
         height = dispositionButtonHeight, width = dispositionButtonWidth,
         font_size = dispositionButtonFontSize,
         color = {0.90, 0.35, 0.35}, font_color = {0, 0, 0},
-        tooltip = "Remove everything placed on the mat",
+        tooltip = "Remove everything placed on the table",
     })
 end
 
 -- Always shown before the game starts; enabled once a map load captures a restore point.
--- Sits just right of the Deployment Zone picker, mirroring CLEAR MAT on the left.
+-- Sits just right of the Deployment Zone picker, mirroring CLEAR TABLE on the left.
 function writeBackToSelectionButton()
     if inGame then return end
 
     local enabled = restorePointAvailable
+    local pos = deployFlankButtonLocal(blueDispositionControlWorldZ)
     createButtonWithBorder({
         label = "Back to Selection", click_function = enabled and "backToSelection" or "none", function_owner = self,
-        position = {deployFlankButtonLocalX, deployBtn.position[2], deployBtn.position[3]}, rotation = {0, 0, 0},
+        position = {pos.x, pos.y, pos.z}, rotation = {0, 0, 0},
         height = dispositionButtonHeight, width = dispositionButtonWidth,
         font_size = dispositionButtonFontSize,
         color = enabled and {0.90, 0.62, 0.20} or {0.55, 0.55, 0.55},
         font_color = enabled and {0, 0, 0} or {0.20, 0.20, 0.20},
         tooltip = enabled and "Undo the loaded map and return to map selection" or "Load a map to enable this button",
     })
+end
+
+-- ******************
+-- DEBUG: SAVE TAGS (objective-marker tagging tool, --test builds only)
+-- ******************
+-- Build-wide debug flag, true on --test builds only (mirrors objectiveDebug).
+-- The whole tag-editing tool below is gated on this so it never renders for
+-- players in a release build.
+function mapTagDebugEnabled()
+    return Global.getVar("DEBUG") == true
+end
+
+-- Accumulated tag edits, keyed by map card GUID:
+--   debugMapTagData[cardGuid] = { name = mapName, objects = { [objGuid] = {tags, nickname, pos} } }
+-- Persisted in onSave so a whole editing session survives into the save file,
+-- where scripts/apply_map_tags_from_save.py reads it back. Small by construction
+-- (~45 maps x a handful of markers), so unlike the restore point it is cheap to
+-- JSON.encode on every autosave.
+debugMapTagData = debugMapTagData or {}
+
+-- Drops onto the (now-free) disposition row: once a map is loaded the disposition
+-- selectors are hidden (writeDispositionMenu early-returns on restorePointAvailable),
+-- so this sits centered under the Deployment Zone picker without overlapping anything.
+function writeBackToSelectionDebugButton()
+    if inGame then return end
+    if not mapTagDebugEnabled() then return end
+    if not restorePointAvailable then return end
+
+    local center = self.positionToLocal({dispositionControlWorldX, dispositionControlWorldY, 0})
+    createButtonWithBorder({
+        label = "Back to Selection (SAVE TAGS)", click_function = "backToSelectionDebug", function_owner = self,
+        position = {center.x, center.y, center.z}, rotation = {0, 0, 0},
+        height = dispositionButtonHeight, width = dispositionButtonWidth,
+        font_size = dispositionButtonFontSize,
+        color = {0.85, 0.45, 0.95}, font_color = {0, 0, 0},
+        tooltip = "DEBUG: record this map's obj_* tags, then return to selection",
+    })
+end
+
+-- Record every object on the table carrying an obj_* tag into debugMapTagData
+-- under the currently loaded map. The live object's GUID equals the baked
+-- objectJSON GUID (only one map is loaded at a time, so the GUID is free and
+-- preserved on spawn) -- that is the join key the Python transfer uses; nickname
+-- and position are stored as a fallback / human-readable check.
+function collectObjectiveTagEdits()
+    local objects = {}
+    local count = 0
+    for _, obj in ipairs(getAllObjects()) do
+        if obj.getTags then
+            local tags = obj.getTags()
+            local hasObjTag = false
+            for _, tag in ipairs(tags) do
+                if string.sub(tag, 1, 4) == "obj_" then hasObjTag = true break end
+            end
+            if hasObjTag then
+                local pos = obj.getPosition()
+                objects[obj.getGUID()] = {
+                    tags = tags,
+                    nickname = obj.getName(),
+                    pos = {x = pos.x, y = pos.y, z = pos.z},
+                }
+                count = count + 1
+            end
+        end
+    end
+    return objects, count
+end
+
+-- DEBUG button entry point: snapshot this map's obj_* tags, then return to
+-- selection via the normal restore flow (debugMapTagData is plain Lua state and
+-- survives the wipe). Load the next map and repeat; one save at the end carries
+-- every map's edits out to apply_map_tags_from_save.py.
+function backToSelectionDebug()
+    if not mapTagDebugEnabled() then return end
+    if not restorePointAvailable then return end
+    if not debugCurrentMapGuid then
+        broadcastToAll("SAVE TAGS: no loaded map tracked; cannot record.", {1, 0.4, 0.4})
+        return
+    end
+
+    local objects, count = collectObjectiveTagEdits()
+    debugMapTagData[debugCurrentMapGuid] = {
+        name = debugCurrentMapName or "?",
+        objects = objects,
+    }
+    broadcastToAll("SAVE TAGS: recorded " .. tostring(count) .. " obj_* object(s) for \""
+        .. tostring(debugCurrentMapName) .. "\". Returning to selection.", {0.85, 0.45, 0.95})
+
+    backToSelection()
 end
 
 -- Deferred wipe: destroy every object the scripting zone overlaps except the
@@ -1047,6 +1520,7 @@ function captureRestorePoint()
         gameMode = gameMode,
         inGame = inGame,
         singlesMode = singlesMode,
+        combatPatrolMode = combatPatrolMode,
         sizeConfirmed = sizeConfirmed,
         mapSizeSelected = mapSizeSelected,
         deployMode = deployMode,
@@ -1190,6 +1664,7 @@ function applyRestoredSelectionState()
     gameMode = s.gameMode or "game"
     inGame = s.inGame or false
     singlesMode = s.singlesMode
+    combatPatrolMode = s.combatPatrolMode or false
     sizeConfirmed = s.sizeConfirmed
     mapSizeSelected = s.mapSizeSelected or mapSizeSelected
     deployMode = s.deployMode
@@ -1216,9 +1691,18 @@ function applyRestoredSelectionState()
         if missionPackTable and missionPackTable[packSelected] then
             missionPackData = missionPackTable[packSelected]
         end
-        placeGameModeObjects()
+        if gameModeUsesMatrixProps() then
+            placeGameModeObjects()
+        else
+            hideGameModeObjects()
+        end
     else
         hideGameModeObjects()
+    end
+    if sizeConfirmed and not combatPatrolMode then
+        placeDominatusObjects()
+    else
+        hideDominatusObjects()
     end
     placeForceDispositionToken()
 
@@ -1268,16 +1752,16 @@ generateMissionWorldZ = 0.0
 -- map slot has a neighboring layout-art slot fed by layoutArtDeck_GUID.
 layoutArtDeck_GUID = "fb4b5d"
 missionSlots = {
-    {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  4.67}, displayPosition = {13.00, 1.00,  10.85}},
-    {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {75.37, 1.01,  2.55}, displayPosition = {13.00, 1.00,   5.68}},
+    {role = "primary", player = "Red",  index = 1, zoneVar = "missionCardZone_RedPrimary1_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {60.75, 1.01,  4.67}, displayPosition = {13.00, 1.00,  10.85}},
+    {role = "primary", player = "Red",  index = 2, zoneVar = "missionCardZone_RedPrimary2_GUID",  deckVar = "redPrimaryDeck_GUID",   position = {60.75, 1.01,  2.55}, displayPosition = {13.00, 1.00,   5.68}},
     {role = "deployment", index = 1, position = {23.70, 1.02,  17.65}},
     {role = "layout",     index = 1, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.02,  12.35}},
     {role = "deployment", index = 2, position = {23.70, 1.02,   2.65}},
     {role = "layout",     index = 2, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.02,  -2.65}},
     {role = "deployment", index = 3, position = {23.70, 1.02, -12.35}},
     {role = "layout",     index = 3, deckVar = "layoutArtDeck_GUID",  position = {23.70, 1.02, -17.65}},
-    {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -2.55}, displayPosition = {13.00, 1.00,  -5.68}},
-    {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {75.37, 1.01, -4.67}, displayPosition = {13.00, 1.00, -10.85}},
+    {role = "primary", player = "Blue", index = 1, zoneVar = "missionCardZone_BluePrimary1_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {60.75, 1.01, -2.55}, displayPosition = {13.00, 1.00,  -5.68}},
+    {role = "primary", player = "Blue", index = 2, zoneVar = "missionCardZone_BluePrimary2_GUID", deckVar = "bluePrimaryDeck_GUID",  position = {60.75, 1.01, -4.67}, displayPosition = {13.00, 1.00, -10.85}},
 }
 
 deploymentMatrixDecks = {
@@ -1293,9 +1777,6 @@ deploymentMatrixDecks = {
             {guid = "88063f", name = "TnH vs TnH 1 - TP"},
             {guid = "32f3ae", name = "TnH vs TnH 2 - DoW"},
             {guid = "c08454", name = "TnH vs TnH 3 - SnD"},
-            {guid = "931f52", name = "TnH vs TnH 1 - TP"},
-            {guid = "5ad178", name = "TnH vs TnH 2 - DoW"},
-            {guid = "732920", name = "TnH vs TnH 3 - SnD"},
 },
     },
     ["5_2"] = {
@@ -1310,9 +1791,6 @@ deploymentMatrixDecks = {
             {guid = "c0d4e5", name = "TnH vs PA 1 - CoB"},
             {guid = "e7b247", name = "TnH vs PA 2 - HnA"},
             {guid = "127066", name = "TnH vs PA 3 - DoW"},
-            {guid = "32cf71", name = "TnH vs PA 1 - CoB"},
-            {guid = "1d9c50", name = "TnH vs PA 2 - HnA"},
-            {guid = "c16f53", name = "TnH vs PA 3 - DoW"},
 },
     },
     ["2_5"] = {
@@ -1327,9 +1805,6 @@ deploymentMatrixDecks = {
             {guid = "c0d4e5", name = "TnH vs PA 1 - CoB"},
             {guid = "e7b247", name = "TnH vs PA 2 - HnA"},
             {guid = "127066", name = "TnH vs PA 3 - DoW"},
-            {guid = "32cf71", name = "TnH vs PA 1 - CoB"},
-            {guid = "1d9c50", name = "TnH vs PA 2 - HnA"},
-            {guid = "c16f53", name = "TnH vs PA 3 - DoW"},
 },
     },
     ["5_1"] = {
@@ -1344,9 +1819,6 @@ deploymentMatrixDecks = {
             {guid = "45bb37", name = "TnH vs Dis 1 - SE"},
             {guid = "b53767", name = "TnH vs Dis 2 - CoB"},
             {guid = "6261e9", name = "TnH vs Dis 3 - HnA"},
-            {guid = "b69915", name = "TnH vs Dis 1 - SE"},
-            {guid = "d82829", name = "TnH vs Dis 2 - CoB"},
-            {guid = "7faeca", name = "TnH vs Dis 3 - HnA"},
 },
     },
     ["1_5"] = {
@@ -1361,9 +1833,6 @@ deploymentMatrixDecks = {
             {guid = "45bb37", name = "TnH vs Dis 1 - SE"},
             {guid = "b53767", name = "TnH vs Dis 2 - CoB"},
             {guid = "6261e9", name = "TnH vs Dis 3 - HnA"},
-            {guid = "b69915", name = "TnH vs Dis 1 - SE"},
-            {guid = "d82829", name = "TnH vs Dis 2 - CoB"},
-            {guid = "7faeca", name = "TnH vs Dis 3 - HnA"},
 },
     },
     ["5_3"] = {
@@ -1378,9 +1847,6 @@ deploymentMatrixDecks = {
             {guid = "8ba2f3", name = "TnH vs PtF 1 - SE"},
             {guid = "67ca48", name = "TnH vs PtF 2 - SnD"},
             {guid = "acb689", name = "TnH vs PtF 3 - HnA"},
-            {guid = "5dfde6", name = "TnH vs PtF 1 - SE"},
-            {guid = "47ec95", name = "TnH vs PtF 2 - SnD"},
-            {guid = "37386c", name = "TnH vs PtF 3 - HnA"},
 },
     },
     ["3_5"] = {
@@ -1395,9 +1861,6 @@ deploymentMatrixDecks = {
             {guid = "8ba2f3", name = "TnH vs PtF 1 - SE"},
             {guid = "67ca48", name = "TnH vs PtF 2 - SnD"},
             {guid = "acb689", name = "TnH vs PtF 3 - HnA"},
-            {guid = "5dfde6", name = "TnH vs PtF 1 - SE"},
-            {guid = "47ec95", name = "TnH vs PtF 2 - SnD"},
-            {guid = "37386c", name = "TnH vs PtF 3 - HnA"},
 },
     },
     ["5_4"] = {
@@ -1412,9 +1875,6 @@ deploymentMatrixDecks = {
             {guid = "41e4dd", name = "TnH vs Rec 1 - TP"},
             {guid = "38f59f", name = "TnH vs Rec 2 - DoW"},
             {guid = "82efe8", name = "TnH vs Rec 3 - SnD"},
-            {guid = "9138b2", name = "TnH vs Rec 1 - TP"},
-            {guid = "989896", name = "TnH vs Rec 2 - DoW"},
-            {guid = "421847", name = "TnH vs Rec 3 - SnD"},
 },
     },
     ["4_5"] = {
@@ -1429,9 +1889,6 @@ deploymentMatrixDecks = {
             {guid = "41e4dd", name = "TnH vs Rec 1 - TP"},
             {guid = "38f59f", name = "TnH vs Rec 2 - DoW"},
             {guid = "82efe8", name = "TnH vs Rec 3 - SnD"},
-            {guid = "9138b2", name = "TnH vs Rec 1 - TP"},
-            {guid = "989896", name = "TnH vs Rec 2 - DoW"},
-            {guid = "421847", name = "TnH vs Rec 3 - SnD"},
 },
     },
     ["2_4"] = {
@@ -1440,9 +1897,6 @@ deploymentMatrixDecks = {
             {guid = "8fc0f1", name = "PA vs Rec 1 - CoB"},
             {guid = "cb843a", name = "PA vs Rec 2 - TP"},
             {guid = "0d4f36", name = "PA vs Rec 3 - SE"},
-                    {guid = "464422", name = "PA vs Rec 1 - CoB"},
-            {guid = "69cf50", name = "PA vs Rec 2 - TP"},
-            {guid = "206974", name = "PA vs Rec 3 - SE"},
 },
     },
     ["4_2"] = {
@@ -1451,9 +1905,6 @@ deploymentMatrixDecks = {
             {guid = "8fc0f1", name = "PA vs Rec 1 - CoB"},
             {guid = "cb843a", name = "PA vs Rec 2 - TP"},
             {guid = "0d4f36", name = "PA vs Rec 3 - SE"},
-                    {guid = "464422", name = "PA vs Rec 1 - CoB"},
-            {guid = "69cf50", name = "PA vs Rec 2 - TP"},
-            {guid = "206974", name = "PA vs Rec 3 - SE"},
 },
     },
     ["2_2"] = {
@@ -1462,9 +1913,6 @@ deploymentMatrixDecks = {
             {guid = "104223", name = "PA vs PA 1 - SE"},
             {guid = "5fa95f", name = "PA vs PA 2 - CoB"},
             {guid = "71a63a", name = "PA vs PA 3 - TP"},
-                    {guid = "a03a73", name = "PA vs PA 1 - SE"},
-            {guid = "e60755", name = "PA vs PA 2 - CoB"},
-            {guid = "6f12b1", name = "PA vs PA 3 - TP"},
 },
     },
     ["3_3"] = {
@@ -1476,9 +1924,6 @@ deploymentMatrixDecks = {
             {guid = "b1fa49", name = "PtF vs PtF 1 - SnD"},
             {guid = "aaa962", name = "PtF vs PtF 2 - TP"},
             {guid = "81f229", name = "PtF vs PtF 3 - SE"},
-            {guid = "13cdbb", name = "PtF vs PtF 1 - SnD"},
-            {guid = "82d680", name = "PtF vs PtF 2 - TP"},
-            {guid = "86aa60", name = "PtF vs PtF 3 - SE"},
 },
     },
     ["3_1"] = {
@@ -1490,9 +1935,6 @@ deploymentMatrixDecks = {
             {guid = "ce2202", name = "PtF vs Dis 1 - SnD"},
             {guid = "a76f64", name = "PtF vs Dis 2 - TP"},
             {guid = "215479", name = "PtF vs Dis 3 - SE"},
-            {guid = "afd3f5", name = "PtF vs Dis 1 - SnD"},
-            {guid = "6c172b", name = "PtF vs Dis 2 - TP"},
-            {guid = "01abe3", name = "PtF vs Dis 3 - SE"},
 },
     },
     ["1_3"] = {
@@ -1504,9 +1946,6 @@ deploymentMatrixDecks = {
             {guid = "ce2202", name = "PtF vs Dis 1 - SnD"},
             {guid = "a76f64", name = "PtF vs Dis 2 - TP"},
             {guid = "215479", name = "PtF vs Dis 3 - SE"},
-            {guid = "afd3f5", name = "PtF vs Dis 1 - SnD"},
-            {guid = "6c172b", name = "PtF vs Dis 2 - TP"},
-            {guid = "01abe3", name = "PtF vs Dis 3 - SE"},
 },
     },
     ["3_2"] = {
@@ -1515,9 +1954,6 @@ deploymentMatrixDecks = {
             {guid = "653d63", name = "PtF vs PA 1 - DoW"},
             {guid = "bc3814", name = "PtF vs PA 2 - SnD"},
             {guid = "80af80", name = "PtF vs PA 3 - HnA"},
-                    {guid = "a5a7dc", name = "PtF vs PA 1 - DoW"},
-            {guid = "147027", name = "PtF vs PA 2 - SnD"},
-            {guid = "c1c27f", name = "PtF vs PA 3 - HnA"},
 },
     },
     ["2_3"] = {
@@ -1526,9 +1962,6 @@ deploymentMatrixDecks = {
             {guid = "653d63", name = "PtF vs PA 1 - DoW"},
             {guid = "bc3814", name = "PtF vs PA 2 - SnD"},
             {guid = "80af80", name = "PtF vs PA 3 - HnA"},
-                    {guid = "a5a7dc", name = "PtF vs PA 1 - DoW"},
-            {guid = "147027", name = "PtF vs PA 2 - SnD"},
-            {guid = "c1c27f", name = "PtF vs PA 3 - HnA"},
 },
     },
     ["3_4"] = {
@@ -1540,9 +1973,6 @@ deploymentMatrixDecks = {
             {guid = "0052d1", name = "PtF vs Recon 1 - HnA"},
             {guid = "7a9f56", name = "PtF vs Recon 2 - DoW"},
             {guid = "100d5d", name = "PtF vs Recon 3 - CoB"},
-            {guid = "e2a482", name = "PtF vs Recon 1 - HnA"},
-            {guid = "0cf328", name = "PtF vs Recon 2 - DoW"},
-            {guid = "c46522", name = "PtF vs Recon 3 - CoB"},
 },
     },
     ["4_3"] = {
@@ -1554,17 +1984,11 @@ deploymentMatrixDecks = {
             {guid = "0052d1", name = "PtF vs Recon 1 - HnA"},
             {guid = "7a9f56", name = "PtF vs Recon 2 - DoW"},
             {guid = "100d5d", name = "PtF vs Recon 3 - CoB"},
-            {guid = "e2a482", name = "PtF vs Recon 1 - HnA"},
-            {guid = "0cf328", name = "PtF vs Recon 2 - DoW"},
-            {guid = "c46522", name = "PtF vs Recon 3 - CoB"},
 },
     },
     ["1_1"] = {
         guid = "4409ba", name = "Disruption vs Disruption",
         cards = {
-            {guid = "49422d", name = "Dis vs Dis 1 - CoB"},
-            {guid = "86375f", name = "Dis vs Dis 2 - TP"},
-            {guid = "245d0a", name = "Dis vs Dis 3 - SE"},
             {guid = "3fc11c", name = "Dis vs Dis 1 - CoB"},
             {guid = "796c92", name = "Dis vs Dis 2 - TP"},
             {guid = "bdfb2a", name = "Dis vs Dis 3 - SE"},
@@ -1573,9 +1997,6 @@ deploymentMatrixDecks = {
     ["4_4"] = {
         guid = "793bc0", name = "Reconnaissance vs Reconnaissance",
         cards = {
-            {guid = "e154fa", name = "Rec vs Rec 1 - SE"},
-            {guid = "4c3e76", name = "Rec vs Rec 2 - CoB"},
-            {guid = "8d3618", name = "Rec vs Rec 3 - TP"},
             {guid = "262746", name = "Rec vs Rec 1 - SE"},
             {guid = "e4117b", name = "Rec vs Rec 2 - CoB"},
             {guid = "229fed", name = "Rec vs Rec 3 - TP"},
@@ -1584,9 +2005,6 @@ deploymentMatrixDecks = {
     ["1_4"] = {
         guid = "2c7cd1", name = "Disruption vs Reconnaissance",
         cards = {
-            {guid = "bca7d1", name = "Dis vs Rec 1 - TP"},
-            {guid = "c5b652", name = "Dis vs Rec 2 - DoW"},
-            {guid = "428ff1", name = "Dis vs Rec 3 - SnD"},
             {guid = "f1a6b5", name = "Dis vs Rec 1 - TP"},
             {guid = "b3addc", name = "Dis vs Rec 2 - DoW"},
             {guid = "002262", name = "Dis vs Rec 3 - SnD"},
@@ -1595,9 +2013,6 @@ deploymentMatrixDecks = {
     ["4_1"] = {
         guid = "2c7cd1", name = "Disruption vs Reconnaissance",
         cards = {
-            {guid = "bca7d1", name = "Dis vs Rec 1 - TP"},
-            {guid = "c5b652", name = "Dis vs Rec 2 - DoW"},
-            {guid = "428ff1", name = "Dis vs Rec 3 - SnD"},
             {guid = "f1a6b5", name = "Dis vs Rec 1 - TP"},
             {guid = "b3addc", name = "Dis vs Rec 2 - DoW"},
             {guid = "002262", name = "Dis vs Rec 3 - SnD"},
@@ -1606,9 +2021,6 @@ deploymentMatrixDecks = {
     ["1_2"] = {
         guid = "f1e22b", name = "Disruption vs Priority Assets",
         cards = {
-            {guid = "58b284", name = "Dis vs PA 1 - SE"},
-            {guid = "b53c20", name = "Dis vs PA 2 - TP"},
-            {guid = "dbfc1a", name = "Dis vs PA 3 - SnD"},
             {guid = "f9769a", name = "Dis vs PA 1 - SE"},
             {guid = "f83312", name = "Dis vs PA 2 - TP"},
             {guid = "4a79c4", name = "Dis vs PA 3 - SnD"},
@@ -1617,9 +2029,6 @@ deploymentMatrixDecks = {
     ["2_1"] = {
         guid = "f1e22b", name = "Disruption vs Priority Assets",
         cards = {
-            {guid = "58b284", name = "Dis vs PA 1 - SE"},
-            {guid = "b53c20", name = "Dis vs PA 2 - TP"},
-            {guid = "dbfc1a", name = "Dis vs PA 3 - SnD"},
             {guid = "f9769a", name = "Dis vs PA 1 - SE"},
             {guid = "f83312", name = "Dis vs PA 2 - TP"},
             {guid = "4a79c4", name = "Dis vs PA 3 - SnD"},
@@ -1640,9 +2049,6 @@ randomDeploymentDecks = {
             {guid = "88063f", name = "TnH vs TnH 1 - TP"},
             {guid = "32f3ae", name = "TnH vs TnH 2 - DoW"},
             {guid = "c08454", name = "TnH vs TnH 3 - SnD"},
-            {guid = "931f52", name = "TnH vs TnH 1 - TP"},
-            {guid = "5ad178", name = "TnH vs TnH 2 - DoW"},
-            {guid = "732920", name = "TnH vs TnH 3 - SnD"},
 },
     },
     {
@@ -1657,9 +2063,6 @@ randomDeploymentDecks = {
             {guid = "c0d4e5", name = "TnH vs PA 1 - CoB"},
             {guid = "e7b247", name = "TnH vs PA 2 - HnA"},
             {guid = "127066", name = "TnH vs PA 3 - DoW"},
-            {guid = "32cf71", name = "TnH vs PA 1 - CoB"},
-            {guid = "1d9c50", name = "TnH vs PA 2 - HnA"},
-            {guid = "c16f53", name = "TnH vs PA 3 - DoW"},
 },
     },
     {
@@ -1674,9 +2077,6 @@ randomDeploymentDecks = {
             {guid = "45bb37", name = "TnH vs Dis 1 - SE"},
             {guid = "b53767", name = "TnH vs Dis 2 - CoB"},
             {guid = "6261e9", name = "TnH vs Dis 3 - HnA"},
-            {guid = "b69915", name = "TnH vs Dis 1 - SE"},
-            {guid = "d82829", name = "TnH vs Dis 2 - CoB"},
-            {guid = "7faeca", name = "TnH vs Dis 3 - HnA"},
 },
     },
     {
@@ -1691,9 +2091,6 @@ randomDeploymentDecks = {
             {guid = "8ba2f3", name = "TnH vs PtF 1 - SE"},
             {guid = "67ca48", name = "TnH vs PtF 2 - SnD"},
             {guid = "acb689", name = "TnH vs PtF 3 - HnA"},
-            {guid = "5dfde6", name = "TnH vs PtF 1 - SE"},
-            {guid = "47ec95", name = "TnH vs PtF 2 - SnD"},
-            {guid = "37386c", name = "TnH vs PtF 3 - HnA"},
 },
     },
     {
@@ -1708,9 +2105,6 @@ randomDeploymentDecks = {
             {guid = "41e4dd", name = "TnH vs Rec 1 - TP"},
             {guid = "38f59f", name = "TnH vs Rec 2 - DoW"},
             {guid = "82efe8", name = "TnH vs Rec 3 - SnD"},
-            {guid = "9138b2", name = "TnH vs Rec 1 - TP"},
-            {guid = "989896", name = "TnH vs Rec 2 - DoW"},
-            {guid = "421847", name = "TnH vs Rec 3 - SnD"},
 },
     },
     {
@@ -1719,9 +2113,6 @@ randomDeploymentDecks = {
             {guid = "8fc0f1", name = "PA vs Rec 1 - CoB"},
             {guid = "cb843a", name = "PA vs Rec 2 - TP"},
             {guid = "0d4f36", name = "PA vs Rec 3 - SE"},
-                    {guid = "464422", name = "PA vs Rec 1 - CoB"},
-            {guid = "69cf50", name = "PA vs Rec 2 - TP"},
-            {guid = "206974", name = "PA vs Rec 3 - SE"},
 },
     },
     {
@@ -1730,9 +2121,6 @@ randomDeploymentDecks = {
             {guid = "104223", name = "PA vs PA 1 - SE"},
             {guid = "5fa95f", name = "PA vs PA 2 - CoB"},
             {guid = "71a63a", name = "PA vs PA 3 - TP"},
-                    {guid = "a03a73", name = "PA vs PA 1 - SE"},
-            {guid = "e60755", name = "PA vs PA 2 - CoB"},
-            {guid = "6f12b1", name = "PA vs PA 3 - TP"},
 },
     },
     {
@@ -1744,9 +2132,6 @@ randomDeploymentDecks = {
             {guid = "b1fa49", name = "PtF vs PtF 1 - SnD"},
             {guid = "aaa962", name = "PtF vs PtF 2 - TP"},
             {guid = "81f229", name = "PtF vs PtF 3 - SE"},
-            {guid = "13cdbb", name = "PtF vs PtF 1 - SnD"},
-            {guid = "82d680", name = "PtF vs PtF 2 - TP"},
-            {guid = "86aa60", name = "PtF vs PtF 3 - SE"},
 },
     },
     {
@@ -1758,9 +2143,6 @@ randomDeploymentDecks = {
             {guid = "ce2202", name = "PtF vs Dis 1 - SnD"},
             {guid = "a76f64", name = "PtF vs Dis 2 - TP"},
             {guid = "215479", name = "PtF vs Dis 3 - SE"},
-            {guid = "afd3f5", name = "PtF vs Dis 1 - SnD"},
-            {guid = "6c172b", name = "PtF vs Dis 2 - TP"},
-            {guid = "01abe3", name = "PtF vs Dis 3 - SE"},
 },
     },
     {
@@ -1769,9 +2151,6 @@ randomDeploymentDecks = {
             {guid = "653d63", name = "PtF vs PA 1 - DoW"},
             {guid = "bc3814", name = "PtF vs PA 2 - SnD"},
             {guid = "80af80", name = "PtF vs PA 3 - HnA"},
-                    {guid = "a5a7dc", name = "PtF vs PA 1 - DoW"},
-            {guid = "147027", name = "PtF vs PA 2 - SnD"},
-            {guid = "c1c27f", name = "PtF vs PA 3 - HnA"},
 },
     },
     {
@@ -1783,17 +2162,11 @@ randomDeploymentDecks = {
             {guid = "0052d1", name = "PtF vs Recon 1 - HnA"},
             {guid = "7a9f56", name = "PtF vs Recon 2 - DoW"},
             {guid = "100d5d", name = "PtF vs Recon 3 - CoB"},
-            {guid = "e2a482", name = "PtF vs Recon 1 - HnA"},
-            {guid = "0cf328", name = "PtF vs Recon 2 - DoW"},
-            {guid = "c46522", name = "PtF vs Recon 3 - CoB"},
 },
     },
     {
         guid = "4409ba", name = "Disruption vs Disruption",
         cards = {
-            {guid = "49422d", name = "Dis vs Dis 1 - CoB"},
-            {guid = "86375f", name = "Dis vs Dis 2 - TP"},
-            {guid = "245d0a", name = "Dis vs Dis 3 - SE"},
             {guid = "3fc11c", name = "Dis vs Dis 1 - CoB"},
             {guid = "796c92", name = "Dis vs Dis 2 - TP"},
             {guid = "bdfb2a", name = "Dis vs Dis 3 - SE"},
@@ -1802,9 +2175,6 @@ randomDeploymentDecks = {
     {
         guid = "793bc0", name = "Reconnaissance vs Reconnaissance",
         cards = {
-            {guid = "e154fa", name = "Rec vs Rec 1 - SE"},
-            {guid = "4c3e76", name = "Rec vs Rec 2 - CoB"},
-            {guid = "8d3618", name = "Rec vs Rec 3 - TP"},
             {guid = "262746", name = "Rec vs Rec 1 - SE"},
             {guid = "e4117b", name = "Rec vs Rec 2 - CoB"},
             {guid = "229fed", name = "Rec vs Rec 3 - TP"},
@@ -1813,9 +2183,6 @@ randomDeploymentDecks = {
     {
         guid = "2c7cd1", name = "Disruption vs Reconnaissance",
         cards = {
-            {guid = "bca7d1", name = "Dis vs Rec 1 - TP"},
-            {guid = "c5b652", name = "Dis vs Rec 2 - DoW"},
-            {guid = "428ff1", name = "Dis vs Rec 3 - SnD"},
             {guid = "f1a6b5", name = "Dis vs Rec 1 - TP"},
             {guid = "b3addc", name = "Dis vs Rec 2 - DoW"},
             {guid = "002262", name = "Dis vs Rec 3 - SnD"},
@@ -1824,9 +2191,6 @@ randomDeploymentDecks = {
     {
         guid = "f1e22b", name = "Disruption vs Priority Assets",
         cards = {
-            {guid = "58b284", name = "Dis vs PA 1 - SE"},
-            {guid = "b53c20", name = "Dis vs PA 2 - TP"},
-            {guid = "dbfc1a", name = "Dis vs PA 3 - SnD"},
             {guid = "f9769a", name = "Dis vs PA 1 - SE"},
             {guid = "f83312", name = "Dis vs PA 2 - TP"},
             {guid = "4a79c4", name = "Dis vs PA 3 - SnD"},
@@ -1837,11 +2201,11 @@ deploymentCardSourceDeckByGuid = {}
 deploymentCardSourceDeckByName = {}
 layoutArtCardTag = "layout_art_card"
 loadedLayoutArtCardGuid = nil
-loadedLayoutArtTargetPosition = {75.35, 0.97, 0.00}
+loadedLayoutArtTargetPosition = {60.75, 0.97, 0.00}
 loadedLayoutArtTargetScale = {0.97, 1.00, 1.03}
 layoutArtDeckScale = {2.00, 1.00, 2.10}
 
-deploymentLockTargetPosition = {75.37, 1.02, 0.00}
+deploymentLockTargetPosition = {60.75, 1.02, 0.00}
 -- Map (deployment) cards should always settle face up at y=180. Layout-art helper
 -- cards keep their own rotation (they have their own orientation handling).
 -- Absolute (not a +180 toggle) so a re-press is idempotent.
@@ -1852,13 +2216,14 @@ deploymentLockButtonOffsetX = -1.60
 deploymentLockButtonWorldZ = {[1] = 3.00, [2] = 0.10, [3] = -2.80}
 deploymentRandomPickButtonWorldX = 31.50
 deploymentRandomPickButtonWorldY = 1.00
-deploymentRandomPickButtonWorldZ = -0.10
+deploymentRandomPickButtonWorldZ = generateMissionWorldZ
 
 function writeGenerateMissionButton()
-    local center = self.positionToLocal({generateMissionWorldX, generateMissionWorldY, generateMissionWorldZ})
+    local center = self.positionToLocal({generateMissionWorldX + setupMidRowXOffset(), generateMissionWorldY, generateMissionWorldZ})
     local missionReady = gameMode == "game" and packSelected ~= nil
+    local generateLabel = gameModeUsesMatrixProps() and "Generate Missions & Layouts" or "Generate Missions"
     createButtonWithBorder({
-        label = "Generate Missions & Layouts", click_function = missionReady and "generateMission" or "none", function_owner = self,
+        label = generateLabel, click_function = missionReady and "generateMission" or "none", function_owner = self,
         position = {center.x, center.y, center.z}, rotation = {0, 0, 0},
         height = dispositionButtonHeight, width = 4500, font_size = 350,
         color = {0.191999942, 0.701, 0.167999923}, font_color = {0, 0, 0},
@@ -1868,7 +2233,7 @@ function writeGenerateMissionButton()
 end
 
 function writeDeploymentRandomPickButton()
-    local btn = self.positionToLocal({deploymentRandomPickButtonWorldX, deploymentRandomPickButtonWorldY, deploymentRandomPickButtonWorldZ})
+    local btn = self.positionToLocal({deploymentRandomPickButtonWorldX + setupMidRowXOffset(), deploymentRandomPickButtonWorldY, deploymentRandomPickButtonWorldZ})
     createButtonWithBorder({
         label = "Random Single Layout", click_function = "randomMission", function_owner = self,
         position = {btn.x, btn.y, btn.z}, rotation = {0, 0, 0},
@@ -2286,7 +2651,7 @@ function normalizeMissionName(s)
     return (s:lower():gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
-mapCreatorDisplaySuffixes = {"Cra5hNatural", "Team Belgium", "Izar", "BTTF"}
+mapCreatorDisplaySuffixes = {"Cra5hNatural", "Team Belgium", "Izar", "BTTF", "Battlemaster - BTTF Ruins", "Battlemaster - Desert", "Alvaricus", "Zim", "T5S2"}
 
 -- Map cards carry creator credit at the end of their visible nickname. Strip
 -- only a recognized creator suffix when matching shared layout art or reading
@@ -2478,9 +2843,10 @@ end
 
 -- Narrow a layout's variant list to the map filter's wishes, using the baked
 -- MAP_INDEX (creator/eligible) and the Global "activeMapCreators" set written by
--- the map-filter overlay. Drops ineligible maps; then, if any creators are
--- active, prefers their maps but falls back to any eligible map so a layout slot
--- is never left empty when an active creator has no map for this matchup.
+-- the map-filter overlay. With no active filter, every eligible map can roll. With
+-- one or more active filters, only those creators are eligible; this keeps repeat
+-- Generate clicks from silently mixing in other creators while cards are moving
+-- back to their source bags.
 function filterDeploymentVariants(variants)
     local index = Global.getTable("MAP_INDEX") or {}
     local active = Global.getTable("activeMapCreators") or {}
@@ -2504,21 +2870,51 @@ function filterDeploymentVariants(variants)
             table.insert(preferred, card)
         end
     end
-    if #preferred > 0 then
-        return preferred
+    return preferred
+end
+
+function addPlacedDeploymentCardsForDeck(cards, deckGuid)
+    if not deckGuid then return end
+    local seen = {}
+    for _, card in ipairs(cards) do
+        if card.guid then seen[card.guid] = true end
     end
-    return eligible
+
+    local slots = {}
+    for _, slot in ipairs(missionSlots) do
+        if slot.role == "deployment" then table.insert(slots, slot) end
+    end
+    table.insert(slots, {position = deploymentLockTargetPosition})
+
+    for _, slot in ipairs(slots) do
+        for _, obj in ipairs(getObjectsInMissionSlot(slot, nil)) do
+            local guid = obj.getGUID and obj.getGUID() or nil
+            if guid and not seen[guid] then
+                local sourceDeck = getDeploymentCardSourceDeck(obj)
+                if sourceDeck and sourceDeck.getGUID and sourceDeck.getGUID() == deckGuid then
+                    local name = obj.getName and obj.getName() or ""
+                    table.insert(cards, {guid = guid, nickname = name, name = name})
+                    seen[guid] = true
+                end
+            end
+        end
+    end
 end
 
 function chooseDeploymentCardsFromDeckInfo(deckInfo, count)
     cacheDeploymentDeckContents()
     local choices = {}
     local deck = deckInfo and getObjectFromGUID(deckInfo.guid) or nil
-    local cards = deckInfo and deckInfo.cards or nil
+    local cards = deck and deck.getObjects and deck.getObjects() or {}
 
-    if not cards then
-        cards = deck and deck.getObjects and deck.getObjects() or {}
+    -- The save/manifest are now the source of truth for map-card inventory. The
+    -- hand-written card lists remain as fallback metadata for unusual load states,
+    -- but normal generation reads the live source bag so imported static cards do
+    -- not also need to be duplicated into startMenu tables.
+    if #cards == 0 and deckInfo and deckInfo.cards then
+        cards = deckInfo.cards
     end
+    addPlacedDeploymentCardsForDeck(cards, deckInfo and deckInfo.guid)
 
     local cardsByLayout = {}
     local cardsWithoutLayout = {}
@@ -2537,8 +2933,18 @@ function chooseDeploymentCardsFromDeckInfo(deckInfo, count)
         local variants = filterDeploymentVariants(cardsByLayout[layoutIndex] or {})
         if #variants > 0 then
             table.insert(selectedCards, variants[math.random(#variants)])
-        elseif #cardsWithoutLayout > 0 then
-            table.insert(selectedCards, table.remove(cardsWithoutLayout, math.random(#cardsWithoutLayout)))
+        else
+            local fallbackVariants = filterDeploymentVariants(cardsWithoutLayout)
+            if #fallbackVariants > 0 then
+                local picked = fallbackVariants[math.random(#fallbackVariants)]
+                for idx, card in ipairs(cardsWithoutLayout) do
+                    if card.guid == picked.guid then
+                        table.remove(cardsWithoutLayout, idx)
+                        break
+                    end
+                end
+                table.insert(selectedCards, picked)
+            end
         end
     end
 
@@ -2811,6 +3217,120 @@ end
 --   "random" -> place exactly one randomly-chosen matchup card (Random Mission).
 -- Primary mission resolution, cleanup, cooldown and all resiliency are identical
 -- in both modes.
+-- ===================== Legacy Battlemaster dynamic-maps provider =====================
+-- Kept as dormant scaffolding for the old in-TTS dynamic card path. The visible
+-- map filter now uses static LCT map cards only, so runMissionGeneration no longer
+-- branches here.
+BATTLEMASTER_SPAWNER_GUID = "b4d10a"
+
+battlemasterArchetypeByDisposition = {
+    ["Disruption"] = "disruption",
+    ["Priority Assets"] = "priority-assets",
+    ["Purge the Foe"] = "purge-the-foe",
+    ["Reconnaissance"] = "reconnaissance",
+    ["Take and Hold"] = "take-and-hold",
+}
+
+function battlemasterArchetypeForDisposition(index)
+    local label = dispositionValues[normalizeDispositionIndex(index)] or ""
+    return battlemasterArchetypeByDisposition[label]
+end
+
+-- Destroy every generated Battlemaster card (deployment + layout slots AND the
+-- lock target) regardless of where it sits; they have no source deck to return to.
+function destroyGeneratedBattlemasterCards()
+    local removed = 0
+    for _, obj in ipairs(getAllObjects()) do
+        if obj.hasTag and obj.hasTag("battlemaster_generated") then
+            obj.destruct()
+            removed = removed + 1
+        end
+    end
+    return removed
+end
+
+function battlemasterDeploymentSlotPositions()
+    local positions = {}
+    for _, slot in ipairs(missionSlots) do
+        if slot.role == "deployment" and slot.index ~= nil then
+            local p = slot.position
+            positions[slot.index] = {x = p[1], y = p[2], z = p[3]}
+        end
+    end
+    return positions
+end
+
+function runBattlemasterMissionGeneration(deploymentMode)
+    if gameMode ~= "game" or not packSelected then return end
+    if generateMissionCooldownActive then return end
+
+    local archetypeA = battlemasterArchetypeForDisposition(redDispositionSelected)
+    local archetypeB = battlemasterArchetypeForDisposition(blueDispositionSelected)
+    if archetypeA == nil or archetypeB == nil then
+        broadcastToAll("Battlemaster: could not map dispositions to force archetypes.", "Yellow")
+        return
+    end
+    local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
+    if spawner == nil then
+        broadcastToAll("Battlemaster spawner object not found.", "Red")
+        return
+    end
+
+    generateMissionCooldownActive = true
+    missionDealInProgress = true
+
+    -- Ownership: the spawner only ASSEMBLES (fetch + reconstruct + return card JSON).
+    -- We do NOT mutate the table here. If assembly fails the table is left untouched
+    -- (clean rollback); all clearing/spawning happens in onBattlemasterCardsReady once
+    -- the card JSON is in hand.
+    broadcastToAll("Battlemaster: generating maps for "
+        .. tostring(dispositionValues[normalizeDispositionIndex(redDispositionSelected)]) .. " vs "
+        .. tostring(dispositionValues[normalizeDispositionIndex(blueDispositionSelected)]) .. "...", {0.4, 0.8, 1})
+
+    spawner.call("requestMatchupCards", {
+        archetypeA = archetypeA,
+        archetypeB = archetypeB,
+        mode = deploymentMode,
+        slotPositions = battlemasterDeploymentSlotPositions(),
+        rotationY = (deploymentMapCardRotation and deploymentMapCardRotation[2]) or 180,
+        callbackGuid = self.getGUID(),
+        callbackName = "onBattlemasterCardsReady",
+    })
+end
+
+-- Spawner callback (exactly-once). startMenu owns all table mutation here: on failure
+-- nothing changed (rollback); on success we clear the old set and spawn the new cards.
+function onBattlemasterCardsReady(result)
+    if type(result) ~= "table" or not result.ok then
+        finishMissionDeal()
+        local err = type(result) == "table" and result.error or "unknown error"
+        broadcastToAll("Battlemaster generation failed: " .. tostring(err) .. " (table unchanged).", {1, 0.4, 0.4})
+        return
+    end
+
+    -- Success: now it is safe to clear the previous set and place the new cards.
+    destroyGeneratedBattlemasterCards()
+    returnCardsInDeploymentSlotsToDeck(true)
+
+    local placed = 0
+    for _, cardJson in pairs(result.cards or {}) do
+        spawnObjectJSON({
+            json = cardJson,
+            callback_function = function(obj)
+                if obj then
+                    if obj.addTag then obj.addTag("battlemaster_generated") end
+                    if obj.setVar then obj.setVar("battlemasterGenerated", true) end
+                end
+            end,
+        })
+        placed = placed + 1
+    end
+
+    finishMissionDeal()
+    broadcastToAll("Battlemaster: placed " .. tostring(placed)
+        .. " map card(s). Press Load Map on a card to spawn its terrain.", {0.4, 1, 0.7})
+end
+
 function runMissionGeneration(deploymentMode)
     if gameMode ~= "game" or not packSelected then
         return
@@ -2870,12 +3390,18 @@ function runMissionGeneration(deploymentMode)
                     -- scale, which is already the intended preview size, so they are
                     -- not resized at generation (only on game start, to 1.0).
                     table.insert(primaryPlacements, {order = order, deck = deck, guid = info and info.guid or nil, position = slot.displayPosition or slot.position})
-                elseif slot.role == "deployment" then
+                elseif slot.role == "deployment" and not combatPatrolMode then
+                    -- Combat Patrol fills the deployment map slots from its own
+                    -- map bag (see dealCombatPatrolMaps), so it skips the matchup
+                    -- matrix here -- otherwise a Take-and-Hold disposition would
+                    -- stack a matrix map under the dealt Combat Patrol card.
                     local info = deploymentChoices[slot.index]
                     if info and info.guid then
                         table.insert(deploymentPlacements, {role = "deployment", deck = info.deck, guid = info.guid, position = slot.position, rotation = deploymentMapCardRotation, sourceDeckGuid = info.deckGuid, flip = false, lock = true})
                     end
-                elseif slot.role == "layout" then
+                elseif slot.role == "layout" and not combatPatrolMode then
+                    -- Combat Patrol generates missions only -- no layout art from
+                    -- deck fb4b5d, so skip placing any layout slot.
                     local info = layoutChoices[slot.index]
                     if info and info.guid then
                         table.insert(deploymentPlacements, {role = "layout", deck = info.deck, guid = info.guid, position = slot.position, sourceDeckGuid = info.deckGuid, flip = true, lock = true})
@@ -2911,6 +3437,80 @@ end
 
 function generateMission()
     runMissionGeneration("all")
+    -- Combat Patrol additionally deals 3 random map cards from its own bag into
+    -- the deployment slots. runMissionGeneration is untouched: in this mode it
+    -- resolves no matchup maps (the deployment slots stay empty for it), so the
+    -- two deals never contend for the same slots.
+    if combatPatrolMode then
+        dealCombatPatrolMaps()
+    end
+end
+
+-- Return every already-dealt CP map card to the bag so a re-press reshuffles
+-- cleanly instead of stacking. Cards carry combatPatrolMapCardTag while loose.
+function returnCombatPatrolMapsToBag(bag)
+    for _, obj in ipairs(getAllObjects()) do
+        if obj.hasTag and obj.hasTag(combatPatrolMapCardTag) then
+            pcall(function()
+                obj.setLock(false)
+                bag.putObject(obj)
+            end)
+        end
+    end
+end
+
+combatPatrolDealInProgress = false
+
+function dealCombatPatrolMaps()
+    if combatPatrolDealInProgress then return end
+    local bag = getObjectFromGUID(COMBAT_PATROL_BAG_GUID)
+    if not bag or not bag.takeObject then
+        broadcastToAll("Combat Patrol map bag not found.", {1, 0.4, 0.4})
+        return
+    end
+    combatPatrolDealInProgress = true
+
+    returnCombatPatrolMapsToBag(bag)
+
+    -- Let the returns settle so the bag holds the full set again, then shuffle
+    -- and deal 3 cards into the deployment slots.
+    Wait.frames(function()
+        local ok, err = pcall(function()
+            if bag.shuffle then bag.shuffle() end
+            dealCombatPatrolMapCard(bag, combatPatrolMapSlotPositions, {1, 2, 3}, 1)
+        end)
+        if not ok then
+            print("dealCombatPatrolMaps failed: " .. tostring(err))
+            combatPatrolDealInProgress = false
+        end
+    end, 30)
+end
+
+-- One card per frame (mirrors dealMissionCards) so repeated takeObject calls on
+-- the bag don't collide within a single frame.
+function dealCombatPatrolMapCard(bag, positions, order, i)
+    if i > #order then
+        combatPatrolDealInProgress = false
+        return
+    end
+    local pos = positions[order[i]]
+    if pos then
+        pcall(function()
+            bag.takeObject({
+                position = pos,
+                rotation = combatPatrolMapCardRotation,
+                smooth = true,
+                callback_function = function(card)
+                    if not card then return end
+                    card.addTag(combatPatrolMapCardTag)
+                    card.tooltip = true
+                    card.interactable = true
+                    Wait.frames(function() if card then card.setLock(true) end end, 1)
+                end,
+            })
+        end)
+    end
+    Wait.frames(function() dealCombatPatrolMapCard(bag, positions, order, i + 1) end, 1)
 end
 
 function drawDeployZone(zone)
@@ -2951,6 +3551,9 @@ function drawDeployZone(zone)
         end
         if drawData.type == "circleDeployment" then
             drawCircleDeployment(drawData)
+        end
+        if drawData.type == "cornerPolyline" then
+            drawCornerPolyline(drawData)
         end
     end
     setDeployHeight()
@@ -3210,6 +3813,69 @@ function drawQuarter(drawData)
         linePos.x = -linePos.x
     end
     spawnLine(linePos, lineRot, lineScale, drawData.color, "deployZone") -- long line
+end
+
+function drawSegment(x1, z1, x2, z2, color, type)
+    local dx = x2 - x1
+    local dz = z2 - z1
+    local length = math.sqrt(dx * dx + dz * dz)
+    if length <= 0 then
+        return
+    end
+
+    -- Yaw is negated vs a plain atan2(dz,dx): TTS's Y rotation is the opposite
+    -- handedness to our (x,z) math, so without this diagonals come out mirrored
+    -- (slope flipped) while axis-aligned segments look fine either way.
+    local yaw
+    if math.abs(dx) < 1e-6 then
+        yaw = dz >= 0 and -90 or 90
+    else
+        yaw = -math.deg(math.atan(dz / dx))
+        if dx < 0 then
+            yaw = yaw + 180
+        end
+    end
+
+    spawnLine(
+        {x = (x1 + x2) / 2, y = deployLineYPos, z = (z1 + z2) / 2},
+        {x = 0, y = yaw, z = 0},
+        {x = length, y = deployLineHeight, z = 0.02},
+        color,
+        type
+    )
+end
+
+function drawCornerPolyline(drawData, tag)
+    local mat = getObjectFromGUID(mat_GUID)
+    if not mat or not drawData.points then return end
+    tag = tag or "deployZone"
+
+    local mapWidth = mat.getScale().z * sizeMulti
+    local mapHeight = mat.getScale().x * sizeMulti
+    local halfWidth = mapWidth / 2
+    local halfHeight = mapHeight / 2
+    local pos = drawData.position or "bottomLeft"
+
+    local function worldPoint(point)
+        local fromLeft = math.min(point[1] or 0, mapWidth)
+        local fromBottom = math.min(point[2] or 0, mapHeight)
+        if pos == "topRight" then
+            return {
+                x = halfHeight - fromBottom,
+                z = -halfWidth + fromLeft,
+            }
+        end
+        return {
+            x = -halfHeight + fromBottom,
+            z = halfWidth - fromLeft,
+        }
+    end
+
+    for i = 1, #drawData.points - 1 do
+        local a = worldPoint(drawData.points[i])
+        local b = worldPoint(drawData.points[i + 1])
+        drawSegment(a.x, a.z, b.x, b.z, drawData.color, tag)
+    end
 end
 
 function drawCircle(drawData, type)
@@ -3649,20 +4315,307 @@ function deployUpDown(upDown)
     placeDeploy()
 end
 
+-- The Battlemaster map mat is a Custom_Model whose pivot sits at this world Y,
+-- well below the terrain (y~1) and distinct from the persistent table surface mat
+-- (mat_GUID, at ~-9.52). Both the dynamic spawner's battlemat and the imported
+-- static cards place it here, so position is the universal signal.
+BM_MAT_PIVOT_Y = -10.13
+BM_MAT_PIVOT_TOLERANCE = 0.25
+
+-- Automatic mat randomization is keyed by the baked MAP_INDEX. That lets us
+-- identify a just-loaded static map while it is still inside a source bag,
+-- without reading card tags at runtime.
+function loadedMapCreator(params)
+    local guid = params and params.guid
+    if not guid then return nil end
+    local meta = (Global.getTable("MAP_INDEX") or {})[guid]
+    return type(meta) == "table" and meta.creator or nil
+end
+
+function mapCreatorIsBattlemasterBttfRuins(params)
+    return loadedMapCreator(params) == "battlemaster_bttf_ruins"
+end
+
+function mapCreatorIsBattlemasterBttf(params)
+    return loadedMapCreator(params) == "battlemaster_bttf"
+end
+
+function mapCreatorIsBattlemasterDesert(params)
+    return loadedMapCreator(params) == "battlemaster_armageddon_desert"
+end
+
+-- Find the just-loaded map's own mat(s): the spawner-tagged battlemat, or any
+-- custom-mesh object parked at the battlemat pivot Y. Excludes the persistent
+-- table surface mat (mat_GUID) so we never re-skin the board itself. Note:
+-- getName() returns an object's nickname (empty here), so we identify the mat by
+-- position + the presence of a custom mesh, not by type name.
+function findBattlemasterMats()
+    local found = {}
+    for _, obj in ipairs(getAllObjects()) do
+        if obj.getGUID() ~= mat_GUID and math.abs(obj.getPosition().y - BM_MAT_PIVOT_Y) < BM_MAT_PIVOT_TOLERANCE then
+            local ok, custom = pcall(function() return obj.getCustomObject() end)
+            if ok and type(custom) == "table" and type(custom.mesh) == "string" and custom.mesh ~= "" then
+                table.insert(found, obj)
+            end
+        end
+    end
+    return found
+end
+
+-- Per-mat memory of the image a mat shipped with, so "Default" in the Mat
+-- Randomizer can restore it. Keyed by GUID; populated the first time either the
+-- auto-randomizer or the picker overrides a given mat (before the override), so
+-- "original" always means the map's own image, never a previous override.
+matOriginalDiffuse = {}
+
+function captureMatOriginal(mat)
+    local guid = mat.getGUID()
+    if matOriginalDiffuse[guid] ~= nil then return end
+    local ok, custom = pcall(function() return mat.getCustomObject() end)
+    if ok and type(custom) == "table" then
+        matOriginalDiffuse[guid] = custom.diffuse or ""
+    end
+end
+
+-- Swap a mat's diffuse image and reload so the change renders (TTS requires the
+-- reload for custom models). Same primitive the mat URL tool uses.
+function applyMatDiffuse(mat, url)
+    local wasLocked = mat.getLock()
+    local wasInteractable = mat.interactable
+    local customInfo = mat.getCustomObject()
+    customInfo.diffuse = url
+    mat.setCustomObject(customInfo)
+    restoreMatFlags(mat.reload(), wasLocked, wasInteractable)
+end
+
+-- After selected Battlemaster static maps load, swap their own mat image for a
+-- random URL baked from that theme's mat CSV. The mat spawns a few frames after
+-- Load Map (post-wipe), so we defer past terrain spawn and retry in case a heavy
+-- theme spawns late. Same diffuse-swap + reload pattern the mat URL tool uses on
+-- the table surface.
+-- Temporary diagnostic toggle: prints to the host's chat so we can see whether
+-- detection/find/apply each fire. Set false once the feature is confirmed.
+BM_MAT_DEBUG = true
+function bmMatDebug(msg)
+    if BM_MAT_DEBUG then printToAll("[BM MAT] " .. msg, {0.4, 0.8, 1}) end
+end
+
+-- Frames to wait before the first look: past the card's board wipe (~frame 4) so
+-- we never re-skin the OUTGOING map's mat, which is about to be deleted.
+BM_MAT_FLOOR_FRAMES = 10
+-- How often to re-check, and the total frame budget, for a slow-spawning theme.
+BM_MAT_POLL_FRAMES = 3
+BM_MAT_MAX_FRAMES = 90
+
+function makeBattlemasterMatNonInteractive(mat)
+    if not mat then return end
+    mat.setLock(true)
+    mat.interactable = false
+    mat.tooltip = false
+end
+
+function enforceBattlemasterMatsNonInteractive()
+    local budget = BM_MAT_MAX_FRAMES
+    local function poll()
+        local mats = findBattlemasterMats()
+        if #mats > 0 then
+            for _, mat in ipairs(mats) do
+                makeBattlemasterMatNonInteractive(mat)
+            end
+            return
+        end
+        budget = budget - BM_MAT_POLL_FRAMES
+        if budget > 0 then Wait.frames(poll, BM_MAT_POLL_FRAMES) end
+    end
+    Wait.frames(poll, BM_MAT_FLOOR_FRAMES)
+end
+
+function reskinBattlemasterMatFromPool(urls, label)
+    if not BM_MAT_RANDOMIZER_ENABLED then return end
+    if type(urls) ~= "table" or #urls == 0 then
+        bmMatDebug(label .. " empty -- not baked into this build.")
+        return
+    end
+    local url = urls[math.random(#urls)]
+    -- Poll for the freshly spawned mat and apply the instant it appears: fast, and
+    -- early enough that the map's original mat image often hasn't finished loading,
+    -- so the swap reads as smooth rather than a visible re-texture.
+    local budget = BM_MAT_MAX_FRAMES
+    local function poll()
+        local mats = findBattlemasterMats()
+        if #mats > 0 then
+            bmMatDebug("applying " .. url .. " to " .. #mats .. " mat(s)")
+            for _, mat in ipairs(mats) do
+                makeBattlemasterMatNonInteractive(mat)
+                captureMatOriginal(mat)
+                applyMatDiffuse(mat, url)
+            end
+            return
+        end
+        budget = budget - BM_MAT_POLL_FRAMES
+        if budget > 0 then
+            Wait.frames(poll, BM_MAT_POLL_FRAMES)
+        else
+            bmMatDebug("gave up: no mat found within budget.")
+        end
+    end
+    Wait.frames(poll, BM_MAT_FLOOR_FRAMES)
+end
+
+function reskinBattlemasterBttfRuinsMat()
+    reskinBattlemasterMatFromPool(BTTF_RUINS_MAT_URLS, "BTTF_RUINS_MAT_URLS")
+end
+
+function reskinBattlemasterDesertMat()
+    reskinBattlemasterMatFromPool(DESERT_MAT_URLS, "DESERT_MAT_URLS")
+end
+
+-- ===================== Mat Randomizer manual picker =====================
+-- Lets the host pick a specific city mat for the loaded map's mat. Value 1 is
+-- "Default" (restore the map's original image); 2..N are the named mats from
+-- all_mats.csv. The control's UI now lives as XML on the Map Creator Filter object
+-- (mapFilter.ttslua, GUID 369707): its buttons forward here via obj.call, and we
+-- push the current selection label back into that XML after every cycle. The state
+-- and the diffuse-swap logic stay here because they share matOriginalDiffuse and
+-- the baked CITY_MAT_* tables with the auto-reskin-on-load path above.
+matRandomizerSelected = 1
+-- The filter object that hosts the Mat Randomizer XML square; we push the value
+-- label into its <Text id="matRandoValue"> whenever the selection changes.
+MAT_RANDO_PANEL_GUID = "369707"
+
+function matRandomizerOptionCount()
+    return (type(CITY_MAT_NAMES) == "table" and #CITY_MAT_NAMES or 0) + 1
+end
+
+function matRandomizerLabel()
+    if matRandomizerSelected <= 1 then return "Default" end
+    return CITY_MAT_NAMES[matRandomizerSelected - 1] or "Default"
+end
+
+function matRandomizerCycle(step)
+    local count = matRandomizerOptionCount()
+    matRandomizerSelected = matRandomizerSelected + step
+    if matRandomizerSelected > count then matRandomizerSelected = 1 end
+    if matRandomizerSelected < 1 then matRandomizerSelected = count end
+    pushMatRandoLabel()
+end
+
+-- Mirror the current selection label into the XML square hosted on the filter
+-- object. Safe to call before that panel exists (no-op until it does).
+function pushMatRandoLabel()
+    local panel = getObjectFromGUID(MAT_RANDO_PANEL_GUID)
+    if panel then panel.UI.setValue("matRandoValue", matRandomizerLabel()) end
+end
+function matRandomizerUp() matRandomizerCycle(1) end
+function matRandomizerDown() matRandomizerCycle(-1) end
+
+-- One-click "Default": reset the selection to 1 (the map's own image), repaint the
+-- picker label, and apply immediately. Driven by the Default button in the XML square.
+function matRandomizerApplyDefault()
+    matRandomizerSelected = 1
+    pushMatRandoLabel()
+    matRandomizerApply()
+end
+
+-- One-click "Random": pick a random named city mat (index 2..N, skipping Default),
+-- repaint the picker label so it shows which one landed, and apply. Falls back to
+-- Default if nothing is baked. Driven by the Random button in the XML square.
+function matRandomizerRandom()
+    local count = matRandomizerOptionCount()
+    if count <= 1 then
+        matRandomizerSelected = 1
+    else
+        matRandomizerSelected = math.random(2, count)
+    end
+    pushMatRandoLabel()
+    matRandomizerApply()
+end
+
+-- Apply targets: the loaded map's mat(s); if none, the table surface mat so the
+-- picker still does something sensible without a map loaded.
+function matRandomizerTargets()
+    local mats = findBattlemasterMats()
+    if #mats == 0 then
+        local surface = getObjectFromGUID(mat_GUID)
+        if surface then mats = {surface} end
+    end
+    return mats
+end
+
+function matRandomizerApply()
+    local mats = matRandomizerTargets()
+    if #mats == 0 then
+        broadcastToAll("Mat Randomizer: no mat to change.", "Yellow")
+        return
+    end
+    local isDefault = matRandomizerSelected <= 1
+    local url = (not isDefault) and CITY_MAT_URLS[matRandomizerSelected - 1] or nil
+    for _, mat in ipairs(mats) do
+        if isDefault then
+            local orig = matOriginalDiffuse[mat.getGUID()]
+            if orig ~= nil then applyMatDiffuse(mat, orig) end
+        else
+            captureMatOriginal(mat)
+            applyMatDiffuse(mat, url)
+        end
+    end
+    broadcastToAll("Mat Randomizer: applied " .. matRandomizerLabel(), {0.4, 0.8, 1})
+end
+
 -- Called (via obj.call) by a map card the instant its "Load Map" button is
 -- pressed -- BEFORE the card wipes itself. params = {name=, guid=}. We announce
 -- the map and auto-select the deployment zone encoded before the optional creator
 -- credit, e.g. "... - Tipping Point - Team Belgium".
 function onMapCardLoaded(params)
     local name = (params and params.name) or "?"
+    -- Provider tag = a transient card from the dynamic spawner (no paired static
+    -- art). This drives the branch below. It is NOT the same as "Battlemaster
+    -- creator": the imported static Battlemaster deck cards carry no provider but
+    -- DO have paired layout art, so they must take the else branch.
+    local isBattlemaster = type(params) == "table" and params.provider == "battlemaster"
 
     -- Snapshot the pre-load selection state BEFORE anything mutates or the card
     -- wipes the board, so "Back to Selection" can return here.
     captureRestorePoint()
 
-    -- Move the paired layout art to the mission board before the map wipe. The
-    -- target sits outside the wipe area, so it survives without MapExclude.
-    placeLoadedLayoutArtCard(name)
+    -- DEBUG tag tool: remember which map is loaded so backToSelectionDebug can
+    -- key its recorded obj_* tags by this card's GUID.
+    debugCurrentMapGuid = params and params.guid or nil
+    debugCurrentMapName = name
+
+    if isBattlemaster then
+        -- Battlemaster cards are transient and have no paired static layout art.
+        -- Loading one keeps just that map: drop the other generated choice cards.
+        -- (Skip placeLoadedLayoutArtCard, which would warn about missing art.)
+        local loadedGuid = params and params.guid or nil
+        for _, obj in ipairs(getAllObjects()) do
+            if obj.hasTag and obj.hasTag("battlemaster_generated") and obj.getGUID() ~= loadedGuid then
+                obj.destruct()
+            end
+        end
+    else
+        -- Move the paired layout art to the mission board before the map wipe. The
+        -- target sits outside the wipe area, so it survives without MapExclude.
+        placeLoadedLayoutArtCard(name)
+    end
+
+    -- Re-skin selected static Battlemaster maps from creator-specific mat pools.
+    local loadedCreator = loadedMapCreator(params)
+    if BM_MAT_RANDOMIZER_ENABLED then
+        bmMatDebug("onMapCardLoaded guid=" .. tostring(params and params.guid)
+            .. " provider=" .. tostring(params and params.provider)
+            .. " creator=" .. tostring(loadedCreator))
+    end
+    if isBattlemaster then
+        enforceBattlemasterMatsNonInteractive()
+    end
+    if BM_MAT_RANDOMIZER_ENABLED then
+        if loadedCreator == "battlemaster_bttf_ruins" or loadedCreator == "battlemaster_bttf" then
+            reskinBattlemasterBttfRuinsMat()
+        elseif loadedCreator == "battlemaster_armageddon_desert" then
+            reskinBattlemasterDesertMat()
+        end
+    end
 
     -- Move primary missions off the mat before the map card starts its next-frame wipe.
     movePrimaryMissionCardsToIngameSlots(false)
@@ -4025,7 +4978,11 @@ function selectMissionPack(packIndex)
     primaryDeck = getObjectFromGUID(missionPackData.primaryDeck_GUID)
 
     destroyLegacyPrimaryDeck()
-    placeGameModeObjects()
+    -- Combat Patrol runs on a blank mat -- skip the matrix props/logos here too,
+    -- so selecting a pack in that mode can't re-place them.
+    if gameModeUsesMatrixProps() then
+        placeGameModeObjects()
+    end
 
     writeMenus()
 end
@@ -4051,27 +5008,43 @@ phases = {"Command Phase", "Movement Phase", "Shooting Phase", "Charge Phase", "
 currentPhase = 1
 startBtn = {
     index = 1, label = "S T A R T  G A M E", click_function = "startGame", function_owner = self,
-    position = {0, 5, - 1}, rotation = {0, 0, 0}, height = 750, width = 5000,
+    position = {0, 5, 2.5}, rotation = {0, 0, 0}, height = 750, width = 5000,
     font_size = 500, color = {0, 0.6, 0}, font_color = {1, 1, 1}
 }
 startBtnDisabled = {
     index = 1, label = "S T A R T  G A M E", click_function = "startGameDisabled", function_owner = self,
-    position = {0, 5, - 1}, rotation = {0, 0, 0}, height = 750, width = 5000,
+    position = {0, 5, 2.5}, rotation = {0, 0, 0}, height = 750, width = 5000,
     font_size = 500, color = {0.55, 0.55, 0.55}, font_color = {0.85, 0.85, 0.85}
 }
 firstPlayerBtn = {
     index = 1, label = redFirstLbl, click_function = "togglePlyr", function_owner = self,
-    position = {0, 5, 1}, rotation = {0, 0, 0}, height = 750, width = 5000,
+    position = {0, 5, 4.5}, rotation = {0, 0, 0}, height = 750, width = 5000,
     font_size = 300, color = {1, 0, 0}, font_color = {1, 1, 1}
 }
 nextPhaseLbl = "Pass\nTurn"
 nextPhaseBtn = {
     index = 1, label = nextPhaseLbl, tooltip = "Left click - Next phase\nRight click - Skip to next turn", click_function = "nextPhase", function_owner = self,
-    position = {0, 5, 0}, rotation = {0, 0, 0}, height = 1500, width = 5000,
+    position = {0, 5, 3.5}, rotation = {0, 0, 0}, height = 1500, width = 5000,
     font_size = 600, color = {0.90, 0.30, 0.30}, font_color = {1, 1, 1}
 }
 position = {menuX, 5, menuZ}
 notePadTxt = ""
+
+MAP_FILTER_GUID = "369707"
+
+function shouldShowMapSetupOverlay()
+    return gameMode == "game" and not inGame and missionSetupControlsVisible == true
+end
+
+function syncMapSetupOverlay()
+    local mapFilter = getObjectFromGUID(MAP_FILTER_GUID)
+    if not mapFilter then return end
+    if shouldShowMapSetupOverlay() then
+        mapFilter.call("showFilterMenu")
+    else
+        mapFilter.call("hideFilterMenu")
+    end
+end
 
 function writeMenus()
     self.clearButtons()
@@ -4088,6 +5061,8 @@ function writeMenus()
     end
     writeClearMatButton()
     writeBackToSelectionButton()
+    writeBackToSelectionDebugButton()
+    syncMapSetupOverlay()
 end
 
 menuButtonBorderThickness = 70
@@ -4116,36 +5091,8 @@ end
 
 function writeStartMenu()
     if gameMode ~= "game" then return end
-    createButtonWithBorder(startBtn)
-    createButtonWithBorder(firstPlayerBtn)
-end
-
-matTextureButtonZ = 4.8
-matTextureButtonSpacing = 1.0
-matTextureButtonSize = 360
-matTextureBorderThickness = 70
-
-function writeMatTexturePickerMenu()
-    for i, texture in ipairs(matTextures) do
-        local offset = (i - ((#matTextures + 1) / 2)) * matTextureButtonSpacing
-        local isSelected = (i == matTextureSelected)
-        local borderColor = isSelected and {1, 1, 1} or {0.1, 0.1, 0.1}
-        -- Border: a slightly larger button rendered behind the swatch (TTS buttons have no outline).
-        self.createButton({
-            label = "", click_function = "setMatTexture" .. i, function_owner = self,
-            position = {offset, 5, matTextureButtonZ - 20}, rotation = {0, 0, 0},
-            height = matTextureButtonSize + matTextureBorderThickness,
-            width = matTextureButtonSize + matTextureBorderThickness, font_size = 1,
-            color = borderColor, tooltip = texture.name,
-        })
-        -- Color swatch on top (raised slightly in y so it renders above the border).
-        self.createButton({
-            label = isSelected and "✓" or "", click_function = "setMatTexture" .. i, function_owner = self,
-            position = {offset, 5.01, matTextureButtonZ - 20}, rotation = {0, 0, 0},
-            height = matTextureButtonSize, width = matTextureButtonSize, font_size = 180,
-            color = texture.color, font_color = {1, 1, 1}, tooltip = texture.name,
-        })
-    end
+    createButtonWithBorder(withSetupXOffset(startBtn))
+    createButtonWithBorder(withSetupXOffset(firstPlayerBtn))
 end
 
 function writeDeployPickerMenu()
@@ -4153,14 +5100,15 @@ function writeDeployPickerMenu()
         deploySelected = #DeployZonesData
     end
     deployBtn.label = DeployZonesData[deploySelected].name
-    self.createButton(deployBtn)
-    self.createButton(deployUpBtn)
-    self.createButton(deployDownBtn)
+    createButtonWithBorder(withSetupXOffset(deployBtn))
+    createButtonWithBorder(withSetupXOffset(deployUpBtn))
+    createButtonWithBorder(withSetupXOffset(deployDownBtn))
 end
 
 function writeDeployMenu()
     writeDeployPickerMenu()
-    writeMatTexturePickerMenu()
+    -- Table-texture swatches moved to the Table Theme row of the Map Mat Picker
+    -- overlay (mapFilter.ttslua, GUID 369707); no physical buttons here anymore.
     writeDispositionMenu()
     -- self.createButton(nineFromDeployBtn)
 
@@ -4180,8 +5128,12 @@ function writeIngameMenu()
     if currentPhase == #phases then
         nextPhaseBtn.label = phases[currentPhase].."\nPass Turn"
     end
-    createButtonWithBorder(nextPhaseBtn)
-    writeDispositionMenu(true)
+    -- In Onslaught the phase button rides the same top-row offset as the Start
+    -- button it replaces, so it appears in the relocated top area too.
+    createButtonWithBorder(withSetupXOffset(nextPhaseBtn))
+    -- Disposition pickers are setup-only: once the game starts they are removed
+    -- entirely (not relocated). The chosen dispositions live on in the scoring
+    -- overlay via pushScoringContext, so no on-table label is needed here.
 end
 
 function getMissionManagerForColor(color)
@@ -4298,6 +5250,10 @@ function startGame(obj, player, alt)
     resetSecondaryForceStartCountdown()
 
     returnCardsInDeploymentSlotsToDeck(false)
+    -- Transient Battlemaster cards have no source deck and may be locked in, so the
+    -- return path above skips them; destroy them explicitly (scans the whole table,
+    -- including the lock target) so none survive into the game.
+    destroyGeneratedBattlemasterCards()
     movePrimaryMissionCardsToIngameSlots()
     pushScoringContext()
 
@@ -4307,7 +5263,7 @@ function startGame(obj, player, alt)
     showObjectivesForGameStart()
 
     -- The map-creator filter only applies during setup; drop its panel now.
-    local mapFilter = getObjectFromGUID("369707")
+    local mapFilter = getObjectFromGUID(MAP_FILTER_GUID)
     if mapFilter then mapFilter.call("hideFilterMenu") end
 
     local scoresheet = getObjectFromGUID(Global.getVar("scoresheet_GUID"))
@@ -4342,18 +5298,37 @@ function newRoundStarted()
     updateGameStateHUD()
 end
 
+local function counterValue(counter)
+    if not counter then return 0 end
+    local ok, value = pcall(function() return counter.call("getValue") end)
+    if ok and value ~= nil then return tonumber(value) or 0 end
+    if counter.Counter then return counter.Counter.getValue() end
+    return 0
+end
+
+local function counterIncrement(counter)
+    if not counter then return 0 end
+    local ok, result = pcall(function() return counter.call("increment") end)
+    if ok and result ~= nil then return tonumber(result) or counterValue(counter) end
+    if counter.Counter then
+        counter.Counter.increment()
+        return counter.Counter.getValue()
+    end
+    return 0
+end
+
 function updateCpHUD()
-    Global.call("setHudAttribute", {id = "CPWatch1", attr = "text", value = "CP: " .. blueCpCounter.Counter.getValue()})
-    Global.call("setHudAttribute", {id = "CPWatch2", attr = "text", value = "CP: " .. redCpCounter.Counter.getValue()})
+    Global.call("setHudAttribute", {id = "CPWatch1", attr = "text", value = "CP: " .. counterValue(blueCpCounter)})
+    Global.call("setHudAttribute", {id = "CPWatch2", attr = "text", value = "CP: " .. counterValue(redCpCounter)})
 end
 
 -- "Round R, <Color> Turn T" stamp shared by the turn-pass and CP-change chat
 -- messages. Uses the round counter (ee92cf) and the active player's turn counter.
 function getTurnStateLabel()
     local roundObj = getObjectFromGUID("ee92cf")
-    local round = (roundObj and roundObj.Counter.getValue()) or 0
+    local round = counterValue(roundObj)
     local turnCounter = (currentTurn == "Red") and redTurnCounter or blueTurnCounter
-    local turnNum = (turnCounter and turnCounter.Counter.getValue()) or 0
+    local turnNum = counterValue(turnCounter)
     return "Round " .. round .. ", " .. currentTurn .. " Turn " .. turnNum
 end
 
@@ -4442,7 +5417,7 @@ end
 
 function updateGameStateHUD()
     local roundObj = getObjectFromGUID("ee92cf")
-    local round = roundObj and roundObj.Counter.getValue() or 0
+    local round = counterValue(roundObj)
     Global.call("setHudValue", {id = "RoundWatch", value = tostring(round)})
     updatePhaseHUD()
     if inGame then
@@ -4495,9 +5470,9 @@ function passTurn(obj, player_color_click, alt_click)
     if currentTurn == "Red" then
         currentTurn = "Blue"
         blueTurnCounter.call("increaseSelf")
-        blueCpCounter.Counter.increment()
+        counterIncrement(blueCpCounter)
         if cpEveryTurn then
-            redCpCounter.Counter.increment()
+            counterIncrement(redCpCounter)
             cpMessage = "Both players gained a CP"
         else
             cpMessage = "Blue player gained a CP"
@@ -4505,9 +5480,9 @@ function passTurn(obj, player_color_click, alt_click)
     else
         currentTurn = "Red"
         redTurnCounter.call("increaseSelf")
-        redCpCounter.Counter.increment()
+        counterIncrement(redCpCounter)
         if cpEveryTurn then
-            blueCpCounter.Counter.increment()
+            counterIncrement(blueCpCounter)
             cpMessage = "Both players gained a CP"
         else
             cpMessage = "Red player gained a CP"
@@ -4647,6 +5622,26 @@ end
 function drawTerritoryLine()
     local mat = getObjectFromGUID(mat_GUID)
     if not mat then return end
+
+    -- If the selected zone declares its divider explicitly, draw those specs
+    -- through the same cornerPolyline path (tagged "territory") and skip the
+    -- type/position derivation below. Used by the Combat Patrol zones, whose
+    -- cornerPolyline shapes the derivation logic can't infer an angle from.
+    local selected = selectedDeployment()
+    if selected and selected.territory then
+        for _, spec in ipairs(selected.territory) do
+            drawCornerPolyline(spec, "territory")
+        end
+        for _, guid in ipairs(territoryOverlayGUIDs) do
+            local found = getObjectFromGUID(guid)
+            if found then
+                local p = found.getPosition()
+                found.setPosition({p[1], defaultDeployHeight + deployOffset, p[3]})
+            end
+        end
+        return
+    end
+
     local longEdge  = mat.getScale().x * sizeMulti -- along X
     local shortEdge = mat.getScale().z * sizeMulti -- along Z
     local hx = longEdge / 2

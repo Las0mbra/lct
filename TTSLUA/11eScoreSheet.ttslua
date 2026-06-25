@@ -5,8 +5,8 @@ secondary11ZoneObj = getObjectFromGUID(Global.getVar("secondary11CardZone_GUID")
 secondary12ZoneObj = getObjectFromGUID(Global.getVar("secondary12CardZone_GUID"))
 secondary21ZoneObj = getObjectFromGUID(Global.getVar("secondary21CardZone_GUID"))
 secondary22ZoneObj = getObjectFromGUID(Global.getVar("secondary22CardZone_GUID"))
-redDiscardPosition = { x = 77.04, y = 0.98, z = 16.60 }
-blueDiscardPosition = { x = 77.04, y = 0.98, z = -16.60 }
+redDiscardPosition = { x = 62.54, y = 0.98, z = 16.60 }
+blueDiscardPosition = { x = 62.54, y = 0.98, z = -16.60 }
 redSecondaryBoard_GUID = "66def7"
 blueSecondaryBoard_GUID = "76200a"
 secondarySlotButtonSize = 200
@@ -71,7 +71,13 @@ scores = {
 	}
 }
 
+-- End of Battle points per player (1 = Red, 2 = Blue). These are independent of
+-- primary/secondary scoring and are added straight onto the player total. They
+-- deliberately ignore the per-round and game scoring caps.
+endOfBattle = {0, 0}
+
 button = {}
+endOfBattleButton = {}
 
 SCORE_NAME_X = -5.15
 SCORE_TOTAL_X = 6.85
@@ -81,6 +87,8 @@ SCORE_SIDE_Z = 0.98
 SCORE_CENTER_Z = -0.05
 SCORE_EDGE_SHIFT_Z = -0.5  -- push score columns toward each player's board edge (red -Z, blue +Z); round sum stays put
 PRIMARY_SECONDARY_GAP_Z = 0.2  -- extra spacing nudged onto the secondary column to separate it from primary
+END_OF_BATTLE_ARROW_Z_OFFSET = 0.66  -- gap between the End of Battle number and its +/- arrows (matches round columns)
+END_OF_BATTLE_ARROW_X_OFFSET = 0.25  -- horizontal split between the + and - arrows (matches round columns)
 
 playerOneTitle = {
 	index = 0,
@@ -116,7 +124,8 @@ playerTotal = {
 		click_function = 'nothing',
 		font_size = 500,
 		function_owner = self,
-		position = {SCORE_TOTAL_X, -0.05, -1.50},
+		-- Z matches the per-round total (turn sum) spacing: gap 1.20, centred on -0.05.
+		position = {SCORE_TOTAL_X, -0.05, -0.95},
 		rotation = {0, 90, 180},
 		tooltip = "Player 1"
 	},
@@ -128,7 +137,8 @@ playerTotal = {
 		click_function = 'nothing',
 		font_size = 500,
 		function_owner = self,
-		position = {SCORE_TOTAL_X, -0.05, 1.40},
+		-- Z matches the per-round total (turn sum) spacing: gap 1.20, centred on -0.05.
+		position = {SCORE_TOTAL_X, -0.05, 0.85},
 		rotation = {0, 90, 180},
 		tooltip = "Player 2"
 	}
@@ -344,6 +354,7 @@ function onload(save_data)
 			redUsingFixed = data.redUsingFixed
 			blueUsingFixed = data.blueUsingFixed
 			scores = data.scores
+			if data.endOfBattle then endOfBattle = data.endOfBattle end
 		end
 	end
 
@@ -354,7 +365,7 @@ function onload(save_data)
 		return
 	end
 
-	Wait.frames(function() self.setPosition({71.50,0.95,0.00}) end, 1)
+	Wait.frames(function() self.setPosition({57.00,0.95,0.00}) end, 1)
 	self.setLock(true)
 
 	self.createButton( playerOneTitle )
@@ -483,6 +494,65 @@ function onload(save_data)
 
 	end -- i-loop
 
+	-- End of Battle buttons (one per player). They sit in the total column
+	-- (SCORE_TOTAL_X), centred on the Z midpoint between that player's primary
+	-- and secondary rows, and feed straight into the player total while ignoring
+	-- the primary/secondary scoring caps. b_index continues from the score loop
+	-- so the editButton indices stay in sync with creation order.
+	for i=1,2 do
+		local primaryZ = button[i][1][BTN_K_IX_PRIMARY][BTN_L_IX_SCORE].position[3]
+		local secondaryZ = button[i][1][BTN_K_IX_SECONDARY][BTN_L_IX_SCORE].position[3]
+		local midZ = (primaryZ + secondaryZ) / 2
+		local edgeDir = (i == 1) and -1 or 1
+		local arrowZ = midZ + (edgeDir * END_OF_BATTLE_ARROW_Z_OFFSET)
+
+		local readout = {
+			index = b_index,
+			width = 500,
+			height = 500,
+			label = tostring(endOfBattle[i]),
+			click_function = 'nothing',
+			font_size = 400,
+			function_owner = self,
+			position = {SCORE_TOTAL_X, -0.05, midZ},
+			rotation = {0, 90, 180},
+			tooltip = "End of Battle"
+		}
+		b_index = b_index + 1
+		endOfBattleButton[i] = readout
+		self.createButton(readout)
+
+		local plusBtn = {
+			index = b_index,
+			width = 150,
+			height = 250,
+			label = "+",
+			click_function = 'plus_eob' .. i,
+			font_size = 200,
+			function_owner = self,
+			position = {SCORE_TOTAL_X - END_OF_BATTLE_ARROW_X_OFFSET, -0.05, arrowZ},
+			rotation = {0, 90, 180},
+			tooltip = "End of Battle +"
+		}
+		b_index = b_index + 1
+		self.createButton(plusBtn)
+
+		local minusBtn = {
+			index = b_index,
+			width = 150,
+			height = 250,
+			label = "-",
+			click_function = 'minus_eob' .. i,
+			font_size = 200,
+			function_owner = self,
+			position = {SCORE_TOTAL_X + END_OF_BATTLE_ARROW_X_OFFSET, -0.05, arrowZ},
+			rotation = {0, 90, 180},
+			tooltip = "End of Battle -"
+		}
+		b_index = b_index + 1
+		self.createButton(minusBtn)
+	end
+
 	updateAll(false)
 	Wait.time(slowUpdate, 2)
 end
@@ -492,7 +562,8 @@ function onSave()
 		scoresheetActive = scoresheetActive,
 		redUsingFixed = redUsingFixed,
 		blueUsingFixed = blueUsingFixed,
-		scores = scores
+		scores = scores,
+		endOfBattle = endOfBattle
 	}
 	local encoded_data = JSON.encode(save_data)
 	return encoded_data
@@ -513,6 +584,8 @@ function updateAll(reset)
 				updateScore(i, j, k)
 			end
 		end
+		if reset then endOfBattle[i] = 0 end
+		if endOfBattleButton[i] then updateEndOfBattle(i) end
 	end
 end
 
@@ -535,32 +608,127 @@ end
 function nothing()
 end
 
-function capRoundScore(k, value)
-	-- Clamp a round's score into [0, per-round cap]: never negative, and never
-	-- more than 15 primary or 15 secondary points in a single round.
+function updateEndOfBattle(i)
+	-- Refresh player I's End of Battle readout and roll the change into the total.
+	endOfBattleButton[i].label = tostring(endOfBattle[i])
+	self.editButton(endOfBattleButton[i])
+
+	playerTotal[i].label = tostring(playerSum(i))
+	self.editButton(playerTotal[i])
+end
+
+function plusEndOfBattle(i, alt)
+	-- Increase player I's End of Battle points. No scoring caps apply; only a
+	-- non-negative floor. alt is true on right-click and steps by 5.
+	local diff = 1
+	if alt then diff = 5 end
+
+	endOfBattle[i] = math.max(0, safeScoreNumber(endOfBattle[i]) + diff)
+	updateEndOfBattle(i)
+end
+
+function minusEndOfBattle(i, alt)
+	-- Decrease player I's End of Battle points, never below zero. alt steps by 5.
+	local diff = 1
+	if alt then diff = 5 end
+
+	endOfBattle[i] = math.max(0, safeScoreNumber(endOfBattle[i]) - diff)
+	updateEndOfBattle(i)
+end
+
+function plus_eob1(_, _, alt)
+	plusEndOfBattle(1, alt)
+end
+function plus_eob2(_, _, alt)
+	plusEndOfBattle(2, alt)
+end
+function minus_eob1(_, _, alt)
+	minusEndOfBattle(1, alt)
+end
+function minus_eob2(_, _, alt)
+	minusEndOfBattle(2, alt)
+end
+
+function roundCapFor(k)
+	if k == BTN_K_IX_PRIMARY then return ROUND_PRIMARY_CAP end
+	if k == BTN_K_IX_SECONDARY then return ROUND_SECONDARY_CAP end
+	return nil
+end
+
+function gameCapFor(k)
+	if k == BTN_K_IX_PRIMARY then return GAME_PRIMARY_CAP end
+	if k == BTN_K_IX_SECONDARY then return GAME_SECONDARY_CAP end
+	return nil
+end
+
+function scoreComponentName(k)
+	if k == BTN_K_IX_PRIMARY then return "Secondary" end
+	if k == BTN_K_IX_SECONDARY then return "Primary" end
+	return nil
+end
+
+function announceScoreCapIfNeeded(i, k, previousTotal, attemptedValue, finalValue, playerColor)
+	local gameCap = gameCapFor(k)
+	local componentName = scoreComponentName(k)
+	if not gameCap or not componentName or not playerColor then return end
+
+	local currentTotal = sumScoreComponent(i, k, gameCap)
+	local hitCapNow = previousTotal < gameCap and currentTotal >= gameCap
+	local blockedByCap = attemptedValue > finalValue and currentTotal >= gameCap
+	if hitCapNow or blockedByCap then
+		broadcastToColor("You've reached the maximum points for " .. componentName .. ".", playerColor, "Yellow")
+	end
+end
+
+function capRoundScore(i, j, k, value)
+	-- Clamp a round's score for player I, battle round J, component K. Three
+	-- limits apply, smallest wins:
+	--   * never negative
+	--   * never more than the per-round cap (15 primary / 15 secondary)
+	--   * never enough to push the player's game-wide total for this component
+	--     past its cap (45 primary / 45 secondary), so a round cell stops
+	--     climbing once the game total is maxed out.
 	if value < 0 then
 		return 0
 	end
-	if k == BTN_K_IX_PRIMARY and value > ROUND_PRIMARY_CAP then
-		return ROUND_PRIMARY_CAP
+
+	local roundCap = roundCapFor(k)
+	if roundCap and value > roundCap then
+		value = roundCap
 	end
-	if k == BTN_K_IX_SECONDARY and value > ROUND_SECONDARY_CAP then
-		return ROUND_SECONDARY_CAP
+
+	local gameCap = gameCapFor(k)
+	if gameCap then
+		local otherRoundsSum = 0
+		for r = 1, 5 do
+			if r ~= j then
+				otherRoundsSum = otherRoundsSum + safeScoreNumber(scores[i][r][k])
+			end
+		end
+		local maxThisRound = gameCap - otherRoundsSum
+		if maxThisRound < 0 then maxThisRound = 0 end
+		if value > maxThisRound then
+			value = maxThisRound
+		end
 	end
+
 	return value
 end
 
-function plus(i, j, k, alt)
+function plus(i, j, k, alt, playerColor)
 	-- Increment player I's score for battle round J, scoring component K.
 	-- alt is true if right-clicked, increments by 5.
 
 	local diff = 1
 	if alt then diff = 5 end
 
-	local score = capRoundScore(k, scores[i][j][k] + diff)
+	local previousTotal = sumScoreComponent(i, k, gameCapFor(k))
+	local attemptedScore = scores[i][j][k] + diff
+	local score = capRoundScore(i, j, k, attemptedScore)
 	scores[i][j][k] = score
 
 	updateScore(i, j, k)
+	announceScoreCapIfNeeded(i, k, previousTotal, attemptedScore, score, playerColor)
 end
 
 function minus(i, j, k, alt)
@@ -570,7 +738,7 @@ function minus(i, j, k, alt)
 	local diff = 1
 	if alt then diff = 5 end
 
-	local score = capRoundScore(k, scores[i][j][k] - diff)
+	local score = capRoundScore(i, j, k, scores[i][j][k] - diff)
 	scores[i][j][k] = score
 
 	updateScore(i, j, k)
@@ -618,6 +786,10 @@ function playerSum(pId)
 	-- painted army gives +GAME_BASE_POINTS
 	local score = pri_sum + sec_sum + GAME_BASE_POINTS
 	if score > GAME_TOTAL_CAP then score = GAME_TOTAL_CAP end
+
+	-- End of Battle points are added after the total cap, so they are the one way
+	-- to push a player's score past the normal limits.
+	score = score + safeScoreNumber(endOfBattle[pId])
 
 	-- Scoresheet player 1 = Red, player 2 = Blue, but the VP Scores HUD rows are
 	-- ordered Blue (row 1) then Red (row 2) — matching the CP counters. Map pId to
@@ -957,95 +1129,95 @@ end
 
 -- Abandon hope all ye who enter here
 
-function plus_111(_, _, alt)
-	plus(1, 1, 1, alt)
+function plus_111(_, playerColor, alt)
+	plus(1, 1, 1, alt, playerColor)
 end
-function plus_112(_, _, alt)
-	plus(1, 1, 2, alt)
+function plus_112(_, playerColor, alt)
+	plus(1, 1, 2, alt, playerColor)
 end
-function plus_113(_, _, alt)
-	plus(1, 1, 3, alt)
+function plus_113(_, playerColor, alt)
+	plus(1, 1, 3, alt, playerColor)
 end
-function plus_121(_, _, alt)
-	plus(1, 2, 1, alt)
+function plus_121(_, playerColor, alt)
+	plus(1, 2, 1, alt, playerColor)
 end
-function plus_122(_, _, alt)
-	plus(1, 2, 2, alt)
+function plus_122(_, playerColor, alt)
+	plus(1, 2, 2, alt, playerColor)
 end
-function plus_123(_, _, alt)
-	plus(1, 2, 3, alt)
+function plus_123(_, playerColor, alt)
+	plus(1, 2, 3, alt, playerColor)
 end
-function plus_131(_, _, alt)
-	plus(1, 3, 1, alt)
+function plus_131(_, playerColor, alt)
+	plus(1, 3, 1, alt, playerColor)
 end
-function plus_132(_, _, alt)
-	plus(1, 3, 2, alt)
+function plus_132(_, playerColor, alt)
+	plus(1, 3, 2, alt, playerColor)
 end
-function plus_133(_, _, alt)
-	plus(1, 3, 3, alt)
+function plus_133(_, playerColor, alt)
+	plus(1, 3, 3, alt, playerColor)
 end
-function plus_141(_, _, alt)
-	plus(1, 4, 1, alt)
+function plus_141(_, playerColor, alt)
+	plus(1, 4, 1, alt, playerColor)
 end
-function plus_142(_, _, alt)
-	plus(1, 4, 2, alt)
+function plus_142(_, playerColor, alt)
+	plus(1, 4, 2, alt, playerColor)
 end
-function plus_143(_, _, alt)
-	plus(1, 4, 3, alt)
+function plus_143(_, playerColor, alt)
+	plus(1, 4, 3, alt, playerColor)
 end
-function plus_151(_, _, alt)
-	plus(1, 5, 1, alt)
+function plus_151(_, playerColor, alt)
+	plus(1, 5, 1, alt, playerColor)
 end
-function plus_152(_, _, alt)
-	plus(1, 5, 2, alt)
+function plus_152(_, playerColor, alt)
+	plus(1, 5, 2, alt, playerColor)
 end
-function plus_153(_, _, alt)
-	plus(1, 5, 3, alt)
+function plus_153(_, playerColor, alt)
+	plus(1, 5, 3, alt, playerColor)
 end
-function plus_211(_, _, alt)
-	plus(2, 1, 1, alt)
+function plus_211(_, playerColor, alt)
+	plus(2, 1, 1, alt, playerColor)
 end
-function plus_212(_, _, alt)
-	plus(2, 1, 2, alt)
+function plus_212(_, playerColor, alt)
+	plus(2, 1, 2, alt, playerColor)
 end
-function plus_213(_, _, alt)
-	plus(2, 1, 3, alt)
+function plus_213(_, playerColor, alt)
+	plus(2, 1, 3, alt, playerColor)
 end
-function plus_221(_, _, alt)
-	plus(2, 2, 1, alt)
+function plus_221(_, playerColor, alt)
+	plus(2, 2, 1, alt, playerColor)
 end
-function plus_222(_, _, alt)
-	plus(2, 2, 2, alt)
+function plus_222(_, playerColor, alt)
+	plus(2, 2, 2, alt, playerColor)
 end
-function plus_223(_, _, alt)
-	plus(2, 2, 3, alt)
+function plus_223(_, playerColor, alt)
+	plus(2, 2, 3, alt, playerColor)
 end
-function plus_231(_, _, alt)
-	plus(2, 3, 1, alt)
+function plus_231(_, playerColor, alt)
+	plus(2, 3, 1, alt, playerColor)
 end
-function plus_232(_, _, alt)
-	plus(2, 3, 2, alt)
+function plus_232(_, playerColor, alt)
+	plus(2, 3, 2, alt, playerColor)
 end
-function plus_233(_, _, alt)
-	plus(2, 3, 3, alt)
+function plus_233(_, playerColor, alt)
+	plus(2, 3, 3, alt, playerColor)
 end
-function plus_241(_, _, alt)
-	plus(2, 4, 1, alt)
+function plus_241(_, playerColor, alt)
+	plus(2, 4, 1, alt, playerColor)
 end
-function plus_242(_, _, alt)
-	plus(2, 4, 2, alt)
+function plus_242(_, playerColor, alt)
+	plus(2, 4, 2, alt, playerColor)
 end
-function plus_243(_, _, alt)
-	plus(2, 4, 3, alt)
+function plus_243(_, playerColor, alt)
+	plus(2, 4, 3, alt, playerColor)
 end
-function plus_251(_, _, alt)
-	plus(2, 5, 1, alt)
+function plus_251(_, playerColor, alt)
+	plus(2, 5, 1, alt, playerColor)
 end
-function plus_252(_, _, alt)
-	plus(2, 5, 2, alt)
+function plus_252(_, playerColor, alt)
+	plus(2, 5, 2, alt, playerColor)
 end
-function plus_253(_, _, alt)
-	plus(2, 5, 3, alt)
+function plus_253(_, playerColor, alt)
+	plus(2, 5, 3, alt, playerColor)
 end
 
 function minus_111(_, _, alt)

@@ -168,17 +168,35 @@ MAP_MANIFEST_COLUMNS = {"deck_guid", "deck_name", "card_guid", "card_name", "map
 REQUIRED_MAP_TAG = "map"
 MAP_CREATOR_TAG_PREFIX = "map_crt"
 MAP_TYPE_TAG_PREFIX = "map_type"
+# Thematic (narrative/crusade) maps don't use the standard mission objective
+# layout, so the advisory objective-marker-tag check is skipped for them.
+MAP_TYPE_THEMATIC_TAG = "map_type_thematic"
 MAP_CREATOR_DISPLAY_NAMES = {
     "map_crt_cr5sh": "Cra5hNatural",
     "map_crt_belgium": "Team Belgium",
     "map_crt_izar": "Izar",
-    "map_crt_bttf": "BTTF",
+    "map_crt_battlemaster_bttf": "BTTF",
+    "map_crt_battlemaster_bttf_ruins": "Battlemaster - BTTF Ruins",
+    "map_crt_battlemaster_armageddon_desert": "Battlemaster - Desert",
+    "map_crt_alvaricus": "Alvaricus",
+    "map_crt_zim": "Zim",
+    "map_crt_t5s2": "T5S2",
 }
 LAYOUT_ART_DECK_GUID = "fb4b5d"
 # A matchup map source may be a Deck or a standard Bag. Bags are the preferred
 # form: a Deck collapses once it drops below two cards, but a Bag keeps its GUID
 # and never collapses, so cards can be taken/returned by GUID across generations.
 MAP_SOURCE_CONTAINER_NAMES = {"Deck", "Bag"}
+# Containers whose map cards are a self-contained game-mode pool (e.g. Combat
+# Patrol), NOT part of the Generate Mission map system. Cards held directly in
+# one of these are skipped by map-card detection entirely: they are not in
+# map_manifest.csv, carry no publishing tags, and are never wired into the
+# disposition matrix, so the standard checks would (correctly, for a real map)
+# flag them. They still ship their own canonical load/clear machinery; they are
+# simply outside the validated map inventory.
+MAP_VALIDATION_IGNORE_CONTAINER_GUIDS = {
+    "fdf6e7": "Combat Patrol Maps",
+}
 _GUID_RE = re.compile(r"^[0-9a-fA-F]{6}$")
 _MATRIX_GUID_RE = re.compile(r'guid\s*=\s*"([0-9a-fA-F]{6})"')
 _MATCHUP_KEY_RE = re.compile(r'\["([1-5]_[1-5])"\]')
@@ -240,6 +258,11 @@ class MapCard:
     @property
     def where(self) -> str:
         return f"card {self.guid} {self.name!r}"
+
+    @property
+    def is_thematic(self) -> bool:
+        """Narrative/crusade map outside the competitive Generate Mission system."""
+        return MAP_TYPE_THEMATIC_TAG in self.tags
 
 
 def objective_tag_counts(terrain_entries):
@@ -445,7 +468,7 @@ def build_context(object_states, require_map_tags=False, manifest_path=MAP_MANIF
             if g:
                 scene_guids.add(g)
                 objects_by_guid.setdefault(g, []).append((o, parent_deck_guid))
-            if _is_map_card(o):
+            if _is_map_card(o) and parent_deck_guid not in MAP_VALIDATION_IGNORE_CONTAINER_GUIDS:
                 detected_cards[g] = MapCard(o, parent_deck_guid)
             if "ContainedObjects" in o:
                 child_parent = g if o.get("Name") in MAP_SOURCE_CONTAINER_NAMES else parent_deck_guid
@@ -632,9 +655,12 @@ def gm_exclude_present(ctx):
 def objective_marker_tags_present(ctx):
     """Advisory check for mission/objective marker tags inside spawned terrain.
 
-    Compile always reports these warnings, but they never block builds.
+    Compile always reports these warnings, but they never block builds. Thematic
+    maps use bespoke objective layouts, so they are skipped entirely.
     """
     for card in ctx.cards:
+        if card.is_thematic:
+            continue
         counts = card.objective_tag_counts
         missing = []
         missing_count = 0
@@ -698,8 +724,14 @@ def terrain_guid_collisions(ctx):
 @check
 def mission_matrix_resolves(ctx):
     """Every GUID referenced by startMenu's mission matrix must exist, and every
-    map card should be referenced by it (else it's unreachable in-game)."""
+    map card must be reachable through a matrix source bag.
+
+    Historical startMenu tables list individual card GUIDs. Runtime generation now
+    prefers the live contents of each source bag, so imported cards only need to be
+    inside a source bag whose GUID is present in deploymentMatrixDecks.
+    """
     refs = ctx.matrix_referenced_guids()
+    matrix_decks = ctx.matrix_deck_guids()
     if refs is None:
         return
     for g in sorted(refs):
@@ -709,9 +741,11 @@ def mission_matrix_resolves(ctx):
     # Unreachable maps are tolerated in dev builds but block test/release.
     unreachable_level = ERROR if ctx.require_map_tags else WARN
     for card in ctx.cards:
-        if card.guid not in refs:
+        reachable_by_card_ref = card.guid in refs
+        reachable_by_source_bag = matrix_decks is not None and card.deck_guid in matrix_decks
+        if not reachable_by_card_ref and not reachable_by_source_bag:
             yield Issue(unreachable_level, card.where,
-                        "not referenced by any deploymentMatrixDecks/randomDeploymentDecks entry")
+                        "not referenced by card GUID and not inside a deploymentMatrixDecks source bag")
 
 
 @check
@@ -722,16 +756,22 @@ def layout_art_names_resolve(ctx):
         helper_by_name.setdefault(card["name"].strip().casefold(), []).append(card)
 
     maps_by_name = {}
+    competitive_names = set()
     for card in ctx.cards:
-        maps_by_name.setdefault(card.logical_name.strip().casefold(), card.logical_name.strip())
+        normalized = card.logical_name.strip().casefold()
+        maps_by_name.setdefault(normalized, card.logical_name.strip())
+        if not card.is_thematic:
+            competitive_names.add(normalized)
 
     # Missing layout art breaks Generate Mission / Random Layout, so block
-    # test/release builds; warn only in dev.
+    # test/release builds; warn only in dev. Thematic-only names don't drive
+    # Generate Mission, so a missing helper there is advisory regardless.
     missing_level = ERROR if ctx.require_map_tags else WARN
     for normalized, map_name in sorted(maps_by_name.items(), key=lambda item: item[1]):
         matches = helper_by_name.get(normalized, [])
         if not matches:
-            yield Issue(missing_level, "layout art deck",
+            level = missing_level if normalized in competitive_names else WARN
+            yield Issue(level, "layout art deck",
                         f"no helper card matches map name {map_name!r}")
         elif len(matches) > 1:
             guids = ", ".join(card["guid"] for card in matches)

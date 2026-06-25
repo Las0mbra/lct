@@ -116,6 +116,10 @@ function onLoad(json)
     DisplayClock(1, data.seconds_1)
     DisplayClock(2, data.seconds_2)
     ensureChessStopwatchUI()
+    refreshHudHighlight()
+    -- Re-apply once Global.UI is guaranteed live (see note in refreshHudHighlight):
+    -- the immediate call can lose the load race against the overlay coming up.
+    Wait.time(refreshHudHighlight, 1)
     clockWaitId = Wait.time(Tick, RESOLUTION, -1)
 	end
 
@@ -936,4 +940,34 @@ function DisplayUIClock(which) -- which 1,2
 	local clockString = string.format("%02d:%02d:%02d", math.floor(hours), math.floor(minutes), math.floor(secs))
 
 	Global.call("setHudAttribute", {id = "ChsStpWatch"..which, attr = "text", value = clockString})
+end
+
+-- Style one clock pill (which = 1 Blue / 2 Red) as active (running) or passive.
+function applyClockPill(which, active)
+	local panel = "ClockSubPanel"..which
+	local watch = "ChsStpWatch"..which
+	if active then
+		Global.call("setHudAttribute", {id = panel, attr = "outline",     value = CLOCK_PILL_ACTIVE_OUTLINE})
+		Global.call("setHudAttribute", {id = panel, attr = "outlineSize", value = CLOCK_PILL_ACTIVE_OUTLINE_SIZE})
+		Global.call("setHudAttribute", {id = panel, attr = "color",       value = CLOCK_PILL_ACTIVE_BG})
+		Global.call("setHudAttribute", {id = watch, attr = "color",       value = CLOCK_PILL_ACTIVE_TEXT})
+	else
+		Global.call("setHudAttribute", {id = panel, attr = "outline",     value = CLOCK_PILL_PASSIVE_OUTLINE})
+		Global.call("setHudAttribute", {id = panel, attr = "outlineSize", value = CLOCK_PILL_PASSIVE_SIZE})
+		Global.call("setHudAttribute", {id = panel, attr = "color",       value = CLOCK_PILL_PASSIVE_BG})
+		Global.call("setHudAttribute", {id = watch, attr = "color",       value = CLOCK_PILL_PASSIVE_TEXT})
+	end
+end
+
+-- Re-apply the active/passive clock pill styling from the persisted clock state.
+-- Click_1/Click_2 set this live, but the styling lives only in the non-persistent
+-- Global overlay, so on reload it resets to the passive XML default while
+-- data.state keeps the clock running. Blue (player 1) runs in states 1/3/9, Red
+-- (player 2) in 2/4/10; any other state is paused/editing (both passive).
+function refreshHudHighlight()
+	local s = data.state
+	local blueRunning = (s == 1 or s == 3 or s == 9)
+	local redRunning  = (s == 2 or s == 4 or s == 10)
+	applyClockPill(1, blueRunning)
+	applyClockPill(2, redRunning)
 end

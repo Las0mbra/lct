@@ -7,7 +7,7 @@ cards spawned/cleared by GMNotes tag, never wiping the board; they were also tag
 the manifest/tag checks and still behave completely differently at runtime.
 
 This tool rewrites such cards into the standard form, exactly as done by hand for
-the BTTF batch:
+a foreign map-card batch:
 
   * LuaScript head  -> data/map_card_machinery.lua (the canonical wipe/spawn), with
                        the card's own terrain blob (`objectJSONs = {...}`) kept.
@@ -21,11 +21,11 @@ It then prints the map_manifest rows and a startMenu wiring checklist to paste i
 
     # normalize every card in a bag, write the result back into the legacy save:
     python3 normalize_map_card.py ../Legacy/TS_Save_122.json \\
-        --container 793bc0 --creator map_crt_bttf --type map_type_comp --write
+        --container <bagGUID> --creator map_crt_example --type map_type_comp --write
 
     # preview only (no file written):
     python3 normalize_map_card.py ../Legacy/TS_Save_122.json --cards e154fa,4c3e76 \\
-        --creator map_crt_bttf --type map_type_comp
+        --creator map_crt_example --type map_type_comp
 """
 
 import argparse
@@ -142,7 +142,7 @@ def main():
     p.add_argument("source", help="Save JSON to read/normalize cards in.")
     p.add_argument("--container", help="Bag/Deck GUID; normalize every card inside it.")
     p.add_argument("--cards", help="Comma-separated card GUIDs to normalize.")
-    p.add_argument("--creator", required=True, help="Creator tag, e.g. map_crt_bttf.")
+    p.add_argument("--creator", required=True, help="Creator tag, e.g. map_crt_example.")
     p.add_argument("--type", required=True, dest="type_tag", help="Map type tag, e.g. map_type_comp.")
     p.add_argument("--out", help="Write the modified save to this path.")
     p.add_argument("--write", action="store_true", help="Write back to the source file in place.")

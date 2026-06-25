@@ -9,6 +9,7 @@ Usage:
 """
 
 import argparse
+import csv
 import json
 import os
 import platform
@@ -55,7 +56,16 @@ JSON_NAME  = "ftc_base"
 XML_NAME   = "ftc_base_ui"
 OUT_NAME   = "lct_base"
 CHANGELOG  = SCRIPT_DIR.parent / "CHANGELOG.md"
+CITY_MAT_CSV = SCRIPT_DIR.parent / "data" / "all_mats.csv"
+CURATED_MAT_CSV = SCRIPT_DIR.parent / "data" / "curated_maps.csv"
+DESERT_MAT_CSV = SCRIPT_DIR.parent / "data" / "desert.csv"
+BM_MAT_RANDOMIZER_ENABLED = False
 GLOBAL_LUA = "global.ttslua"
+
+# The Battlemaster dynamic spawner bakes the canonical map-card machinery into
+# its own script (via @@MAP_CARD_MACHINERY@@), so it must be excluded from the
+# map-card load-hook injector or its embedded template would be rewritten.
+BATTLEMASTER_SPAWNER_GUID = "b4d10a"
 
 REGEX_LUA_GUID       = re.compile(r'([0-9a-f]{6})')
 REGEX_JSON_GUID      = re.compile(r'"GUID": "(.*)"')
@@ -154,7 +164,7 @@ def inject_lua_into_line(json_lines: list, line_idx: int, lua_text: str):
     print(f"  Writing to line {line_idx + 1}.", end=" ")
 
 
-def inject_map_card_hooks(json_lines: list) -> tuple:
+def inject_map_card_hooks(json_lines: list, skip_line_idxs=None) -> tuple:
     """Inject the Load Map -> menu notification into each baked map card.
 
     The source cards (imported from the upstream mod) carry no hook; we add it on
@@ -164,9 +174,17 @@ def inject_map_card_hooks(json_lines: list) -> tuple:
     (fewer means a signature we couldn't anchor — see the validator's warning).
 
     Idempotent: a script already containing the hook call is skipped.
+
+    `skip_line_idxs` lists LuaScript line indices to leave untouched. The
+    Battlemaster dynamic spawner bakes the canonical machinery text (which
+    contains `function loadMap`) into its own script as a string, so without an
+    explicit skip this would mutate that embedded template.
     """
+    skip = set(skip_line_idxs or ())
     injected = candidates = 0
     for i, line in enumerate(json_lines):
+        if i in skip:
+            continue
         m = REGEX_JSON_LUASCRIPT_FIELD.search(line)
         if not m:
             continue
@@ -260,10 +278,12 @@ def bake_map_index(lua_text: str) -> str:
     entries = []
     for row in rows:
         creator = row["map_creator_tag"].removeprefix(validate_maps.MAP_CREATOR_TAG_PREFIX + "_")
-        entries.append("[%s]={creator=%s,display=%s,eligible=%s}" % (
+        map_type = row["map_type_tag"].removeprefix(validate_maps.MAP_TYPE_TAG_PREFIX + "_")
+        entries.append("[%s]={creator=%s,display=%s,type=%s,eligible=%s}" % (
             json.dumps(row["card_guid"]),
             json.dumps(creator),
             json.dumps(row["creator_display"]),
+            json.dumps(map_type),
             "true" if row["eligible"] == "true" else "false",
         ))
     literal = "MAP_INDEX = {" + ",".join(entries) + "}   -- @@MAP_INDEX@@"
@@ -272,6 +292,106 @@ def bake_map_index(lua_text: str) -> str:
         warn("marker @@MAP_INDEX@@ not found in global.ttslua — map index not injected.")
     else:
         print(f"  Baked MAP_INDEX from map_manifest.csv ({len(entries)} map cards).")
+    return lua_text
+
+
+def bake_map_card_machinery(lua_text: str) -> str:
+    """Replace the @@MAP_CARD_MACHINERY@@ marker with the canonical load/clear head
+    from data/map_card_machinery.lua, encoded as a Lua string literal.
+
+    Lets the Battlemaster dynamic spawner emit LCT-compatible loader cards whose
+    head is byte-identical to every static map card, with one source of truth.
+    The spawner keeps an empty `BM_MAP_CARD_MACHINERY = ""` default so an
+    uncompiled/dev build stays valid. Mirrors bake_map_index's marker rewrite.
+    """
+    if "@@MAP_CARD_MACHINERY@@" not in lua_text:
+        return lua_text
+    machinery = validate_maps.MAP_CARD_MACHINERY.read_text(encoding="utf-8")
+    literal = ("BM_MAP_CARD_MACHINERY = " + json.dumps(machinery)
+               + "   -- @@MAP_CARD_MACHINERY@@")
+    lua_text, count = re.subn(r"^.*--\s*@@MAP_CARD_MACHINERY@@.*$", lambda _m: literal,
+                              lua_text, count=1, flags=re.M)
+    if count != 1:
+        warn("marker @@MAP_CARD_MACHINERY@@ present but not rewritten — machinery not baked.")
+    else:
+        print(f"  Baked MAP_CARD_MACHINERY from {validate_maps.MAP_CARD_MACHINERY.name} "
+              f"({len(machinery)} chars).")
+    return lua_text
+
+
+def read_mat_csv(path: Path) -> tuple[list[str], list[str]]:
+    """Read either `terrain,url` CSVs or simple two-column name/url lists."""
+    names, urls = [], []
+    with path.open(encoding="utf-8-sig", newline="") as fh:
+        rows = list(csv.reader(fh))
+    if not rows:
+        return names, urls
+
+    start = 0
+    header = [cell.strip().lower() for cell in rows[0]]
+    if "url" in header:
+        start = 1
+        name_idx = header.index("terrain") if "terrain" in header else 0
+        url_idx = header.index("url")
+    else:
+        name_idx, url_idx = 0, 1
+
+    for row in rows[start:]:
+        if len(row) <= url_idx:
+            continue
+        url = row[url_idx].strip()
+        if not url:
+            continue
+        urls.append(url)
+        names.append(row[name_idx].strip() if len(row) > name_idx else "")
+    return names, urls
+
+
+def bake_city_mat_urls(lua_text: str) -> str:
+    """Bake mat URL pools into startMenu for the manual picker and BTTF auto-reskin."""
+    markers = ("@@CITY_MAT_URLS@@", "@@CITY_MAT_NAMES@@",
+               "@@BM_MAT_RANDOMIZER_ENABLED@@",
+               "@@BTTF_RUINS_MAT_URLS@@", "@@BTTF_RUINS_MAT_NAMES@@",
+               "@@DESERT_MAT_URLS@@", "@@DESERT_MAT_NAMES@@")
+    if not any(marker in lua_text for marker in markers):
+        return lua_text
+
+    city_names, city_urls = read_mat_csv(CITY_MAT_CSV)
+    curated_names, curated_urls = read_mat_csv(CURATED_MAT_CSV)
+    desert_names, desert_urls = read_mat_csv(DESERT_MAT_CSV)
+
+    def bake(marker, varname, values, source_name):
+        nonlocal lua_text
+        if "@@" + marker + "@@" not in lua_text:
+            return
+        literal = (varname + " = {" + ",".join(json.dumps(v) for v in values)
+                   + "}   -- @@" + marker + "@@")
+        lua_text, count = re.subn(r"^.*--\s*@@" + marker + r"@@.*$", lambda _m: literal,
+                                  lua_text, count=1, flags=re.M)
+        if count != 1:
+            warn(f"marker @@{marker}@@ present but not rewritten — not injected.")
+        else:
+            print(f"  Baked {varname} from {source_name} ({len(values)} entries).")
+
+    def bake_bool(marker, varname, value):
+        nonlocal lua_text
+        if "@@" + marker + "@@" not in lua_text:
+            return
+        literal = f"{varname} = {'true' if value else 'false'}   -- @@{marker}@@"
+        lua_text, count = re.subn(r"^.*--\s*@@" + marker + r"@@.*$", lambda _m: literal,
+                                  lua_text, count=1, flags=re.M)
+        if count != 1:
+            warn(f"marker @@{marker}@@ present but not rewritten — not injected.")
+        else:
+            print(f"  Baked {varname} = {'true' if value else 'false'}.")
+
+    bake_bool("BM_MAT_RANDOMIZER_ENABLED", "BM_MAT_RANDOMIZER_ENABLED", BM_MAT_RANDOMIZER_ENABLED)
+    bake("CITY_MAT_URLS", "CITY_MAT_URLS", city_urls, CITY_MAT_CSV.name)
+    bake("CITY_MAT_NAMES", "CITY_MAT_NAMES", city_names, CITY_MAT_CSV.name)
+    bake("BTTF_RUINS_MAT_URLS", "BTTF_RUINS_MAT_URLS", curated_urls, CURATED_MAT_CSV.name)
+    bake("BTTF_RUINS_MAT_NAMES", "BTTF_RUINS_MAT_NAMES", curated_names, CURATED_MAT_CSV.name)
+    bake("DESERT_MAT_URLS", "DESERT_MAT_URLS", desert_urls, DESERT_MAT_CSV.name)
+    bake("DESERT_MAT_NAMES", "DESERT_MAT_NAMES", desert_names, DESERT_MAT_CSV.name)
     return lua_text
 
 
@@ -408,6 +528,7 @@ def main():
     print(term.green("Done."))
 
     # --- Inject each object script by matching GUIDs ---
+    hook_skip_line_idxs = []  # LuaScript lines to keep away from the map-card hook injector
     for find_guid, file_idx in lua_guids:
         print(f"Injecting {lua_files[file_idx].name} (GUID {find_guid})... ", end="")
         found = False
@@ -420,10 +541,16 @@ def main():
                 )
                 if lua_slot_idx is None:
                     fail(f"No LuaScript slot found after GUID {find_guid}! Ending compilation.")
-                inject_lua_into_line(
-                    json_lines, lua_slot_idx,
-                    lua_files[file_idx].read_text(encoding="utf-8"),
-                )
+                object_lua = lua_files[file_idx].read_text(encoding="utf-8")
+                # Bake the canonical map-card machinery into any object that opts in
+                # (the Battlemaster spawner). No-op for everything else.
+                object_lua = bake_map_card_machinery(object_lua)
+                # Bake the random city-mat URL pool into any object that opts in
+                # (startMenu, for onMapCardLoaded). No-op for everything else.
+                object_lua = bake_city_mat_urls(object_lua)
+                if find_guid == BATTLEMASTER_SPAWNER_GUID:
+                    hook_skip_line_idxs.append(lua_slot_idx)
+                inject_lua_into_line(json_lines, lua_slot_idx, object_lua)
                 print(term.green("Done."))
                 found = True
                 break
@@ -432,7 +559,7 @@ def main():
 
     # --- Inject the Load Map hook into every baked map card ---
     print("Injecting Load Map hooks into map cards... ", end="")
-    hooks_injected, hook_candidates = inject_map_card_hooks(json_lines)
+    hooks_injected, hook_candidates = inject_map_card_hooks(json_lines, hook_skip_line_idxs)
     print(term.green(f"{hooks_injected}/{hook_candidates} done."))
     if hooks_injected != hook_candidates:
         warn(f"{hook_candidates - hooks_injected} map card(s) could not be hooked "

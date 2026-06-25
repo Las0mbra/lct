@@ -149,7 +149,7 @@ add25d6Btn={
 }
 add1d3Btn={
     label="+ 1d3", click_function="spawnDice1d3", function_owner=self,
-    tooltip="Spawns 1d3 dice",
+    tooltip="Left click: Spawns 1d3\nRight click: Quick-roll 1d3 (instant)",
     position={2.79, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=250,
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
@@ -289,33 +289,33 @@ restoreBtn={
 }
 
 gap2Btn={
-    label='1" Gap', tooltip='Arrange models with 1" spacing', click_function='arrangeModelsWith1Inch', function_owner=self,
-    position={-7.8, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=2500, scale={0.1,0.1,0.1},
-    font_size=750, color='White', font_color={0,0,0}
-}
-
-gap1Btn={
-    label='2" Gap', tooltip='Arrange models with 2" spacing', click_function='arrangeModelsWith2Inch', function_owner=self,
-    position={-7.27, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=2500, scale={0.1,0.1,0.1},
-    font_size=750, color='White', font_color={0,0,0}
+    label='1"/2" Gap', tooltip='LMB: 1" Gap\nRMB: 2" Gap', click_function='arrangeModelsWithGap', function_owner=self,
+    position={-6.24, Yoffset ,-1.65}, rotation={0,0,0}, height=1000, width=3200, scale={0.1,0.1,0.1},
+    font_size=700, color='White', font_color={0,0,0}
 }
 
 clearMeasureAllBtn={
     label='Clear Bubbles', tooltip='LEFT CLICK: Clear all measuring bubbles from the table\nRIGHT CLICK: Clear all measuring bubbles from highlighted objects only', click_function='clearMeasuringCircles', function_owner=self,
-    position={-7.45, Yoffset ,-1.65}, rotation={0,0,0}, height=1000, width=5200, scale={0.1,0.1,0.1},
+    position={-7.93, Yoffset ,-1.65}, rotation={0,0,0}, height=1000, width=4200, scale={0.1,0.1,0.1},
     font_size=700, color='White', font_color={0,0,0}
 }
 
 clearLinesBtn={
     label='Clear Lines', tooltip='Clear all hand-drawn lines, keep measuring bubbles', click_function='clearHandDrawnLines', function_owner=self,
-    position={-6.35, Yoffset ,-1.65}, rotation={0,0,0}, height=1000, width=5200, scale={0.1,0.1,0.1},
+    position={-7.03, Yoffset ,-1.65}, rotation={0,0,0}, height=1000, width=4200, scale={0.1,0.1,0.1},
     font_size=700, color='White', font_color={0,0,0}
 }
 
 
 checkCoherencyBtn={
-    label='Coherency', tooltip='LEFT CLICK: Show coherency of selected models\n RIGHT CLICK: Toggle off lines\nDrawing new lines will be weird while this is on', click_function='checkCoherency', function_owner=self,
-    position={-6.46, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=5200, scale={0.1,0.1,0.1},
+    label='Coherency Check', tooltip='LEFT CLICK: Show coherency of selected models\n RIGHT CLICK: Toggle off lines\nDrawing new lines will be weird while this is on', click_function='checkCoherency', function_owner=self,
+    position={-6.58, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=5200, scale={0.1,0.1,0.1},
+    font_size=700, color='White', font_color={0,0,0}
+}
+
+engagementRangeBtn={
+    label='Engagement Range', tooltip='LEFT CLICK: Highlight every model within 2" of the selected model(s) for 15s\nRIGHT CLICK: Clear the highlights now', click_function='showEngagementRange', function_owner=self,
+    position={-7.76, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=5800, scale={0.1,0.1,0.1},
     font_size=700, color='White', font_color={0,0,0}
 }
 
@@ -1078,7 +1078,13 @@ function spawnD3(n, player, alt)
             callback_function = function(obj)
                 if selectedColor ~= nil then obj.setColorTint(selectedColor) end
                 table.insert(spawnedDice, obj)
-                -- Spawn-only (legacy behaviour); no auto-roll. See spawnDice.
+                -- Right-click (alt) quick-rolls just like the +Nd6 buttons: set values
+                -- from the roller's xoshiro stream (faces=3) without ever entering the
+                -- bag. Dice arrive via async takeObject callbacks, so fire once the last
+                -- one lands. Left-click stays spawn-only (press Roll All to roll).
+                if alt and #spawnedDice == n then
+                    quickRollSpawnedDice(player, spawnedDice, 3, "d3")
+                end
             end
         })
         col = col + 1
@@ -1176,10 +1182,12 @@ local lastQuickRollColorIndex = 0
 -- appear instantly rolled, without ever entering the bag. Falls back to
 -- math.random only if the roller object can't be reached. All dice in the roll
 -- share one random palette colour.
-function quickRollSpawnedDice(player, dice)
+function quickRollSpawnedDice(player, dice, faces, dieLabel)
+    faces = faces or 6
+    dieLabel = dieLabel or "d6"
     local vals
     if roller then
-        vals = roller.call("rollFacesForQuick", { n = #dice, faces = 6 })
+        vals = roller.call("rollFacesForQuick", { n = #dice, faces = faces })
     end
     -- Pick one palette colour for the whole roll, never repeating the previous
     -- roll's colour so batches stay visually distinct.
@@ -1191,12 +1199,25 @@ function quickRollSpawnedDice(player, dice)
     local tint = quickRollPalette[idx]
     local total = 0
     for i, die in ipairs(dice) do
-        local v = (vals and tonumber(vals[i])) or math.random(6)
-        die.setValue(v)
+        local v = (vals and tonumber(vals[i])) or math.random(faces)
         die.setColorTint(tint)
+        -- Custom dice are spawned with setCustomObject, which reloads the object
+        -- asynchronously. Setting the value synchronously here races that reload
+        -- and the value is lost when the die snaps back to its spawn orientation,
+        -- so every die shows the same default face. Defer the value (and snap the
+        -- rotation explicitly, like the bag roll's setValueCallback does) until the
+        -- reload has settled. Plain dice don't reload, but the short defer is
+        -- harmless for them.
+        Wait.frames(function()
+            die.setValue(v)
+            local rotValues = die.getRotationValues()
+            if rotValues and rotValues[v] then
+                die.setRotation(rotValues[v].rotation + Vector(0, 180, 0))
+            end
+        end, 2)
         total = total + v
     end
-    printToAll(Player[player].steam_name .. " quick-rolled " .. tostring(total) .. " on " .. #dice .. "d6", "White")
+    printToAll(Player[player].steam_name .. " quick-rolled " .. tostring(total) .. " on " .. #dice .. dieLabel, "White")
 end
 
 -- Cross-object entry point for the stats board. Object.call() can only pass a
@@ -1300,6 +1321,30 @@ function onload()
     -- Remove any coherency distance labels that leaked into the save.
     cleanupOrphanCoherencyLabels()
 
+    -- TTS sorts the Options -> Game Keys list alphabetically by label (call order
+    -- is ignored), so these six are prefixed 1.-6. to pin them to the top in the
+    -- desired order. The numeric prefixes change the labels, which orphans any
+    -- prior player bindings -- hence the "RESET ALL YOUR TTS HOTKEYS" broadcast.
+    addHotkey("1. Save Position", savePositionClicked)
+    addHotkey("2. Restore Position", restorePositionClicked)
+    addHotkey("3. Custom Bubble", function(playerColor, _, _)
+        if playerColor ~= "Red" and playerColor ~= "Blue" then return end
+        local matGUID = (playerColor == "Red")
+            and Global.getVar("redCustomDiceMat_GUID")
+            or  Global.getVar("blueCustomDiceMat_GUID")
+        Global.call("openBubbleInput", {color = playerColor, mat = matGUID})
+    end)
+    addHotkey("4. Coherency Check", checkCoherency)
+    addHotkey("5. Engagement Range", showEngagementRange)
+    addHotkey("6. Roll All Dice", function(playerColor, _, _)
+        local matGUID = (playerColor == "Red")
+            and Global.getVar("redCustomDiceMat_GUID")
+            or  Global.getVar("blueCustomDiceMat_GUID")
+        local mat = getObjectFromGUID(matGUID)
+        if mat then mat.call("hotkeyRollAllDice", { playerColor = playerColor }) end
+    end)
+
+    -- Remaining hotkeys; these sort alphabetically below the numbered group.
     addHotkey("Auto 1 Inch Gap", arrangeModelsWith1Inch)
     addHotkey("Auto 2 Inch Gap", arrangeModelsWith2Inch)
     addHotkey("Clear Bubbles", function(playerColor, _, _)
@@ -1319,23 +1364,6 @@ function onload()
         local mat = getObjectFromGUID(matGUID)
         if mat then mat.call("hotkeyClearMat", { playerColor = playerColor }) end
     end)
-    addHotkey("Coherency", checkCoherency)
-    addHotkey("Custom Bubble", function(playerColor, _, _)
-        if playerColor ~= "Red" and playerColor ~= "Blue" then return end
-        local matGUID = (playerColor == "Red")
-            and Global.getVar("redCustomDiceMat_GUID")
-            or  Global.getVar("blueCustomDiceMat_GUID")
-        Global.call("openBubbleInput", {color = playerColor, mat = matGUID})
-    end)
-    addHotkey('Restore position', restorePositionClicked)
-    addHotkey("Roll All Dice", function(playerColor, _, _)
-        local matGUID = (playerColor == "Red")
-            and Global.getVar("redCustomDiceMat_GUID")
-            or  Global.getVar("blueCustomDiceMat_GUID")
-        local mat = getObjectFromGUID(matGUID)
-        if mat then mat.call("hotkeyRollAllDice", { playerColor = playerColor }) end
-    end)
-    addHotkey('Save position', savePositionClicked)
     addHotkey("Show Scoreboard", function(playerColor, _, _)
         Global.call("hotkeyToggleScoringOverlay", { playerColor = playerColor })
     end)
@@ -1449,8 +1477,8 @@ function onload()
     createToolButtonWithBorder(clearMeasureAllBtn)
     createToolButtonWithBorder(clearLinesBtn)
     createToolButtonWithBorder(checkCoherencyBtn)
+    createToolButtonWithBorder(engagementRangeBtn)
     createToolButtonWithBorder(gap2Btn)
-    createToolButtonWithBorder(gap1Btn)
     self.createButton(customDiceSpawnButton)
     if self.getPosition().z < 0 then selectedColor="Blue" else selectedColor="Red" end modifyMenu(selectedColor)
 
@@ -1959,6 +1987,16 @@ function arrangeModelsWith2Inch(a, b, c)
     print("Arranged " .. #items .. " models with a 2-inch gap along the detected orientation.")
 end
 
+-- Single button handler: left-click arranges with a 1" gap, right-click with 2".
+-- For button clicks the third argument (alt_click) is true on a right-click.
+function arrangeModelsWithGap(obj, playerColor, alt_click)
+    if alt_click then
+        arrangeModelsWith2Inch(obj, playerColor, alt_click)
+    else
+        arrangeModelsWith1Inch(obj, playerColor, alt_click)
+    end
+end
+
 function arrangeModelsWith1Inch(a, b, c)
     local playerColor
     if type(a) == "string" then
@@ -2385,6 +2423,21 @@ function clearHandDrawnLines(obj, playerColor, alt)
     printToAll("Cleared hand-drawn lines on "..clearedAll.." objects.", {1,1,1})
 end
 
+-- Highlight ownership coordination with SelectionHighlighter. While our monitors
+-- glow a model, SelectionHighlighter must leave that model alone, otherwise it
+-- snapshots our colour as the model's "original" and re-applies it on deselect
+-- (so the glow survives the monitor). hold/release tell it to stand off and
+-- resume. No-ops when the highlighter object isn't present.
+local SELECTION_HIGHLIGHTER_GUID = "27de4f"
+local function holdSelectionHighlight(guid)
+    local sh = getObjectFromGUID(SELECTION_HIGHLIGHTER_GUID)
+    if sh ~= nil then sh.call("holdHighlight", {guid = guid}) end
+end
+local function releaseSelectionHighlight(guid)
+    local sh = getObjectFromGUID(SELECTION_HIGHLIGHTER_GUID)
+    if sh ~= nil then sh.call("releaseHighlight", {guid = guid}) end
+end
+
 -- Live coherency / range monitor for a captured set of models.
 -- Measures base-to-base (edge-to-edge) on the table plane (x/z), ignoring height,
 -- and enforces two rules:
@@ -2413,8 +2466,10 @@ coherencyIndexByGuid = {}     -- guid -> current index, for O(1) event filtering
 coherencyMotionTimer = nil    -- runs ONLY while monitored models are moving
 coherencyMotionTicks = 0      -- motion-loop tick counter, for the label cadence
 coherencyPrevMoving = {}      -- set of indices that were moving last tick
+coherencyHighlighted = {}     -- guid -> true: monitored models currently glowing green
 
 local COHERENCY_RANGE = 2 -- inches, base-to-base
+local COHERENCY_OK_COLOR = {0, 1, 0} -- green glow on a model that is in coherency
 local COHERENCY_MAX = 9   -- inches, base-to-base
 local COHERENCY_LIFT = 0.2 -- raise lines slightly so they sit above the bases
 local COHERENCY_LABEL_LIFT = 0.5 -- raise distance text a little above the lines
@@ -2560,6 +2615,14 @@ function stopCoherencyMonitor()
         Wait.stop(coherencyTimeoutTimer)
         coherencyTimeoutTimer = nil
     end
+    -- Drop the green coherency glow from every model we lit, and hand ownership
+    -- back to SelectionHighlighter.
+    for guid in pairs(coherencyHighlighted) do
+        local o = getObjectFromGUID(guid)
+        if o ~= nil and not o.isDestroyed() then o.highlightOff() end
+        releaseSelectionHighlight(guid)
+    end
+    coherencyHighlighted = {}
     coherencyMonitorGuids = {}
     coherencyDesc = {}
     coherencyGap = {}
@@ -2691,6 +2754,8 @@ local function drawCoherency(updateLabels)
 
     -- Rule 1: every model needs at least one other model within 2" base-to-base.
     -- If none qualifies, flag the gap to its nearest neighbour (orange, critical).
+    -- coherent[i] records the per-model status so we can glow it green below.
+    local coherent = {}
     for i = 1, n do
         local hasBuddy = false
         local nearest, nearestDist = nil, math.huge
@@ -2703,8 +2768,31 @@ local function drawCoherency(updateLabels)
                 end
             end
         end
+        coherent[i] = hasBuddy
         if not hasBuddy and nearest then
             add(i, nearest, nearestDist, {1, 0.5, 0}, true)
+        end
+    end
+
+    -- Glow each monitored model green while it is in coherency (in-2" of a buddy)
+    -- for at-a-glance clarity; drop the glow when it falls out. We take ownership
+    -- from SelectionHighlighter while glowing (hold) and hand it back when we stop
+    -- (release), so the green can't be snapshotted and restored on deselect.
+    for i = 1, n do
+        local guid = coherencyMonitorGuids[i]
+        local o = guid and getObjectFromGUID(guid)
+        if o ~= nil and not o.isDestroyed() then
+            if coherent[i] then
+                if not coherencyHighlighted[guid] then
+                    holdSelectionHighlight(guid)
+                    o.highlightOn(COHERENCY_OK_COLOR)
+                    coherencyHighlighted[guid] = true
+                end
+            elseif coherencyHighlighted[guid] then
+                o.highlightOff()
+                releaseSelectionHighlight(guid)
+                coherencyHighlighted[guid] = nil
+            end
         end
     end
 
@@ -2965,4 +3053,179 @@ function checkCoherency(a, b, c)
     end, COHERENCY_TIMEOUT)
 
     printToColor(string.format("Live coherency check ON for %d models. Orange = out of 2\" coherency, Red = out of 9\" range (one line per offending model). Lines follow models as you move them; auto-stops after %ds or RIGHT-CLICK Coherency to remove them.", #objs, COHERENCY_TIMEOUT), playerColor, {0, 1, 0})
+end
+
+-- ====================================================================
+-- Engagement Range
+-- Highlight every model on the table whose base is within ENGAGEMENT_RANGE
+-- inches of ANY currently-selected model, then keep that set live for
+-- ENGAGEMENT_HIGHLIGHT seconds: it re-scans every ENGAGEMENT_REFRESH seconds
+-- so models that move into range light up and models that move out go dark.
+-- Distances reuse the same base-to-base geometry (buildBaseDescriptor +
+-- baseGap) as the coherency monitor, so an oval base is measured edge-to-edge,
+-- rotation-correct. "Models" are every Figurine/Generic/Custom_Model on the
+-- table; the captured selection is excluded, and each neighbour counts once.
+-- ====================================================================
+local ENGAGEMENT_RANGE = 2          -- inches, base-to-base
+local ENGAGEMENT_HIGHLIGHT = 15     -- seconds the live highlight runs
+local ENGAGEMENT_REFRESH = 0.15      -- seconds between re-scans during the window
+local ENGAGEMENT_COLOR = {1, 0.15, 0.15} -- red glow on neighbours in range
+local ENGAGEMENT_MAX_SELECTED = 30  -- skip an accidental whole-army box-select
+
+-- A table object counts as a "model" using the same tag set as
+-- SelectionHighlighter (Figurine / Generic / Custom_Model).
+local function isModelObject(o)
+    local t = o.tag
+    return t == "Figurine" or t == "Generic" or t == "Custom_Model"
+end
+
+-- Live monitor state. Selection is captured by GUID so it keeps tracking the
+-- same models as they (or their neighbours) move during the window.
+engagementMonitorActive = false
+engagementSelGuids = {}        -- captured selection
+engagementHighlighted = {}     -- guid -> true: models we are currently glowing
+engagementTimer = nil          -- repeating ENGAGEMENT_REFRESH tick
+engagementTicksLeft = 0        -- ticks remaining before auto-stop
+
+function stopEngagementMonitor()
+    engagementMonitorActive = false
+    if engagementTimer ~= nil then
+        Wait.stop(engagementTimer)
+        engagementTimer = nil
+    end
+    -- Drop only the highlights we applied (leave any we never touched alone), and
+    -- hand ownership back to SelectionHighlighter.
+    for guid in pairs(engagementHighlighted) do
+        local o = getObjectFromGUID(guid)
+        if o ~= nil and not o.isDestroyed() then o.highlightOff() end
+        releaseSelectionHighlight(guid)
+    end
+    engagementHighlighted = {}
+    engagementSelGuids = {}
+    engagementTicksLeft = 0
+end
+
+-- One scan pass: resolve the captured selection to live models, find every
+-- other model within range, and reconcile glow on/off against last tick.
+-- Returns the in-range count, or nil if the whole selection is gone.
+local function engagementScan()
+    local selectedSet, selDesc = {}, {}
+    for _, guid in ipairs(engagementSelGuids) do
+        local o = getObjectFromGUID(guid)
+        if o ~= nil and not o.isDestroyed() then
+            selectedSet[guid] = true
+            selDesc[#selDesc + 1] = buildBaseDescriptor(o)
+        end
+    end
+    if #selDesc == 0 then return nil end -- every selected model deleted
+
+    local nowSet, count = {}, 0
+    for _, o in ipairs(getAllObjects()) do
+        local guid = o.getGUID()
+        if isModelObject(o) and not selectedSet[guid] and not nowSet[guid] then
+            local od = buildBaseDescriptor(o)
+            for _, sd in ipairs(selDesc) do
+                if baseGap(sd, od) <= ENGAGEMENT_RANGE then
+                    nowSet[guid] = true
+                    count = count + 1
+                    break
+                end
+            end
+        end
+    end
+
+    -- Reconcile: only toggle models that crossed the threshold this tick. Take
+    -- ownership from SelectionHighlighter while glowing (hold) and return it when
+    -- the model leaves range (release), so the red can't be restored on deselect.
+    for guid in pairs(engagementHighlighted) do
+        if not nowSet[guid] then
+            local o = getObjectFromGUID(guid)
+            if o ~= nil and not o.isDestroyed() then o.highlightOff() end
+            releaseSelectionHighlight(guid)
+        end
+    end
+    for guid in pairs(nowSet) do
+        if not engagementHighlighted[guid] then
+            local o = getObjectFromGUID(guid)
+            if o ~= nil and not o.isDestroyed() then
+                holdSelectionHighlight(guid)
+                o.highlightOn(ENGAGEMENT_COLOR)
+            end
+        end
+    end
+    engagementHighlighted = nowSet
+    return count
+end
+
+function showEngagementRange(a, b, c)
+    -- Support button (a=object, b=color, c=altClick) and hotkey (a=color)
+    -- invocation, mirroring checkCoherency.
+    local playerColor, alt
+    if type(a) == "string" then
+        playerColor = a
+        alt = false
+    else
+        playerColor = b
+        alt = c and true or false
+    end
+
+    -- Right click stops the monitor and clears the glow before the window ends.
+    if alt then
+        if engagementMonitorActive then
+            stopEngagementMonitor()
+            if playerColor then printToColor("Engagement range OFF.", playerColor, {1, 1, 1}) end
+        elseif playerColor then
+            printToColor("No engagement range is running.", playerColor, {1, 1, 1})
+        end
+        return
+    end
+
+    local playerObj = Player[playerColor]
+    if not playerObj then
+        print("Player object not found for color: " .. tostring(playerColor))
+        return
+    end
+
+    local sel = playerObj.getSelectedObjects()
+    if #sel < 1 then
+        printToColor("Select at least one model to check engagement range.", playerColor, {1, 0.5, 0})
+        return
+    end
+    if #sel > ENGAGEMENT_MAX_SELECTED then
+        broadcastToColor(string.format("Engagement range skipped: %d models selected (max %d).", #sel, ENGAGEMENT_MAX_SELECTED), playerColor, {1, 0.3, 0.3})
+        return
+    end
+
+    -- A fresh click fully replaces any prior run.
+    if engagementMonitorActive then stopEngagementMonitor() end
+
+    engagementSelGuids = {}
+    for _, o in ipairs(sel) do
+        engagementSelGuids[#engagementSelGuids + 1] = o.getGUID()
+    end
+    engagementMonitorActive = true
+    engagementHighlighted = {}
+    engagementTicksLeft = math.ceil(ENGAGEMENT_HIGHLIGHT / ENGAGEMENT_REFRESH)
+
+    local count = engagementScan() or 0
+    if count == 0 then
+        printToColor(string.format("No models within %g\" of the selection.", ENGAGEMENT_RANGE), playerColor, {1, 1, 1})
+    else
+        broadcastToColor(string.format("%d model(s) within %g\" of the selection -- live for %ds (refreshing every %.1fs). RIGHT-CLICK Engagement Range to clear early.", count, ENGAGEMENT_RANGE, ENGAGEMENT_HIGHLIGHT, ENGAGEMENT_REFRESH), playerColor, {0, 1, 0})
+    end
+
+    -- Refresh loop: re-scan every ENGAGEMENT_REFRESH seconds, auto-stop after
+    -- the window elapses or once the whole selection is gone.
+    engagementTimer = Wait.time(function()
+        if not engagementMonitorActive then return end
+        if engagementScan() == nil then
+            stopEngagementMonitor()
+            return
+        end
+        engagementTicksLeft = engagementTicksLeft - 1
+        if engagementTicksLeft <= 0 then
+            stopEngagementMonitor()
+            printToAll(string.format("Engagement range check finished (%ds elapsed).", ENGAGEMENT_HIGHLIGHT), {1, 1, 1})
+        end
+    end, ENGAGEMENT_REFRESH, -1)
 end

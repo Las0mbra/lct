@@ -13,6 +13,25 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+
+## v1.8.2b
+- Added more space to the board when Onslaught mode is set
+- Fixed minor overlay bugs
+- Added tags to T5S2 maps for objective tokens
+- Added Dominatus items on main page (1v1 and Solo). 
+- Added T5S2 maps on the list.
+- Minor bug fixes (Removed Mission gen when map loads,quick roll custom dice bug)
+
+## v1.8.1
+- Added a lof of new maps from creators. But most of them came from Battlemaster, made by Superwutz.
+- Combat Patrol & Narrattive/Support.
+- Added an Advanced control menu on top
+- Map/Mod customization: In the menu there is an option to changes loaded maps mat or to change the table theme. 
+- Added an End of Battle Scoreboard button that doesnt have the primary/secondary points limitations.
+- New Hotkey additions but if you encounter some weird shortcut behaviour you might need to reset your hotkeys.
+- New and cleaner UI, things should look cleaner and more symmetrical. Also replaced legacy widgets with counters. 
+- Multiple minor bug fixes
+
 ## v1.7.0e
 - Added back Activation and Wound tokens! 
 - Small ui changes (eg. Map filter going away when game starts)
