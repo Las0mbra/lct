@@ -176,12 +176,57 @@ color4Btn={
     position={colorBtnOffset+0.35*3, Yoffset ,-0.87}, rotation={0,0,0}, height=colorBtnDimension, width=colorBtnDimension,
     font_size=60, color="Green", font_color={0,0,0}
 }
+-- Pip-colour toggle, sitting between the Green swatch and Dice+. Click flips every
+-- spawned die between white pips (Die_6_Rounded) and black pips (Die_6) through
+-- setDiceType(); revertRoll() also reads pipColorBtn.color. Its .index is assigned
+-- at runtime in onload (it's created last) so swapPipColor's editButton targets it.
 pipColorBtn=
 {
-  index=17, label="White", click_function="swapPipColor", function_owner=self,
+  label="White", click_function="swapPipColor", function_owner=self,
   position={colorBtnOffset + 0.35 * 4 + 0.1, Yoffset, -0.87}, rotation={0, 0, 0}, height=50, width=250,
   font_size=60, color="White", font_color="Black"
 }
+
+-- "Dice+" sits to the right of the pip toggle. It expands a second row of extra
+-- dice colours below the Red/Blue/Black/Green swatches, and collapses (destroys)
+-- them when clicked again.
+dicePlusBtn={
+  label="Dice+", tooltip="Show/hide extra dice colours", click_function="toggleDicePlus", function_owner=self,
+  position={colorBtnOffset + 0.35 * 4 + 0.6, Yoffset, -0.87}, rotation={0, 0, 0}, height=50, width=250,
+  font_size=60, color={1, 1, 1}, font_color={0, 0, 0}
+}
+
+-- Extra colour squares revealed by Dice+. Same X as the four base swatches, Z
+-- dropped by 1.5 so they form a second row. Created/destroyed on toggle.
+dicePlusExpanded = false
+-- Button positions are in the mat's LOCAL space and the mat is scaled 3.75x, so a
+-- local Z step of 0.4 lands ~1.5 world units apart (0.4 * 3.75). Row 1 sits below
+-- the base swatches; row 2 another equal step further out.
+-- Colours are tuned to a mid luminance band (~WCAG 0.12-0.30) so each die stays
+-- legible with EITHER white or black pips: dark hues are lifted, light hues are
+-- muddied (e.g. yellow -> mustard) since a vivid light colour can't hold white pips.
+dicePlusColors = {
+    -- Row 1 (Z = -1.27)
+    { fn = "dicePlusPurple",   color = {0.5569, 0.2667, 0.6784}, x = colorBtnOffset,           z = -0.87 - 0.4, tip = "Purple #8E44AD" },
+    { fn = "dicePlusYellow",   color = {0.6510, 0.5255, 0.0392}, x = colorBtnOffset + 0.35,     z = -0.87 - 0.4, tip = "Mustard #A6860A" },
+    { fn = "dicePlusTeal",     color = {0.0863, 0.6275, 0.5216}, x = colorBtnOffset + 0.35 * 2, z = -0.87 - 0.4, tip = "Teal #16A085" },
+    { fn = "dicePlusOrange",   color = {0.8000, 0.4196, 0.1176}, x = colorBtnOffset + 0.35 * 3, z = -0.87 - 0.4, tip = "Orange #CC6B1E" },
+    { fn = "dicePlusSlate",    color = {0.4392, 0.5020, 0.5647}, x = colorBtnOffset + 0.35 * 4, z = -0.87 - 0.4, tip = "Slate Gray #708090" },
+    { fn = "dicePlusSteel",    color = {0.2745, 0.5098, 0.7059}, x = colorBtnOffset + 0.35 * 5, z = -0.87 - 0.4, tip = "Steel Blue #4682B4" },
+    -- Row 2 (Z = -1.67)
+    { fn = "dicePlusBordeaux", color = {0.6902, 0.2275, 0.1804}, x = colorBtnOffset,           z = -0.87 - 0.8, tip = "Dark Red #B03A2E" },
+    { fn = "dicePlusAzure",    color = {0.0784, 0.5804, 0.5373}, x = colorBtnOffset + 0.35,     z = -0.87 - 0.8, tip = "Turquoise #149489" },
+    { fn = "dicePlusLtBrown",  color = {0.6275, 0.4157, 0.2353}, x = colorBtnOffset + 0.35 * 2, z = -0.87 - 0.8, tip = "Light Brown #A06A3C" },
+    { fn = "dicePlusDkGold",   color = {0.7961, 0.2902, 0.5451}, x = colorBtnOffset + 0.35 * 3, z = -0.87 - 0.8, tip = "Pink #CB4A8B" },
+    { fn = "dicePlusOlive",    color = {0.4196, 0.5569, 0.1373}, x = colorBtnOffset + 0.35 * 4, z = -0.87 - 0.8, tip = "Olive #6B8E23" },
+    { fn = "dicePlusIndigo",   color = {0.3529, 0.3098, 0.8118}, x = colorBtnOffset + 0.35 * 5, z = -0.87 - 0.8, tip = "Indigo #5A4FCF" },
+}
+
+-- Generate one click handler per swatch from the table above, so each colour is
+-- defined in exactly one place (the handler and the button share dicePlusColors).
+for _, dpc in ipairs(dicePlusColors) do
+    _G[dpc.fn] = function() modifyMenu(dpc.color) end
+end
 
 customDiceBtn={
     label="Custom Dice", click_function="customDice", function_owner=self,
@@ -1436,7 +1481,7 @@ function onload()
     self.createButton(color3Btn)
     self.createButton(color4Btn)
     self.createButton(warningBtn)
-    self.createButton(pipColorBtn)
+    self.createButton(dicePlusBtn)
     local sign=""
     for i=1, 6 do
         if lowerUpper then sign= lowerSign else sign=upperSign end
@@ -1480,6 +1525,12 @@ function onload()
     createToolButtonWithBorder(engagementRangeBtn)
     createToolButtonWithBorder(gap2Btn)
     self.createButton(customDiceSpawnButton)
+    -- Created last so it doesn't shift the fixed indices modifyMenu() relies on;
+    -- capture its real index so swapPipColor's editButton flips the right button.
+    self.createButton(pipColorBtn)
+    for _, b in ipairs(self.getButtons() or {}) do
+        if b.click_function == "swapPipColor" then pipColorBtn.index = b.index break end
+    end
     if self.getPosition().z < 0 then selectedColor="Blue" else selectedColor="Red" end modifyMenu(selectedColor)
 
 end
@@ -1642,6 +1693,32 @@ function modifyMenu(color)
     self.editButton({index=35, color="White"})
     self.editButton({index=36, color="White"})
     self.editButton({index=37, color="White"})
+end
+
+function toggleDicePlus()
+    if dicePlusExpanded then
+        -- Identify our extra squares by click_function and remove them. Descending
+        -- index order so each removal can't invalidate the indices still to remove.
+        local mine = {}
+        for _, c in ipairs(dicePlusColors) do mine[c.fn] = true end
+        local indices = {}
+        for _, b in ipairs(self.getButtons() or {}) do
+            if mine[b.click_function] then table.insert(indices, b.index) end
+        end
+        table.sort(indices, function(a, b) return a > b end)
+        for _, idx in ipairs(indices) do self.removeButton(idx) end
+        dicePlusExpanded = false
+    else
+        for _, c in ipairs(dicePlusColors) do
+            self.createButton({
+                label = "", tooltip = c.tip, click_function = c.fn, function_owner = self,
+                position = {c.x, Yoffset, c.z}, rotation = {0, 0, 0},
+                height = colorBtnDimension, width = colorBtnDimension,
+                font_size = 60, color = c.color, font_color = {0, 0, 0}
+            })
+        end
+        dicePlusExpanded = true
+    end
 end
 
 function setDiceType()
