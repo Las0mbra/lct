@@ -13,8 +13,13 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.8.4
+- Cleaning up
+- Quick fixes
 
-## v1.8.2b
+## v1.8.2c
+- Added more Table themes 
+- Updated Primary & Secondary mission decks based on this Changelog -> https://github.com/game-datacards/missioncards/blob/main/CHANGELOG.md
 - Added more space to the board when Onslaught mode is set
 - Fixed minor overlay bugs
 - Added tags to T5S2 maps for objective tokens

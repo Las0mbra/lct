@@ -64,7 +64,7 @@ function onLoad(saved_data)
         otherSecondary2Zone = getObjectFromGUID(Global.getVar("secondary22CardZone_GUID"))
         gambitPosition = { x = 55.75, y = 1.5, z = 8.05 }
         discardPosition = { x = 62.54, y = 0.98, z = 16.60 }
-        secondaryDeckPosition = { x = 62.54, y = 0.98, z = 8.45 }
+        secondaryDeckPosition = { x = 62.54, y = 0.98, z = 8.35 }
     else
         self.setName("Mission Manager Blue")
         self.setPosition({-27,-5,-70.5})
@@ -77,7 +77,7 @@ function onLoad(saved_data)
         otherSecondary2Zone = getObjectFromGUID(Global.getVar("secondary12CardZone_GUID"))
         gambitPosition = { x = 55.75, y = 1.5, z = -8.05 }
         discardPosition = { x = 62.54, y = 0.98, z = -16.60 }
-        secondaryDeckPosition = { x = 62.54, y = 0.98, z = -8.45 }
+        secondaryDeckPosition = { x = 62.54, y = 0.98, z = -8.35 }
     end
     self.setScale({0.6,1,0.6})
     if selectedPack then

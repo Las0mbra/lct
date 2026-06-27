@@ -55,6 +55,14 @@ matTextures = {
     {name = "Blue", color = {0.00, 0.31, 0.44}, url = "https://steamusercontent-a.akamaihd.net/ugc/12661578557139534569/9D589BE05341F1CE8EA20369387C7C5077587AB9/"},
     {name = "Grey", color = {0.38, 0.40, 0.34}, url = "https://steamusercontent-a.akamaihd.net/ugc/12631014249723827365/F940CC388DB67806FB4FC81A4CEEFFB20C1FDBE8/"},
     {name = "Purple", color = {0.36, 0.26, 0.41}, url = "https://steamusercontent-a.akamaihd.net/ugc/12602332143542612703/BC19D77679D80E92322FC9E22379165CBAE9DC32/"},
+    {name = "Red Wood", color = {0.35, 0.16, 0.10}, url = "https://steamusercontent-a.akamaihd.net/ugc/14567327019918795708/2B395E8CAA9F9A19E99B915113B7542882FCB946/"},
+    {name = "Grey Stone", color = {0.36, 0.36, 0.34}, url = "https://steamusercontent-a.akamaihd.net/ugc/15897725006336448025/83574B6805DF4E6CEA44EFAB7D5B2B912163D898/"},
+    {name = "Space", color = {0.10, 0.12, 0.23}, url = "https://steamusercontent-a.akamaihd.net/ugc/13505560926700621900/A831EDBDD977E37EC87A6345E80B749203B04F2D/"},
+    {name = "Wood", color = {0.42, 0.29, 0.16}, url = "https://steamusercontent-a.akamaihd.net/ugc/12419861650777715682/8DB8967B909015805A234DBEBDA41CBADD0B8CB8/"},
+    {name = "Graffiti", color = {0.42, 0.16, 0.35}, url = "https://steamusercontent-a.akamaihd.net/ugc/12776196614710430971/A650BC26568627868595D243ADC23D600F27B107/"},
+    {name = "Green 2", color = {0.16, 0.35, 0.10}, url = "https://steamusercontent-a.akamaihd.net/ugc/12197125747641380246/0A4FA198199CF25E6984355BC676F062F2C050F8/"},
+    {name = "Stripes", color = {0.29, 0.29, 0.32}, url = "https://steamusercontent-a.akamaihd.net/ugc/12743545711768789296/FECD0141A7A79CF8AEF46BA73D606CD1445B7FAF/"},
+    {name = "Yellow", color = {0.50, 0.42, 0.08}, url = "https://steamusercontent-a.akamaihd.net/ugc/14942685497117844413/942EF15E06DA92A166A51323BE72769CC423A836/"},
 }
 
 function ttsDebugLog(message)
@@ -149,14 +157,6 @@ function onLoad(saved_data)
         showCombatPatrolBag()
     else
         hideCombatPatrolBag()
-    end
-    -- Dominatus components: shown on the 1v1/Solo games (a confirmed game mode
-    -- that is not Combat Patrol), hidden otherwise. sizeConfirmed is only set once
-    -- a mode is chosen, so this stays hidden on the pre-mode selection screen.
-    if sizeConfirmed and not combatPatrolMode then
-        placeDominatusObjects()
-    else
-        hideDominatusObjects()
     end
     if not gameTurnCounter then
         ttsDebugLog("gameTurnCounter not found during onLoad")
@@ -350,7 +350,7 @@ confirmBtn4 = {
 
 -- Combat Patrol sits directly under 1v1 (same x), one row further out in z
 -- (+2.65 from the 1v1/Solo row). (The Narrative button that used to sit under Solo
--- was removed; its Dominatus components now show on the 1v1/Solo games instead.)
+-- was removed.)
 confirmBtn5 = {
     index          = i,
     label          = "Combat Patrol",
@@ -432,6 +432,14 @@ function setMatTexture1() setMatTexture(1) end
 function setMatTexture2() setMatTexture(2) end
 function setMatTexture3() setMatTexture(3) end
 function setMatTexture4() setMatTexture(4) end
+function setMatTexture5() setMatTexture(5) end
+function setMatTexture6() setMatTexture(6) end
+function setMatTexture7() setMatTexture(7) end
+function setMatTexture8() setMatTexture(8) end
+function setMatTexture9() setMatTexture(9) end
+function setMatTexture10() setMatTexture(10) end
+function setMatTexture11() setMatTexture(11) end
+function setMatTexture12() setMatTexture(12) end
 
 -- DEBUG-only: apply an arbitrary image URL to the map mat, bypassing the
 -- matTextures presets. Mirrors applyMatTexture's reload + flag-restore so the mat
@@ -508,7 +516,6 @@ function confirmForSingles()
     deployMode = "edition11"
     loadGameWithoutMapContainers()
     destroyCombatPatrolBag()
-    placeDominatusObjects()
     if selectedSizeIsOnslaught() then
         applyOnslaughtButtonLayout()
     end
@@ -520,7 +527,6 @@ function confirmStandardGame()
     deployMode = "edition11"
     loadGameWithoutMapContainers()
     destroyCombatPatrolBag()
-    placeDominatusObjects()
     if selectedSizeIsOnslaught() then
         applyOnslaughtButtonLayout()
     end
@@ -546,7 +552,6 @@ function confirmCombatPatrol()
     end
     loadGameWithoutMapContainers()
     destroyGameModeObjects()
-    hideDominatusObjects()
     showCombatPatrolBag()
 end
 
@@ -700,54 +705,6 @@ end
 
 function destroyCombatPatrolBag()
     destroyObjectByGUID(COMBAT_PATROL_BAG_GUID)
-end
-
--- ********************
--- DOMINATUS OBJECTS
--- ********************
--- The Dominatus components (merged from the legacy save by
--- scripts/import_narrative_objects.py). Like the mission-matrix props, they are
--- hidden until a mode is chosen: shown on the 1v1/Solo games, hidden on Combat
--- Patrol. Positions/rotations are the layout from the source save; the play
--- decks/bags live inside the Dominatus Bag.
--- Transforms (position/rotation/scale) are the exact values from the source save
--- (Legacy/TS_Save_122.json). Scale matters: the Dominatus Rules sheet and
--- Dominatus Bag are not 1.0, so placeDominatusObject applies scale too.
-DOMINATUS_OBJECTS = {
-    {guid="813dfe", pos={-22.8449535, 0.9614989, -16.8781948}, rot={0, 269.999237, 0}, scale={3.15, 1.0, 3.15}, lock=true}, -- Dominatus Rules
-    {guid="832110", pos={-18.8804836, 0.9065949, -10.5289011}, rot={2.431763, 89.94151, 357.285736}, scale={1.5, 1.0, 1.5}, lock=true}, -- Dominatus Bag
-}
-
--- Quiet placement: unlike placeObjectAtPosition this never broadcasts if an
--- object is missing (e.g. wiped by a map load), so the show path can be called
--- unconditionally.
-function placeDominatusObject(entry)
-    local obj = getObjectFromGUID(entry.guid)
-    if not obj then return end
-    obj.setPosition(entry.pos)
-    obj.setRotation(entry.rot)
-    if entry.scale then obj.setScale(entry.scale) end
-    obj.setLock(entry.lock == true)
-    obj.tooltip = true
-    obj.interactable = true
-end
-
-function placeDominatusObjects()
-    for _, entry in ipairs(DOMINATUS_OBJECTS) do
-        placeDominatusObject(entry)
-    end
-end
-
-function hideDominatusObjects()
-    for _, entry in ipairs(DOMINATUS_OBJECTS) do
-        local obj = getObjectFromGUID(entry.guid)
-        if obj then
-            obj.setPosition({entry.pos[1], -5.0, entry.pos[3]})
-            obj.setLock(true)
-            obj.tooltip = false
-            obj.interactable = false
-        end
-    end
 end
 
 -- "Force dispositions" reference token was removed from the save.
@@ -1698,11 +1655,6 @@ function applyRestoredSelectionState()
         end
     else
         hideGameModeObjects()
-    end
-    if sizeConfirmed and not combatPatrolMode then
-        placeDominatusObjects()
-    else
-        hideDominatusObjects()
     end
     placeForceDispositionToken()
 

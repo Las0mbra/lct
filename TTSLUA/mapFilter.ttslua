@@ -25,7 +25,7 @@ UI_VERTICAL_LIFT = -150
 activeCreators = {}     -- { [creatorId] = true }
 -- Creators toggled on the first time the panel spawns (no saved state yet).
 -- Keys are creator ids = the map_crt_* tag without the "map_crt_" prefix.
-DEFAULT_ENABLED_CREATORS = {"battlemaster_bttf", "battlemaster_bttf_ruins", "battlemaster_armageddon_desert", "cr5sh", "zim"}
+DEFAULT_ENABLED_CREATORS = {"t5s2", "battlemaster_bttf_ruins", "cr5sh"}
 
 -- UI-only display names for creator buttons. The baked MAP_INDEX display remains
 -- authoritative for card suffix validation and summaries.
@@ -282,12 +282,23 @@ MAT_RANDO_SPACING = 7
 -- setMatTexture<i>, which owns the swap (it holds matTextures + the selected index).
 -- The list order here MUST stay in sync with matTextures over there.
 TABLE_THEMES = {
-    {label = "Green",  color = "#004F08", colorOn = "#22C235"},
-    {label = "Blue",   color = "#004F70", colorOn = "#27A3D6"},
-    {label = "Grey",   color = "#616657", colorOn = "#AEB4A0"},
-    {label = "Purple", color = "#5C4269", colorOn = "#A077B8"},
+    {label = "Green",      color = "#004F08", colorOn = "#22C235"},
+    {label = "Blue",       color = "#004F70", colorOn = "#27A3D6"},
+    {label = "Grey",       color = "#616657", colorOn = "#AEB4A0"},
+    {label = "Purple",     color = "#5C4269", colorOn = "#A077B8"},
+    {label = "Red Wood",   color = "#5A2A1A", colorOn = "#B0563A"},
+    {label = "Grey Stone", color = "#5B5B57", colorOn = "#ACACA4"},
+    {label = "Space",      color = "#1A1F3A", colorOn = "#4A5699"},
+    {label = "Wood",       color = "#6B4A2A", colorOn = "#C28A4A"},
+    {label = "Graffiti",   color = "#6A2A5A", colorOn = "#C24FA8"},
+    {label = "Green 2",    color = "#2A5A1A", colorOn = "#5AC23A"},
+    {label = "Stripes",    color = "#4A4A52", colorOn = "#9A9AA8"},
+    {label = "Yellow",     color = "#7A6810", colorOn = "#E0C32A"},
 }
-TABLE_THEME_ROW_H = 81
+-- How many swatches per row in the theme grid. With many themes a single row makes
+-- the labels unreadable, so they wrap across rows (mirrors the creator grid below).
+TABLE_THEME_COLUMNS = 4
+TABLE_THEME_CELL_H = 70
 
 -- Currently-selected theme index, read from startMenu so the panel can mark the
 -- active swatch. 0 if the menu isn't ready (nothing marked).
@@ -308,8 +319,9 @@ function buildMatRandoPanel(width, height)
     local offsetX = math.floor(width * FILTER_SCALE) + MAT_RANDO_GAP
     -- Children take their preferred heights (childForceExpandHeight=false) and pack
     -- to the top; whatever height is left over sits empty below the Table Theme row.
-    -- Table Theme swatch row: one button per theme, splitting the width evenly. The
-    -- active theme is painted in its brighter `colorOn` so you can see the selection.
+    -- Table Theme swatches: one button per theme, wrapped into a fixed-column grid so
+    -- the labels stay readable as the list grows (a single row squeezes them too thin).
+    -- The active theme is painted in its brighter `colorOn` so you can see the selection.
     local selectedTheme = currentTableThemeIndex()
     local themeCells = {}
     for i, theme in ipairs(TABLE_THEMES) do
@@ -319,10 +331,20 @@ function buildMatRandoPanel(width, height)
             .. 'fontSize="30">%s</Button>',
             i, color, theme.label)
     end
+    -- Cell width = the inner content width (panel width minus the L/R padding) split
+    -- across the columns, with the inter-cell spacing removed. Height reserved is the
+    -- number of wrapped rows times (cell + spacing).
+    local themeSpacing = 10
+    local themeInnerW = width - 2 * MAT_RANDO_PAD
+    local themeCellW = math.floor(
+        (themeInnerW - (TABLE_THEME_COLUMNS - 1) * themeSpacing) / TABLE_THEME_COLUMNS)
+    local themeRows = math.ceil(#TABLE_THEMES / TABLE_THEME_COLUMNS)
+    local themeGridH = themeRows * (TABLE_THEME_CELL_H + themeSpacing)
     local themeRow = string.format(
-        '<HorizontalLayout preferredHeight="%d" flexibleHeight="0" spacing="10" '
-        .. 'childForceExpandWidth="true">\n%s\n</HorizontalLayout>',
-        TABLE_THEME_ROW_H, table.concat(themeCells, "\n"))
+        '<GridLayout cellSize="%d %d" spacing="%d %d" constraint="FixedColumnCount" '
+        .. 'constraintCount="%d" preferredHeight="%d" flexibleHeight="0">\n%s\n</GridLayout>',
+        themeCellW, TABLE_THEME_CELL_H, themeSpacing, themeSpacing,
+        TABLE_THEME_COLUMNS, themeGridH, table.concat(themeCells, "\n"))
     return string.format(
         '<VerticalLayout position="%d 0 %d" rotation="0 0 0" scale="%s %s 1" width="%d" height="%d" '
         .. 'padding="%d %d %d %d" spacing="%d" color="#101015E6" childForceExpandHeight="false">\n'

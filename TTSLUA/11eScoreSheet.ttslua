@@ -9,14 +9,14 @@ redDiscardPosition = { x = 62.54, y = 0.98, z = 16.60 }
 blueDiscardPosition = { x = 62.54, y = 0.98, z = -16.60 }
 redSecondaryBoard_GUID = "66def7"
 blueSecondaryBoard_GUID = "76200a"
-secondarySlotButtonSize = 200
-secondarySlotButtonFontSize = 108
-secondarySlotButtonY = 0.08
+secondarySlotButtonSize = 240
+secondarySlotButtonFontSize = 130
+secondarySlotButtonY = 0.10
 redSecondarySlotButtonVerticalOffset = -2.15
 blueSecondarySlotButtonVerticalOffset = 2.15
 secondarySlotButtonHorizontalOffset = 0.46
-secondaryButtonSize = 200
-secondaryButtonFontSize = 135
+secondaryButtonSize = 240
+secondaryButtonFontSize = 162
 secondaryButtonColor = {1, 1, 1} -- white
 -- Centre line the draw buttons are arranged around. The double-draw button sits
 -- on the discard-side offset and the single-draw button on the recycle-side
