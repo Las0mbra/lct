@@ -173,12 +173,9 @@ MAP_TYPE_TAG_PREFIX = "map_type"
 MAP_TYPE_THEMATIC_TAG = "map_type_thematic"
 MAP_CREATOR_DISPLAY_NAMES = {
     "map_crt_cr5sh": "Cra5hNatural",
-    "map_crt_belgium": "Team Belgium",
-    "map_crt_izar": "Izar",
     "map_crt_battlemaster_bttf": "BTTF",
     "map_crt_battlemaster_bttf_ruins": "Battlemaster - BTTF Ruins",
     "map_crt_battlemaster_armageddon_desert": "Battlemaster - Desert",
-    "map_crt_alvaricus": "Alvaricus",
     "map_crt_zim": "Zim",
     "map_crt_t5s2": "T5S2",
 }
