@@ -20,6 +20,11 @@ blueDispositionSelected = 1
 redDispositionSelected = 3
 matTextureSelected = 1
 missionSetupControlsVisible = false
+-- True for the per-size singles buttons (Colosseum / Strike Force / Boarding
+-- Action). Like Combat Patrol these run with no mission-matrix bags/tiles and a
+-- missions-only Generate (no fb4b5d layout art), but without the Combat Patrol map
+-- bag. gameModeUsesMatrixProps() folds this in alongside combatPatrolMode.
+matrixPropsDisabled = false
 mapMat_GUID = "28865a"
 -- Random city-mat image URLs, baked from data/all_mats.csv at compile time. The
 -- empty default keeps an uncompiled/dev build valid for the manual picker.
@@ -81,11 +86,13 @@ function onLoad(saved_data)
     deploySelected = nil
     deployMode = nil
     combatPatrolMode = false
+    matrixPropsDisabled = false
     if saved_data ~= "" then
         local loaded_data = JSON.decode(saved_data)
         gameMode = loaded_data.svgameMode
         singlesMode = loaded_data.svsSinglesMode
         combatPatrolMode = loaded_data.svCombatPatrolMode or false
+        matrixPropsDisabled = loaded_data.svMatrixPropsDisabled or false
         inGame = loaded_data.svinGame
         currentTurn = loaded_data.svcurrentTurn
         currentPhase = loaded_data.svcurrentPhase
@@ -186,6 +193,7 @@ function onSave()
         svgameMode = gameMode,
         svsSinglesMode = singlesMode,
         svCombatPatrolMode = combatPatrolMode,
+        svMatrixPropsDisabled = matrixPropsDisabled,
         svcurrentTurn = currentTurn,
         svcurrentPhase = currentPhase,
         svmapSizeSelected = mapSizeSelected,
@@ -219,7 +227,6 @@ positionValue={0,-9.52,0}
 sizeData={
     {id=1, name='King of the Colosseum - 36" x 36"', scale={1,1,1}, defaultObjectives=0},
     {id=2, name='C o m b a t     P a t r o l - 44" x 30"', scale={1.22,1,0.83}, defaultObjectives=0},
-    {id=3, name='I n c u r s i o n - 44" x 60"', scale={0.83*2,1,1.22}, defaultObjectives=0},
     {id=4, name='S t r i k e     F o r c e - 44" x 60"', scale={0.83*2,1,1.22}, defaultObjectives=0},
     {id=5, name='O n s l a u g h t - 44" x 90"', scale={0.83*3,1,1.22}, defaultObjectives=0},
     {id=6, name='B o a r d i n g     A c t i o n - 28" x 48"', scale={1.33,1,0.77}, defaultObjectives=0},
@@ -230,90 +237,49 @@ menuSizeY = 5
 menuSizeZ = 16
 arrowOffset=9.5
 
-mapSizeSelected=4
+-- Default to Strike Force (id 4). Resolved by id (not a literal index) so it
+-- survives the Incursion removal and any future reordering of sizeData.
+mapSizeSelected=1
+for i, s in ipairs(sizeData) do
+    if s.id == 4 then
+        mapSizeSelected = i
+        break
+    end
+end
 numberSizes=#sizeData
 sizeConfirmed=false
-sizeMenuBtn = {
-    index=1,
-    label="S E L E C T     B A T T L E F I E L D     S I Z E",
-    click_function="none",
-    function_owner=self,
-    position={menuSizeX, menuSizeY ,menuSizeZ-2.05},
-    rotation={0,0,0},
-    height=450,
-    width=8000,
-    scale={1.3,1.3,1.3},
-    font_size=300,
-    color={0.15, 0.15, 0.15},  -- Dark Grey
-    font_color={1,1,1}         -- White
-}
-sizeMenuBtn = {
-    index=1,
-    label="S E L E C T     B A T T L E F I E L D     S I Z E",
-    click_function="none",
-    function_owner=self,
-    position={menuSizeX, menuSizeY ,menuSizeZ-2.05},
-    rotation={0,0,0},
-    height=450,
-    width=8000,
-    scale={1.3,1.3,1.3},
-    font_size=300,
-    color={0.15, 0.15, 0.15},  -- Dark Grey
-    font_color={1,1,1}         -- White
-}
 
-sizeBtn = {
-    index= i,
-    label="Zone",
-    click_function="none",
-    function_owner=self,
-    position={-menuSizeX, menuSizeY ,menuSizeZ},
-    rotation={0,0,0},
-    height=450,
-    width=6000,
-    scale={1.3,1.3,1.3},
-    font_size=300,
-    color={0.8, 0.8, 0.8},  -- Light Grey
-    font_color={0.1, 0.1, 0.1}  -- Dark Charcoal
-}
-
-sizeUpBtn = {
-    index=1,
-    label="▲",  -- Up arrow symbol
-    click_function="sizeUp",
-    function_owner=self,
-    position={-menuSizeX+arrowOffset, menuSizeY ,menuSizeZ},
-    rotation={0,0,0},
-    height=450,
-    width=800,
-    scale={1.3,1.3,1.3},
-    font_size=300,
-    color={0.3, 0.3, 0.3},  -- Neutral Grey
-    font_color={1,1,1}       -- White
-}
-
-sizeDownBtn = {
-    index=1,
-    label="▼",  -- Down arrow symbol
-    click_function="sizeDown",
-    function_owner=self,
-    position={-menuSizeX-arrowOffset, menuSizeY ,menuSizeZ},
-    rotation={0,0,0},
-    height=450,
-    width=800,
-    scale={1.3,1.3,1.3},
-    font_size=300,
-    color={0.3, 0.3, 0.3},  -- Neutral Grey
-    font_color={1,1,1}       -- White
-}
-
+-- Select a battlefield size by its stable sizeData id (not table index). The
+-- per-size buttons call this so they keep working regardless of sizeData order.
+function setSelectedSizeById(id)
+    for i, s in ipairs(sizeData) do
+        if s.id == id then
+            mapSizeSelected = i
+            return
+        end
+    end
+end
+-- The old "SELECT BATTLEFIELD SIZE" up/down picker has been replaced by one
+-- button per battlefield size. Every button below starts a singles-style game
+-- (no seat/turn enforcement) via its confirm* handler; the size buttons pick their
+-- size first. Buttons are laid out in a two-column grid:
+--   row 1: 1v1            | Solo            (standard full-matrix game; Strike Force size)
+--   row 2: Combat Patrol  | Onslaught       (each has its own dedicated logic)
+--   row 3: Colosseum      | Boarding Action (Combat-Patrol-style: no bags,
+--                                            missions-only Generate)
+-- (There is no separate Strike Force button: 1v1/Solo already cover that size.)
+local menuColLeft  = -menuSizeX - 6.0
+local menuColRight = -menuSizeX + 6.0
+local menuRow1 = menuSizeZ + 0.0
+local menuRow2 = menuSizeZ + 2.65
+local menuRow3 = menuSizeZ + 5.30
 
 confirmBtn = {
     index          = i,
     label          = "1v1",
     click_function = "confirmStandardGame",
     function_owner = self,
-    position       = { -menuSizeX - 6.0, menuSizeY, menuSizeZ + 2.65 },
+    position       = { menuColLeft, menuSizeY, menuRow1 },
     rotation       = { 0, 0, 0 },
     height         = 810,
     width          = 4500,
@@ -333,7 +299,7 @@ confirmBtn4 = {
     label          = "Solo",
     click_function = "confirmForSingles",
     function_owner = self,
-    position       = { -menuSizeX + 6.0, menuSizeY, menuSizeZ + 2.65 },
+    position       = { menuColRight, menuSizeY, menuRow1 },
     rotation       = { 0, 0, 0 },
     height         = 810,
     width          = 4500,
@@ -348,15 +314,12 @@ confirmBtn4 = {
     press_color    = { 0.08, 0.4, 0.82, 1 }
 }
 
--- Combat Patrol sits directly under 1v1 (same x), one row further out in z
--- (+2.65 from the 1v1/Solo row). (The Narrative button that used to sit under Solo
--- was removed.)
 confirmBtn5 = {
     index          = i,
     label          = "Combat Patrol",
     click_function = "confirmCombatPatrol",
     function_owner = self,
-    position       = { -menuSizeX - 6.0, menuSizeY, menuSizeZ + 5.30 },
+    position       = { menuColLeft, menuSizeY, menuRow2 },
     rotation       = { 0, 0, 0 },
     height         = 810,
     width          = 4500,
@@ -366,6 +329,80 @@ confirmBtn5 = {
     font_color     = { 1.0, 1.0, 1.0 },  -- Pure White
     hover_color    = { 0.82, 0.22, 0.22, 1 },
     press_color    = { 0.55, 0.10, 0.10, 1 }
+}
+
+-- Onslaught (purple) sits next to Combat Patrol. Like Solo it runs singles-style,
+-- but forces the 44"x90" battlefield, keeps the plain default mat art, and applies
+-- the full Onslaught board reshuffle (matrix props dropped, menus relocated).
+confirmBtnOnslaught = {
+    index          = i,
+    label          = "Onslaught",
+    click_function = "confirmOnslaught",
+    function_owner = self,
+    position       = { menuColRight, menuSizeY, menuRow2 },
+    rotation       = { 0, 0, 0 },
+    height         = 810,
+    width          = 4500,
+    scale          = { 1, 1, 1 },
+    font_size      = 375,
+    color          = { 0.55, 0.27, 0.78 },  -- Purple
+    font_color     = { 1.0, 1.0, 1.0 },  -- Pure White
+    hover_color    = { 0.63, 0.35, 0.85, 1 },
+    press_color    = { 0.42, 0.18, 0.62, 1 }
+}
+
+confirmBtnColosseum = {
+    index          = i,
+    label          = "Colosseum",
+    click_function = "confirmColosseum",
+    function_owner = self,
+    position       = { menuColLeft, menuSizeY, menuRow3 },
+    rotation       = { 0, 0, 0 },
+    height         = 810,
+    width          = 4500,
+    scale          = { 1, 1, 1 },
+    font_size      = 375,
+    color          = { 0.85, 0.55, 0.15 },  -- Amber
+    font_color     = { 1.0, 1.0, 1.0 },  -- Pure White
+    hover_color    = { 0.93, 0.63, 0.22, 1 },
+    press_color    = { 0.68, 0.43, 0.10, 1 }
+}
+
+confirmBtnBoardingAction = {
+    index          = i,
+    label          = "Boarding Action",
+    click_function = "confirmBoardingAction",
+    function_owner = self,
+    position       = { menuColRight, menuSizeY, menuRow3 },
+    rotation       = { 0, 0, 0 },
+    height         = 810,
+    width          = 4500,
+    scale          = { 1, 1, 1 },
+    font_size      = 375,
+    color          = { 0.40, 0.45, 0.55 },  -- Slate
+    font_color     = { 1.0, 1.0, 1.0 },  -- Pure White
+    hover_color    = { 0.48, 0.53, 0.63, 1 },
+    press_color    = { 0.30, 0.34, 0.43, 1 }
+}
+
+-- "GAME MODES" header above row 1, styled like the Deployment Zone picker (white
+-- fill, black text, bordered) but with no arrows. Centered between the two columns
+-- and wide enough to span from the left edge of 1v1 to the right edge of Solo.
+-- height/font_size mirror deployPickerButtonHeight/deployPickerButtonFontSize as
+-- literals (those vars are defined later in the chunk, after this table).
+gameModesHeaderBtn = {
+    index          = i,
+    label          = "GAME MODES",
+    click_function = "none",
+    function_owner = self,
+    position       = { -menuSizeX, menuSizeY, menuSizeZ - 2.05 },
+    rotation       = { 0, 0, 0 },
+    height         = 810,
+    width          = 9900,
+    scale          = { 1, 1, 1 },
+    font_size      = 640,
+    color          = { 0.17, 0.17, 0.19 },  -- Charcoal
+    font_color     = { 1, 1, 1 }            -- White text
 }
 
 function refreshMat()
@@ -473,87 +510,104 @@ function writeSizeMenu()
         return
     end
     createButtonWithBorder(startBtnDisabled)
-    self.createButton(sizeMenuBtn)
-    sizeBtn.label=sizeData[mapSizeSelected].name
-    self.createButton(sizeBtn)
-    self.createButton(sizeUpBtn)
-    self.createButton(sizeDownBtn)
+    createButtonWithBorder(gameModesHeaderBtn)
     createButtonWithBorder(confirmBtn)
     createButtonWithBorder(confirmBtn4)
     createButtonWithBorder(confirmBtn5)
+    createButtonWithBorder(confirmBtnOnslaught)
+    createButtonWithBorder(confirmBtnColosseum)
+    createButtonWithBorder(confirmBtnBoardingAction)
+    -- The selection screen always shows the mat at Strike Force size, regardless of
+    -- which size was last played (Back to Selection can leave mapSizeSelected on,
+    -- say, Onslaught). Each button then sets its own scale on confirm via
+    -- confirmSizeMat().
+    setSelectedSizeById(4)
     mat.setScale(sizeData[mapSizeSelected].scale)
     mat.setPosition(positionValue)
 end
 
-function sizeUp()
-    sizeUpDown(1)
-end
-
-function sizeDown()
-    sizeUpDown(-1)
-end
-
-function sizeUpDown(increment)
-    mapSizeSelected=mapSizeSelected+increment
-    if mapSizeSelected > #sizeData then
-        mapSizeSelected=1
-    end
-    if mapSizeSelected < 1 then
-        mapSizeSelected=#sizeData
-    end
-    updateDeployObjectivesSelection()
-    writeMenus()
-end
 
 
 
 
 
-
+-- The standard full-matrix game on the Strike Force battlefield. Every start
+-- button now runs singles-style (no seat/turn enforcement); 1v1 and Solo are the
+-- two labels for this same standard game (matrix props + Generate Missions &
+-- Layouts). Force Strike Force (id 4) so it no longer depends on a size picker.
 function confirmForSingles()
     singlesMode = "singles"
     combatPatrolMode = false
+    matrixPropsDisabled = false
+    setSelectedSizeById(4)
     deployMode = "edition11"
     loadGameWithoutMapContainers()
     destroyCombatPatrolBag()
-    if selectedSizeIsOnslaught() then
-        applyOnslaughtButtonLayout()
-    end
 end
 
 function confirmStandardGame()
-    singlesMode = nil
-    combatPatrolMode = false
-    deployMode = "edition11"
-    loadGameWithoutMapContainers()
-    destroyCombatPatrolBag()
-    if selectedSizeIsOnslaught() then
-        applyOnslaughtButtonLayout()
-    end
+    confirmForSingles()
 end
 
 -- Combat Patrol plays like Solo (one player drives both sides), but uses the
 -- Combat Patrol deployment zones and drops the mission-matrix props -- those
 -- reference bags/tiles aren't used in a Combat Patrol game. combatPatrolMode is
--- the flag that later makes Generate Missions skip the fb4b5d layout art.
+-- the flag that makes Generate Missions skip the matchup maps + fb4b5d layout art
+-- and deal from the Combat Patrol map bag instead.
 function confirmCombatPatrol()
     singlesMode = "singles"
     combatPatrolMode = true
+    matrixPropsDisabled = false
     deployMode = "combatPatrolGame"
     -- Combat Patrol is always played on the 44" x 30" battlefield. Force that size
-    -- here so it applies even if the player never touched the Battlefield Size
-    -- picker; confirmSizeMat() (via loadGameWithoutMapContainers) then scales the
-    -- mat to match. Found by id so it survives any reordering of sizeData.
-    for i, s in ipairs(sizeData) do
-        if s.id == 2 then
-            mapSizeSelected = i
-            break
-        end
-    end
+    -- so it applies regardless of which button was last used; confirmSizeMat() (via
+    -- loadGameWithoutMapContainers) then scales the mat to match.
+    setSelectedSizeById(2)
     loadGameWithoutMapContainers()
     destroyGameModeObjects()
     showCombatPatrolBag()
 end
+
+-- Onslaught keeps its own dedicated logic: a singles game on the 44"x90"
+-- battlefield that still uses the full mission matrix (Generate Missions &
+-- Layouts), but relocates the menus and drops the matrix reference props to clear
+-- the longer board (applyOnslaughtButtonLayout). Default mat art is applied by
+-- confirmSizeMat() because selectedSizeIsOnslaught() is true.
+function confirmOnslaught()
+    singlesMode = "singles"
+    combatPatrolMode = false
+    matrixPropsDisabled = false
+    setSelectedSizeById(ONSLAUGHT_SIZE_ID)
+    deployMode = "edition11"
+    loadGameWithoutMapContainers()
+    destroyCombatPatrolBag()
+    applyOnslaughtButtonLayout()
+end
+
+-- The remaining per-size buttons (Colosseum / Boarding Action) all
+-- behave like Combat Patrol minus its map bag: a singles game scaled to the chosen
+-- battlefield, no mission-matrix bags/tiles (destroyGameModeObjects), a blank/
+-- default mat, and a missions-only Generate (no matchup maps, no fb4b5d layout
+-- art). matrixPropsDisabled drives all of that via gameModeUsesMatrixProps().
+sizeDeployModeById = {
+    [1] = "colosseum",
+    [4] = "strikeForce",
+    [6] = "boardingAction",
+}
+
+function confirmSizedSinglesGame(sizeId)
+    singlesMode = "singles"
+    combatPatrolMode = false
+    matrixPropsDisabled = true
+    setSelectedSizeById(sizeId)
+    deployMode = sizeDeployModeById[sizeId] or "strikeForce"
+    loadGameWithoutMapContainers()
+    destroyGameModeObjects()
+    destroyCombatPatrolBag()
+end
+
+function confirmColosseum()      confirmSizedSinglesGame(1) end
+function confirmBoardingAction() confirmSizedSinglesGame(6) end
 
 -- Permanently remove the mission-matrix bags/tiles for this session (Combat
 -- Patrol). They normally only hide at y=-5; here we destroy them outright.
@@ -582,8 +636,10 @@ STARTUP_MAP_CARDS = {}
 
 -- Normalized mission-matrix layout: 15 matchup bags + their 15 art tiles on a
 -- square grid (6.6u column/row spacing), each tile offset -3 in x from its bag.
--- 9c6ce8 is the mission_matrix backdrop tile (kept at its hand-placed spot). These
--- positions are kept in lockstep with the Transform values baked into ftc_base.json.
+-- These positions are kept in lockstep with the Transform values baked into
+-- ftc_base.json. (The mission_matrix backdrop tile 9c6ce8 is intentionally NOT in
+-- this list: it is never spawned/placed/hidden/destroyed by Lua and simply stays
+-- at its baked ftc_base.json transform from map load.)
 GAME_MODE_OBJECTS = {
     {guid = "6e0d78", pos = {-25.4612, 0.683948, 17.5906}, rot = {0, 180, 0}},
     {guid = "642d0d", pos = {-28.4612, 0.961499, 17.5906}, rot = {0, 270, 0}},
@@ -615,7 +671,6 @@ GAME_MODE_OBJECTS = {
     {guid = "4a1bbd", pos = {-8.6613, 0.961499, 10.9906}, rot = {0, 270, 0}},
     {guid = "793bc0", pos = {0.9387, 0.683948, 17.5906}, rot = {0, 0, 0}},
     {guid = "066fd3", pos = {-2.0613, 0.961499, 17.5906}, rot = {0, 270, 0}},
-    {guid = "9c6ce8", pos = {-1.6439, 0.9615, -6.7349}, rot = {0, 270, 0}},
 }
 
 function hideStartupMapCards()
@@ -764,11 +819,13 @@ function applySurfaceMatTexture(url)
     end
 end
 
--- The mission-matrix reference props/logos (GAME_MODE_OBJECTS) and the printed
--- game-mode mat art are used only by the standard 1v1/Solo game. Combat Patrol
--- runs on a blank mat, so it places neither.
+-- The mission-matrix reference props/logos (GAME_MODE_OBJECTS), the printed
+-- game-mode mat art, and the Generate step's deployment maps + fb4b5d layout art
+-- are used only by the standard 1v1/Solo (and Onslaught) game. Combat Patrol and
+-- the per-size singles modes run on a blank mat with a missions-only Generate, so
+-- they place/deal none of it. This predicate gates all of those behaviors.
 function gameModeUsesMatrixProps()
-    return not combatPatrolMode
+    return not (combatPatrolMode or matrixPropsDisabled)
 end
 
 function applyGameModeMatTexture()
@@ -971,69 +1028,6 @@ DeployZonesStrikeForce = {
     {name = "No Deployment Zone", draw = {type = "none"}},
 }
 
-DeployZonesIncursion = {
-    --Chapter Approved 2025 Missions
-    {name = "(I) Hammer and Anvil", objectivesID = 201, draw = {
-        --[[1]]{type = "line", color = "Red", position = "x", fromSide = 18},
-        --[[2]]{type = "line", color = "Teal", position = "-x", fromSide = 18}}},
-    {name = "(I) Dawn of War", objectivesID = 202, draw = {
-        --[[1]]{type = "line", color = "Teal", position = "-z", fromSide = 12},
-        --[[2]]{type = "line", color = "Red", position = "z", fromSide = 12}}},
-    {name = "(I) Sweeping Engagement", objectivesID = 203, draw = {
-        --[[1]]{type = "stepped", color = "Teal", position = "-z", steps = {{fromSide = 8}, {fromSide = 14}}},
-        --[[2]]{type = "stepped", color = "Red", position = "z", steps = {{fromSide = 14}, {fromSide = 8}}}}},
-    {name = "(I) Search and Destroy", objectivesID = 204, draw = {
-        --[[1]]{type = "quarter", color = "Teal", position = "-x-z", fromCenter = 9},
-        --[[2]]{type = "quarter", color = "Red", position = "xz", fromCenter = 9},
-        --[[3]]{type = "circle", color = "White", fromCenter = 9}}},
-    {name = "(I) Crucible of Battle", objectivesID = 205, draw = {
-        --[[1]]{type = "triangle", color = "Red", position = "x"},
-        --[[2]]{type = "triangle", color = "Teal", position = "-x"}}},
-    {name = "(I) Tipping Point", objectivesID = 206, draw = {
-        --[[1]]{type = "stepped", color = "Teal", position = "-x", steps = {{fromSide = 12}, {fromSide = 20}}},
-        --[[2]]{type = "stepped", color = "Red", position = "x", steps = {{fromSide = 20}, {fromSide = 12}}}}},
-    --Hidden Supplies variants
-    {name = "(I) Hammer and Anvil (HS)", objectivesID = 207, draw = {
-        --[[1]]{type = "line", color = "Red", position = "x", fromSide = 18},
-        --[[2]]{type = "line", color = "Teal", position = "-x", fromSide = 18}}},
-    {name = "(I) Hammer and Anvil (HS2)", objectivesID = 208, draw = {
-        --[[1]]{type = "line", color = "Red", position = "x", fromSide = 18},
-        --[[2]]{type = "line", color = "Teal", position = "-x", fromSide = 18}}},
-    {name = "(I) Dawn of War (HS)", objectivesID = 209, draw = {
-        --[[1]]{type = "line", color = "Teal", position = "-z", fromSide = 12},
-        --[[2]]{type = "line", color = "Red", position = "z", fromSide = 12}}},
-    {name = "(I) Dawn of War (HS2)", objectivesID = 210, draw = {
-        --[[1]]{type = "line", color = "Teal", position = "-z", fromSide = 12},
-        --[[2]]{type = "line", color = "Red", position = "z", fromSide = 12}}},
-    {name = "(I) Sweeping Engagement (HS)", objectivesID = 211, draw = {
-        --[[1]]{type = "stepped", color = "Teal", position = "-z", steps = {{fromSide = 8}, {fromSide = 14}}},
-        --[[2]]{type = "stepped", color = "Red", position = "z", steps = {{fromSide = 14}, {fromSide = 8}}}}},
-    {name = "(I) Sweeping Engagement (HS2)", objectivesID = 212, draw = {
-        --[[1]]{type = "stepped", color = "Teal", position = "-z", steps = {{fromSide = 8}, {fromSide = 14}}},
-        --[[2]]{type = "stepped", color = "Red", position = "z", steps = {{fromSide = 14}, {fromSide = 8}}}}},
-    {name = "(I) Search and Destroy (HS)", objectivesID = 213, draw = {
-        --[[1]]{type = "quarter", color = "Teal", position = "-x-z", fromCenter = 9},
-        --[[2]]{type = "quarter", color = "Red", position = "xz", fromCenter = 9},
-        --[[3]]{type = "circle", color = "White", fromCenter = 9}}},
-    {name = "(I) Search and Destroy (HS2)", objectivesID = 214, draw = {
-        --[[1]]{type = "quarter", color = "Teal", position = "-x-z", fromCenter = 9},
-        --[[2]]{type = "quarter", color = "Red", position = "xz", fromCenter = 9},
-        --[[3]]{type = "circle", color = "White", fromCenter = 9}}},
-    {name = "(I) Crucible of Battle (HS)", objectivesID = 215, draw = {
-        --[[1]]{type = "triangle", color = "Red", position = "x"},
-        --[[2]]{type = "triangle", color = "Teal", position = "-x"}}},
-    {name = "(I) Crucible of Battle (HS2)", objectivesID = 216, draw = {
-        --[[1]]{type = "triangle", color = "Red", position = "x"},
-        --[[2]]{type = "triangle", color = "Teal", position = "-x"}}},
-    {name = "(I) Tipping Point (HS)", objectivesID = 217, draw = {
-        --[[1]]{type = "stepped", color = "Teal", position = "-x", steps = {{fromSide = 12}, {fromSide = 20}}},
-        --[[2]]{type = "stepped", color = "Red", position = "x", steps = {{fromSide = 20}, {fromSide = 12}}}}},
-    {name = "(I) Tipping Point (HS2)", objectivesID = 218, draw = {
-        --[[1]]{type = "stepped", color = "Teal", position = "-x", steps = {{fromSide = 12}, {fromSide = 20}}},
-        --[[2]]{type = "stepped", color = "Red", position = "x", steps = {{fromSide = 20}, {fromSide = 12}}}}},
-    {name = "No Deployment Zone", draw = {type = "none"}},
-}
-
 DeployZonesCombatPatrol = {
     {name = "(CP) Clash of Patrols", objectivesID = 22, draw = {
         --[[1]]{type = "line", color = "Red", position = "-z", fromCenter = 10 },
@@ -1125,7 +1119,7 @@ DeployZonesData = DeployZonesDefault
 deployMode = "strikeForce"
 
 function isValidDeployMode(mode)
-    return mode == "colosseum" or mode == "combatPatrol" or mode == "combatPatrolGame" or mode == "incursion" or mode == "strikeForce" or mode == "boardingAction" or mode == "edition11"
+    return mode == "colosseum" or mode == "combatPatrol" or mode == "combatPatrolGame" or mode == "strikeForce" or mode == "boardingAction" or mode == "edition11"
 end
 
 function setDeployZonesForSize(preserveSelected)
@@ -1136,8 +1130,6 @@ function setDeployZonesForSize(preserveSelected)
         setDeployZonesMode("colosseum", preserveSelected)
     elseif sizeId == 2 then
         setDeployZonesMode("combatPatrol", preserveSelected)
-    elseif sizeId == 3 then
-        setDeployZonesMode("incursion", preserveSelected)
     elseif sizeId == 4 or sizeId == 5 then
         setDeployZonesMode("strikeForce", preserveSelected)
     elseif sizeId == 6 then
@@ -1153,7 +1145,6 @@ function setDeployZonesMode(mode, preserveSelected)
         colosseum = DeployZonesColosseum,
         combatPatrol = DeployZonesCombatPatrol,
         combatPatrolGame = DeployZonesCombatPatrolGame,
-        incursion = DeployZonesIncursion,
         strikeForce = DeployZonesStrikeForce,
         boardingAction = DeployZonesBoardingAction,
         edition11 = DeployZonesEdition11,
@@ -1478,6 +1469,7 @@ function captureRestorePoint()
         inGame = inGame,
         singlesMode = singlesMode,
         combatPatrolMode = combatPatrolMode,
+        matrixPropsDisabled = matrixPropsDisabled,
         sizeConfirmed = sizeConfirmed,
         mapSizeSelected = mapSizeSelected,
         deployMode = deployMode,
@@ -1622,6 +1614,7 @@ function applyRestoredSelectionState()
     inGame = s.inGame or false
     singlesMode = s.singlesMode
     combatPatrolMode = s.combatPatrolMode or false
+    matrixPropsDisabled = s.matrixPropsDisabled or false
     sizeConfirmed = s.sizeConfirmed
     mapSizeSelected = s.mapSizeSelected or mapSizeSelected
     deployMode = s.deployMode
@@ -3234,17 +3227,18 @@ function runMissionGeneration(deploymentMode)
                     -- scale, which is already the intended preview size, so they are
                     -- not resized at generation (only on game start, to 1.0).
                     table.insert(primaryPlacements, {order = order, deck = deck, guid = info and info.guid or nil, position = slot.displayPosition or slot.position})
-                elseif slot.role == "deployment" and not combatPatrolMode then
-                    -- Combat Patrol fills the deployment map slots from its own
-                    -- map bag (see dealCombatPatrolMaps), so it skips the matchup
-                    -- matrix here -- otherwise a Take-and-Hold disposition would
-                    -- stack a matrix map under the dealt Combat Patrol card.
+                elseif slot.role == "deployment" and gameModeUsesMatrixProps() then
+                    -- The matrix-free modes skip the matchup deployment maps:
+                    -- Combat Patrol fills these slots from its own map bag (see
+                    -- dealCombatPatrolMaps), and the per-size singles modes have no
+                    -- map bag at all -- otherwise a Take-and-Hold disposition would
+                    -- stack a matrix map under the dealt card / on a blank slot.
                     local info = deploymentChoices[slot.index]
                     if info and info.guid then
                         table.insert(deploymentPlacements, {role = "deployment", deck = info.deck, guid = info.guid, position = slot.position, rotation = deploymentMapCardRotation, sourceDeckGuid = info.deckGuid, flip = false, lock = true})
                     end
-                elseif slot.role == "layout" and not combatPatrolMode then
-                    -- Combat Patrol generates missions only -- no layout art from
+                elseif slot.role == "layout" and gameModeUsesMatrixProps() then
+                    -- Matrix-free modes generate missions only -- no layout art from
                     -- deck fb4b5d, so skip placing any layout slot.
                     local info = layoutChoices[slot.index]
                     if info and info.guid then

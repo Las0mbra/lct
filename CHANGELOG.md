@@ -13,6 +13,14 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.9.0 
+- Reverted pdfs, edited workshop tags, trying to clean up things 
+- UI: Added dedicated modes buttons, so now you can choose map size from initial start menu
+- Onslaught mode now is handled appropriately, menus are moved to provide enough space. 
+- Added Dice+ button that provides more dice colours 
+- Added another token bag that has primary/secondary missions tokens and some additional generic ones. 
+
+
 ## v1.8.4b
 - Refreshed Battlemaster cards
 - Cleaning up
