@@ -49,6 +49,16 @@ python3 extract_map_payloads.py            # strip terrain to data/maps/, shrink
 python3 extract_map_payloads.py --dry-run  # report what would change, write nothing
 ```
 
+The map importers write payloads directly on `--write`: new cards are placed in
+`ftc_base.json` with only their machinery head, and their terrain is written to
+`data/maps/<card_guid>.lua`. Use the audit tool before validating when you want a
+quick source-level check:
+
+```bash
+python3 audit_map_payloads.py --sizes
+python3 audit_map_payloads.py --strict
+```
+
 To prove a change is loss-free, compile before and after extracting and diff the two builds; they must be identical (`test_validate_maps.py` also locks the extract/inject round-trip).
 
 Battlemaster map imports are baked into normal static LCT map cards, not loaded dynamically at runtime (commit `3039dba` pivoted away from the old runtime warm-cache model). Each terrain theme ships as its **own** creator filter — currently `Battlemaster - BTTF Ruins`, `Battlemaster - Grimdark` (BTTF), and an Armageddon Desert variant — 45 cards apiece, already present in `data/map_manifest.csv`. There is no plain `map_crt_battlemaster` / "Battlemaster" creator; running the importer with default flags would create a duplicate fourth set, so **always pass `--creator-tag`/`--creator-display`** that match the theme you populated.

@@ -14,7 +14,9 @@ mirroring how foreign LCT maps are normalized:
      and GMNotes is cleared (drops any MapExclude self-exclusion).
   2. Appends the bag (renamed "Combat Patrol Maps") with the three fixed cards
      inside it to ObjectStates, via a text-level insert so the rest of the
-     40MB file keeps its exact formatting.
+     file keeps its exact formatting. On --write, each card's terrain is written
+     to data/maps/<card_guid>.lua and stripped from ftc_base.json like normal map
+     cards.
 
 The compile step injects the standard `onMapCardLoaded` hook into every card
 with a `loadMap`, so these get the LCT load hook automatically on the next build.
@@ -30,6 +32,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
+import map_payloads as P
 import term
 import validate_maps as V
 
@@ -139,10 +142,10 @@ def main():
                          f"{zone.group(0) if zone else '??'}"))
 
     original = JSON_FILE.read_text(encoding="utf-8")
-    new_text = append_object_text(original, bag)
+    preview_text = append_object_text(original, bag)
 
     try:
-        json.loads(new_text)
+        json.loads(preview_text)
     except json.JSONDecodeError as exc:
         sys.exit(term.red(f"ERROR: merged JSON does not parse ({exc}); aborting."))
 
@@ -150,8 +153,16 @@ def main():
         print(term.yellow("\n[preview] merged JSON parses cleanly; file unchanged. Re-run with --write."))
         return 0
 
+    for card in bag["ContainedObjects"]:
+        P.strip_card_to_payload(card)
+    new_text = append_object_text(original, bag)
+    try:
+        json.loads(new_text)
+    except json.JSONDecodeError as exc:
+        sys.exit(term.red(f"ERROR: stripped merged JSON does not parse ({exc}); aborting."))
+
     JSON_FILE.write_text(new_text, encoding="utf-8")
-    print(term.green(f"\n✓ Merged the Combat Patrol pool into {JSON_FILE.name}."))
+    print(term.green(f"\n✓ Merged the Combat Patrol pool into {JSON_FILE.name} and data/maps."))
     return 0
 
 

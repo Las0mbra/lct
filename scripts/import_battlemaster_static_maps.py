@@ -33,6 +33,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).parent))
+import map_payloads as P
+
 SCRIPT_DIR = Path(__file__).parent
 ROOT = SCRIPT_DIR.parent
 DEFAULT_TARGET = ROOT / "TTSJSON" / "ftc_base.json"
@@ -300,7 +303,7 @@ def existing_layout_art_names(target):
 
 
 def remove_previous_import(target):
-    removed = 0
+    removed = []
     for obj in walk(target.get("ObjectStates") or []):
         children = obj.get("ContainedObjects")
         if not isinstance(children, list):
@@ -309,7 +312,7 @@ def remove_previous_import(target):
         for child in children:
             tags = child.get("Tags") or []
             if any(tag in OLD_CREATOR_TAGS for tag in tags):
-                removed += 1
+                removed.append(child.get("GUID"))
             else:
                 kept.append(child)
         obj["ContainedObjects"] = kept
@@ -360,9 +363,11 @@ def main():
     if not script_cache:
         sys.exit("ERROR: no cardScriptCache in Battlemaster cache. Re-run BM cache populate with the latest spawner, save, then rerun.")
 
-    used_guids = all_guids(target)
+    pre = json.loads(target_path.read_text(encoding="utf-8"))
+    remove_previous_import(pre)
+    used_guids = all_guids(pre)
     used_deck_ids = set()
-    for obj in walk(target.get("ObjectStates") or []):
+    for obj in walk(pre.get("ObjectStates") or []):
         for key in (obj.get("CustomDeck") or {}).keys():
             used_deck_ids.add(str(key))
 
@@ -414,18 +419,24 @@ def main():
         print("[preview] no files written; pass --write to update ftc_base.json and map_manifest.csv.")
         return 0
 
-    removed = remove_previous_import(target)
+    removed_guids = remove_previous_import(target)
     manifest_rows = [r for r in manifest_rows if r.get("map_creator_tag") not in OLD_CREATOR_TAGS]
+    new_guids = {card.get("GUID") for _bag_guid, card in new_cards}
     for bag_guid, card in new_cards:
         bag = target_by_guid.get(bag_guid)
         if not bag:
             sys.exit(f"ERROR: target source bag {bag_guid} not found in {target_path}.")
+        P.strip_card_to_payload(card)
         bag.setdefault("ContainedObjects", []).append(card)
+    for guid in removed_guids:
+        if guid and guid not in new_guids:
+            P.remove_payload(guid)
     manifest_rows.extend(manifest_additions)
 
     target_path.write_text(json.dumps(target, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     write_manifest(manifest_path, manifest_rows)
-    print(f"Wrote {target_path} and {manifest_path}; removed {removed} previous imported card(s).")
+    print(f"Wrote {target_path}, {manifest_path}, and data/maps payloads; "
+          f"removed {len(removed_guids)} previous imported card(s).")
     print(f"Run: {validation_command_hint()}")
     return 0
 

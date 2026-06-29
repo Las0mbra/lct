@@ -13,6 +13,7 @@ SCRIPT_DIR = Path(__file__).parent
 sys.path.insert(0, str(SCRIPT_DIR))
 import validate_maps
 import compile as compile_script
+import extract_map_payloads
 
 
 ROOT = SCRIPT_DIR.parent
@@ -287,6 +288,55 @@ class ValidateMapsTest(unittest.TestCase):
             idx = rebuilt.index("objectJSONs = {")
             self.assertEqual(head, rebuilt[:idx])
             self.assertEqual(payload, rebuilt[idx:])
+
+    def test_extractor_ignores_non_map_scripts_with_payload_marker(self):
+        save = {
+            "ObjectStates": [{
+                "GUID": "abc123",
+                "Name": "BlockSquare",
+                "LuaScript": 'local generated = "objectJSONs = {"',
+            }]
+        }
+        payloads = extract_map_payloads.collect_payloads(save, {"b3537f"})
+        self.assertEqual({}, payloads)
+
+    def test_extractor_includes_combat_patrol_pool(self):
+        save = {
+            "ObjectStates": [{
+                "GUID": "fdf6e7",
+                "Name": "Bag",
+                "ContainedObjects": [{
+                    "GUID": "9200fe",
+                    "Name": "CardCustom",
+                    "LuaScript": "head\nobjectJSONs = {\n  [[{}]],\n}\n",
+                }],
+            }]
+        }
+        payloads = extract_map_payloads.collect_payloads(save, set())
+        self.assertIn("9200fe", payloads)
+        self.assertTrue(payloads["9200fe"].startswith("objectJSONs = {"))
+
+    def test_compile_reports_missing_required_payload(self):
+        json_text = SAVE_PATH.read_text(encoding="utf-8")
+        json_lines = json_text.splitlines()
+        guid_entries, lua_line_idxs = [], []
+        for i, line in enumerate(json_lines):
+            m = compile_script.REGEX_JSON_GUID.search(line)
+            if m:
+                guid_entries.append((i, m.group(1)))
+            if compile_script.REGEX_JSON_LUASCRIPT.search(line):
+                lua_line_idxs.append(i)
+
+        old_path = compile_script.PATH_MAPS
+        with tempfile.TemporaryDirectory() as tmp:
+            compile_script.PATH_MAPS = Path(tmp)
+            try:
+                _, missing = compile_script.inject_map_payloads(
+                    json_lines, guid_entries, lua_line_idxs, {"9200fe"}
+                )
+            finally:
+                compile_script.PATH_MAPS = old_path
+        self.assertEqual(["9200fe"], missing)
 
     def test_self_excluded_loader_card_is_error(self):
         states = copy.deepcopy(self.object_states)

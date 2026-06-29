@@ -36,17 +36,22 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).parent))
+import map_payloads as P
+
 SCRIPT_DIR = Path(__file__).parent
 PATH_JSON = SCRIPT_DIR.parent / "TTSJSON" / "ftc_base.json"
-PATH_MAPS = SCRIPT_DIR.parent / "data" / "maps"
+PATH_MAPS = P.PAYLOAD_DIR
 
 # The terrain blob always begins exactly here; everything before it is the
 # canonical load/clear machinery head (see data/map_card_machinery.lua).
-TERRAIN_MARKER = "objectJSONs = {"
+TERRAIN_MARKER = P.TERRAIN_MARKER
 
 # Full `"LuaScript": "..."` field on one JSON line, tolerating escaped quotes /
 # backslashes -- mirrors compile.py / validate_maps.py so the same fields match.
 LUASCRIPT_FIELD_RE = re.compile(r'("LuaScript":\s*)"(?:\\.|[^"\\])*"')
+GUID_FIELD_RE = re.compile(r'"GUID": "([0-9a-fA-F]{6})"')
+LUASCRIPT_SLOT_RE = re.compile(r'"LuaScript": ')
 
 
 def split_card_lua(lua: str):
@@ -61,9 +66,90 @@ def split_card_lua(lua: str):
 def write_payload(guid: str, payload: str):
     """Write one terrain payload verbatim. newline="" keeps the blob's mixed
     \\r\\n / \\n endings byte-exact so recompilation reproduces the original."""
-    path = PATH_MAPS / f"{guid}.lua"
-    with path.open("w", encoding="utf-8", newline="") as fh:
-        fh.write(payload)
+    P.write_payload(guid, payload, PATH_MAPS)
+
+
+def should_extract_card(obj, parent_container_guid, manifest_card_guids):
+    guid = obj.get("GUID")
+    if not guid:
+        return False
+    if guid in manifest_card_guids:
+        return True
+    return parent_container_guid in P.EXTRA_MAP_POOL_CONTAINER_GUIDS
+
+
+def collect_payloads(save, manifest_card_guids):
+    """Return GUID -> terrain payload for map cards this script is allowed to own.
+
+    Do not extract by substring alone. Some non-card system scripts build loader
+    card text and legitimately contain the marker as data.
+    """
+    payloads = {}
+    for obj, parent_guid in P.walk_objects(save.get("ObjectStates", [])):
+        if not should_extract_card(obj, parent_guid, manifest_card_guids):
+            continue
+        lua = obj.get("LuaScript", "") or ""
+        if TERRAIN_MARKER not in lua:
+            continue
+        guid = obj.get("GUID")
+        split = split_card_lua(lua)
+        if split is None:
+            continue
+        head, payload = split
+        # Safety gate: the split must be perfectly reversible.
+        if head + payload != lua:
+            print(f"ERROR: round-trip split failed for {guid}; aborting.", file=sys.stderr)
+            sys.exit(1)
+        if guid in payloads and payloads[guid] != payload:
+            print(f"ERROR: duplicate GUID {guid} with differing terrain; aborting.", file=sys.stderr)
+            sys.exit(1)
+        payloads[guid] = payload
+    return payloads
+
+
+def json_guid_and_lua_slots(raw):
+    guid_entries, lua_line_idxs = [], []
+    for i, line in enumerate(raw.splitlines()):
+        m = GUID_FIELD_RE.search(line)
+        if m:
+            guid_entries.append((i, m.group(1)))
+        if LUASCRIPT_SLOT_RE.search(line):
+            lua_line_idxs.append(i)
+    return guid_entries, lua_line_idxs
+
+
+def strip_payloads_from_raw(raw, payload_guids):
+    """Strip terrain only from allowed payload GUIDs, preserving other bytes."""
+    lines = raw.splitlines(keepends=True)
+    guid_entries, lua_line_idxs = json_guid_and_lua_slots(raw)
+    stripped = 0
+    used_slots = set()
+    for guid_line_idx, guid in guid_entries:
+        if guid not in payload_guids:
+            continue
+        lua_slot_idx = next((idx for idx in lua_line_idxs if idx > guid_line_idx), None)
+        if lua_slot_idx is None:
+            print(f"ERROR: no LuaScript slot found after GUID {guid}; aborting.", file=sys.stderr)
+            sys.exit(1)
+        if lua_slot_idx in used_slots:
+            print(f"ERROR: LuaScript slot reused while stripping GUID {guid}; aborting.", file=sys.stderr)
+            sys.exit(1)
+        used_slots.add(lua_slot_idx)
+        line = lines[lua_slot_idx]
+        m = LUASCRIPT_FIELD_RE.search(line)
+        if not m:
+            print(f"ERROR: LuaScript field parse failed for GUID {guid}; aborting.", file=sys.stderr)
+            sys.exit(1)
+        prefix, value_json = m.group(1), m.group(0)[len(m.group(1)):]
+        value = json.loads(value_json)
+        split = split_card_lua(value)
+        if split is None:
+            print(f"ERROR: allowed GUID {guid} has no terrain marker; aborting.", file=sys.stderr)
+            sys.exit(1)
+        head, _ = split
+        lines[lua_slot_idx] = line[:m.start()] + prefix + json.dumps(head) + line[m.end():]
+        stripped += 1
+    return "".join(lines), stripped
 
 
 def main():
@@ -80,58 +166,17 @@ def main():
     raw = PATH_JSON.read_text(encoding="utf-8")
     save = json.loads(raw)
 
-    # Walk every object (including ContainedObjects) to map GUID -> payload, and
-    # gate each split with a round-trip assert before anything is written.
-    def walk(objs):
-        for obj in objs:
-            yield obj
-            yield from walk(obj.get("ContainedObjects") or [])
-
-    payloads = {}          # guid -> payload text
-    skipped_already = 0
-    for obj in walk(save.get("ObjectStates", [])):
-        lua = obj.get("LuaScript", "") or ""
-        if TERRAIN_MARKER not in lua:
-            continue
-        guid = obj.get("GUID")
-        if not guid:
-            print(f"ERROR: map card with terrain has no GUID "
-                  f"({obj.get('Nickname') or obj.get('Name')!r}); aborting.", file=sys.stderr)
-            sys.exit(1)
-        head, payload = split_card_lua(lua)
-        # Safety gate: the split must be perfectly reversible.
-        if head + payload != lua:
-            print(f"ERROR: round-trip split failed for {guid}; aborting.", file=sys.stderr)
-            sys.exit(1)
-        if guid in payloads and payloads[guid] != payload:
-            print(f"ERROR: duplicate GUID {guid} with differing terrain; aborting.", file=sys.stderr)
-            sys.exit(1)
-        payloads[guid] = payload
+    manifest_card_guids = P.manifest_card_guids()
+    payloads = collect_payloads(save, manifest_card_guids)
 
     if not payloads:
         print("No map cards with inline terrain found "
               "(already extracted?). Nothing to do.")
         return
 
-    # Strip the save by recomputing each terrain LuaScript's head from the field
-    # value itself. Full-text regex sub touches only LuaScript fields that carry
-    # terrain and leaves every other byte (incl. line endings) untouched.
-    stripped = 0
-
-    def strip_field(match):
-        nonlocal stripped
-        prefix, value_json = match.group(1), match.group(0)[len(match.group(1)):]
-        try:
-            value = json.loads(value_json)
-        except (json.JSONDecodeError, ValueError):
-            return match.group(0)
-        if TERRAIN_MARKER not in value:
-            return match.group(0)
-        head, _ = split_card_lua(value)
-        stripped += 1
-        return prefix + json.dumps(head)
-
-    new_raw = LUASCRIPT_FIELD_RE.sub(strip_field, raw)
+    # Strip only the map-card GUIDs this extractor owns. Non-card scripts may
+    # contain the terrain marker as generated text and must stay untouched.
+    new_raw, stripped = strip_payloads_from_raw(raw, set(payloads))
 
     if stripped != len(payloads):
         print(f"ERROR: stripped {stripped} field(s) but found {len(payloads)} "
