@@ -52,6 +52,11 @@ def fail(msg: str):
 PATH_LUA    = SCRIPT_DIR.parent / "TTSLUA"
 PATH_JSON   = SCRIPT_DIR.parent / "TTSJSON"
 PATH_BUILDS = SCRIPT_DIR.parent / "builds"
+# Per-map terrain payloads extracted from the save by extract_map_payloads.py.
+# Each map card keeps only its machinery head in ftc_base.json; the terrain blob
+# (`objectJSONs = { ... }`) lives in data/maps/<card_guid>.lua and is re-injected
+# here at build time, reproducing the pre-extraction LuaScript byte-for-byte.
+PATH_MAPS   = SCRIPT_DIR.parent / "data" / "maps"
 JSON_NAME  = "ftc_base"
 XML_NAME   = "ftc_base_ui"
 OUT_NAME   = "lct_base"
@@ -206,6 +211,57 @@ def inject_map_card_hooks(json_lines: list, skip_line_idxs=None) -> tuple:
         json_lines[i] = line[:m.start()] + prefix + json.dumps(new_lua) + line[m.end():]
         injected += 1
     return injected, candidates
+
+
+def read_map_payload(guid: str):
+    """Return the verbatim terrain payload for a card GUID, or None if no payload
+    file exists. newline="" preserves the blob's mixed \\r\\n / \\n endings so the
+    rebuilt LuaScript is byte-identical to the pre-extraction save."""
+    path = PATH_MAPS / f"{guid}.lua"
+    if not path.exists():
+        return None
+    with path.open("r", encoding="utf-8", newline="") as fh:
+        return fh.read()
+
+
+def inject_map_payloads(json_lines: list, json_guid_entries: list,
+                        json_lua_line_idxs: list) -> tuple:
+    """Re-inject each map card's terrain blob (data/maps/<guid>.lua) onto its
+    machinery head in the save, rebuilding `head + payload` in place.
+
+    Mirrors the object-script injector's GUID -> first-following-LuaScript-slot
+    pairing. A card whose LuaScript already contains the terrain blob (an
+    un-extracted save) is left untouched, so this is a no-op on a full save and
+    must run BEFORE the Load Map hook injector (which expects the full script).
+
+    Returns (injected, missing): missing lists card GUIDs whose slot still has no
+    terrain after injection because no payload file was found.
+    """
+    if not PATH_MAPS.exists():
+        return 0, []
+    injected, missing = 0, []
+    for guid_line_idx, guid_val in json_guid_entries:
+        payload = read_map_payload(guid_val)
+        if payload is None:
+            continue
+        lua_slot_idx = next(
+            (idx for idx in json_lua_line_idxs if idx > guid_line_idx), None
+        )
+        if lua_slot_idx is None:
+            fail(f"No LuaScript slot found after map card GUID {guid_val}!")
+        line = json_lines[lua_slot_idx]
+        m = REGEX_JSON_LUASCRIPT_FIELD.search(line)
+        if not m:
+            missing.append(guid_val)
+            continue
+        prefix = m.group(1)
+        head = json.loads(m.group(0)[len(prefix):])
+        if "objectJSONs = {" in head:
+            continue  # un-extracted save: terrain already inline, leave as-is
+        new_value = json.dumps(head + payload)
+        json_lines[lua_slot_idx] = line[:m.start()] + prefix + new_value + line[m.end():]
+        injected += 1
+    return injected, missing
 
 
 def collect_lua_files() -> list:
@@ -556,6 +612,18 @@ def main():
                 break
         if not found:
             fail(f"GUID {find_guid} not found in JSON! Ending compilation.")
+
+    # --- Re-inject per-map terrain payloads (data/maps/<guid>.lua) ---
+    # Rebuilds each card's `head + terrain` before the hook injector runs, so the
+    # rest of the pipeline sees the same full LuaScript as a pre-extraction save.
+    print("Injecting map terrain payloads... ", end="")
+    payloads_injected, payloads_missing = inject_map_payloads(
+        json_lines, json_guid_entries, json_lua_line_idxs
+    )
+    print(term.green(f"{payloads_injected} done."))
+    if payloads_missing:
+        warn(f"{len(payloads_missing)} map card slot(s) had no payload file: "
+             f"{', '.join(payloads_missing)}")
 
     # --- Inject the Load Map hook into every baked map card ---
     print("Injecting Load Map hooks into map cards... ", end="")

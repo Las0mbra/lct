@@ -36,6 +36,21 @@ python3 compile.py --no-validate   # skip the map-card check gate (see below)
 
 `compile.py` stitches the `TTSLUA/*.ttslua` scripts back into `TTSJSON/ftc_base.json`, stamps the version, and writes `lct_base_<version>_compiled.json` into the `builds` folder, printing a colored build summary at the end.
 
+### Map terrain payloads (`data/maps/`)
+
+Each map card's `LuaScript` is its canonical load/clear machinery head followed by an `objectJSONs = { ... }` terrain blob. Those blobs are ~27 MB of the save and make it impossible to edit or diff a single map, so they live **outside** `ftc_base.json` in one file per map: `data/maps/<card_guid>.lua`. The save keeps only each card's machinery head (and unchanged GUID/name/tags/bag membership), so mission generation, the map filter, and BACK TO SELECTION are untouched.
+
+`compile.py` re-injects `head + payload` for every card before the Load Map hook pass, reproducing the pre-extraction `LuaScript` **byte-for-byte** — a build from the stripped save is identical to one from the old inline save. `validate_maps.py` folds the payload back in transparently, so every terrain check still runs (and a stripped card with no payload file is a build error).
+
+To pull terrain back out of the save — e.g. after re-exporting a full table from TTS over `ftc_base.json`, or after an import — run the (idempotent) extractor:
+
+```bash
+python3 extract_map_payloads.py            # strip terrain to data/maps/, shrink the save
+python3 extract_map_payloads.py --dry-run  # report what would change, write nothing
+```
+
+To prove a change is loss-free, compile before and after extracting and diff the two builds; they must be identical (`test_validate_maps.py` also locks the extract/inject round-trip).
+
 Battlemaster map imports are baked into normal static LCT map cards, not loaded dynamically at runtime (commit `3039dba` pivoted away from the old runtime warm-cache model). Each terrain theme ships as its **own** creator filter — currently `Battlemaster - BTTF Ruins`, `Battlemaster - Grimdark` (BTTF), and an Armageddon Desert variant — 45 cards apiece, already present in `data/map_manifest.csv`. There is no plain `map_crt_battlemaster` / "Battlemaster" creator; running the importer with default flags would create a duplicate fourth set, so **always pass `--creator-tag`/`--creator-display`** that match the theme you populated.
 
 To (re)import a theme: build a debug save, load it in TTS, press the matching debug button (`BM cache Ruins`, `BM cache Desert`, or `BM cache BTTF` — not the generic `BM cache populate`), wait for it to finish, then save the table. From the `scripts` folder, run the importer once without `--write` to preview the 45 generated cards, then rerun with `--write` to place them in the existing source bags and update the manifest (the importer first removes any prior import of the same creator tag, so it is idempotent per theme). Then clear the now-redundant spawner cache blob, validate, and compile so the generated cards get the standard LCT load hook and appear under their creator filter.
