@@ -127,6 +127,7 @@ function onLoad(saved_data)
         hideForceDispositionToken()
     end
     rebuildOverlayTracking()
+    syncTerritoryLineButton()
 
     mat = getObjectFromGUID(mat_GUID)
     applyMatTexture(false)
@@ -152,7 +153,7 @@ function onLoad(saved_data)
             ttsDebugLog("missionPackData not available during onLoad; clearing packSelected")
         end
     end
-    if packSelected and gameModeUsesMatrixProps() then
+    if shouldPlaceGameModeObjectsOnLoad() then
         placeGameModeObjects()
     else
         hideGameModeObjects()
@@ -178,13 +179,6 @@ function onLoad(saved_data)
         updateGameStateHUD()
         Wait.time(updateGameStateHUD, 1)
     end
-    announceHotkeyReset()
-end
-
--- Purple, all-caps patch notice shown both on screen and in chat (broadcastToAll
--- does both) so players know to rebind their TTS hotkeys after the patch.
-function announceHotkeyReset()
-    broadcastToAll("RESET ALL YOUR TTS HOTKEYS DUE TO PATCH CHANGES", {0.6, 0.2, 0.9})
 end
 
 function onSave()
@@ -826,6 +820,13 @@ end
 -- they place/deal none of it. This predicate gates all of those behaviors.
 function gameModeUsesMatrixProps()
     return not (combatPatrolMode or matrixPropsDisabled)
+end
+
+-- GAME_MODE_OBJECTS are setup-screen reference props. If they were deliberately
+-- destroyed (Onslaught/singles) or the save is already in-game, do not try to
+-- place them again on load; that just creates noisy "GUID not found" messages.
+function shouldPlaceGameModeObjectsOnLoad()
+    return packSelected and gameModeUsesMatrixProps() and not inGame and not selectedSizeIsOnslaught()
 end
 
 function applyGameModeMatTexture()
@@ -4059,18 +4060,61 @@ function destroyTrackedOverlayObjects(store)
     end
 end
 
+-- Re-apply the non-interactive overlay state spawnLine sets at spawn time.
+-- Runtime collider/interactable tweaks don't reliably survive a TTS save, so
+-- a line restored from an autosave/rewind can come back as a physical snag
+-- ("models get stuck on it"). Re-hardening on adoption kills that symptom.
+function hardenOverlayObject(obj)
+    if not obj then return end
+    obj.setLock(true)
+    obj.interactable = false
+    obj.use_gravity = false
+    local blockComp = obj.getComponent("BoxCollider")
+    if blockComp then
+        blockComp.set("enabled", false)
+    end
+    local meshComp = obj.getComponent("MeshCollider")
+    if meshComp then
+        meshComp.set("enabled", false)
+    end
+end
+
+-- Spawned overlay objects (deploy zones, 9" lines, the territory divider) are
+-- saved into every autosave/rewind snapshot, but their tracking lists are not
+-- (see onSave). After a reload the lists are empty while the objects still
+-- exist, so the toggles can no longer find/destroy them. Re-adopt every overlay
+-- by its GMNotes tag so the toggles regain control of orphaned objects.
 function rebuildOverlayTracking()
     deploymentOverlayGUIDs = {}
     nineInchOverlayGUIDs = {}
+    territoryOverlayGUIDs = {}
 
     for _, obj in ipairs(getAllObjects()) do
         local note = obj.getGMNotes()
         if note == "deployZone" then
             table.insert(deploymentOverlayGUIDs, obj.getGUID())
+            hardenOverlayObject(obj)
         elseif note == "deployZone9" then
             table.insert(nineInchOverlayGUIDs, obj.getGUID())
+            hardenOverlayObject(obj)
+        elseif note == "territory" then
+            table.insert(territoryOverlayGUIDs, obj.getGUID())
+            hardenOverlayObject(obj)
         end
     end
+end
+
+-- Bring the territory toggle (7e7711) back in line with what's actually on the
+-- table after a reload: "showing" (2) when a divider exists, "hidden" (1)
+-- otherwise. Mirrors syncIngameDeploymentButton for the deployment toggle.
+-- Deferred a frame so the button object is guaranteed live when called from
+-- Global onLoad (object load order isn't guaranteed).
+function syncTerritoryLineButton()
+    Global.setVar("interactiveButtonTerritoryLine", #territoryOverlayGUIDs > 0 and 2 or 1)
+    Wait.frames(function()
+        local tlButton = getObjectFromGUID("7e7711")
+        if tlButton then tlButton.call("syncTerritoryLineButtonImage") end
+    end, 1)
 end
 
 function spawnLine(linePos, lineRot, lineScale, color, type)
