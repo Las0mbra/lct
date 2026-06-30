@@ -59,51 +59,51 @@ dc8738,Purge the Foe vs Priority Assets,70011f,PtF vs PA 3 - Hammer and Anvil - 
 eae80b,Take and Hold vs Priority Assets,ea06a1,TnH vs PA 1 - Crucible of Battle - Zim,map_crt_zim,map_type_comp,Zim,true
 eae80b,Take and Hold vs Priority Assets,7c3b59,TnH vs PA 2 - Hammer and Anvil - Zim,map_crt_zim,map_type_comp,Zim,true
 eae80b,Take and Hold vs Priority Assets,2f34c6,TnH vs PA 3 - Dawn of War - Zim,map_crt_zim,map_type_comp,Zim,true
-109a6b,Take and Hold vs Reconnaissance,fd3d94,TnH vs Rec 1 - Tipping Point - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-109a6b,Take and Hold vs Reconnaissance,e69b2b,TnH vs Rec 2 - Dawn of War - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-109a6b,Take and Hold vs Reconnaissance,0b3687,TnH vs Rec 3 - Search and Destroy - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-1e6711,Take and Hold vs Purge the Foe,0c3db6,TnH vs PtF 1 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-1e6711,Take and Hold vs Purge the Foe,5e599f,TnH vs PtF 2 - Search and Destroy - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-1e6711,Take and Hold vs Purge the Foe,c2a804,TnH vs PtF 3 - Hammer and Anvil - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-2c7cd1,Disruption vs Reconnaissance,3009f9,Dis vs Rec 1 - Tipping Point - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-2c7cd1,Disruption vs Reconnaissance,7c89be,Dis vs Rec 2 - Dawn of War - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-2c7cd1,Disruption vs Reconnaissance,3cfaa1,Dis vs Rec 3 - Search and Destroy - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-32e34a,Priority Assets vs Reconnaissance,0d4f55,PA vs Rec 1 - Crucible of Battle - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-32e34a,Priority Assets vs Reconnaissance,e34918,PA vs Rec 2 - Tipping Point - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-32e34a,Priority Assets vs Reconnaissance,5d905e,PA vs Rec 3 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-3ebbd6,Purge the Foe vs Purge the Foe,6d2b99,PtF vs PtF 1 - Search and Destroy - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-3ebbd6,Purge the Foe vs Purge the Foe,c20b72,PtF vs PtF 2 - Tipping Point - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-3ebbd6,Purge the Foe vs Purge the Foe,f11470,PtF vs PtF 3 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-4409ba,Disruption vs Disruption,bba0b7,Dis vs Dis 1 - Crucible of Battle - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-4409ba,Disruption vs Disruption,1f97e2,Dis vs Dis 2 - Tipping Point - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-4409ba,Disruption vs Disruption,6f2518,Dis vs Dis 3 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-6e0d78,Take and Hold vs Take and Hold,0c8d39,TnH vs TnH 1 - Tipping Point - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-6e0d78,Take and Hold vs Take and Hold,c77fbd,TnH vs TnH 2 - Dawn of War - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-6e0d78,Take and Hold vs Take and Hold,e76af7,TnH vs TnH 3 - Search and Destroy - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-793bc0,Reconnaissance vs Reconnaissance,736799,Rec vs Rec 1 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-793bc0,Reconnaissance vs Reconnaissance,32423f,Rec vs Rec 2 - Crucible of Battle - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-793bc0,Reconnaissance vs Reconnaissance,413eff,Rec vs Rec 3 - Tipping Point - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-7b5ba7,Priority Assets vs Priority Assets,6e52ef,PA vs PA 1 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-7b5ba7,Priority Assets vs Priority Assets,83314d,PA vs PA 2 - Crucible of Battle - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-7b5ba7,Priority Assets vs Priority Assets,6a9d75,PA vs PA 3 - Tipping Point - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-9ac38f,Purge the Foe vs Disruption,145490,PtF vs Dis 1 - Search and Destroy - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-9ac38f,Purge the Foe vs Disruption,ff5fec,PtF vs Dis 2 - Tipping Point - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-9ac38f,Purge the Foe vs Disruption,630339,PtF vs Dis 3 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-a22c33,Purge the Foe vs Reconnaissance,f93cc0,PtF vs Recon 1 - Hammer and Anvil - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-a22c33,Purge the Foe vs Reconnaissance,e02c82,PtF vs Recon 2 - Dawn of War - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-a22c33,Purge the Foe vs Reconnaissance,7e2c7f,PtF vs Recon 3 - Crucible of Battle - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-cfeba5,Take and Hold vs Disruption,fd109d,TnH vs Dis 1 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-cfeba5,Take and Hold vs Disruption,49f0ee,TnH vs Dis 2 - Crucible of Battle - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-cfeba5,Take and Hold vs Disruption,090279,TnH vs Dis 3 - Hammer and Anvil - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-dc8738,Purge the Foe vs Priority Assets,3eb346,PtF vs PA 1 - Dawn of War - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-dc8738,Purge the Foe vs Priority Assets,bd56b3,PtF vs PA 2 - Search and Destroy - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-dc8738,Purge the Foe vs Priority Assets,728ceb,PtF vs PA 3 - Hammer and Anvil - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-eae80b,Take and Hold vs Priority Assets,1518b6,TnH vs PA 1 - Crucible of Battle - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-eae80b,Take and Hold vs Priority Assets,c7a443,TnH vs PA 2 - Hammer and Anvil - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-eae80b,Take and Hold vs Priority Assets,51f916,TnH vs PA 3 - Dawn of War - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-f1e22b,Disruption vs Priority Assets,ef1b89,Dis vs PA 1 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-f1e22b,Disruption vs Priority Assets,e40491,Dis vs PA 2 - Tipping Point - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
-f1e22b,Disruption vs Priority Assets,b1073f,Dis vs PA 3 - Search and Destroy - T5S2,map_crt_t5s2,map_type_thematic,T5S2,true
+109a6b,Take and Hold vs Reconnaissance,fd3d94,TnH vs Rec 1 - Tipping Point - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+109a6b,Take and Hold vs Reconnaissance,e69b2b,TnH vs Rec 2 - Dawn of War - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+109a6b,Take and Hold vs Reconnaissance,0b3687,TnH vs Rec 3 - Search and Destroy - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+1e6711,Take and Hold vs Purge the Foe,0c3db6,TnH vs PtF 1 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+1e6711,Take and Hold vs Purge the Foe,5e599f,TnH vs PtF 2 - Search and Destroy - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+1e6711,Take and Hold vs Purge the Foe,c2a804,TnH vs PtF 3 - Hammer and Anvil - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+2c7cd1,Disruption vs Reconnaissance,3009f9,Dis vs Rec 1 - Tipping Point - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+2c7cd1,Disruption vs Reconnaissance,7c89be,Dis vs Rec 2 - Dawn of War - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+2c7cd1,Disruption vs Reconnaissance,3cfaa1,Dis vs Rec 3 - Search and Destroy - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+32e34a,Priority Assets vs Reconnaissance,0d4f55,PA vs Rec 1 - Crucible of Battle - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+32e34a,Priority Assets vs Reconnaissance,e34918,PA vs Rec 2 - Tipping Point - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+32e34a,Priority Assets vs Reconnaissance,5d905e,PA vs Rec 3 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+3ebbd6,Purge the Foe vs Purge the Foe,6d2b99,PtF vs PtF 1 - Search and Destroy - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+3ebbd6,Purge the Foe vs Purge the Foe,c20b72,PtF vs PtF 2 - Tipping Point - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+3ebbd6,Purge the Foe vs Purge the Foe,f11470,PtF vs PtF 3 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+4409ba,Disruption vs Disruption,bba0b7,Dis vs Dis 1 - Crucible of Battle - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+4409ba,Disruption vs Disruption,1f97e2,Dis vs Dis 2 - Tipping Point - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+4409ba,Disruption vs Disruption,6f2518,Dis vs Dis 3 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+6e0d78,Take and Hold vs Take and Hold,0c8d39,TnH vs TnH 1 - Tipping Point - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+6e0d78,Take and Hold vs Take and Hold,c77fbd,TnH vs TnH 2 - Dawn of War - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+6e0d78,Take and Hold vs Take and Hold,e76af7,TnH vs TnH 3 - Search and Destroy - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+793bc0,Reconnaissance vs Reconnaissance,736799,Rec vs Rec 1 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+793bc0,Reconnaissance vs Reconnaissance,32423f,Rec vs Rec 2 - Crucible of Battle - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+793bc0,Reconnaissance vs Reconnaissance,413eff,Rec vs Rec 3 - Tipping Point - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+7b5ba7,Priority Assets vs Priority Assets,6e52ef,PA vs PA 1 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+7b5ba7,Priority Assets vs Priority Assets,83314d,PA vs PA 2 - Crucible of Battle - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+7b5ba7,Priority Assets vs Priority Assets,6a9d75,PA vs PA 3 - Tipping Point - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+9ac38f,Purge the Foe vs Disruption,145490,PtF vs Dis 1 - Search and Destroy - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+9ac38f,Purge the Foe vs Disruption,ff5fec,PtF vs Dis 2 - Tipping Point - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+9ac38f,Purge the Foe vs Disruption,630339,PtF vs Dis 3 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+a22c33,Purge the Foe vs Reconnaissance,f93cc0,PtF vs Recon 1 - Hammer and Anvil - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+a22c33,Purge the Foe vs Reconnaissance,e02c82,PtF vs Recon 2 - Dawn of War - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+a22c33,Purge the Foe vs Reconnaissance,7e2c7f,PtF vs Recon 3 - Crucible of Battle - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+cfeba5,Take and Hold vs Disruption,fd109d,TnH vs Dis 1 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+cfeba5,Take and Hold vs Disruption,49f0ee,TnH vs Dis 2 - Crucible of Battle - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+cfeba5,Take and Hold vs Disruption,090279,TnH vs Dis 3 - Hammer and Anvil - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+dc8738,Purge the Foe vs Priority Assets,3eb346,PtF vs PA 1 - Dawn of War - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+dc8738,Purge the Foe vs Priority Assets,bd56b3,PtF vs PA 2 - Search and Destroy - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+dc8738,Purge the Foe vs Priority Assets,728ceb,PtF vs PA 3 - Hammer and Anvil - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+eae80b,Take and Hold vs Priority Assets,1518b6,TnH vs PA 1 - Crucible of Battle - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+eae80b,Take and Hold vs Priority Assets,c7a443,TnH vs PA 2 - Hammer and Anvil - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+eae80b,Take and Hold vs Priority Assets,51f916,TnH vs PA 3 - Dawn of War - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+f1e22b,Disruption vs Priority Assets,ef1b89,Dis vs PA 1 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+f1e22b,Disruption vs Priority Assets,e40491,Dis vs PA 2 - Tipping Point - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
+f1e22b,Disruption vs Priority Assets,b1073f,Dis vs PA 3 - Search and Destroy - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
 4409ba,Disruption vs Disruption,5fe761,Dis vs Dis 1 - Crucible of Battle - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
 4409ba,Disruption vs Disruption,1c9534,Dis vs Dis 2 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
 4409ba,Disruption vs Disruption,79deab,Dis vs Dis 3 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true

@@ -614,6 +614,7 @@ function destroyGameModeObjects()
 end
 
 function loadGameWithoutMapContainers()
+    missionsGenerated = false
     destroyLegacyPrimaryDeck()
     placeStartupMapCards()
     placeForceDispositionToken()
@@ -1290,6 +1291,7 @@ function writeDispositionMenu()
     createDispositionSelector("Blue Disposition", blueDispositionSelected, blueDispositionControlWorldZ, "blueDispositionDown", "blueDispositionUp")
     createDispositionSelector("Red Disposition", redDispositionSelected, redDispositionControlWorldZ, "redDispositionDown", "redDispositionUp")
     writeGenerateMissionButton()
+    writeSetMissionsButton()
 end
 
 -- Mat wipe area + survivors, mirroring the map cards' own Clear/Load wipe so
@@ -1461,6 +1463,12 @@ function getSelectionObjectGuids()
     for _, card in ipairs(STARTUP_MAP_CARDS) do table.insert(guids, card.guid) end
     for _, entry in ipairs(GAME_MODE_OBJECTS) do table.insert(guids, entry.guid) end
     if forceDispositionToken_GUID then table.insert(guids, forceDispositionToken_GUID) end
+    -- Combat Patrol runs on a blank mat but keeps its own map bag on the table,
+    -- inside the wipe area and not a GAME_MODE_OBJECT. Snapshot it (and its dealt
+    -- cards, below) so Back to Selection respawns it instead of wiping it for good.
+    if combatPatrolMode and COMBAT_PATROL_BAG_GUID then
+        table.insert(guids, COMBAT_PATROL_BAG_GUID)
+    end
     return guids
 end
 
@@ -1506,8 +1514,12 @@ function captureRestorePoint()
     -- Map cards and layout art carry tags, so catch them wherever a player moved
     -- them (limiting to slots would lose manually moved cards during undo). Cards
     -- still inside bags are already included in their source bag JSON.
+    -- Dealt Combat Patrol map cards carry no "map" tag (only the runtime
+    -- combatPatrolMapCardTag) and live loose on the mat; the CP bag holds just
+    -- three cards, all dealt at generate time, so the loose copies must be
+    -- snapshotted too or Back to Selection loses them along with the (now-empty) bag.
     for _, obj in ipairs(getAllObjects()) do
-        if obj.tag == "Card" and obj.hasTag and (obj.hasTag("map") or obj.hasTag(layoutArtCardTag)) then
+        if obj.tag == "Card" and obj.hasTag and (obj.hasTag("map") or obj.hasTag(layoutArtCardTag) or obj.hasTag(combatPatrolMapCardTag)) then
             snapshotMissionCard(obj)
         end
     end
@@ -2081,6 +2093,83 @@ function writeDeploymentRandomPickButton()
         color = {1, 0.86, 0.05}, font_color = {0, 0, 0},
         tooltip = "Randomly choose one of the deployment cards",
     }, {0, 0, 0, 1})
+end
+
+-- ********************
+-- SET MISSIONS
+-- ********************
+-- Commits the generated primary missions to their in-game slots -- the same
+-- transform onMapCardLoaded runs when a map's "Load Map" button is pressed.
+-- Shown in every mode EXCEPT the standard 1v1/Solo game: there a map card is
+-- always loaded, and that load already performs this move. The matrix-free modes
+-- (Combat Patrol, Colosseum, Boarding Action) and Onslaught get a manual commit.
+-- Pinned to the requested world position in every mode it appears in (including
+-- Onslaught) -- no mid-row offset.
+setMissionsButtonWorldX = 20.00
+setMissionsButtonWorldY = 1.00
+setMissionsButtonWorldZ = 0.00
+
+-- Set true the moment Generate (or Random Single Layout) deals a mission set, and
+-- reset on a fresh mode confirm. The button stays hidden until this is true, so it
+-- only appears once missions have been generated at least once this setup.
+missionsGenerated = false
+
+-- 1v1/Solo is the only standard-matrix Strike Force game; Onslaught is the other
+-- matrix game but is identified by its size. Everything else is matrix-free.
+function gameModeShowsSetMissions()
+    return combatPatrolMode or matrixPropsDisabled or selectedSizeIsOnslaught()
+end
+
+-- True once Generate has dealt each player a primary mission. Requires BOTH
+-- players to have at least one primary card in their slots (getObjectsInMissionSlot
+-- matches the post-Generate display position), so a partial/failed deal that left
+-- only one side's card on the board does not enable the commit.
+function missionSetGenerated()
+    for _, player in ipairs({"Red", "Blue"}) do
+        local _, cards = placedPrimaryCardEntries(player)
+        if #cards == 0 then return false end
+    end
+    return true
+end
+
+function writeSetMissionsButton()
+    if not gameModeShowsSetMissions() then return end
+    -- Hidden until Generate has dealt the missions for the first time this setup.
+    if not missionsGenerated then return end
+    local center = self.positionToLocal({setMissionsButtonWorldX, setMissionsButtonWorldY, setMissionsButtonWorldZ})
+    createButtonWithBorder({
+        label = "SET MISSIONS", click_function = "setMissions", function_owner = self,
+        position = {center.x, center.y, center.z}, rotation = {0, 0, 0},
+        height = dispositionButtonHeight, width = 4500, font_size = 350,
+        color = {1, 0.92, 0.16}, font_color = {0, 0, 0},
+        tooltip = "Move the generated primary missions onto the mission board",
+    }, {0, 0, 0, 1})
+end
+
+-- Click handler. Captures a restore point first (exactly like a map load) so the
+-- existing Back to Selection flow brings the primaries, the disposition/Generate
+-- controls, and this button all back. Setting restorePointAvailable also makes
+-- writeDispositionMenu early-return, so this button disappears once pressed.
+function setMissions()
+    if inGame or gameMode ~= "game" then return end
+    if not gameModeShowsSetMissions() then return end
+    if restorePointAvailable then return end
+    if missionDealInProgress then
+        broadcastToAll("Missions are still being dealt -- try again in a moment.", {1, 0.75, 0})
+        return
+    end
+    if not missionSetGenerated() then
+        broadcastToAll("Generate the missions first, then press SET MISSIONS.", {1, 0.75, 0})
+        return
+    end
+
+    -- Snapshot the pre-set state (primaries still at their display position), then
+    -- slide them to the in-game slots. Mirrors onMapCardLoaded's primary move.
+    captureRestorePoint()
+    movePrimaryMissionCardsToIngameSlots()
+
+    writeMenus()
+    broadcastToAll("Missions set. Press Back to Selection to undo.", {0.3, 1.0, 0.3})
 end
 
 function writeDeploymentLockButtons()
@@ -2923,6 +3012,8 @@ missionDealInProgress = false
 function finishMissionDeal()
     missionDealInProgress = false
     releaseGenerateMissionCooldown()
+    -- Refresh the menu so the SET MISSIONS button appears now that a set is dealt.
+    writeMenus()
 end
 
 -- Locate a card by GUID whether it is loose in the world or has been merged
@@ -3180,6 +3271,7 @@ function runMissionGeneration(deploymentMode)
     end
     generateMissionCooldownActive = true
     missionDealInProgress = true
+    missionsGenerated = true
 
     local setupOk, setupErr = pcall(function()
 
