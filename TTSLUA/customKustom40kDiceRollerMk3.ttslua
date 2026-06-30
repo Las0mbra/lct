@@ -897,7 +897,9 @@ function printLast5Innovative(pointless, player_color)
         return
     end
 
-    local faceNames = {"⚀", "⚁", "⚂", "⚃", "⚄", "⚅"}
+    -- Word names match the Clear Mat message (see SelectDeleteDiceX on the mat):
+    -- count as a digit, face spelled out, e.g. "3 ones, 2 twos".
+    local numberName = {"ones", "twos", "threes", "fours", "fives", "sixes"}
     local faceIndex = {Ones=1, Twos=2, Threes=3, Fours=4, Fives=5, Sixes=6}
 
     printToAll("–––––––––––––––––––––––––––––––––––––––––", {1,1,1})
@@ -928,12 +930,14 @@ function printLast5Innovative(pointless, player_color)
             prefix = string.format("Roll #%d =>", i)
         end
 
-        local rollLine = prefix
+        -- Only list faces that were actually rolled, like Clear Mat does.
         local faceParts = {}
         for face = 1, 6 do
-            table.insert(faceParts, string.format("%d x %s", tally[face], faceNames[face]))
+            if tally[face] > 0 then
+                table.insert(faceParts, string.format("%d %s", tally[face], numberName[face]))
+            end
         end
-        rollLine = rollLine .. " " .. table.concat(faceParts, ", ") .. string.format(" [Total:%d]", totalDice)
+        local rollLine = prefix .. " " .. table.concat(faceParts, ", ") .. string.format(" [Total:%d]", totalDice)
 
         printToAll(rollLine, rollColor)
     end

@@ -459,8 +459,9 @@ function save(obj, player_color, alt)
         })
     end
 
-    -- Single message
-    printToColor(#savedPositions .. " objects positions saved!", player_color)
+    -- Announce on screen (centre) and in chat for everyone, tinted by the saving
+    -- player's seat colour (Blue for blue, Red for red, Yellow, Grey, ...).
+    broadcastToAll(#savedPositions .. " objects saved", player_color)
 end
 
 function restore(playerColor)
@@ -1345,8 +1346,9 @@ function savePositionClicked(playerColor, hoveredObject)
         for _, v in ipairs(objects) do
             savePosition(v)
         end
-        -- This will now print just once, with the total count:
-        printToColor(#objects .. " objects positions saved!", playerColor)
+        -- Announce on screen (centre) and in chat for everyone, tinted by the
+        -- saving player's seat colour (Blue for blue, Red for red, Yellow, ...).
+        broadcastToAll(#objects .. " objects saved", playerColor)
     end
 end
 

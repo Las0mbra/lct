@@ -504,13 +504,15 @@ function writeSizeMenu()
         return
     end
     createButtonWithBorder(startBtnDisabled)
-    createButtonWithBorder(gameModesHeaderBtn)
-    createButtonWithBorder(confirmBtn)
-    createButtonWithBorder(confirmBtn4)
-    createButtonWithBorder(confirmBtn5)
-    createButtonWithBorder(confirmBtnOnslaught)
-    createButtonWithBorder(confirmBtnColosseum)
-    createButtonWithBorder(confirmBtnBoardingAction)
+    -- Borders are a lightened tint of each button's own fill so they read against
+    -- the dark navy table (the default near-black border would disappear there).
+    createButtonWithBorder(gameModesHeaderBtn, { 0.55, 0.58, 0.66, 1 })  -- light slate
+    createButtonWithBorder(confirmBtn,             { 0.45, 0.90, 0.40, 1 })  -- bright green
+    createButtonWithBorder(confirmBtn4,            { 0.43, 0.66, 1.00, 1 })  -- sky blue
+    createButtonWithBorder(confirmBtn5,            { 0.94, 0.42, 0.42, 1 })  -- light red
+    createButtonWithBorder(confirmBtnOnslaught,    { 0.78, 0.55, 0.95, 1 })  -- light purple
+    createButtonWithBorder(confirmBtnColosseum,    { 1.00, 0.78, 0.40, 1 })  -- light amber
+    createButtonWithBorder(confirmBtnBoardingAction, { 0.70, 0.76, 0.86, 1 })  -- light slate-blue
     -- The selection screen always shows the mat at Strike Force size, regardless of
     -- which size was last played (Back to Selection can leave mapSizeSelected on,
     -- say, Onslaught). Each button then sets its own scale on confirm via
