@@ -187,7 +187,7 @@ objectJSONs = {
     "scaleY": 0.720831633,
     "scaleZ": 0.932136238
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -374,7 +374,7 @@ objectJSONs = {
     "scaleY": 0.5146825,
     "scaleZ": 0.491404861
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -445,7 +445,7 @@ objectJSONs = {
     "posX": -16.6292686,
     "posY": 1.0,
     "posZ": 0.520404,
-    "rotX": 4.88456067E-07,
+    "rotX": 4.88456465E-07,
     "rotY": 316.75,
     "rotZ": 180.0,
     "scaleX": 1.0,
@@ -551,14 +551,14 @@ objectJSONs = {
     "posX": -19.5,
     "posY": 3.75449562,
     "posZ": -0.7499999,
-    "rotX": -1.102765E-05,
+    "rotX": -1.10276487E-05,
     "rotY": 46.7499924,
-    "rotZ": 1.22524207E-05,
+    "rotZ": 1.22524225E-05,
     "scaleX": 0.63,
     "scaleY": 0.63,
     "scaleZ": 0.8
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -623,7 +623,7 @@ objectJSONs = {
     "scaleY": 0.63,
     "scaleZ": 0.8
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -688,7 +688,7 @@ objectJSONs = {
     "scaleY": 0.7208217,
     "scaleZ": 0.527568161
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -872,7 +872,7 @@ objectJSONs = {
     "scaleY": 0.720841765,
     "scaleZ": 1.21309161
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -950,7 +950,7 @@ objectJSONs = {
     "scaleY": 1.0,
     "scaleZ": 1.0
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -1108,7 +1108,7 @@ objectJSONs = {
     "scaleY": 0.5146825,
     "scaleZ": 0.491404861
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -1186,7 +1186,7 @@ objectJSONs = {
     "scaleY": 0.5146825,
     "scaleZ": 0.491404861
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -1257,7 +1257,7 @@ objectJSONs = {
     "posX": -3.430515,
     "posY": 1.0,
     "posZ": -12.334075,
-    "rotX": 7.882737E-05,
+    "rotX": 7.882738E-05,
     "rotY": 314.998047,
     "rotZ": 180.0,
     "scaleX": 1.0,
@@ -1370,7 +1370,7 @@ objectJSONs = {
     "scaleY": 1.29999983,
     "scaleZ": 1.29999983
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -1653,7 +1653,7 @@ objectJSONs = {
     "scaleY": 0.7208338,
     "scaleZ": 0.95993793
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -1830,14 +1830,14 @@ objectJSONs = {
     "posX": -3.74999857,
     "posY": 1.0,
     "posZ": -3.74991751,
-    "rotX": 5.336087E-08,
+    "rotX": 5.33608855E-08,
     "rotY": 270.0,
     "rotZ": 0.0,
     "scaleX": 0.779567957,
     "scaleY": 0.5146825,
     "scaleZ": 0.491404861
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2021,7 +2021,7 @@ objectJSONs = {
     "scaleY": 0.950000167,
     "scaleZ": 0.950000167
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2086,7 +2086,7 @@ objectJSONs = {
     "scaleY": 0.9500001,
     "scaleZ": 0.9500001
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2144,14 +2144,14 @@ objectJSONs = {
     "posX": -0.403705657,
     "posY": 1.00000393,
     "posZ": -13.5953588,
-    "rotX": 0.00449283561,
+    "rotX": 0.00449283654,
     "rotY": 135.0,
-    "rotZ": -2.084408E-10,
+    "rotZ": -4.168816E-10,
     "scaleX": 0.975000143,
     "scaleY": 0.975000143,
     "scaleZ": 0.975000143
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2216,7 +2216,7 @@ objectJSONs = {
     "scaleY": 0.975000143,
     "scaleZ": 0.975000143
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2281,7 +2281,7 @@ objectJSONs = {
     "scaleY": 0.9500001,
     "scaleZ": 0.9500001
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2346,7 +2346,7 @@ objectJSONs = {
     "scaleY": 0.7208338,
     "scaleZ": 0.95993793
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2417,14 +2417,14 @@ objectJSONs = {
     "posX": 2.222027,
     "posY": 1.0,
     "posZ": 11.7779579,
-    "rotX": -0.004868465,
+    "rotX": -0.004868466,
     "rotY": 134.999985,
-    "rotZ": 0.0,
+    "rotZ": -1.04220417E-10,
     "scaleX": 0.950000167,
     "scaleY": 0.950000167,
     "scaleZ": 0.950000167
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2489,7 +2489,7 @@ objectJSONs = {
     "scaleY": 0.5146825,
     "scaleZ": 0.491404861
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2673,7 +2673,7 @@ objectJSONs = {
     "scaleY": 1.29999983,
     "scaleZ": 1.29999983
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2844,7 +2844,7 @@ objectJSONs = {
     "scaleY": 0.5146825,
     "scaleZ": 0.491404861
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -3028,7 +3028,7 @@ objectJSONs = {
     "scaleY": 0.5146825,
     "scaleZ": 0.491404861
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -3215,7 +3215,7 @@ objectJSONs = {
     "scaleY": 0.7208217,
     "scaleZ": 0.527568161
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -3293,7 +3293,7 @@ objectJSONs = {
     "scaleY": 1.0,
     "scaleZ": 1.0
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -3454,7 +3454,7 @@ objectJSONs = {
     "scaleY": 0.720841765,
     "scaleZ": 1.21309161
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -3525,7 +3525,7 @@ objectJSONs = {
     "posX": 16.6292686,
     "posY": 1.0,
     "posZ": -0.520404,
-    "rotX": 4.88455953E-07,
+    "rotX": 4.884562E-07,
     "rotY": 136.749985,
     "rotZ": 180.0,
     "scaleX": 1.0,
@@ -3638,7 +3638,7 @@ objectJSONs = {
     "scaleY": 0.63,
     "scaleZ": 0.8
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -3703,7 +3703,7 @@ objectJSONs = {
     "scaleY": 0.63,
     "scaleZ": 0.8
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -3768,7 +3768,7 @@ objectJSONs = {
     "scaleY": 0.720831633,
     "scaleZ": 0.932136238
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -3846,7 +3846,7 @@ objectJSONs = {
     "scaleY": 0.5146825,
     "scaleZ": 0.491404861
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {

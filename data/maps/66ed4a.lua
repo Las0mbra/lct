@@ -71,7 +71,7 @@ objectJSONs = {
     "posX": -16.0,
     "posY": 1.0,
     "posZ": -17.0,
-    "rotX": -6.441466E-07,
+    "rotX": -6.44147633E-07,
     "rotY": 270.0,
     "rotZ": -3.5486007E-08,
     "scaleX": 1.0,
@@ -293,7 +293,7 @@ objectJSONs = {
     "scaleY": 0.7208217,
     "scaleZ": 0.527568161
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -371,7 +371,7 @@ objectJSONs = {
     "scaleY": 1.49999964,
     "scaleZ": 1.49999964
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -403,7 +403,7 @@ objectJSONs = {
     "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/1696128786314199782/B520A8EDB48F180BCE0DBE44DDB2C8AD479E30D9/",
     "NormalURL": "",
     "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/1696128786314197034/516557A3B4513F4E42DE6A515D58AADDA16E63E6/",
-    "Convex": true,
+    "Convex": false,
     "MaterialIndex": 3,
     "TypeIndex": 4,
     "CustomShader": {
@@ -501,7 +501,7 @@ objectJSONs = {
     "scaleY": 0.5146825,
     "scaleZ": 0.491404861
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -572,7 +572,7 @@ objectJSONs = {
     "posX": -17.0,
     "posY": 1.0,
     "posZ": 17.0,
-    "rotX": -4.28360863E-07,
+    "rotX": -4.28361375E-07,
     "rotY": 90.0,
     "rotZ": 8.247761E-08,
     "scaleX": 1.0,
@@ -688,7 +688,7 @@ objectJSONs = {
     "scaleY": 0.720841765,
     "scaleZ": 1.21309161
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -759,7 +759,7 @@ objectJSONs = {
     "posX": -16.0000877,
     "posY": 1.0,
     "posZ": -5.49940872,
-    "rotX": -0.000105734624,
+    "rotX": -0.000105734805,
     "rotY": 90.0,
     "rotZ": 180.0,
     "scaleX": 1.0,
@@ -872,7 +872,7 @@ objectJSONs = {
     "scaleY": 1.29999983,
     "scaleZ": 1.29999983
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -904,7 +904,7 @@ objectJSONs = {
     "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/1667979695693150828/2980A3EF49E8388CC94194A4814BB9978465AAAA/",
     "NormalURL": "",
     "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/1667979695693156731/57E32E66EF69C4A3CA4BFA3B92A38AF19ACF976F/",
-    "Convex": true,
+    "Convex": false,
     "MaterialIndex": 3,
     "TypeIndex": 4,
     "CustomShader": {
@@ -937,7 +937,7 @@ objectJSONs = {
     "scaleY": 0.720831633,
     "scaleZ": 0.932136238
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -1121,7 +1121,7 @@ objectJSONs = {
     "scaleY": 0.950000167,
     "scaleZ": 0.950000167
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -1153,7 +1153,7 @@ objectJSONs = {
     "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/1667979695693150828/2980A3EF49E8388CC94194A4814BB9978465AAAA/",
     "NormalURL": "",
     "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/1667979695693156731/57E32E66EF69C4A3CA4BFA3B92A38AF19ACF976F/",
-    "Convex": true,
+    "Convex": false,
     "MaterialIndex": 3,
     "TypeIndex": 4,
     "CustomShader": {
@@ -1179,14 +1179,14 @@ objectJSONs = {
     "posX": -9.969786,
     "posY": 1.0,
     "posZ": -12.8602114,
-    "rotX": 0.00450267224,
+    "rotX": 0.00450267363,
     "rotY": 165.0,
-    "rotZ": -2.084408E-10,
+    "rotZ": -4.168816E-10,
     "scaleX": 0.975000143,
     "scaleY": 0.975000143,
     "scaleZ": 0.975000143
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -1246,12 +1246,12 @@ objectJSONs = {
     "posZ": -15.3122091,
     "rotX": -0.004862617,
     "rotY": 165.0,
-    "rotZ": 2.60551025E-10,
+    "rotZ": 7.81653E-10,
     "scaleX": 0.9500001,
     "scaleY": 0.9500001,
     "scaleZ": 0.9500001
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -1283,7 +1283,7 @@ objectJSONs = {
     "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/1667979695693150828/2980A3EF49E8388CC94194A4814BB9978465AAAA/",
     "NormalURL": "",
     "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/1667979695693156731/57E32E66EF69C4A3CA4BFA3B92A38AF19ACF976F/",
-    "Convex": true,
+    "Convex": false,
     "MaterialIndex": 3,
     "TypeIndex": 4,
     "CustomShader": {
@@ -1409,124 +1409,15 @@ objectJSONs = {
   }
 }]],
   [[{
-  "GUID": "e749c0",
-  "Name": "Custom_Assetbundle",
-  "Transform": {
-    "posX": 6.37500048,
-    "posY": 1.0,
-    "posZ": 5.75,
-    "rotX": -4.785923E-08,
-    "rotY": 180.0,
-    "rotZ": -3.87473733E-08,
-    "scaleX": 1.0,
-    "scaleY": 1.0,
-    "scaleZ": 1.0
-  },
-  "Nickname": "",
-  "Description": "",
-  "GMNotes": "",
-  "AltLookAngle": {
-    "x": 0.0,
-    "y": 0.0,
-    "z": 0.0
-  },
-  "ColorDiffuse": {
-    "r": 1.0,
-    "g": 1.0,
-    "b": 1.0
-  },
-  "Tags": [
-    "obj_triangle"
-  ],
-  "LayoutGroupSortIndex": 0,
-  "Value": 0,
-  "Locked": true,
-  "Grid": true,
-  "Snap": true,
-  "IgnoreFoW": false,
-  "MeasureMovement": false,
-  "DragSelectable": true,
-  "Autoraise": true,
-  "Sticky": true,
-  "Tooltip": true,
-  "GridProjection": false,
-  "HideWhenFaceDown": false,
-  "Hands": false,
-  "CustomAssetbundle": {
-    "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/13344184635215212518/9E3478CBEB46A6B7D03864CCC680D7E37F14B660/",
-    "AssetbundleSecondaryURL": "",
-    "MaterialIndex": 0,
-    "TypeIndex": 0,
-    "LoopingEffectIndex": 0
-  },
-  "LuaScript": "",
-  "LuaScriptState": "",
-  "XmlUI": "",
-  "States": {
-    "2": {
-      "GUID": "450f56",
-      "Name": "Custom_Assetbundle",
-      "Transform": {
-        "posX": -5.99997854,
-        "posY": 0.980388045,
-        "posZ": -4.99839354,
-        "rotX": -6.482223E-08,
-        "rotY": 0.0224702954,
-        "rotZ": -1.89999749E-08,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "CustomAssetbundle": {
-        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/10828923269080544043/F6E563E60C9A956892D734DEA30B43B38BB83B50/",
-        "AssetbundleSecondaryURL": "",
-        "MaterialIndex": 0,
-        "TypeIndex": 0,
-        "LoopingEffectIndex": 0
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    }
-  }
-}]],
-  [[{
   "GUID": "c10f7a",
   "Name": "Custom_Assetbundle",
   "Transform": {
-    "posX": -5.125001,
+    "posX": -4.99999952,
     "posY": 1.0,
-    "posZ": -4.24999857,
-    "rotX": 4.37366481E-08,
-    "rotY": 0.0,
-    "rotZ": 3.19079518E-08,
+    "posZ": 5.75000048,
+    "rotX": 0.000136851755,
+    "rotY": 90.0,
+    "rotZ": -0.000461787276,
     "scaleX": 1.0,
     "scaleY": 1.0,
     "scaleZ": 1.0
@@ -1627,98 +1518,20 @@ objectJSONs = {
   }
 }]],
   [[{
-  "GUID": "e42dfa",
+  "GUID": "941f14",
   "Name": "Custom_Model",
   "Transform": {
-    "posX": -3.99992085,
+    "posX": -2.49995065,
     "posY": 1.0,
-    "posZ": 4.00004673,
-    "rotX": 4.07111E-13,
-    "rotY": 0.000346009,
-    "rotZ": 0.0,
-    "scaleX": 0.779567957,
-    "scaleY": 0.5146825,
-    "scaleZ": 0.491404861
-  },
-  "Nickname": "",
-  "Description": "",
-  "GMNotes": "",
-  "AltLookAngle": {
-    "x": 0.0,
-    "y": 0.0,
-    "z": 0.0
-  },
-  "ColorDiffuse": {
-    "r": 1.0,
-    "g": 1.0,
-    "b": 1.0
-  },
-  "LayoutGroupSortIndex": 0,
-  "Value": 0,
-  "Locked": true,
-  "Grid": true,
-  "Snap": true,
-  "IgnoreFoW": false,
-  "MeasureMovement": false,
-  "DragSelectable": true,
-  "Autoraise": true,
-  "Sticky": true,
-  "Tooltip": true,
-  "GridProjection": false,
-  "HideWhenFaceDown": false,
-  "Hands": false,
-  "CustomMesh": {
-    "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1487829979936782150/D6655DC1A88C93DF4CBE33075B8D8A6CD6722CEB/",
-    "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/1487829979936769935/90F8E698BE88D645D2E58C18C49106DFFBB84E14/",
-    "NormalURL": "",
-    "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/1487829979936782150/D6655DC1A88C93DF4CBE33075B8D8A6CD6722CEB/",
-    "Convex": false,
-    "MaterialIndex": 3,
-    "TypeIndex": 4,
-    "CustomShader": {
-      "SpecularColor": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "SpecularIntensity": 0.0,
-      "SpecularSharpness": 2.0,
-      "FresnelStrength": 0.0
-    },
-    "CastShadows": true
-  },
-  "LuaScript": "",
-  "LuaScriptState": "",
-  "XmlUI": "",
-  "PhysicsMaterial": {
-    "StaticFriction": 1.0,
-    "DynamicFriction": 0.7,
-    "Bounciness": 0.0,
-    "FrictionCombine": 0,
-    "BounceCombine": 0
-  },
-  "Rigidbody": {
-    "Mass": 20.0,
-    "Drag": 5.0,
-    "AngularDrag": 0.1,
-    "UseGravity": true
-  }
-}]],
-  [[{
-  "GUID": "596d32",
-  "Name": "Custom_Model",
-  "Transform": {
-    "posX": -2.74999952,
-    "posY": 1.0,
-    "posZ": -1.74999928,
-    "rotX": -1.628444E-12,
-    "rotY": 180.0,
+    "posZ": 3.24995375,
+    "rotX": 0.0,
+    "rotY": 270.0,
     "rotZ": 0.0,
     "scaleX": 0.56501174,
     "scaleY": 0.7208338,
     "scaleZ": 0.95993793
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -1796,7 +1609,85 @@ objectJSONs = {
     "scaleY": 0.5146825,
     "scaleZ": 0.491404861
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
+  "Description": "",
+  "GMNotes": "",
+  "AltLookAngle": {
+    "x": 0.0,
+    "y": 0.0,
+    "z": 0.0
+  },
+  "ColorDiffuse": {
+    "r": 1.0,
+    "g": 1.0,
+    "b": 1.0
+  },
+  "LayoutGroupSortIndex": 0,
+  "Value": 0,
+  "Locked": true,
+  "Grid": true,
+  "Snap": true,
+  "IgnoreFoW": false,
+  "MeasureMovement": false,
+  "DragSelectable": true,
+  "Autoraise": true,
+  "Sticky": true,
+  "Tooltip": true,
+  "GridProjection": false,
+  "HideWhenFaceDown": false,
+  "Hands": false,
+  "CustomMesh": {
+    "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1487829979936782150/D6655DC1A88C93DF4CBE33075B8D8A6CD6722CEB/",
+    "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/1487829979936769935/90F8E698BE88D645D2E58C18C49106DFFBB84E14/",
+    "NormalURL": "",
+    "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/1487829979936782150/D6655DC1A88C93DF4CBE33075B8D8A6CD6722CEB/",
+    "Convex": false,
+    "MaterialIndex": 3,
+    "TypeIndex": 4,
+    "CustomShader": {
+      "SpecularColor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "SpecularIntensity": 0.0,
+      "SpecularSharpness": 2.0,
+      "FresnelStrength": 0.0
+    },
+    "CastShadows": true
+  },
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "XmlUI": "",
+  "PhysicsMaterial": {
+    "StaticFriction": 1.0,
+    "DynamicFriction": 0.7,
+    "Bounciness": 0.0,
+    "FrictionCombine": 0,
+    "BounceCombine": 0
+  },
+  "Rigidbody": {
+    "Mass": 20.0,
+    "Drag": 5.0,
+    "AngularDrag": 0.1,
+    "UseGravity": true
+  }
+}]],
+  [[{
+  "GUID": "e37bc1",
+  "Name": "Custom_Model",
+  "Transform": {
+    "posX": -3.24997759,
+    "posY": 1.0,
+    "posZ": -4.499981,
+    "rotX": -5.33608855E-08,
+    "rotY": 270.0,
+    "rotZ": 0.0,
+    "scaleX": 0.779567957,
+    "scaleY": 0.5146825,
+    "scaleZ": 0.491404861
+  },
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -1967,20 +1858,129 @@ objectJSONs = {
   }
 }]],
   [[{
-  "GUID": "77d618",
+  "GUID": "e749c0",
+  "Name": "Custom_Assetbundle",
+  "Transform": {
+    "posX": 5.0,
+    "posY": 1.0,
+    "posZ": -5.75,
+    "rotX": -0.000136594186,
+    "rotY": 270.0,
+    "rotZ": 0.000461863674,
+    "scaleX": 1.0,
+    "scaleY": 1.0,
+    "scaleZ": 1.0
+  },
+  "Nickname": "",
+  "Description": "",
+  "GMNotes": "",
+  "AltLookAngle": {
+    "x": 0.0,
+    "y": 0.0,
+    "z": 0.0
+  },
+  "ColorDiffuse": {
+    "r": 1.0,
+    "g": 1.0,
+    "b": 1.0
+  },
+  "Tags": [
+    "obj_triangle"
+  ],
+  "LayoutGroupSortIndex": 0,
+  "Value": 0,
+  "Locked": true,
+  "Grid": true,
+  "Snap": true,
+  "IgnoreFoW": false,
+  "MeasureMovement": false,
+  "DragSelectable": true,
+  "Autoraise": true,
+  "Sticky": true,
+  "Tooltip": true,
+  "GridProjection": false,
+  "HideWhenFaceDown": false,
+  "Hands": false,
+  "CustomAssetbundle": {
+    "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/13344184635215212518/9E3478CBEB46A6B7D03864CCC680D7E37F14B660/",
+    "AssetbundleSecondaryURL": "",
+    "MaterialIndex": 0,
+    "TypeIndex": 0,
+    "LoopingEffectIndex": 0
+  },
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "XmlUI": "",
+  "States": {
+    "2": {
+      "GUID": "450f56",
+      "Name": "Custom_Assetbundle",
+      "Transform": {
+        "posX": -5.99997854,
+        "posY": 0.980388045,
+        "posZ": -4.99839354,
+        "rotX": -6.482223E-08,
+        "rotY": 0.0224702954,
+        "rotZ": -1.89999749E-08,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomAssetbundle": {
+        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/10828923269080544043/F6E563E60C9A956892D734DEA30B43B38BB83B50/",
+        "AssetbundleSecondaryURL": "",
+        "MaterialIndex": 0,
+        "TypeIndex": 0,
+        "LoopingEffectIndex": 0
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    }
+  }
+}]],
+  [[{
+  "GUID": "fc21d4",
   "Name": "Custom_Model",
   "Transform": {
-    "posX": -1.99999988,
-    "posY": 3.79,
-    "posZ": 14.0,
-    "rotX": -1.30275521E-11,
+    "posX": -2.0,
+    "posY": 1.96,
+    "posZ": 14.0000029,
+    "rotX": -4.89496642E-07,
     "rotY": 180.0,
-    "rotZ": 0.0,
+    "rotZ": 2.03590025E-06,
     "scaleX": 0.63,
     "scaleY": 0.63,
     "scaleZ": 0.8
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2012,7 +2012,7 @@ objectJSONs = {
     "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/1774951893767676952/714E436E805F70822CAF9FAF5391131B6975A4AD/",
     "NormalURL": "",
     "ColliderURL": "",
-    "Convex": true,
+    "Convex": false,
     "MaterialIndex": 3,
     "TypeIndex": 0,
     "CustomShader": {
@@ -2032,20 +2032,20 @@ objectJSONs = {
   "XmlUI": ""
 }]],
   [[{
-  "GUID": "fc21d4",
+  "GUID": "77d618",
   "Name": "Custom_Model",
   "Transform": {
-    "posX": -2.0,
-    "posY": 1.96,
-    "posZ": 14.0000029,
-    "rotX": -4.89496642E-07,
+    "posX": -1.99999988,
+    "posY": 3.79,
+    "posZ": 14.0,
+    "rotX": -1.30275521E-11,
     "rotY": 180.0,
-    "rotZ": 2.03590025E-06,
+    "rotZ": 0.0,
     "scaleX": 0.63,
     "scaleY": 0.63,
     "scaleZ": 0.8
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2077,7 +2077,7 @@ objectJSONs = {
     "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/1774951893767676952/714E436E805F70822CAF9FAF5391131B6975A4AD/",
     "NormalURL": "",
     "ColliderURL": "",
-    "Convex": true,
+    "Convex": false,
     "MaterialIndex": 3,
     "TypeIndex": 0,
     "CustomShader": {
@@ -2110,7 +2110,7 @@ objectJSONs = {
     "scaleY": 0.5146825,
     "scaleZ": 0.491404861
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2294,7 +2294,7 @@ objectJSONs = {
     "scaleY": 0.5146825,
     "scaleZ": 0.491404861
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2354,6 +2354,84 @@ objectJSONs = {
   "Rigidbody": {
     "Mass": 20.0,
     "Drag": 5.0,
+    "AngularDrag": 0.1,
+    "UseGravity": true
+  }
+}]],
+  [[{
+  "GUID": "596d32",
+  "Name": "Custom_Model",
+  "Transform": {
+    "posX": 2.5,
+    "posY": 1.0,
+    "posZ": -3.250021,
+    "rotX": 6.67011069E-09,
+    "rotY": 90.0,
+    "rotZ": 0.0,
+    "scaleX": 0.56501174,
+    "scaleY": 0.7208338,
+    "scaleZ": 0.95993793
+  },
+  "Nickname": "Dense Terrain",
+  "Description": "",
+  "GMNotes": "",
+  "AltLookAngle": {
+    "x": 0.0,
+    "y": 0.0,
+    "z": 0.0
+  },
+  "ColorDiffuse": {
+    "r": 1.0,
+    "g": 1.0,
+    "b": 1.0
+  },
+  "LayoutGroupSortIndex": 0,
+  "Value": 0,
+  "Locked": true,
+  "Grid": true,
+  "Snap": true,
+  "IgnoreFoW": false,
+  "MeasureMovement": false,
+  "DragSelectable": true,
+  "Autoraise": true,
+  "Sticky": true,
+  "Tooltip": true,
+  "GridProjection": false,
+  "HideWhenFaceDown": false,
+  "Hands": false,
+  "CustomMesh": {
+    "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1487829979936777893/F5577FE65FBA540E05D01E8D582F924616FA0592/",
+    "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/1487829979936769935/90F8E698BE88D645D2E58C18C49106DFFBB84E14/",
+    "NormalURL": "",
+    "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/1487829979936777893/F5577FE65FBA540E05D01E8D582F924616FA0592/",
+    "Convex": false,
+    "MaterialIndex": 3,
+    "TypeIndex": 4,
+    "CustomShader": {
+      "SpecularColor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "SpecularIntensity": 0.0,
+      "SpecularSharpness": 2.0,
+      "FresnelStrength": 0.0
+    },
+    "CastShadows": true
+  },
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "XmlUI": "",
+  "PhysicsMaterial": {
+    "StaticFriction": 1.0,
+    "DynamicFriction": 0.7,
+    "Bounciness": 0.0,
+    "FrictionCombine": 0,
+    "BounceCombine": 0
+  },
+  "Rigidbody": {
+    "Mass": 1.0,
+    "Drag": 0.1,
     "AngularDrag": 0.1,
     "UseGravity": true
   }
@@ -2478,7 +2556,7 @@ objectJSONs = {
     "scaleY": 0.63,
     "scaleZ": 0.8
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2510,7 +2588,7 @@ objectJSONs = {
     "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/1774951893767676952/714E436E805F70822CAF9FAF5391131B6975A4AD/",
     "NormalURL": "",
     "ColliderURL": "",
-    "Convex": true,
+    "Convex": false,
     "MaterialIndex": 3,
     "TypeIndex": 0,
     "CustomShader": {
@@ -2543,7 +2621,7 @@ objectJSONs = {
     "scaleY": 0.63,
     "scaleZ": 0.8
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2575,7 +2653,7 @@ objectJSONs = {
     "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/1774951893767676952/714E436E805F70822CAF9FAF5391131B6975A4AD/",
     "NormalURL": "",
     "ColliderURL": "",
-    "Convex": true,
+    "Convex": false,
     "MaterialIndex": 3,
     "TypeIndex": 0,
     "CustomShader": {
@@ -2595,98 +2673,20 @@ objectJSONs = {
   "XmlUI": ""
 }]],
   [[{
-  "GUID": "941f14",
+  "GUID": "e42dfa",
   "Name": "Custom_Model",
   "Transform": {
-    "posX": 3.99999928,
+    "posX": 3.24998355,
     "posY": 1.0,
-    "posZ": 3.25,
-    "rotX": 0.0,
-    "rotY": 0.0,
-    "rotZ": 0.0,
-    "scaleX": 0.56501174,
-    "scaleY": 0.7208338,
-    "scaleZ": 0.95993793
-  },
-  "Nickname": "",
-  "Description": "",
-  "GMNotes": "",
-  "AltLookAngle": {
-    "x": 0.0,
-    "y": 0.0,
-    "z": 0.0
-  },
-  "ColorDiffuse": {
-    "r": 1.0,
-    "g": 1.0,
-    "b": 1.0
-  },
-  "LayoutGroupSortIndex": 0,
-  "Value": 0,
-  "Locked": true,
-  "Grid": true,
-  "Snap": true,
-  "IgnoreFoW": false,
-  "MeasureMovement": false,
-  "DragSelectable": true,
-  "Autoraise": true,
-  "Sticky": true,
-  "Tooltip": true,
-  "GridProjection": false,
-  "HideWhenFaceDown": false,
-  "Hands": false,
-  "CustomMesh": {
-    "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1487829979936777893/F5577FE65FBA540E05D01E8D582F924616FA0592/",
-    "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/1487829979936769935/90F8E698BE88D645D2E58C18C49106DFFBB84E14/",
-    "NormalURL": "",
-    "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/1487829979936777893/F5577FE65FBA540E05D01E8D582F924616FA0592/",
-    "Convex": false,
-    "MaterialIndex": 3,
-    "TypeIndex": 4,
-    "CustomShader": {
-      "SpecularColor": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "SpecularIntensity": 0.0,
-      "SpecularSharpness": 2.0,
-      "FresnelStrength": 0.0
-    },
-    "CastShadows": true
-  },
-  "LuaScript": "",
-  "LuaScriptState": "",
-  "XmlUI": "",
-  "PhysicsMaterial": {
-    "StaticFriction": 1.0,
-    "DynamicFriction": 0.7,
-    "Bounciness": 0.0,
-    "FrictionCombine": 0,
-    "BounceCombine": 0
-  },
-  "Rigidbody": {
-    "Mass": 1.0,
-    "Drag": 0.1,
-    "AngularDrag": 0.1,
-    "UseGravity": true
-  }
-}]],
-  [[{
-  "GUID": "d9e7e0",
-  "Name": "Custom_Model",
-  "Transform": {
-    "posX": 3.74989939,
-    "posY": 1.0,
-    "posZ": 10.7499466,
-    "rotX": 0.0,
-    "rotY": 180.0,
+    "posZ": 4.49998856,
+    "rotX": -5.33608535E-08,
+    "rotY": 89.99757,
     "rotZ": 0.0,
     "scaleX": 0.779567957,
     "scaleY": 0.5146825,
     "scaleZ": 0.491404861
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2751,12 +2751,12 @@ objectJSONs = {
   }
 }]],
   [[{
-  "GUID": "e37bc1",
+  "GUID": "d9e7e0",
   "Name": "Custom_Model",
   "Transform": {
-    "posX": 5.249979,
+    "posX": 3.74989939,
     "posY": 1.0,
-    "posZ": -2.49998617,
+    "posZ": 10.7499466,
     "rotX": 0.0,
     "rotY": 180.0,
     "rotZ": 0.0,
@@ -2764,7 +2764,7 @@ objectJSONs = {
     "scaleY": 0.5146825,
     "scaleZ": 0.491404861
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2948,7 +2948,7 @@ objectJSONs = {
     "scaleY": 0.9500001,
     "scaleZ": 0.9500001
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -2980,7 +2980,7 @@ objectJSONs = {
     "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/1667979695693150828/2980A3EF49E8388CC94194A4814BB9978465AAAA/",
     "NormalURL": "",
     "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/1667979695693156731/57E32E66EF69C4A3CA4BFA3B92A38AF19ACF976F/",
-    "Convex": true,
+    "Convex": false,
     "MaterialIndex": 3,
     "TypeIndex": 4,
     "CustomShader": {
@@ -3008,12 +3008,12 @@ objectJSONs = {
     "posZ": 12.8602114,
     "rotX": 0.004502671,
     "rotY": 344.999969,
-    "rotZ": 1.04220417E-10,
+    "rotZ": 5.732123E-10,
     "scaleX": 0.975000143,
     "scaleY": 0.975000143,
     "scaleZ": 0.975000143
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -3071,9 +3071,9 @@ objectJSONs = {
     "posX": 17.0,
     "posY": 1.0,
     "posZ": -17.0,
-    "rotX": -4.2836092E-07,
+    "rotX": -4.28361432E-07,
     "rotY": 270.0,
-    "rotZ": 8.247761E-08,
+    "rotZ": 8.247763E-08,
     "scaleX": 1.0,
     "scaleY": 1.0,
     "scaleZ": 1.0
@@ -3187,7 +3187,7 @@ objectJSONs = {
     "scaleY": 0.950000167,
     "scaleZ": 0.950000167
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -3219,7 +3219,7 @@ objectJSONs = {
     "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/1667979695693150828/2980A3EF49E8388CC94194A4814BB9978465AAAA/",
     "NormalURL": "",
     "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/1667979695693156731/57E32E66EF69C4A3CA4BFA3B92A38AF19ACF976F/",
-    "Convex": true,
+    "Convex": false,
     "MaterialIndex": 3,
     "TypeIndex": 4,
     "CustomShader": {
@@ -3252,7 +3252,7 @@ objectJSONs = {
     "scaleY": 0.720841765,
     "scaleZ": 1.21309161
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -3330,7 +3330,7 @@ objectJSONs = {
     "scaleY": 0.720831633,
     "scaleZ": 0.932136238
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -3401,7 +3401,7 @@ objectJSONs = {
     "posX": 16.0000877,
     "posY": 1.0,
     "posZ": 5.49940872,
-    "rotX": -0.000105734645,
+    "rotX": -0.000105734827,
     "rotY": 270.0,
     "rotZ": 180.0,
     "scaleX": 1.0,
@@ -3514,7 +3514,7 @@ objectJSONs = {
     "scaleY": 1.29999983,
     "scaleZ": 1.29999983
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -3546,7 +3546,7 @@ objectJSONs = {
     "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/1667979695693150828/2980A3EF49E8388CC94194A4814BB9978465AAAA/",
     "NormalURL": "",
     "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/1667979695693156731/57E32E66EF69C4A3CA4BFA3B92A38AF19ACF976F/",
-    "Convex": true,
+    "Convex": false,
     "MaterialIndex": 3,
     "TypeIndex": 4,
     "CustomShader": {
@@ -3688,7 +3688,7 @@ objectJSONs = {
     "scaleY": 0.5146825,
     "scaleZ": 0.491404861
   },
-  "Nickname": "",
+  "Nickname": "Light Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -3766,7 +3766,7 @@ objectJSONs = {
     "scaleY": 0.7208217,
     "scaleZ": 0.527568161
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -3950,7 +3950,7 @@ objectJSONs = {
     "scaleY": 1.49999964,
     "scaleZ": 1.49999964
   },
-  "Nickname": "",
+  "Nickname": "Dense Terrain",
   "Description": "",
   "GMNotes": "",
   "AltLookAngle": {
@@ -3982,7 +3982,7 @@ objectJSONs = {
     "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/1696128786314199782/B520A8EDB48F180BCE0DBE44DDB2C8AD479E30D9/",
     "NormalURL": "",
     "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/1696128786314197034/516557A3B4513F4E42DE6A515D58AADDA16E63E6/",
-    "Convex": true,
+    "Convex": false,
     "MaterialIndex": 3,
     "TypeIndex": 4,
     "CustomShader": {
