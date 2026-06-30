@@ -56,6 +56,7 @@
 <Panel id="DebugTools" active="false" rectAlignment="UpperLeft" offsetXY="20 -20" scale="0.8 0.8 0.8" width="460" height="660" color="#10141EF2" outline="#31415F" outlineSize="4" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <VerticalLayout padding="18 18 16 16" spacing="10" childForceExpandHeight="false">
     <Text fontSize="30" fontStyle="Bold" color="#F3F6FA" alignment="MiddleCenter" preferredHeight="42">DEBUG TOOLS</Text>
+    <VerticalLayout id="DebugToolsBody" spacing="10" childForceExpandHeight="false">
     <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0"/>
 
     <Text fontSize="20" fontStyle="Bold" color="#AFC1D8" alignment="MiddleLeft" preferredHeight="26">Diagnostics</Text>
@@ -84,8 +85,9 @@
     <Text fontSize="20" fontStyle="Bold" color="#AFC1D8" alignment="MiddleLeft" preferredHeight="26">Custom table mat URL</Text>
     <InputField id="debugMatUrlField" placeholder="paste mat image URL" fontSize="22" color="#FFFFFF" textColor="#10141E" onValueChanged="cacheDebugMatUrl" onEndEdit="onDebugMatApply" preferredHeight="64"/>
     <Button onClick="onDebugMatApply" color="#C28A2B" textColor="#10141E" fontSize="26" fontStyle="Bold" preferredHeight="62">Set mat from URL</Button>
+    </VerticalLayout>
   </VerticalLayout>
-  <Button text="X" fontSize="24" textColor="#FFFFFF" color="#B52020" width="44" height="44" roundEdges="true" outline="#2a2a4aCC" outlineSize="3" offsetXY="200 300" onClick="closeDebugTools" tooltip="Close"/>
+  <Button id="DebugToolsMinBtn" text="—" fontSize="24" textColor="#FFFFFF" color="#B52020" width="44" height="44" roundEdges="true" outline="#2a2a4aCC" outlineSize="3" rectAlignment="UpperRight" offsetXY="-26 -26" onClick="minimizeDebugTools" tooltip="Minimize"/>
 </Panel>
 
 <Panel id="RedHud_VPScores" visibility="Red" active="true" scale="0.43 0.43 0.43" width="1216" height="228" rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">

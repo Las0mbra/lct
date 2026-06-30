@@ -1344,8 +1344,24 @@ function onDebugMatApply(player, value, id)
     local menu = getObjectFromGUID(startMenu_GUID)
     if menu then menu.call("setMatTextureFromUrl", debugMatUrlPending) end
 end
-function closeDebugTools(player, value, id)
-    Global.UI.setAttribute("DebugTools", "active", "false")
+-- Corner button on the DebugTools panel. Instead of fully hiding the panel (which
+-- can't be reopened until the next reload, since onLoad is the only place it's shown),
+-- this collapses it to its title bar: the DebugToolsBody layout is deactivated and the
+-- panel shrinks to header height. Clicking again restores it. Glyph/tooltip toggle too.
+debugToolsMinimized = false
+function minimizeDebugTools(player, value, id)
+    debugToolsMinimized = not debugToolsMinimized
+    if debugToolsMinimized then
+        Global.UI.setAttribute("DebugToolsBody", "active", "false")
+        Global.UI.setAttribute("DebugTools", "height", "84")
+        Global.UI.setAttribute("DebugToolsMinBtn", "text", "+")
+        Global.UI.setAttribute("DebugToolsMinBtn", "tooltip", "Restore")
+    else
+        Global.UI.setAttribute("DebugToolsBody", "active", "true")
+        Global.UI.setAttribute("DebugTools", "height", "660")
+        Global.UI.setAttribute("DebugToolsMinBtn", "text", "—")
+        Global.UI.setAttribute("DebugToolsMinBtn", "tooltip", "Minimize")
+    end
 end
 
 function debugPerfScanRed(player)

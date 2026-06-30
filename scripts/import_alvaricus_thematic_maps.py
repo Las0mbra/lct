@@ -47,6 +47,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).parent))
+import map_payloads as P
+
 SCRIPT_DIR = Path(__file__).parent
 ROOT = SCRIPT_DIR.parent
 DEFAULT_TARGET = ROOT / "TTSJSON" / "ftc_base.json"
@@ -216,15 +219,19 @@ def remove_previous_import(target, names=None):
     whose Nickname is in that set are removed (used by the targeted --cards mode so
     a partial add never disturbs the other slots); otherwise every Alvaricus card
     is removed (full re-import)."""
-    removed = 0
+    removed = []
     for obj in walk(target.get("ObjectStates") or []):
         children = obj.get("ContainedObjects")
         if not isinstance(children, list):
             continue
-        kept = [c for c in children
-                if CREATOR_TAG not in (c.get("Tags") or [])
-                or (names is not None and (c.get("Nickname") or "") not in names)]
-        removed += len(children) - len(kept)
+        kept = []
+        for child in children:
+            should_remove = (CREATOR_TAG in (child.get("Tags") or [])
+                             and not (names is not None and (child.get("Nickname") or "") not in names))
+            if should_remove:
+                removed.append(child.get("GUID"))
+            else:
+                kept.append(child)
         obj["ContainedObjects"] = kept
     return removed
 
@@ -344,13 +351,18 @@ def main():
         print("\n[preview] no files written; pass --write to update ftc_base.json and map_manifest.csv.")
         return 0
 
-    removed = remove_previous_import(target, replaced_names)
+    removed_guids = remove_previous_import(target, replaced_names)
     target_by_guid = {o.get("GUID"): o for o in walk(target.get("ObjectStates") or []) if o.get("GUID")}
+    new_guids = {card.get("GUID") for _deck_guid, card in new_cards}
     for deck_guid, card in new_cards:
         bag = target_by_guid.get(deck_guid)
         if not bag:
             sys.exit(f"ERROR: target matchup bag {deck_guid} not found in {target_path}.")
+        P.strip_card_to_payload(card)
         bag.setdefault("ContainedObjects", []).append(card)
+    for guid in removed_guids:
+        if guid and guid not in new_guids:
+            P.remove_payload(guid)
 
     if partial:
         manifest_rows = [r for r in manifest_rows
@@ -362,7 +374,8 @@ def main():
 
     target_path.write_text(json.dumps(target, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     write_manifest(manifest_path, manifest_rows)
-    print(f"\nWrote {target_path} and {manifest_path}; removed {removed} previous Alvaricus card(s).")
+    print(f"\nWrote {target_path}, {manifest_path}, and data/maps payloads; "
+          f"removed {len(removed_guids)} previous Alvaricus card(s).")
     print(f"Run: {validation_command_hint()}")
     return 0
 

@@ -4,7 +4,7 @@ Player-facing changes to the LCT 40k TTS table.
 
 How this file is used by the compiler (`compile.py --release`):
 - The **topmost** `## vX.Y.Z` heading is the current version. It is stamped into
-  the TTS save name (e.g. `LCT - Warhammer 40k Map - v1.0.0`) and into the
+  the TTS save name (e.g. `LCT - v1.0.0`) and into the
   in-game `GAME_VERSION`.
 - The `-` bullet points directly under that heading are the patch notes shown
   to players in-game the first time they open a map built from a newer version
@@ -12,6 +12,11 @@ How this file is used by the compiler (`compile.py --release`):
 
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
+
+## v1.9.2 
+- Added set mission button that sets mission to the board state. This is more of a QoL for people who play non-comp modes. 
+- Additional default tokens for basic things to the left of each players board 
+- Back-end clean up for better map management. 
 
 ## v1.9.1
 - Added links to other workshop items. 

@@ -13,6 +13,7 @@ SCRIPT_DIR = Path(__file__).parent
 sys.path.insert(0, str(SCRIPT_DIR))
 import validate_maps
 import compile as compile_script
+import extract_map_payloads
 
 
 ROOT = SCRIPT_DIR.parent
@@ -28,6 +29,18 @@ def find_guid(objects, guid):
         if found:
             return found
     return None
+
+
+def inline_card_terrain(card):
+    """Fold a card's extracted terrain payload back into its LuaScript so a test
+    can mutate terrain inline. Mirrors how MapCard reconstructs head + payload
+    for cards whose terrain lives in data/maps/<guid>.lua."""
+    lua = card.get("LuaScript", "") or ""
+    if "objectJSONs = {" not in lua:
+        payload = validate_maps.read_map_payload(card.get("GUID"))
+        if payload is not None:
+            card["LuaScript"] = lua + payload
+    return card
 
 
 class ValidateMapsTest(unittest.TestCase):
@@ -148,7 +161,7 @@ class ValidateMapsTest(unittest.TestCase):
 
     def test_objective_marker_tag_check_is_non_blocking(self):
         states = copy.deepcopy(self.object_states)
-        card = find_guid(states, "b3537f")
+        card = inline_card_terrain(find_guid(states, "b3537f"))
         card["LuaScript"] = card["LuaScript"].replace("obj_home_red", "obj_missing_home")
 
         issues, _ = validate_maps.validate(states, require_map_tags=True)
@@ -256,6 +269,75 @@ class ValidateMapsTest(unittest.TestCase):
         bags = {c.deck_guid for c in ctx.cards if c.deck_guid}
         self.assertLessEqual(bags, ctx.game_mode_object_guids())
 
+    def test_extracted_payloads_round_trip(self):
+        """Every manifest card's terrain is extracted to data/maps/<guid>.lua,
+        and splitting `head + payload` inverts the concat compile.py performs --
+        the contract that keeps recompilation byte-identical."""
+        rows, _ = validate_maps.load_map_manifest(MANIFEST_PATH)
+        for row in rows:
+            guid = row["card_guid"]
+            card = find_guid(self.object_states, guid)
+            self.assertIsNotNone(card, guid)
+            head = card.get("LuaScript", "") or ""
+            self.assertNotIn("objectJSONs = {", head,
+                             f"{guid} terrain still inline (not extracted)")
+            payload = validate_maps.read_map_payload(guid)
+            self.assertIsNotNone(payload, f"missing payload file for {guid}")
+            self.assertTrue(payload.startswith("objectJSONs = {"))
+            rebuilt = head + payload
+            idx = rebuilt.index("objectJSONs = {")
+            self.assertEqual(head, rebuilt[:idx])
+            self.assertEqual(payload, rebuilt[idx:])
+
+    def test_extractor_ignores_non_map_scripts_with_payload_marker(self):
+        save = {
+            "ObjectStates": [{
+                "GUID": "abc123",
+                "Name": "BlockSquare",
+                "LuaScript": 'local generated = "objectJSONs = {"',
+            }]
+        }
+        payloads = extract_map_payloads.collect_payloads(save, {"b3537f"})
+        self.assertEqual({}, payloads)
+
+    def test_extractor_includes_combat_patrol_pool(self):
+        save = {
+            "ObjectStates": [{
+                "GUID": "fdf6e7",
+                "Name": "Bag",
+                "ContainedObjects": [{
+                    "GUID": "9200fe",
+                    "Name": "CardCustom",
+                    "LuaScript": "head\nobjectJSONs = {\n  [[{}]],\n}\n",
+                }],
+            }]
+        }
+        payloads = extract_map_payloads.collect_payloads(save, set())
+        self.assertIn("9200fe", payloads)
+        self.assertTrue(payloads["9200fe"].startswith("objectJSONs = {"))
+
+    def test_compile_reports_missing_required_payload(self):
+        json_text = SAVE_PATH.read_text(encoding="utf-8")
+        json_lines = json_text.splitlines()
+        guid_entries, lua_line_idxs = [], []
+        for i, line in enumerate(json_lines):
+            m = compile_script.REGEX_JSON_GUID.search(line)
+            if m:
+                guid_entries.append((i, m.group(1)))
+            if compile_script.REGEX_JSON_LUASCRIPT.search(line):
+                lua_line_idxs.append(i)
+
+        old_path = compile_script.PATH_MAPS
+        with tempfile.TemporaryDirectory() as tmp:
+            compile_script.PATH_MAPS = Path(tmp)
+            try:
+                _, missing = compile_script.inject_map_payloads(
+                    json_lines, guid_entries, lua_line_idxs, {"9200fe"}
+                )
+            finally:
+                compile_script.PATH_MAPS = old_path
+        self.assertEqual(["9200fe"], missing)
+
     def test_self_excluded_loader_card_is_error(self):
         states = copy.deepcopy(self.object_states)
         find_guid(states, "b3537f")["GMNotes"] = validate_maps.EXPECTED_GM_EXCLUDE
@@ -266,7 +348,7 @@ class ValidateMapsTest(unittest.TestCase):
 
     def test_foreign_machinery_head_is_error(self):
         states = copy.deepcopy(self.object_states)
-        card = find_guid(states, "b3537f")
+        card = inline_card_terrain(find_guid(states, "b3537f"))
         blob = card["LuaScript"][card["LuaScript"].index("objectJSONs = {"):]
         card["LuaScript"] = "function loadMap() spawnBattlemasterObjectJSONs() end\n" + blob
         issues, _ = validate_maps.validate(states, require_map_tags=True)

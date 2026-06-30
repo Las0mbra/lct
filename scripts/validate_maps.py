@@ -164,6 +164,10 @@ MAP_MANIFEST = Path(__file__).parent.parent / "data" / "map_manifest.csv"
 # text before its `objectJSONs = {` blob). Foreign loaders (e.g. the Battlemaster
 # system) are normalized to this -- see scripts/normalize_map_card.py.
 MAP_CARD_MACHINERY = Path(__file__).parent.parent / "data" / "map_card_machinery.lua"
+# Per-map terrain payloads extracted from the save (extract_map_payloads.py).
+# A stripped card keeps only its machinery head in ftc_base.json; its terrain
+# lives here and is folded back in by MapCard so every check sees the full script.
+MAP_PAYLOAD_DIR = Path(__file__).parent.parent / "data" / "maps"
 MAP_MANIFEST_COLUMNS = {"deck_guid", "deck_name", "card_guid", "card_name", "map_creator_tag", "map_type_tag", "creator_display", "eligible"}
 REQUIRED_MAP_TAG = "map"
 MAP_CREATOR_TAG_PREFIX = "map_crt"
@@ -205,6 +209,16 @@ _DECK_LEVEL_GUID_RE = re.compile(r'^\s*guid\s*=\s*"([0-9a-fA-F]{6})"', re.M)
 _ALL_MATRIX_KEYS = {f"{red}_{blue}" for red in range(1, 6) for blue in range(1, 6)}
 
 
+def read_map_payload(guid: str):
+    """Return the verbatim terrain payload for a card GUID, or None if no payload
+    file exists. newline="" preserves the blob's mixed \\r\\n / \\n endings."""
+    path = MAP_PAYLOAD_DIR / f"{guid}.lua"
+    if not path.exists():
+        return None
+    with path.open("r", encoding="utf-8", newline="") as fh:
+        return fh.read()
+
+
 def map_logical_name(name: str) -> str:
     """Remove a recognized trailing creator credit from a visible map name."""
     name = (name or "").rstrip()
@@ -231,6 +245,17 @@ class MapCard:
         self.tags = list(obj.get("Tags") or [])
         self.gmnotes = obj.get("GMNotes") or ""
         lua = obj.get("LuaScript", "") or ""
+        # Terrain may be extracted to data/maps/<guid>.lua. When the in-save
+        # script carries only the machinery head, fold the payload back in so
+        # every downstream check parses the full `head + terrain` script exactly
+        # as it would a pre-extraction card.
+        self.payload_missing = False
+        if "objectJSONs = {" not in lua:
+            payload = read_map_payload(self.guid)
+            if payload is not None:
+                lua = lua + payload
+            else:
+                self.payload_missing = True
         self.lua = lua
         # The load/clear machinery is everything before the terrain blob.
         self.head = lua.split("objectJSONs = {", 1)[0]
@@ -629,6 +654,17 @@ def zone_scale_uniform(ctx):
             for scale, guids in by_scale.items()
         )
         yield Issue(WARN, "scene", f"zoneScale differs across cards: {detail}")
+
+
+@check
+def terrain_payload_present(ctx):
+    """A stripped card whose terrain was extracted must have its payload file in
+    data/maps/<guid>.lua, or compile.py would rebuild an empty board."""
+    for card in ctx.cards:
+        if card.payload_missing:
+            yield Issue(ERROR, card.where,
+                        f"no terrain in save and no payload file "
+                        f"data/maps/{card.guid}.lua (run extract_map_payloads.py)")
 
 
 @check

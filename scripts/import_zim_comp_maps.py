@@ -22,6 +22,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).parent))
+import map_payloads as P
+
 SCRIPT_DIR = Path(__file__).parent
 ROOT = SCRIPT_DIR.parent
 DEFAULT_TARGET = ROOT / "TTSJSON" / "ftc_base.json"
@@ -207,13 +210,17 @@ def build_card(source_card, logical, machinery, guid, deck_id):
 
 
 def remove_previous_import(target):
-    removed = 0
+    removed = []
     for obj in walk(target.get("ObjectStates") or []):
         children = obj.get("ContainedObjects")
         if not isinstance(children, list):
             continue
-        kept = [c for c in children if CREATOR_TAG not in (c.get("Tags") or [])]
-        removed += len(children) - len(kept)
+        kept = []
+        for child in children:
+            if CREATOR_TAG in (child.get("Tags") or []):
+                removed.append(child.get("GUID"))
+            else:
+                kept.append(child)
         obj["ContainedObjects"] = kept
     return removed
 
@@ -311,20 +318,26 @@ def main():
         print("\n[preview] no files written; pass --write to update ftc_base.json and map_manifest.csv.")
         return 0
 
-    removed = remove_previous_import(target)
+    removed_guids = remove_previous_import(target)
     target_by_guid = {o.get("GUID"): o for o in walk(target.get("ObjectStates") or []) if o.get("GUID")}
+    new_guids = {card.get("GUID") for _deck_guid, card, _path, _count in new_cards}
     for deck_guid, card, _path, _count in new_cards:
         bag = target_by_guid.get(deck_guid)
         if not bag:
             sys.exit(f"ERROR: target matchup bag {deck_guid} not found in {target_path}.")
+        P.strip_card_to_payload(card)
         bag.setdefault("ContainedObjects", []).append(card)
+    for guid in removed_guids:
+        if guid and guid not in new_guids:
+            P.remove_payload(guid)
 
     manifest_rows = [r for r in manifest_rows if r.get("map_creator_tag") != CREATOR_TAG]
     manifest_rows.extend(manifest_additions)
 
     target_path.write_text(json.dumps(target, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     write_manifest(manifest_path, manifest_rows)
-    print(f"\nWrote {target_path} and {manifest_path}; removed {removed} previous Zim card(s).")
+    print(f"\nWrote {target_path}, {manifest_path}, and data/maps payloads; "
+          f"removed {len(removed_guids)} previous Zim card(s).")
     print(f"Run: {validation_command_hint()}")
     return 0
 

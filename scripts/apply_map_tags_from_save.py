@@ -9,17 +9,19 @@ single editing session, where you load each map, tag its objective markers, and
 press the button, ends with all the edits baked into one save file.
 
 This script reads that save, and for each recorded map card writes the recorded
-tags onto the matching baked terrain object inside the card's `objectJSONs` blob
-in TTSJSON/ftc_base.json. The join key is the object GUID: only one map is loaded
-at a time in TTS, so a baked object's GUID is free and preserved when the card
-spawns it, meaning the live (recorded) GUID equals the baked GUID. Nickname and
-position are recorded alongside each GUID purely for diagnostics: if a baked GUID
-ever collided with a live scene object, TTS would reassign the spawned object a
-fresh GUID (validate_maps flags such collisions), the match would fail, and this
-script reports the object's name/position so you can resolve it by hand.
+tags onto the matching baked terrain object inside the card's `objectJSONs` blob.
+For modern stripped cards, that blob lives in data/maps/<card_guid>.lua; legacy
+inline cards are still updated in TTSJSON/ftc_base.json. The join key is the
+object GUID: only one map is loaded at a time in TTS, so a baked object's GUID is
+free and preserved when the card spawns it, meaning the live (recorded) GUID
+equals the baked GUID. Nickname and position are recorded alongside each GUID
+purely for diagnostics: if a baked GUID ever collided with a live scene object,
+TTS would reassign the spawned object a fresh GUID (validate_maps flags such
+collisions), the match would fail, and this script reports the object's
+name/position so you can resolve it by hand.
 
-Writes are in place at the text level (the card's single LuaScript line is
-replaced as a whole), so every other byte of the 60 MB file keeps its exact
+Inline-card writes are in place at the text level (the card's single LuaScript
+line is replaced as a whole), so every other byte of the save keeps its exact
 formatting -- mirroring upgrade_map_zones.py.
 
     python3 apply_map_tags_from_save.py --save path/to/edited_save.json
@@ -33,6 +35,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
+import map_payloads as P
 import term
 
 FTC_BASE = Path(__file__).parent.parent / "TTSJSON" / "ftc_base.json"
@@ -173,7 +176,9 @@ def main():
     total_objs = 0
     total_unmatched = 0
     missing_cards = 0
-    changes = []  # (old_encoded, new_encoded)
+    missing_payloads = 0
+    inline_changes = []  # (old_encoded, new_encoded)
+    payload_changes = []  # (card_guid, new_payload)
 
     for card_guid, rec in sorted(data.items(), key=lambda kv: kv[1].get("name") or ""):
         name = rec.get("name") or "?"
@@ -188,7 +193,18 @@ def main():
             continue
 
         old_lua = card["LuaScript"]
-        new_lua, matched, unmatched = rewrite_card_lua(old_lua, objects)
+        source_lua = old_lua
+        using_payload = False
+        if P.split_lua(old_lua) is None:
+            payload = P.read_payload(card_guid)
+            if payload is None:
+                print(term.red(f"  {card_guid}  {name}: no inline terrain and no payload file, SKIPPED."))
+                missing_payloads += 1
+                continue
+            source_lua = old_lua + payload
+            using_payload = True
+
+        new_lua, matched, unmatched = rewrite_card_lua(source_lua, objects)
         if unmatched:
             for g, urec in unmatched.items():
                 pos = urec.get("pos") or {}
@@ -198,24 +214,35 @@ def main():
                                   f"not found in card's baked terrain -- resolve by hand"))
             total_unmatched += len(unmatched)
 
-        if new_lua == old_lua:
+        if new_lua == source_lua:
             print(term.dim(f"  {card_guid}  {name}: no change."))
             continue
 
-        old_encoded = json.dumps(old_lua)
-        if raw.count(old_encoded) != 1:
-            print(term.red(f"  {card_guid}  {name}: LuaScript not uniquely locatable in file, SKIPPED."))
-            continue
-        changes.append((old_encoded, json.dumps(new_lua)))
+        if using_payload:
+            split = P.split_lua(new_lua)
+            if split is None:
+                print(term.red(f"  {card_guid}  {name}: rewritten payload lost objectJSONs marker, SKIPPED."))
+                continue
+            new_head, new_payload = split
+            if new_head != old_lua:
+                print(term.red(f"  {card_guid}  {name}: payload rewrite changed card machinery head, SKIPPED."))
+                continue
+            payload_changes.append((card_guid, new_payload))
+        else:
+            old_encoded = json.dumps(old_lua)
+            if raw.count(old_encoded) != 1:
+                print(term.red(f"  {card_guid}  {name}: LuaScript not uniquely locatable in file, SKIPPED."))
+                continue
+            inline_changes.append((old_encoded, json.dumps(new_lua)))
         total_objs += len(matched)
         print(term.green(f"  {card_guid}  {name}: tagged {len(matched)} object(s)."))
 
-    if not changes:
+    if not inline_changes and not payload_changes:
         print(term.dim("\nNothing to write."))
-        return 1 if (missing_cards or total_unmatched) else 0
+        return 1 if (missing_cards or missing_payloads or total_unmatched) else 0
 
     new_raw = raw
-    for old_encoded, new_encoded in changes:
+    for old_encoded, new_encoded in inline_changes:
         new_raw = new_raw.replace(old_encoded, new_encoded, 1)
 
     # Never write a file we can't parse back.
@@ -225,15 +252,25 @@ def main():
         print(term.red(f"ERROR: rewrite produced invalid JSON ({exc}); aborting."))
         return 1
 
-    summary = (f"{total_objs} object(s) across {len(changes)} card(s)"
+    changed_cards = len(inline_changes) + len(payload_changes)
+    summary = (f"{total_objs} object(s) across {changed_cards} card(s)"
                + (f", {total_unmatched} unmatched" if total_unmatched else "")
-               + (f", {missing_cards} card(s) missing" if missing_cards else ""))
+               + (f", {missing_cards} card(s) missing" if missing_cards else "")
+               + (f", {missing_payloads} payload(s) missing" if missing_payloads else ""))
     if args.dry_run:
         print(term.yellow(f"\n[dry run] would tag {summary}; file unchanged."))
         return 0
 
-    base_path.write_text(new_raw, encoding="utf-8")
-    print(term.green(f"\n✓ Tagged {summary}. Wrote {base_path.name}."))
+    if inline_changes:
+        base_path.write_text(new_raw, encoding="utf-8")
+    for card_guid, payload in payload_changes:
+        P.write_payload(card_guid, payload)
+    destinations = []
+    if inline_changes:
+        destinations.append(base_path.name)
+    if payload_changes:
+        destinations.append("data/maps")
+    print(term.green(f"\n✓ Tagged {summary}. Wrote {', '.join(destinations)}."))
     print(term.dim("  Next: run `python3 scripts/validate_maps.py` to confirm no drift."))
     return 0
 
