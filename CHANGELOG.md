@@ -13,6 +13,11 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.9.2 
+- Added set mission button that sets mission to the board state. This is more of a QoL for people who play non-comp modes. 
+- Additional default tokens for basic things to the left of each players board 
+- Back-end clean up for better map management. 
+
 ## v1.9.1
 - Added links to other workshop items. 
 - Added a small introduction in the notebook about how a game starts. 
