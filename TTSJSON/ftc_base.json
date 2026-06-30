@@ -17,11 +17,6 @@
     "Strategy Games",
     "Wargames",
     "Miniature Games",
-    "40k",
-    "Warhammer",
-    "40,000",
-    "Warhammer 40k",
-    "FTC",
     "Map",
     "Base",
     "Map Base",
@@ -94067,8 +94062,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13946683605733157002/0DE82E4826186FD673ACB2CDD8233F547DEB440C/",
-        "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13946683605733157002/0DE82E4826186FD673ACB2CDD8233F547DEB440C/",
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/17861308829746984505/E831E48C120089255CAA810739B3B7125A4A6B72/",
+        "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/17861308829746984505/E831E48C120089255CAA810739B3B7125A4A6B72/",
         "ImageScalar": 1.0,
         "WidthScale": 0.0,
         "CustomTile": {
