@@ -1,174 +1,78 @@
 # LCT - 40k TTS Base
 
-A lightweight and actively maintained base for Warhammer 40k Tabletop Simulator maps, focused on gameplay clarity and quality-of-life improvements.
-
-This project is a fork of Hutber’s FTC table (shared with permission), building on that strong foundation with additional features, refinements, and a slightly different design direction.
-
-The aim of this fork is to provide a clean, self-contained experience while continuing to iterate on usability and tooling for both players and developers.
-
-Feel free to take the project and use it as you with it.
-New to Tabletop Simulator or this table? Start with the [Quick Guide](TUTORIAL_GUIDE.md).
-
-## Features
-
-- VP/CP overlay for easier score tracking  
-- Improved chess clock  
-- Expanded dice functionality (including D3 support and quick right-click rolling)  
-- Cleaner handling of drawn lines and bubble elements  
-- Streamlined and simplified UI  
-- Removal of unused UI components  
-- Developer-friendly PowerShell compiler improvements  
-
-Some integrations have also been adjusted to keep the project more self-contained.
-
-Dynamic map generation (based on missions) is not yet implemented, but is currently in active development.
+A fork of Hutber's FTC table (shared with permission), with extra features, refinements, and a slightly different direction — it also filled a gap, since no other table supported 11th edition when the rules dropped. Feel free to take the project and use it as you wish.
 
 ## Development
 
-To run the compiler via Python, execute the following from the `scripts` folder:
+Run the compiler from the `scripts` folder:
 
 ```bash
 python3 compile.py             # prompt for a version, write the compiled JSON
-python3 compile.py --test      # tag as "test" and copy to your TTS saves folder
-python3 compile.py --release   # take version + patch notes from CHANGELOG.md, then copy
-python3 compile.py --no-validate   # skip the map-card check gate (see below)
+python3 compile.py --test      # tag as "test", copy to your TTS saves folder
+python3 compile.py --release   # version + patch notes from CHANGELOG.md, then copy
+python3 compile.py --no-validate   # skip the map-card validation gate
 ```
 
-`compile.py` stitches the `TTSLUA/*.ttslua` scripts back into `TTSJSON/ftc_base.json`, stamps the version, and writes `lct_base_<version>_compiled.json` into the `builds` folder, printing a colored build summary at the end.
+`compile.py` stitches `TTSLUA/*.ttslua` back into `TTSJSON/ftc_base.json`, stamps the version, and writes `lct_base_<version>_compiled.json` into `builds/`, printing a build summary at the end.
 
 ### Map terrain payloads (`data/maps/`)
 
-Each map card's `LuaScript` is its canonical load/clear machinery head followed by an `objectJSONs = { ... }` terrain blob. Those blobs are ~27 MB of the save and make it impossible to edit or diff a single map, so they live **outside** `ftc_base.json` in one file per map: `data/maps/<card_guid>.lua`. The save keeps only each card's machinery head (and unchanged GUID/name/tags/bag membership), so mission generation, the map filter, and BACK TO SELECTION are untouched.
+Each map card's `LuaScript` is a canonical load/clear machinery head followed by an `objectJSONs = { ... }` terrain blob. Those blobs total ~27 MB, so they live **outside** `ftc_base.json`, one file per map: `data/maps/<card_guid>.lua`. `validate_maps.py` folds each payload back in for its checks; `compile.py` re-injects `head + payload` **byte-for-byte** during the build (before the Load Map hook pass), so the compiled save is identical to the old inline one (a stripped card with no payload file is a build error).
 
-`compile.py` re-injects `head + payload` for every card before the Load Map hook pass, reproducing the pre-extraction `LuaScript` **byte-for-byte** — a build from the stripped save is identical to one from the old inline save. `validate_maps.py` folds the payload back in transparently, so every terrain check still runs (and a stripped card with no payload file is a build error).
-
-To pull terrain back out of the save — e.g. after re-exporting a full table from TTS over `ftc_base.json`, or after an import — run the (idempotent) extractor:
+Pull terrain back out after re-exporting from TTS or after an import (add `--dry-run` to preview, `audit_map_payloads.py --sizes|--strict` to inspect):
 
 ```bash
-python3 extract_map_payloads.py            # strip terrain to data/maps/, shrink the save
-python3 extract_map_payloads.py --dry-run  # report what would change, write nothing
+python3 extract_map_payloads.py   # strip terrain to data/maps/, shrink the save
 ```
 
-The map importers write payloads directly on `--write`: new cards are placed in
-`ftc_base.json` with only their machinery head, and their terrain is written to
-`data/maps/<card_guid>.lua`. Use the audit tool before validating when you want a
-quick source-level check:
+### The map manifest & `MAP_INDEX`
 
-```bash
-python3 audit_map_payloads.py --sizes
-python3 audit_map_payloads.py --strict
-```
+`data/map_manifest.csv` is the authoritative map-card inventory. Each row records `map_creator_tag`, `map_type_tag`, `creator_display` (full UI name), and `eligible` (`true`/`false` — a per-map on/off switch that excludes a card from generation without deleting it). Keep it in sync whenever the save changes.
 
-To prove a change is loss-free, compile before and after extracting and diff the two builds; they must be identical (`test_validate_maps.py` also locks the extract/inject round-trip).
+At build time `bake_map_index` generates a GUID-keyed `MAP_INDEX` table (`{creator, display, type, eligible}`) from the CSV and stamps it into the `@@MAP_INDEX@@` marker in `TTSLUA/global.ttslua`. Runtime systems (mission generation, map filter) read it via `Global.getTable("MAP_INDEX")` — this lets them look up a card's creator/eligibility even while it's still inside a deck. The source keeps an empty `MAP_INDEX = {}` default so uncompiled builds stay valid.
 
-Battlemaster map imports are baked into normal static LCT map cards, not loaded dynamically at runtime (commit `3039dba` pivoted away from the old runtime warm-cache model). Each terrain theme ships as its **own** creator filter — currently `Battlemaster - BTTF Ruins`, `Battlemaster - Grimdark` (BTTF), and an Armageddon Desert variant — 45 cards apiece, already present in `data/map_manifest.csv`. There is no plain `map_crt_battlemaster` / "Battlemaster" creator; running the importer with default flags would create a duplicate fourth set, so **always pass `--creator-tag`/`--creator-display`** that match the theme you populated.
+Map-card nicknames and manifest `card_name` values carry a trailing creator credit (e.g. ` - Cra5hNatural`, ` - T5S2`); runtime matching strips it when resolving layout art and deployment zones. Creator tag→display mappings must stay aligned between `MAP_CREATOR_DISPLAY_NAMES` (`validate_maps.py`) and `mapCreatorDisplaySuffixes` (`startMenu.ttslua`); validation rejects mismatches.
 
-To (re)import a theme: build a debug save, load it in TTS, press the matching debug button (`BM cache Ruins`, `BM cache Desert`, or `BM cache BTTF` — not the generic `BM cache populate`), wait for it to finish, then save the table. From the `scripts` folder, run the importer once without `--write` to preview the 45 generated cards, then rerun with `--write` to place them in the existing source bags and update the manifest (the importer first removes any prior import of the same creator tag, so it is idempotent per theme). Then clear the now-redundant spawner cache blob, validate, and compile so the generated cards get the standard LCT load hook and appear under their creator filter.
+### Validation
 
-```bash
-python3 compile.py --test
-# in TTS: click "BM cache Ruins" (or Desert / BTTF), wait, save the table
-python3 import_battlemaster_static_maps.py /path/to/SavedBattlemasterDebugTable.json \
-    --creator-tag map_crt_battlemaster_bttf_ruins --creator-display "Battlemaster - BTTF Ruins"           # preview 45 cards
-python3 import_battlemaster_static_maps.py /path/to/SavedBattlemasterDebugTable.json \
-    --creator-tag map_crt_battlemaster_bttf_ruins --creator-display "Battlemaster - BTTF Ruins" --write
-python3 bake_battlemaster_cache.py --clear   # drop the spawner LuaScriptState blob; static cards now carry the geometry
-python3 validate_maps.py --require-map-tags
-python3 compile.py --test
-```
+Every build validates the baked-in map cards (inventory, tags, terrain, zone size, GUID collisions, mission-matrix references) unless `--no-validate` is passed; errors abort the build. `--test`/`--release` add strict checks (`validate_maps.py --require-map-tags`) that also fail if a manifest map isn't fully wired into `startMenu.ttslua` — each card's head matches `data/map_card_machinery.lua` (no foreign/self-excluding loaders), every source bag is in `deploymentMatrixDecks`, `randomDeploymentDecks` and `GAME_MODE_OBJECTS`, all 25 disposition matchups have a dedicated deck, and each map's logical name has matching layout art in deck `fb4b5d`. Add new checks with the `@check` decorator; runtime behaviors the validator can't model are locked by `scripts/test_validate_maps.py`.
 
-The `BM cache *` buttons (and the `BM cache check` reporter) only spawn in `--test`/debug builds — they live on the debug panel gated by the `DEBUG` flag. There is no in-TTS "clear cache" button; `bake_battlemaster_cache.py --clear` resets the shipped spawner cache to cold by writing its `LuaScriptState` back to `""`.
+### Adding / migrating maps
 
-Every build first runs a validator over the baked-in map cards (manifest inventory, whitelist, terrain, zone size, terrain-GUID collisions, mission-matrix references, name-suffix → deployment zone, terrain JSON); errors abort the build. The authoritative deck/card inventory lives in `data/map_manifest.csv`; add or remove map cards there whenever the save changes. Each row records its `map_creator_tag`, `map_type_tag`, `creator_display` (the full creator name shown in UI), and `eligible` (`true`/`false` — a per-map on/off switch that excludes a card from generation without deleting it). The validator also reports map cards found in the save but missing from the manifest, rejects a non-boolean `eligible` or an empty/inconsistent `creator_display`, and fails the build if any deck × layout has no `eligible` map left.
+Every map card uses **one** canonical load/clear machinery (`data/map_card_machinery.lua`): `loadMap` wipes the zone except mats and `MapExclude`-tagged objects, then spawns terrain only **after the board is verified clear**. Imported maps often ship their own loader — normalize them, never hand-edit:
 
-The manifest is the single source of truth for this metadata: at build time `bake_map_index` (in `scripts/compile.py`) generates a GUID-keyed `MAP_INDEX` table (`{creator, display, eligible}`) from the CSV and stamps it into the `@@MAP_INDEX@@` marker in `TTSLUA/global.ttslua` (same mechanism as the `@@LCT_...@@` version markers). The source file keeps an empty `MAP_INDEX = {}` default so dev/uncompiled builds stay valid. Runtime systems (mission generation and the map filter) read it with `Global.getTable("MAP_INDEX")` — this also lets them look up a card's creator/eligibility while it is still inside a deck, where its tags are not directly readable.
+1. **Normalize** foreign cards onto the machinery (fixes head, GMNotes, tags, credit nicknames, hex GUIDs). `--write` edits the source save in place (or use `--out`); it does not touch `ftc_base.json`:
+   ```bash
+   python3 normalize_map_card.py ../Legacy/SomeSave.json \
+       --container <bagGUID> --creator map_crt_<creator> --type map_type_<type> --write
+   ```
+2. **Copy** the normalized bag + layout-art tiles into `TTSJSON/ftc_base.json`.
+3. **Record** the printed rows in `data/map_manifest.csv`.
+4. **Wire** the bag into `startMenu.ttslua` per the printed checklist (`deploymentMatrixDecks`, `randomDeploymentDecks`, `GAME_MODE_OBJECTS`, layout art in deck `fb4b5d`).
+5. **Verify**: `python3 validate_maps.py --require-map-tags && python3 compile.py --test`.
 
-Map-card nicknames and manifest `card_name` values include a trailing creator credit, such as ` - Cra5hNatural` or ` - Team Belgium`. Runtime matching strips that credit when resolving shared layout art and deployment zones. Creator tag-to-display-name mappings must stay aligned in `TTSLUA/startMenu.ttslua` and `scripts/validate_maps.py`; validation rejects missing or mismatched credits.
+New creators must first be added to `MAP_CREATOR_DISPLAY_NAMES` (`validate_maps.py`) and `mapCreatorDisplaySuffixes` (`startMenu.ttslua`).
 
-`--test` and `--release` additionally require every manifest-listed map card to have the `map` tag, one tag beginning with `map_crt_`, and one tag beginning with `map_type_`. Missing tags abort the build and print the affected map card GUID. Run the strict check directly with `python3 validate_maps.py --require-map-tags`. Add new checks by decorating a function with `@check` in `validate_maps.py`.
-
-The closing build summary reports map inventory, logical layouts, source containers, creator and map-type distributions, dedicated-versus-fallback matchup coverage, terrain payload size, and each map card's **Map Zones** version (v1 = original wipe, v2 = deferred wipe that loads/clears reliably). Migrating is a separate, explicit step — it is never done by a normal build:
+Upgrading v1 map cards to v2 (deferred wipe that loads/clears reliably) is a separate, explicit step — never done by a normal build:
 
 ```bash
 python3 upgrade_map_zones.py            # rewrite v1 cards to v2 in ftc_base.json
 python3 upgrade_map_zones.py --dry-run  # show what would change, write nothing
 ```
 
-### Migrating map cards (one canonical machinery)
+### Battlemaster imports
 
-Every map card uses the **same** load/clear machinery — the text before its
-`objectJSONs = {` terrain blob — stored once in `data/map_card_machinery.lua`.
-`loadMap` spawns a scripting zone, wipes everything inside it except the mats and
-`MapExclude`-tagged objects, and only **after the board is verified clear** spawns
-that card's terrain; `clearMap` runs the same wipe. A card must never define its
-own load system, and a loader card must never carry `GMNotes = "MapExclude"` (it
-would exclude itself from the wipe and never clear — the bug that hid behind the
-imported "Battlemaster" cards).
+Battlemaster maps are baked into normal static LCT cards, not spawned dynamically at runtime. Each theme ships as its own creator filter (`Battlemaster - BTTF Ruins`, `BTTF`, `Battlemaster - Desert`), 45 cards apiece, already in the manifest. There is no plain `map_crt_battlemaster` creator, so **always pass `--creator-tag`/`--creator-display`** matching the theme, or you create a duplicate set.
 
-Maps imported from other mods often ship a foreign loader. Normalize them instead
-of hand-editing:
+To (re)import a theme, build a `--test` save, load it, click the matching debug button (`Ruins`/`Desert`/`BTTF` under the DEBUG-gated Battlemaster cache panel), save the table, then:
 
 ```bash
-# rewrite every card in a bag onto the canonical machinery (head, GMNotes, tags,
-# creator-credit nickname, hex GUID), then print manifest rows + a wiring checklist
-python3 normalize_map_card.py ../Legacy/SomeSave.json \
-    --container <bagGUID> --creator map_crt_<creator> --type map_type_<type> --write
+# preview the 45 generated cards (no changes written)
+python3 import_battlemaster_static_maps.py /path/to/DebugTable.json \
+    --creator-tag map_crt_battlemaster_bttf_ruins --creator-display "Battlemaster - BTTF Ruins"
+# rerun with --write to place the cards and update the manifest (idempotent per theme)
+python3 import_battlemaster_static_maps.py /path/to/DebugTable.json \
+    --creator-tag map_crt_battlemaster_bttf_ruins --creator-display "Battlemaster - BTTF Ruins" --write
+python3 bake_battlemaster_cache.py --clear   # reset the shipped spawner cache to cold
+python3 validate_maps.py --require-map-tags && python3 compile.py --test
 ```
-
-New creators must be added to `MAP_CREATOR_DISPLAY_NAMES` in `validate_maps.py`
-and `mapCreatorDisplaySuffixes` in `startMenu.ttslua` first.
-
-### What the strict build enforces beyond tags
-
-A map can pass the static checks and still break at runtime, so `--test` /
-`--release` (i.e. `validate_maps.py --require-map-tags`) also fail the build if any
-manifest map/source-bag is not bound to every runtime system in
-`TTSLUA/startMenu.ttslua`:
-
-- the card's head matches `data/map_card_machinery.lua` (no foreign loaders);
-- no loader card is self-excluded via `GMNotes = "MapExclude"`;
-- every source bag is in `deploymentMatrixDecks` (reachable via Generate Mission),
-  `randomDeploymentDecks` (returns to its bag on disposition change), and
-  `GAME_MODE_OBJECTS` (hidden pre-game **and** snapshotted for BACK TO SELECTION);
-- all 25 disposition matchups have a dedicated deck (no random-mission fallback);
-- each map's logical name has matching layout art in deck `fb4b5d`.
-
-The manifest (`data/map_manifest.csv`) is the authoritative inventory; these checks
-prove the hand-maintained startMenu wiring stays consistent with it. Runtime
-behaviors the validator can't model directly (the snapshot, return-to-bag) are
-locked by tests in `scripts/test_validate_maps.py`.
-
-## Map migration
-
-Maps come from many sources, and imported ones often ship their **own** load/clear
-system. The "Battlemaster" cards, for example, spawned terrain tagged by GMNotes
-instead of wiping the board, and the loader cards carried `GMNotes = "MapExclude"`
-— so they excluded *themselves* from every wipe and never cleared off the mat.
-Bugs like that pass the tag checks but break play. The fix is a rule: **every map
-card uses one canonical load/clear machinery; foreign cards are normalized to it,
-never hand-edited.** Challenges this closed: a parallel-timer spawn that raced the
-wipe (now the spawn waits for a verified-clear board), self-excluding loader cards,
-non-hex GUIDs, and — the deeper one — maps that validated yet weren't wired into
-the runtime systems (mission matrix, return-to-bag, hide-pre-game, BACK TO
-SELECTION). Those are now hard build errors.
-
-Normal flow to add a batch of maps from another save:
-
-1. **Normalize** the foreign cards onto the canonical machinery (also clears
-   GMNotes, applies tags, fixes nicknames/GUIDs) and copy the bag + tiles into
-   `TTSJSON/ftc_base.json`:
-   ```bash
-   python3 normalize_map_card.py ../Legacy/SomeSave.json \
-       --container <bagGUID> --creator map_crt_<creator> --type map_type_<type> --write
-   ```
-2. **Record** the printed rows in `data/map_manifest.csv` (the inventory).
-3. **Wire** the bag into `TTSLUA/startMenu.ttslua` using the printed checklist:
-   `deploymentMatrixDecks` (under each matchup key), `randomDeploymentDecks`,
-   `GAME_MODE_OBJECTS`, and matching layout art in deck `fb4b5d`.
-4. **Verify** — the strict build fails until every step above is consistent:
-   ```bash
-   python3 validate_maps.py --require-map-tags && python3 compile.py --test
-   ```
-
-If a new creator is involved, add it to `MAP_CREATOR_DISPLAY_NAMES`
-(`validate_maps.py`) and `mapCreatorDisplaySuffixes` (`startMenu.ttslua`) first.
