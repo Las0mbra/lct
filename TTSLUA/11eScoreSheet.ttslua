@@ -36,6 +36,12 @@ BTN_K_IX_TURN_SUM = 1
 BTN_K_IX_PRIMARY = 2
 BTN_K_IX_SECONDARY = 3
 
+-- End of Battle points top up the board's PRIMARY column. Heads up: these k-index
+-- constants are swapped relative to the board's printed labels (see tooltips /
+-- scoreComponentName), so the column the players read as "Primary" is actually
+-- BTN_K_IX_SECONDARY. Route all End of Battle logic through this constant.
+EOB_COMPONENT_K = BTN_K_IX_SECONDARY
+
 -- Scoring caps
 ROUND_PRIMARY_CAP = 15    -- max primary points per battle round
 ROUND_SECONDARY_CAP = 15  -- max secondary points per battle round
@@ -617,14 +623,22 @@ function updateEndOfBattle(i)
 	self.editButton(playerTotal[i])
 end
 
-function plusEndOfBattle(i, alt)
-	-- Increase player I's End of Battle points. No scoring caps apply; only a
-	-- non-negative floor. alt is true on right-click and steps by 5.
+function plusEndOfBattle(i, alt, playerColor)
+	-- Increase player I's End of Battle points. These are extra Primary points, so
+	-- they skip the per-round 15 cap but may not lift the board Primary total past
+	-- its 45 game cap. alt is true on right-click and steps by 5. Announces to the
+	-- clicking player when the cap blocks the increase, like the round columns do.
 	local diff = 1
 	if alt then diff = 5 end
 
-	endOfBattle[i] = math.max(0, safeScoreNumber(endOfBattle[i]) + diff)
+	local target = safeScoreNumber(endOfBattle[i]) + diff
+	local capped = math.min(endOfBattleCap(i), math.max(0, target))
+	endOfBattle[i] = capped
 	updateEndOfBattle(i)
+
+	if playerColor and target > capped then
+		broadcastToColor("You've reached the maximum points for " .. scoreComponentName(EOB_COMPONENT_K) .. ".", playerColor, "Yellow")
+	end
 end
 
 function minusEndOfBattle(i, alt)
@@ -636,11 +650,11 @@ function minusEndOfBattle(i, alt)
 	updateEndOfBattle(i)
 end
 
-function plus_eob1(_, _, alt)
-	plusEndOfBattle(1, alt)
+function plus_eob1(_, playerColor, alt)
+	plusEndOfBattle(1, alt, playerColor)
 end
-function plus_eob2(_, _, alt)
-	plusEndOfBattle(2, alt)
+function plus_eob2(_, playerColor, alt)
+	plusEndOfBattle(2, alt, playerColor)
 end
 function minus_eob1(_, _, alt)
 	minusEndOfBattle(1, alt)
@@ -672,7 +686,7 @@ function announceScoreCapIfNeeded(i, k, previousTotal, attemptedValue, finalValu
 	local componentName = scoreComponentName(k)
 	if not gameCap or not componentName or not playerColor then return end
 
-	local currentTotal = sumScoreComponent(i, k, gameCap)
+	local currentTotal = componentGameTotal(i, k)
 	local hitCapNow = previousTotal < gameCap and currentTotal >= gameCap
 	local blockedByCap = attemptedValue > finalValue and currentTotal >= gameCap
 	if hitCapNow or blockedByCap then
@@ -705,6 +719,11 @@ function capRoundScore(i, j, k, value)
 				otherRoundsSum = otherRoundsSum + safeScoreNumber(scores[i][r][k])
 			end
 		end
+		-- End of Battle points top up the board Primary column and share its 45 cap,
+		-- so they eat into the headroom left for that column's per-round cells.
+		if k == EOB_COMPONENT_K then
+			otherRoundsSum = otherRoundsSum + safeScoreNumber(endOfBattle[i])
+		end
 		local maxThisRound = gameCap - otherRoundsSum
 		if maxThisRound < 0 then maxThisRound = 0 end
 		if value > maxThisRound then
@@ -722,7 +741,7 @@ function plus(i, j, k, alt, playerColor)
 	local diff = 1
 	if alt then diff = 5 end
 
-	local previousTotal = sumScoreComponent(i, k, gameCapFor(k))
+	local previousTotal = componentGameTotal(i, k)
 	local attemptedScore = scores[i][j][k] + diff
 	local score = capRoundScore(i, j, k, attemptedScore)
 	scores[i][j][k] = score
@@ -780,16 +799,18 @@ function playerSum(pId)
 		pri_sum = pri_sum + scores[pId][j][BTN_K_IX_PRIMARY]
 		sec_sum = sec_sum + scores[pId][j][BTN_K_IX_SECONDARY]
 	end
+
+	-- End of Battle points are extra Primary points scored at the end of the game.
+	-- They skip the per-round 15 cap but count toward the board Primary column's 45
+	-- game cap (and so are also bound by the 100 total cap). Because of the k-index
+	-- swap the board Primary column is BTN_K_IX_SECONDARY, i.e. sec_sum here.
+	sec_sum = sec_sum + safeScoreNumber(endOfBattle[pId])
 	if pri_sum > GAME_PRIMARY_CAP then pri_sum = GAME_PRIMARY_CAP end
 	if sec_sum > GAME_SECONDARY_CAP then sec_sum = GAME_SECONDARY_CAP end
 
 	-- painted army gives +GAME_BASE_POINTS
 	local score = pri_sum + sec_sum + GAME_BASE_POINTS
 	if score > GAME_TOTAL_CAP then score = GAME_TOTAL_CAP end
-
-	-- End of Battle points are added after the total cap, so they are the one way
-	-- to push a player's score past the normal limits.
-	score = score + safeScoreNumber(endOfBattle[pId])
 
 	-- Scoresheet player 1 = Red, player 2 = Blue, but the VP Scores HUD rows are
 	-- ordered Blue (row 1) then Red (row 2) — matching the CP counters. Map pId to
@@ -817,6 +838,33 @@ function sumScoreComponent(pId, kIndex, cap)
 	return total
 end
 
+function eobComponentTotal(pId)
+	-- Per-round total for the End of Battle component (the board's Primary column)
+	-- plus the End of Battle points, sharing that component's 45 game cap.
+	local total = sumScoreComponent(pId, EOB_COMPONENT_K, nil) + safeScoreNumber(endOfBattle[pId])
+	local cap = gameCapFor(EOB_COMPONENT_K)
+	if cap and total > cap then total = cap end
+	return total
+end
+
+function endOfBattleCap(pId)
+	-- How many End of Battle points player pId may still add before the per-round
+	-- total for the End of Battle component plus End of Battle reaches its 45 cap.
+	local roundsTotal = sumScoreComponent(pId, EOB_COMPONENT_K, nil)
+	local cap = gameCapFor(EOB_COMPONENT_K) or 0
+	return math.max(0, cap - roundsTotal)
+end
+
+function componentGameTotal(pId, kIndex)
+	-- Game-wide, cap-clamped total for a scoring component. The End of Battle
+	-- component folds in the End of Battle points so cap messaging reflects the
+	-- shared 45 pool.
+	if kIndex == EOB_COMPONENT_K then
+		return eobComponentTotal(pId)
+	end
+	return sumScoreComponent(pId, kIndex, gameCapFor(kIndex))
+end
+
 function getRoundSummaryForPlayer(pId)
 	local roundSummary = {}
 	for j=1,5 do
@@ -838,10 +886,10 @@ function getMatchSummary()
 	local blueName = (params and params.P2) or (Player.Blue and Player.Blue.steam_name) or "Blue"
 
 	local redPrimary = sumScoreComponent(1, BTN_K_IX_PRIMARY, GAME_PRIMARY_CAP)
-	local redSecondary = sumScoreComponent(1, BTN_K_IX_SECONDARY, GAME_SECONDARY_CAP)
+	local redSecondary = eobComponentTotal(1)
 
 	local bluePrimary = sumScoreComponent(2, BTN_K_IX_PRIMARY, GAME_PRIMARY_CAP)
-	local blueSecondary = sumScoreComponent(2, BTN_K_IX_SECONDARY, GAME_SECONDARY_CAP)
+	local blueSecondary = eobComponentTotal(2)
 
 	local redRounds = getRoundSummaryForPlayer(1)
 	local blueRounds = getRoundSummaryForPlayer(2)
