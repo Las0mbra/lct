@@ -365,7 +365,7 @@ function onload(save_data)
 		return
 	end
 
-	Wait.frames(function() self.setPosition({57.00,0.95,0.00}) end, 1)
+	Wait.frames(function() self.setPosition({61.00,0.95,0.00}) end, 1)
 	self.setLock(true)
 
 	self.createButton( playerOneTitle )

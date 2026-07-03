@@ -42286,7 +42286,7 @@
       "GUID": "e446f7",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 67.0,
+        "posX": 51,
         "posY": 0.9,
         "posZ": 9.0,
         "rotX": 0.0,
@@ -42338,7 +42338,7 @@
       "GUID": "deb9f2",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 67.0,
+        "posX": 51,
         "posY": 0.9,
         "posZ": -9.0,
         "rotX": 0.0,
@@ -42390,7 +42390,7 @@
       "GUID": "ee92cf",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 67,
+        "posX": 51,
         "posY": 0.9,
         "posZ": 0.0,
         "rotX": -3.86806761e-07,
@@ -42442,7 +42442,7 @@
       "GUID": "055302",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 67,
+        "posX": 51,
         "posY": 0.9,
         "posZ": 4.5,
         "rotX": 8.3387e-10,
@@ -42494,7 +42494,7 @@
       "GUID": "7e4111",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 67,
+        "posX": 51,
         "posY": 0.9,
         "posZ": -4.5,
         "rotX": 8.3387e-10,
@@ -45189,7 +45189,7 @@
       "GUID": "06d627",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": 57,
+        "posX": 61,
         "posY": 0.95,
         "posZ": 0,
         "rotX": -1.60005129e-06,
@@ -68352,7 +68352,7 @@
       "GUID": "af8032",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 67.01205,
+        "posX": 51,
         "posY": 0.949998438,
         "posZ": 13.4136038,
         "rotX": 3.89469824e-06,
@@ -68409,7 +68409,7 @@
       "GUID": "5e882b",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 66.96691,
+        "posX": 51,
         "posY": 0.9499993,
         "posZ": -13.4287663,
         "rotX": -8.812722e-07,
