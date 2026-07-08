@@ -123,6 +123,10 @@
         </HorizontalLayout>
         <Text id="RedHud_VPWatch1" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <Text id="RedHud_CPWatch1" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <VerticalLayout spacing="2">
+          <Button id="RedHud_ChsStpPlay1"  text="▶" fontSize="16" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick="" tooltip="Start Blue clock"/>
+          <Button id="RedHud_ChsStpPause1" text="❚❚" fontSize="12" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick="" tooltip="Pause / resume clock"/>
+        </VerticalLayout>
         <Panel id="RedHud_ClockSubPanel1" color="#1A1A1ACC" outline="rgba(0,0,0,0)" outlineSize="4" roundEdges="true" minWidth="190" minHeight="1" margin="12 0 0 0">
           <Button id="RedHud_ChsStpBtn1" width="190" height="58" onClick="" color="rgba(0,0,0,0)" roundEdges="true"/>
           <Text id="RedHud_ChsStpWatch1" text="01:30:00" fontSize="40" color="#FFFFFF40" shadow="#000000AA" shadowDistance="1 -1"/>
@@ -148,6 +152,10 @@
         </HorizontalLayout>
         <Text id="RedHud_VPWatch2" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <Text id="RedHud_CPWatch2" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <VerticalLayout spacing="2">
+          <Button id="RedHud_ChsStpPlay2"  text="▶" fontSize="16" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick="" tooltip="Start Red clock"/>
+          <Button id="RedHud_ChsStpPause2" text="❚❚" fontSize="12" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick="" tooltip="Pause / resume clock"/>
+        </VerticalLayout>
         <Panel id="RedHud_ClockSubPanel2" color="#1A1A1ACC" outline="rgba(0,0,0,0)" outlineSize="4" roundEdges="true" minWidth="190" minHeight="1" margin="12 0 0 0">
           <Button id="RedHud_ChsStpBtn2" width="190" height="58" onClick="" color="rgba(0,0,0,0)" roundEdges="true"/>
           <Text id="RedHud_ChsStpWatch2" text="01:30:00" fontSize="40" color="#FFFFFF40" shadow="#000000AA" shadowDistance="1 -1"/>
@@ -210,6 +218,10 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
         </HorizontalLayout>
         <Text id="BlueHud_VPWatch1" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <Text id="BlueHud_CPWatch1" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <VerticalLayout spacing="2">
+          <Button id="BlueHud_ChsStpPlay1"  text="▶" fontSize="16" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick="" tooltip="Start Blue clock"/>
+          <Button id="BlueHud_ChsStpPause1" text="❚❚" fontSize="12" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick="" tooltip="Pause / resume clock"/>
+        </VerticalLayout>
         <Panel id="BlueHud_ClockSubPanel1" color="#1A1A1ACC" outline="rgba(0,0,0,0)" outlineSize="4" roundEdges="true" minWidth="190" minHeight="1" margin="12 0 0 0">
           <Button id="BlueHud_ChsStpBtn1" width="190" height="58" onClick="" color="rgba(0,0,0,0)" roundEdges="true"/>
           <Text id="BlueHud_ChsStpWatch1" text="01:30:00" fontSize="40" color="#FFFFFF40" shadow="#000000AA" shadowDistance="1 -1"/>
@@ -235,6 +247,10 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
         </HorizontalLayout>
         <Text id="BlueHud_VPWatch2" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <Text id="BlueHud_CPWatch2" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <VerticalLayout spacing="2">
+          <Button id="BlueHud_ChsStpPlay2"  text="▶" fontSize="16" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick="" tooltip="Start Red clock"/>
+          <Button id="BlueHud_ChsStpPause2" text="❚❚" fontSize="12" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick="" tooltip="Pause / resume clock"/>
+        </VerticalLayout>
         <Panel id="BlueHud_ClockSubPanel2" color="#1A1A1ACC" outline="rgba(0,0,0,0)" outlineSize="4" roundEdges="true" minWidth="190" minHeight="1" margin="12 0 0 0">
           <Button id="BlueHud_ChsStpBtn2" width="190" height="58" onClick="" color="rgba(0,0,0,0)" roundEdges="true"/>
           <Text id="BlueHud_ChsStpWatch2" text="01:30:00" fontSize="40" color="#FFFFFF40" shadow="#000000AA" shadowDistance="1 -1"/>
@@ -293,6 +309,10 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
         </HorizontalLayout>
         <Text id="GreyHud_VPWatch1" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <Text id="GreyHud_CPWatch1" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <VerticalLayout spacing="2">
+          <Button id="GreyHud_ChsStpPlay1"  text="▶" fontSize="16" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick="" tooltip="Start Blue clock"/>
+          <Button id="GreyHud_ChsStpPause1" text="❚❚" fontSize="12" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick="" tooltip="Pause / resume clock"/>
+        </VerticalLayout>
         <Panel id="GreyHud_ClockSubPanel1" color="#1A1A1ACC" outline="rgba(0,0,0,0)" outlineSize="4" roundEdges="true" minWidth="190" minHeight="1" margin="12 0 0 0">
           <Button id="GreyHud_ChsStpBtn1" width="190" height="58" onClick="" color="rgba(0,0,0,0)" roundEdges="true"/>
           <Text id="GreyHud_ChsStpWatch1" text="01:30:00" fontSize="40" color="#FFFFFF40" shadow="#000000AA" shadowDistance="1 -1"/>
@@ -318,6 +338,10 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
         </HorizontalLayout>
         <Text id="GreyHud_VPWatch2" text="VP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         <Text id="GreyHud_CPWatch2" text="CP: 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
+        <VerticalLayout spacing="2">
+          <Button id="GreyHud_ChsStpPlay2"  text="▶" fontSize="16" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick="" tooltip="Start Red clock"/>
+          <Button id="GreyHud_ChsStpPause2" text="❚❚" fontSize="12" color="rgba(0,0,0,0.30)" textColor="White" width="28" height="26" roundEdges="true" onClick="" tooltip="Pause / resume clock"/>
+        </VerticalLayout>
         <Panel id="GreyHud_ClockSubPanel2" color="#1A1A1ACC" outline="rgba(0,0,0,0)" outlineSize="4" roundEdges="true" minWidth="190" minHeight="1" margin="12 0 0 0">
           <Button id="GreyHud_ChsStpBtn2" width="190" height="58" onClick="" color="rgba(0,0,0,0)" roundEdges="true"/>
           <Text id="GreyHud_ChsStpWatch2" text="01:30:00" fontSize="40" color="#FFFFFF40" shadow="#000000AA" shadowDistance="1 -1"/>

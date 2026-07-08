@@ -17,6 +17,7 @@ redDiceMat_GUID = "c57d70" -- diceTable
 blueDiceMat_GUID = "a84ed2" -- diceTable
 redMissionManager_GUID = "cff35b"
 blueMissionManager_GUID = "471de1"
+chessClock_GUID = "f4ee71"
 
 templateObjective_Hutber_GUID = "a8aca1"
 
@@ -206,8 +207,9 @@ hudMinimalist = hudMinimalist or {}   -- player color -> bool
 local HUD_FULL = { width = "1216", height = "228", mainWidth = "1160", mainHeight = "228", controlsH = "172", btnFont = "28", shown = "true"  }
 local HUD_MIN  = { width = "740",  height = "155", mainWidth = "740",  mainHeight = "155", controlsH = "143", btnFont = "24", shown = "false" }
 
--- The clock readout + its steppers (same id set the clock-hide toggle uses).
-local HUD_CLOCK_IDS = {"ClockSubPanel1", "ClockSubPanel2", "ChsStpPlus1", "ChsStpMinus1", "ChsStpPlus2", "ChsStpMinus2"}
+-- The clock readout + its steppers and play/pause buttons (same id set the
+-- clock-hide toggle uses).
+local HUD_CLOCK_IDS = {"ClockSubPanel1", "ClockSubPanel2", "ChsStpPlus1", "ChsStpMinus1", "ChsStpPlus2", "ChsStpMinus2", "ChsStpPlay1", "ChsStpPause1", "ChsStpPlay2", "ChsStpPause2"}
 
 function applyMinimalistForColor(color)
     if color ~= "Red" and color ~= "Blue" then return end
@@ -258,7 +260,7 @@ function applyHudPreferencesForColor(color)
     setHudAttributeForColor(color, {id = "LockBtn", attr = "color", value = "#FFFFFF"})
     setHudAttributeForColor(color, {id = "ClockBtn", attr = "color", value = "#FFFFFF"})
 
-    for _, id in ipairs({"ClockSubPanel1", "ClockSubPanel2", "ChsStpPlus1", "ChsStpMinus1", "ChsStpPlus2", "ChsStpMinus2"}) do
+    for _, id in ipairs({"ClockSubPanel1", "ClockSubPanel2", "ChsStpPlus1", "ChsStpMinus1", "ChsStpPlus2", "ChsStpMinus2", "ChsStpPlay1", "ChsStpPause1", "ChsStpPlay2", "ChsStpPause2"}) do
         setHudAttributeForColor(color, {id = id, attr = "active", value = clockActive and "true" or "false"})
     end
 end
@@ -488,6 +490,53 @@ scoringHudCacheGen = scoringHudCacheGen or 0
 function invalidateScoringCache()
     scoringHudCache = {}
     scoringHudCacheGen = scoringHudCacheGen + 1
+end
+
+function isYellowscribeGlobalCard(element)
+    if type(element) ~= "table" or type(element.attributes) ~= "table" then return false end
+    local id = element.attributes.id
+    return type(id) == "string" and string.match(id, "^ymc%-") ~= nil
+end
+
+function xmlElementHasCallbackGuid(element, guid)
+    if type(element) ~= "table" or not guid then return false end
+    if type(element.attributes) == "table" then
+        for _, value in pairs(element.attributes) do
+            if type(value) == "string" and string.find(value, guid .. "/", 1, true) then
+                return true
+            end
+        end
+    end
+    if type(element.children) == "table" then
+        for _, child in ipairs(element.children) do
+            if xmlElementHasCallbackGuid(child, guid) then return true end
+        end
+    end
+    return false
+end
+
+function removeYellowscribeGlobalCards(targetGuid)
+    local ok, ui = pcall(function() return Global.UI.getXmlTable() end)
+    if not ok or type(ui) ~= "table" then return end
+
+    local filtered = {}
+    local changed = false
+    for _, element in ipairs(ui) do
+        local remove = isYellowscribeGlobalCard(element)
+        if targetGuid then
+            remove = remove and xmlElementHasCallbackGuid(element, targetGuid)
+        end
+        if remove then
+            changed = true
+        else
+            filtered[#filtered + 1] = element
+        end
+    end
+
+    if changed then
+        pcall(function() Global.UI.setXmlTable(filtered) end)
+        invalidateScoringCache()
+    end
 end
 
 -- The colours whose scoreboard is currently open (Grey = spectators included).
@@ -1220,6 +1269,11 @@ function destroyObjectByGUID(guid)
     end
 end
 
+function onObjectDestroy(obj)
+    if not obj or not obj.getGUID then return end
+    removeYellowscribeGlobalCards(obj.getGUID())
+end
+
 function onLoad(saved_data)
     --addHotkey("Tag Selected as Red", tagSelectedAsRed)
     --addHotkey("Tag Selected as Blue", tagSelectedAsBlue)
@@ -1227,6 +1281,7 @@ function onLoad(saved_data)
     -- script instance is stale. (The cache is normally empty on a fresh load; this
     -- also covers a yellowscribe setXmlTable rebuild that happens during load.)
     invalidateScoringCache()
+    removeYellowscribeGlobalCards()
     Turns.enable=false
     --- load vars from saved
     if saved_data ~= "" then

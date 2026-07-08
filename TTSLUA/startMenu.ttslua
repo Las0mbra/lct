@@ -5474,6 +5474,14 @@ function passTurn(obj, player_color_click, alt_click)
     updateCpHUD()
     updateGameStateHUD()
 
+    -- QoL: the chess clock follows the turn. If it was running for the player
+    -- who just finished, switch it to the new active player; paused or
+    -- never-started clocks are left alone (see SyncClockToTurn in chessClock).
+    local chessClock = getObjectFromGUID(Global.getVar("chessClock_GUID") or "")
+    if chessClock then
+        chessClock.call("SyncClockToTurn", {color = currentTurn})
+    end
+
     printToAll(getTurnStateLabel() .. " - " .. cpMessage, "Yellow")
     broadcastToAll("It's " .. currentTurn .. " Player's turn", currentTurn)
     writeMenus()

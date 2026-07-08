@@ -48657,7 +48657,7 @@
         "posX": 82.46297,
         "posY": 1.10386384,
         "posZ": -38.51765,
-        "rotX": -5.75550644E-07,
+        "rotX": -5.75550644e-07,
         "rotY": 269.9944,
         "rotZ": 180.0,
         "scaleX": 2.5,
@@ -53845,7 +53845,7 @@
         "posX": 82.59146,
         "posY": 1.10386372,
         "posZ": -32.443058,
-        "rotX": -3.99557223E-07,
+        "rotX": -3.99557223e-07,
         "rotY": 269.998718,
         "rotZ": 180.0,
         "scaleX": 2.5,
@@ -61942,7 +61942,7 @@
           ]
         },
         {
-          "GUID": "d66cce",
+          "GUID": "e5002f",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -61987,10 +61987,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 290400,
+          "CardID": 513100,
           "SidewaysCard": false,
           "CustomDeck": {
-            "2904": {
+            "5131": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-61f147e4-2597-4e32-bb5c-217c85e944b8/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-61f147e4-2597-4e32-bb5c-217c85e944b8/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -62005,7 +62005,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "3d4b23",
+          "GUID": "e5c83c",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -62050,10 +62050,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 299000,
+          "CardID": 724700,
           "SidewaysCard": false,
           "CustomDeck": {
-            "2990": {
+            "7247": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-b907f293-0c56-4589-9a22-7d7583379c2a/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-b907f293-0c56-4589-9a22-7d7583379c2a/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -62068,7 +62068,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "7f7c31",
+          "GUID": "4fbf02",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -62113,10 +62113,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 450100,
+          "CardID": 245500,
           "SidewaysCard": false,
           "CustomDeck": {
-            "4501": {
+            "2455": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-1ac3966f-8490-4c43-83c5-9fedeef94d98/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-1ac3966f-8490-4c43-83c5-9fedeef94d98/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -62939,7 +62939,7 @@
           ]
         },
         {
-          "GUID": "202810",
+          "GUID": "df1be1",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -62984,10 +62984,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 663700,
+          "CardID": 730600,
           "SidewaysCard": false,
           "CustomDeck": {
-            "6637": {
+            "7306": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-06b95dbd-1397-4fc9-8baa-e6a31e52c8ba/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-06b95dbd-1397-4fc9-8baa-e6a31e52c8ba/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -63002,7 +63002,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "65c0fd",
+          "GUID": "d20137",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -63047,10 +63047,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 840200,
+          "CardID": 298800,
           "SidewaysCard": false,
           "CustomDeck": {
-            "8402": {
+            "2988": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-219118c2-3f99-4df9-b686-999f8f73970e/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-219118c2-3f99-4df9-b686-999f8f73970e/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -63065,7 +63065,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "f11e55",
+          "GUID": "bad3a7",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -63110,10 +63110,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 658700,
+          "CardID": 328200,
           "SidewaysCard": false,
           "CustomDeck": {
-            "6587": {
+            "3282": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-da76d868-2c61-4d0d-95ff-8ce3bdf04cc8/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-da76d868-2c61-4d0d-95ff-8ce3bdf04cc8/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -63936,7 +63936,7 @@
           ]
         },
         {
-          "GUID": "061e1d",
+          "GUID": "2be5b1",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -63981,10 +63981,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 229800,
+          "CardID": 294500,
           "SidewaysCard": false,
           "CustomDeck": {
-            "2298": {
+            "2945": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-60ec7ff5-daf0-458a-b57e-ee69a1724d27/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-60ec7ff5-daf0-458a-b57e-ee69a1724d27/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -63999,7 +63999,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "077f64",
+          "GUID": "484150",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -64044,10 +64044,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 625600,
+          "CardID": 895000,
           "SidewaysCard": false,
           "CustomDeck": {
-            "6256": {
+            "8950": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-d77dbe1a-6194-40fe-86a4-777a0a7a6daa/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-d77dbe1a-6194-40fe-86a4-777a0a7a6daa/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -64062,7 +64062,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "5b2b43",
+          "GUID": "ba845a",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -64107,10 +64107,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 759200,
+          "CardID": 646200,
           "SidewaysCard": false,
           "CustomDeck": {
-            "7592": {
+            "6462": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-cf57062a-82d2-4975-a138-cecf5900a7ed/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-cf57062a-82d2-4975-a138-cecf5900a7ed/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -64933,7 +64933,7 @@
           ]
         },
         {
-          "GUID": "ede2fe",
+          "GUID": "8549ca",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -64978,10 +64978,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 579800,
+          "CardID": 863700,
           "SidewaysCard": false,
           "CustomDeck": {
-            "5798": {
+            "8637": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-b2e8c572-0f14-4349-a22a-4b7006e22728/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-b2e8c572-0f14-4349-a22a-4b7006e22728/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -64996,7 +64996,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "00aaaa",
+          "GUID": "c0cb83",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -65041,10 +65041,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 642700,
+          "CardID": 108300,
           "SidewaysCard": false,
           "CustomDeck": {
-            "6427": {
+            "1083": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-6cfa3e02-70b6-4797-85e6-d8bae59fb0a8/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-6cfa3e02-70b6-4797-85e6-d8bae59fb0a8/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -65059,7 +65059,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "66344f",
+          "GUID": "9e8a71",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -65104,10 +65104,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 113800,
+          "CardID": 178800,
           "SidewaysCard": false,
           "CustomDeck": {
-            "1138": {
+            "1788": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-74ce766e-488c-41e3-b01e-abe58e78d718/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-74ce766e-488c-41e3-b01e-abe58e78d718/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -65230,10 +65230,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 140200,
+          "CardID": 891400,
           "SidewaysCard": false,
           "CustomDeck": {
-            "1402": {
+            "8914": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-6cfa3e02-70b6-4797-85e6-d8bae59fb0a8/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-6cfa3e02-70b6-4797-85e6-d8bae59fb0a8/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -66119,7 +66119,7 @@
           ]
         },
         {
-          "GUID": "10a10d",
+          "GUID": "e7ba95",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -66164,10 +66164,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 840800,
+          "CardID": 503300,
           "SidewaysCard": false,
           "CustomDeck": {
-            "8408": {
+            "5033": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-b68c7797-71fa-436a-9984-8b8997ab31bd/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-b68c7797-71fa-436a-9984-8b8997ab31bd/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -66182,7 +66182,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "2e5ac6",
+          "GUID": "9f76dc",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -66227,10 +66227,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 461700,
+          "CardID": 301600,
           "SidewaysCard": false,
           "CustomDeck": {
-            "4617": {
+            "3016": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-f794f26c-ea51-4dd7-b721-4f4a791b5ac1/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-f794f26c-ea51-4dd7-b721-4f4a791b5ac1/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -66245,7 +66245,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "a5bcff",
+          "GUID": "3d09b2",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -66290,10 +66290,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 667600,
+          "CardID": 239900,
           "SidewaysCard": false,
           "CustomDeck": {
-            "6676": {
+            "2399": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-fa965caf-9a8f-48dd-95b7-2dbb76f47690/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-fa965caf-9a8f-48dd-95b7-2dbb76f47690/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -66542,10 +66542,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 203400,
+          "CardID": 376800,
           "SidewaysCard": false,
           "CustomDeck": {
-            "2034": {
+            "3768": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-b68c7797-71fa-436a-9984-8b8997ab31bd/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-b68c7797-71fa-436a-9984-8b8997ab31bd/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -69075,7 +69075,7 @@
           ]
         },
         {
-          "GUID": "baa39b",
+          "GUID": "289b41",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -69120,10 +69120,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 367800,
+          "CardID": 152900,
           "SidewaysCard": false,
           "CustomDeck": {
-            "3678": {
+            "1529": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-da305256-4a39-44fc-a120-0acc435cb388/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-da305256-4a39-44fc-a120-0acc435cb388/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -69138,7 +69138,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "764166",
+          "GUID": "3ecbd0",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -69183,10 +69183,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 801400,
+          "CardID": 324900,
           "SidewaysCard": false,
           "CustomDeck": {
-            "8014": {
+            "3249": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-138c87bc-3005-40c4-963d-0fe3df391b75/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-138c87bc-3005-40c4-963d-0fe3df391b75/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -69201,7 +69201,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "5a1c5e",
+          "GUID": "4dbaf4",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -69246,10 +69246,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 696700,
+          "CardID": 367400,
           "SidewaysCard": false,
           "CustomDeck": {
-            "6967": {
+            "3674": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-33945625-635d-4daf-87aa-8cc3334cd395/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-33945625-635d-4daf-87aa-8cc3334cd395/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -69309,10 +69309,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 875000,
+          "CardID": 164600,
           "SidewaysCard": false,
           "CustomDeck": {
-            "8750": {
+            "1646": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-da305256-4a39-44fc-a120-0acc435cb388/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-da305256-4a39-44fc-a120-0acc435cb388/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -70261,7 +70261,7 @@
           ]
         },
         {
-          "GUID": "edaf98",
+          "GUID": "ffa394",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -70306,10 +70306,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 727900,
+          "CardID": 715900,
           "SidewaysCard": false,
           "CustomDeck": {
-            "7279": {
+            "7159": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-523f6c3a-7eb9-4365-9603-4c31ac670d1a/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-523f6c3a-7eb9-4365-9603-4c31ac670d1a/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -70324,7 +70324,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "2e3c41",
+          "GUID": "309f72",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -70369,10 +70369,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 839000,
+          "CardID": 688300,
           "SidewaysCard": false,
           "CustomDeck": {
-            "8390": {
+            "6883": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-ea757911-8050-4d34-b01c-cc0638b2dd24/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-ea757911-8050-4d34-b01c-cc0638b2dd24/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -70387,7 +70387,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "0c4b67",
+          "GUID": "f6d7a4",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -70432,10 +70432,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 340100,
+          "CardID": 671400,
           "SidewaysCard": false,
           "CustomDeck": {
-            "3401": {
+            "6714": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-cc6c1e51-b260-4eb0-a757-a5acdb22acce/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-cc6c1e51-b260-4eb0-a757-a5acdb22acce/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -71258,7 +71258,7 @@
           ]
         },
         {
-          "GUID": "0c607b",
+          "GUID": "fe9f5e",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -71303,10 +71303,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 308500,
+          "CardID": 547000,
           "SidewaysCard": false,
           "CustomDeck": {
-            "3085": {
+            "5470": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-59efa6db-debe-482d-8897-891c70675539/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-59efa6db-debe-482d-8897-891c70675539/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -71321,7 +71321,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "11cb82",
+          "GUID": "389193",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -71366,10 +71366,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 725200,
+          "CardID": 301100,
           "SidewaysCard": false,
           "CustomDeck": {
-            "7252": {
+            "3011": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-1329605d-068b-40da-85dc-926705447940/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-1329605d-068b-40da-85dc-926705447940/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -71384,7 +71384,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "c0bb68",
+          "GUID": "840eea",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -71429,10 +71429,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 807400,
+          "CardID": 303800,
           "SidewaysCard": false,
           "CustomDeck": {
-            "8074": {
+            "3038": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-4d6720f3-f2cc-48ef-8269-2b9f222f1c2a/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-4d6720f3-f2cc-48ef-8269-2b9f222f1c2a/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -72255,7 +72255,7 @@
           ]
         },
         {
-          "GUID": "c24c32",
+          "GUID": "24c719",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -72300,10 +72300,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 636000,
+          "CardID": 888200,
           "SidewaysCard": false,
           "CustomDeck": {
-            "6360": {
+            "8882": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-e4bb145b-c71e-4d45-8ea2-2847ef00e7f7/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-e4bb145b-c71e-4d45-8ea2-2847ef00e7f7/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -72318,7 +72318,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "4bd7f3",
+          "GUID": "4b62a8",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -72363,10 +72363,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 481800,
+          "CardID": 432800,
           "SidewaysCard": false,
           "CustomDeck": {
-            "4818": {
+            "4328": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-0a0f4d93-d459-48dc-80c0-a0f29f57095f/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-0a0f4d93-d459-48dc-80c0-a0f29f57095f/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -72381,7 +72381,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "623409",
+          "GUID": "83f2c3",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -72426,10 +72426,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 280200,
+          "CardID": 634800,
           "SidewaysCard": false,
           "CustomDeck": {
-            "2802": {
+            "6348": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-c2d773ba-6fbb-4310-ac3e-6d2fa561ae08/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-c2d773ba-6fbb-4310-ac3e-6d2fa561ae08/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -73608,7 +73608,7 @@
           ]
         },
         {
-          "GUID": "784bdf",
+          "GUID": "3619f8",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -73653,10 +73653,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 319300,
+          "CardID": 663900,
           "SidewaysCard": false,
           "CustomDeck": {
-            "3193": {
+            "6639": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-667a701a-a4d7-477f-abcc-a95356c8416c/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-667a701a-a4d7-477f-abcc-a95356c8416c/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -73671,7 +73671,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "091f14",
+          "GUID": "32751f",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -73716,10 +73716,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 244800,
+          "CardID": 583200,
           "SidewaysCard": false,
           "CustomDeck": {
-            "2448": {
+            "5832": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-3083456f-099d-4298-bd48-912ad9d30ba6/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-3083456f-099d-4298-bd48-912ad9d30ba6/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -73734,7 +73734,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "95877b",
+          "GUID": "b1438b",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -73779,10 +73779,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 637700,
+          "CardID": 301200,
           "SidewaysCard": false,
           "CustomDeck": {
-            "6377": {
+            "3012": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-5b546aa7-2aa0-4c5a-ac4b-cff49542007b/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-5b546aa7-2aa0-4c5a-ac4b-cff49542007b/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -74605,7 +74605,7 @@
           ]
         },
         {
-          "GUID": "792304",
+          "GUID": "571d94",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -74650,10 +74650,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 655000,
+          "CardID": 269400,
           "SidewaysCard": false,
           "CustomDeck": {
-            "6550": {
+            "2694": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-8df54370-0b62-436f-a3a0-cf1536cdb0fe/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-8df54370-0b62-436f-a3a0-cf1536cdb0fe/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -74668,7 +74668,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "6d1dec",
+          "GUID": "d85905",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -74713,10 +74713,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 332500,
+          "CardID": 388600,
           "SidewaysCard": false,
           "CustomDeck": {
-            "3325": {
+            "3886": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-ae4cd141-a35a-44a6-8240-8828af1cfba5/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-ae4cd141-a35a-44a6-8240-8828af1cfba5/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -74731,7 +74731,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "32fa99",
+          "GUID": "187f18",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -74776,10 +74776,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 873800,
+          "CardID": 785000,
           "SidewaysCard": false,
           "CustomDeck": {
-            "8738": {
+            "7850": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-441292ae-6d78-4d57-aff0-21163d82805f/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-441292ae-6d78-4d57-aff0-21163d82805f/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -75185,7 +75185,7 @@
         "posX": 82.48503,
         "posY": 1.1375618,
         "posZ": -26.442667,
-        "rotX": -5.238287E-07,
+        "rotX": -5.238287e-07,
         "rotY": 270.0211,
         "rotZ": 180.0,
         "scaleX": 2.0,
@@ -79061,7 +79061,7 @@
           ]
         },
         {
-          "GUID": "d4c501",
+          "GUID": "7baa2b",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -79106,10 +79106,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 785600,
+          "CardID": 500800,
           "SidewaysCard": false,
           "CustomDeck": {
-            "7856": {
+            "5008": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-d1c49d2e-61ee-4969-8441-ac36f263196e/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-d1c49d2e-61ee-4969-8441-ac36f263196e/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -79124,7 +79124,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "5c62c8",
+          "GUID": "41138d",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -79169,10 +79169,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 648200,
+          "CardID": 814100,
           "SidewaysCard": false,
           "CustomDeck": {
-            "6482": {
+            "8141": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-887dc3be-1c0a-4cf7-b1c3-b539fb5fd2d0/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-887dc3be-1c0a-4cf7-b1c3-b539fb5fd2d0/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -79187,7 +79187,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "ae1c60",
+          "GUID": "9430bf",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -79232,10 +79232,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 544400,
+          "CardID": 776900,
           "SidewaysCard": false,
           "CustomDeck": {
-            "5444": {
+            "7769": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-430a7b03-1ad3-48b3-8322-dd5610ed8595/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-430a7b03-1ad3-48b3-8322-dd5610ed8595/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -80058,7 +80058,7 @@
           ]
         },
         {
-          "GUID": "5fe761",
+          "GUID": "1313d1",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -80103,10 +80103,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 490000,
+          "CardID": 556900,
           "SidewaysCard": false,
           "CustomDeck": {
-            "4900": {
+            "5569": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-0f5929ef-8fe8-4c1d-9bdc-068c836d9234/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-0f5929ef-8fe8-4c1d-9bdc-068c836d9234/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -80121,7 +80121,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "1c9534",
+          "GUID": "00b09b",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -80166,10 +80166,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 517900,
+          "CardID": 447000,
           "SidewaysCard": false,
           "CustomDeck": {
-            "5179": {
+            "4470": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-43dc33cf-49d5-44a9-951c-e4f29a24bf2a/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-43dc33cf-49d5-44a9-951c-e4f29a24bf2a/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -80184,7 +80184,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "79deab",
+          "GUID": "eaa578",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -80229,10 +80229,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 876300,
+          "CardID": 160100,
           "SidewaysCard": false,
           "CustomDeck": {
-            "8763": {
+            "1601": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-1fc758be-49d6-473c-ba1e-8cfd898cb7f2/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-1fc758be-49d6-473c-ba1e-8cfd898cb7f2/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -81055,7 +81055,7 @@
           ]
         },
         {
-          "GUID": "1d13b4",
+          "GUID": "4ba270",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -81118,7 +81118,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "ff8cd5",
+          "GUID": "2924bb",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -81163,10 +81163,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 741200,
+          "CardID": 690600,
           "SidewaysCard": false,
           "CustomDeck": {
-            "7412": {
+            "6906": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-74f0ee40-6313-4a3a-ad2b-60514bb91d2e/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-74f0ee40-6313-4a3a-ad2b-60514bb91d2e/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -81181,7 +81181,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "ab1475",
+          "GUID": "c79013",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -81226,10 +81226,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 674500,
+          "CardID": 601800,
           "SidewaysCard": false,
           "CustomDeck": {
-            "6745": {
+            "6018": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-9b3e700e-85da-465b-8c3e-70828ff13687/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-9b3e700e-85da-465b-8c3e-70828ff13687/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -81541,10 +81541,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 466700,
+          "CardID": 146300,
           "SidewaysCard": false,
           "CustomDeck": {
-            "4667": {
+            "1463": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-74f0ee40-6313-4a3a-ad2b-60514bb91d2e/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-74f0ee40-6313-4a3a-ad2b-60514bb91d2e/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -82241,7 +82241,7 @@
           ]
         },
         {
-          "GUID": "1284f4",
+          "GUID": "39ebe9",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -82286,10 +82286,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 628900,
+          "CardID": 812700,
           "SidewaysCard": false,
           "CustomDeck": {
-            "6289": {
+            "8127": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-857570c7-b155-40e9-8f89-d83cdf8e18e2/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-857570c7-b155-40e9-8f89-d83cdf8e18e2/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -82304,7 +82304,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "31e4c3",
+          "GUID": "8941a9",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -82349,10 +82349,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 831600,
+          "CardID": 837000,
           "SidewaysCard": false,
           "CustomDeck": {
-            "8316": {
+            "8370": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-25bcf50a-ab11-4b8a-8620-8e43484a64b2/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-25bcf50a-ab11-4b8a-8620-8e43484a64b2/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -82367,7 +82367,7 @@
           "XmlUI": ""
         },
         {
-          "GUID": "dbd4e2",
+          "GUID": "8a8288",
           "Name": "CardCustom",
           "Transform": {
             "posX": 0,
@@ -82475,10 +82475,10 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 359100,
+          "CardID": 117800,
           "SidewaysCard": false,
           "CustomDeck": {
-            "3591": {
+            "1178": {
               "FaceURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-857570c7-b155-40e9-8f89-d83cdf8e18e2/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "BackURL": "https://battlemaster.online/v1/public/community-assets/layout/8a72d680-3166-44e1-aa3c-2f7264f92202/terrain-857570c7-b155-40e9-8f89-d83cdf8e18e2/tts-card-face?themeId=tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5&themeOwner=8a72d680-3166-44e1-aa3c-2f7264f92202",
               "NumWidth": 1,
@@ -83373,9 +83373,9 @@
         "posX": 39.0725555,
         "posY": 0.7149639,
         "posZ": 38.54618,
-        "rotX": 1.44949684E-06,
+        "rotX": 1.44949684e-06,
         "rotY": -0.0001419315,
-        "rotZ": -3.46221952E-07,
+        "rotZ": -3.46221952e-07,
         "scaleX": 0.78,
         "scaleY": 1.0,
         "scaleZ": 0.78
@@ -83423,9 +83423,9 @@
             "posX": 17.5903282,
             "posY": 0.9712486,
             "posZ": 43.973053,
-            "rotX": 1.83194288E-06,
+            "rotX": 1.83194288e-06,
             "rotY": 0.0299635362,
-            "rotZ": -2.94842039E-07,
+            "rotZ": -2.94842039e-07,
             "scaleX": 1.49235344,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49112606
@@ -83538,11 +83538,11 @@
               "Name": "Custom_Token",
               "Transform": {
                 "posX": 0.0008249523,
-                "posY": -1.19251581E-06,
+                "posY": -1.19251581e-06,
                 "posZ": 0.00082509,
-                "rotX": 7.46747065E-13,
-                "rotY": 8.651336E-06,
-                "rotZ": -8.14221954E-13,
+                "rotX": 7.46747065e-13,
+                "rotY": 8.651336e-06,
+                "rotZ": -8.14221954e-13,
                 "scaleX": 0.268033028,
                 "scaleY": 10.00001,
                 "scaleZ": 0.268253654
@@ -83599,9 +83599,9 @@
             "posX": 15.9960289,
             "posY": 0.9712484,
             "posZ": 43.9729538,
-            "rotX": 1.82549229E-06,
+            "rotX": 1.82549229e-06,
             "rotY": 0.0181614738,
-            "rotZ": -5.962893E-07,
+            "rotZ": -5.962893e-07,
             "scaleX": 1.49173927,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49174
@@ -83714,11 +83714,11 @@
               "Name": "Custom_Token",
               "Transform": {
                 "posX": 0.000825265364,
-                "posY": 1.516715E-10,
+                "posY": 1.516715e-10,
                 "posZ": 0.0008251765,
-                "rotX": -7.643885E-15,
-                "rotY": 8.650712E-06,
-                "rotZ": -8.905553E-14,
+                "rotX": -7.643885e-15,
+                "rotY": 8.650712e-06,
+                "rotZ": -8.905553e-14,
                 "scaleX": 0.2681434,
                 "scaleY": 10.00001,
                 "scaleZ": 0.268143266
@@ -83775,9 +83775,9 @@
             "posX": 14.4018288,
             "posY": 0.9712484,
             "posZ": 43.9729538,
-            "rotX": 1.76574827E-06,
+            "rotX": 1.76574827e-06,
             "rotY": 0.0171635244,
-            "rotZ": -4.88001547E-07,
+            "rotZ": -4.88001547e-07,
             "scaleX": 1.48927689,
             "scaleY": 0.100000024,
             "scaleZ": 1.49420118
@@ -83833,7 +83833,7 @@
                 "posX": 5.640928,
                 "posY": 1.15449631,
                 "posZ": -0.06234513,
-                "rotX": -4.664043E-05,
+                "rotX": -4.664043e-05,
                 "rotY": 359.984772,
                 "rotZ": 0.00164768414,
                 "scaleX": 0.4,
@@ -83892,9 +83892,9 @@
                 "posX": 0.0,
                 "posY": 0.0,
                 "posZ": 0.0,
-                "rotX": -8.7013E-13,
-                "rotY": 1.77224738E-05,
-                "rotZ": -1.42488864E-12,
+                "rotX": -8.7013e-13,
+                "rotY": 1.77224738e-05,
+                "rotZ": -1.42488864e-12,
                 "scaleX": 0.268586725,
                 "scaleY": 9.999997,
                 "scaleZ": 0.267701566
@@ -83951,9 +83951,9 @@
             "posX": 12.8076286,
             "posY": 0.971248269,
             "posZ": 43.9729538,
-            "rotX": 1.75796288E-06,
+            "rotX": 1.75796288e-06,
             "rotY": 0.0171635281,
-            "rotZ": -2.31166936E-07,
+            "rotZ": -2.31166936e-07,
             "scaleX": 1.49358654,
             "scaleY": 0.0999999046,
             "scaleZ": 1.48989081
@@ -84065,12 +84065,12 @@
               "GUID": "77f73c",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 1.51606141E-14,
-                "posY": 1.192094E-06,
-                "posZ": -7.141959E-15,
-                "rotX": 9.0442996E-13,
-                "rotY": 5.23632025E-06,
-                "rotZ": -1.628444E-12,
+                "posX": 1.51606141e-14,
+                "posY": 1.192094e-06,
+                "posZ": -7.141959e-15,
+                "rotX": 9.0442996e-13,
+                "rotY": 5.23632025e-06,
+                "rotZ": -1.628444e-12,
                 "scaleX": 0.267811745,
                 "scaleY": 10.00001,
                 "scaleZ": 0.268476069
@@ -84127,9 +84127,9 @@
             "posX": 11.2134285,
             "posY": 0.9712484,
             "posZ": 43.9729538,
-            "rotX": 1.71962938E-06,
+            "rotX": 1.71962938e-06,
             "rotY": 0.0171635244,
-            "rotZ": -6.14040971E-07,
+            "rotZ": -6.14040971e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.100000143,
             "scaleZ": 1.49420118
@@ -84244,9 +84244,9 @@
                 "posX": 0.0,
                 "posY": 0.0,
                 "posZ": 0.0,
-                "rotX": -3.90860386E-13,
-                "rotY": 6.94337268E-06,
-                "rotZ": 4.07110977E-13,
+                "rotX": -3.90860386e-13,
+                "rotY": 6.94337268e-06,
+                "rotZ": 4.07110977e-13,
                 "scaleX": 0.267701477,
                 "scaleY": 9.999986,
                 "scaleZ": 0.2677016
@@ -84303,9 +84303,9 @@
             "posX": 12.794529,
             "posY": 0.9712483,
             "posZ": 46.3021545,
-            "rotX": 1.61300648E-06,
+            "rotX": 1.61300648e-06,
             "rotY": 0.0171635263,
-            "rotZ": -7.12565054E-07,
+            "rotZ": -7.12565054e-07,
             "scaleX": 1.494194,
             "scaleY": 0.0999999046,
             "scaleZ": 1.4941926
@@ -84420,9 +84420,9 @@
                 "posX": 0.0,
                 "posY": 0.0,
                 "posZ": 0.0,
-                "rotX": 4.045268E-14,
-                "rotY": 5.56182658E-06,
-                "rotZ": 1.96341517E-21,
+                "rotX": 4.045268e-14,
+                "rotY": 5.56182658e-06,
+                "rotZ": 1.96341517e-21,
                 "scaleX": 0.267702878,
                 "scaleY": 10.00001,
                 "scaleZ": 0.267703116
@@ -84479,9 +84479,9 @@
             "posX": 14.3887291,
             "posY": 0.971248448,
             "posZ": 46.3021545,
-            "rotX": 1.88508659E-06,
+            "rotX": 1.88508659e-06,
             "rotY": 0.0330635272,
-            "rotZ": -2.853435E-07,
+            "rotZ": -2.853435e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.0999999642,
             "scaleZ": 1.49420166
@@ -84593,12 +84593,12 @@
               "GUID": "93731b",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 1.60404535E-15,
-                "posY": -1.19209335E-06,
-                "posZ": 1.22770438E-14,
-                "rotX": -6.33687845E-14,
-                "rotY": 6.30325076E-06,
-                "rotZ": -8.14222E-13,
+                "posX": 1.60404535e-15,
+                "posY": -1.19209335e-06,
+                "posZ": 1.22770438e-14,
+                "rotX": -6.33687845e-14,
+                "rotY": 6.30325076e-06,
+                "rotZ": -8.14222e-13,
                 "scaleX": 0.267701477,
                 "scaleY": 10.0000038,
                 "scaleZ": 0.267701477
@@ -84655,9 +84655,9 @@
             "posX": 15.9829292,
             "posY": 0.9712483,
             "posZ": 46.3021545,
-            "rotX": 1.78466939E-06,
+            "rotX": 1.78466939e-06,
             "rotY": 0.0328635238,
-            "rotZ": -8.00374664E-07,
+            "rotZ": -8.00374664e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49420166
@@ -84769,12 +84769,12 @@
               "GUID": "965f71",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 9.036148E-11,
-                "posY": 7.654776E-14,
-                "posZ": 3.19125036E-07,
-                "rotX": 3.73653135E-14,
-                "rotY": 6.091475E-06,
-                "rotZ": -1.01777751E-13,
+                "posX": 9.036148e-11,
+                "posY": 7.654776e-14,
+                "posZ": 3.19125036e-07,
+                "rotX": 3.73653135e-14,
+                "rotY": 6.091475e-06,
+                "rotZ": -1.01777751e-13,
                 "scaleX": 0.2677015,
                 "scaleY": 10.00001,
                 "scaleZ": 0.2677015
@@ -84831,9 +84831,9 @@
             "posX": 17.57713,
             "posY": 0.9712485,
             "posZ": 46.3021545,
-            "rotX": 1.87622561E-06,
+            "rotX": 1.87622561e-06,
             "rotY": 0.0313635319,
-            "rotZ": -3.65311053E-07,
+            "rotZ": -3.65311053e-07,
             "scaleX": 1.49235344,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49112582
@@ -84946,11 +84946,11 @@
               "Name": "Custom_Token",
               "Transform": {
                 "posX": 0.000824633345,
-                "posY": -7.49916657E-11,
+                "posY": -7.49916657e-11,
                 "posZ": 0.0008250895,
-                "rotX": 7.819226E-14,
-                "rotY": 3.873039E-06,
-                "rotZ": 2.64279218E-21,
+                "rotX": 7.819226e-14,
+                "rotY": 3.873039e-06,
+                "rotZ": 2.64279218e-21,
                 "scaleX": 0.268033028,
                 "scaleY": 10.00001,
                 "scaleZ": 0.2682537
@@ -85007,9 +85007,9 @@
             "posX": 17.58593,
             "posY": 0.9712482,
             "posZ": 48.5961533,
-            "rotX": 1.43330487E-06,
+            "rotX": 1.43330487e-06,
             "rotY": 0.0170635227,
-            "rotZ": -3.4872906E-07,
+            "rotZ": -3.4872906e-07,
             "scaleX": 1.49420357,
             "scaleY": 0.100000381,
             "scaleZ": 1.49420261
@@ -85121,12 +85121,12 @@
               "GUID": "2d77da",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -6.382396E-07,
-                "posY": 6.93163246E-13,
-                "posZ": -1.59601129E-07,
-                "rotX": 4.55042959E-13,
-                "rotY": 6.089599E-06,
-                "rotZ": 2.41817916E-20,
+                "posX": -6.382396e-07,
+                "posY": 6.93163246e-13,
+                "posZ": -1.59601129e-07,
+                "rotX": 4.55042959e-13,
+                "rotY": 6.089599e-06,
+                "rotZ": 2.41817916e-20,
                 "scaleX": 0.267701149,
                 "scaleY": 9.999962,
                 "scaleZ": 0.267701328
@@ -85183,9 +85183,9 @@
             "posX": 15.9917288,
             "posY": 0.971248269,
             "posZ": 48.5961533,
-            "rotX": 1.82173585E-06,
+            "rotX": 1.82173585e-06,
             "rotY": 0.0169635247,
-            "rotZ": -5.64022855E-07,
+            "rotZ": -5.64022855e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.0999999642,
             "scaleZ": 1.49420071
@@ -85297,12 +85297,12 @@
               "GUID": "fe2fb3",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 9.935349E-11,
-                "posY": -1.19562766E-13,
-                "posZ": 1.59562589E-07,
-                "rotX": 2.47362677E-13,
-                "rotY": -5.005915E-06,
-                "rotZ": -2.035555E-13,
+                "posX": 9.935349e-11,
+                "posY": -1.19562766e-13,
+                "posZ": 1.59562589e-07,
+                "rotX": 2.47362677e-13,
+                "rotY": -5.005915e-06,
+                "rotZ": -2.035555e-13,
                 "scaleX": 0.267701566,
                 "scaleY": 10.0000038,
                 "scaleZ": 0.267701715
@@ -85359,9 +85359,9 @@
             "posX": 14.3975286,
             "posY": 0.971248269,
             "posZ": 48.5961533,
-            "rotX": 1.58565581E-06,
+            "rotX": 1.58565581e-06,
             "rotY": 0.0170635227,
-            "rotZ": -5.106241E-07,
+            "rotZ": -5.106241e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.100000143,
             "scaleZ": 1.49420166
@@ -85476,9 +85476,9 @@
                 "posX": 0.0,
                 "posY": 0.0,
                 "posZ": 0.0,
-                "rotX": 2.7558881E-14,
-                "rotY": 8.65092E-06,
-                "rotZ": -3.56222132E-13,
+                "rotX": 2.7558881e-14,
+                "rotY": 8.65092e-06,
+                "rotZ": -3.56222132e-13,
                 "scaleX": 0.267701477,
                 "scaleY": 9.999986,
                 "scaleZ": 0.267701477
@@ -85535,9 +85535,9 @@
             "posX": 17.6318283,
             "posY": 0.97124815,
             "posZ": 50.9058533,
-            "rotX": 1.720859E-06,
+            "rotX": 1.720859e-06,
             "rotY": 0.0170635246,
-            "rotZ": -6.317995E-07,
+            "rotZ": -6.317995e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49420166
@@ -85649,12 +85649,12 @@
               "GUID": "cf215a",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -1.02093846E-11,
-                "posY": 7.467005E-14,
-                "posZ": 1.59562518E-07,
-                "rotX": 5.532426E-14,
-                "rotY": 1.82177291E-06,
-                "rotZ": 8.795433E-22,
+                "posX": -1.02093846e-11,
+                "posY": 7.467005e-14,
+                "posZ": 1.59562518e-07,
+                "rotX": 5.532426e-14,
+                "rotY": 1.82177291e-06,
+                "rotZ": 8.795433e-22,
                 "scaleX": 0.267701477,
                 "scaleY": 10.00001,
                 "scaleZ": 0.267701477
@@ -85711,9 +85711,9 @@
             "posX": 16.0376282,
             "posY": 0.971248269,
             "posZ": 50.9058533,
-            "rotX": 1.74836953E-06,
+            "rotX": 1.74836953e-06,
             "rotY": 0.0170635227,
-            "rotZ": -4.55231771E-07,
+            "rotZ": -4.55231771e-07,
             "scaleX": 1.49420071,
             "scaleY": 0.0999999642,
             "scaleZ": 1.49420118
@@ -85825,12 +85825,12 @@
               "GUID": "3325da",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 1.104056E-11,
-                "posY": -1.19209324E-06,
-                "posZ": -1.59562575E-07,
-                "rotX": 2.20253367E-13,
-                "rotY": 6.09022436E-06,
-                "rotZ": 8.14222E-13,
+                "posX": 1.104056e-11,
+                "posY": -1.19209324e-06,
+                "posZ": -1.59562575e-07,
+                "rotX": 2.20253367e-13,
+                "rotY": 6.09022436e-06,
+                "rotZ": 8.14222e-13,
                 "scaleX": 0.2677017,
                 "scaleY": 10.0000038,
                 "scaleZ": 0.2677016
@@ -85887,9 +85887,9 @@
             "posX": 14.443429,
             "posY": 0.9712482,
             "posZ": 50.9058533,
-            "rotX": 1.84111468E-06,
+            "rotX": 1.84111468e-06,
             "rotY": 0.0170635246,
-            "rotZ": -8.4075856E-07,
+            "rotZ": -8.4075856e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49420166
@@ -86004,9 +86004,9 @@
                 "posX": 0.0,
                 "posY": 0.0,
                 "posZ": 0.0,
-                "rotX": 6.089955E-14,
-                "rotY": -1.5937386E-06,
-                "rotZ": -8.469905E-22,
+                "rotX": 6.089955e-14,
+                "rotY": -1.5937386e-06,
+                "rotZ": -8.469905e-22,
                 "scaleX": 0.267701477,
                 "scaleY": 10.00001,
                 "scaleZ": 0.267701477
@@ -86063,9 +86063,9 @@
             "posX": 17.59273,
             "posY": 0.9712481,
             "posZ": 53.17795,
-            "rotX": 1.735296E-06,
+            "rotX": 1.735296e-06,
             "rotY": 0.0170635227,
-            "rotZ": -2.76951766E-07,
+            "rotZ": -2.76951766e-07,
             "scaleX": 1.4899025,
             "scaleY": 0.100000381,
             "scaleZ": 1.4960556
@@ -86178,11 +86178,11 @@
               "Name": "Custom_Token",
               "Transform": {
                 "posX": -0.000824758259,
-                "posY": 4.36199965E-10,
-                "posZ": -5.0008186E-08,
-                "rotX": -5.24480937E-14,
-                "rotY": -2.95506561E-06,
-                "rotZ": 1.35252159E-21,
+                "posY": 4.36199965e-10,
+                "posZ": -5.0008186e-08,
+                "rotX": -5.24480937e-14,
+                "rotY": -2.95506561e-06,
+                "rotZ": 1.35252159e-21,
                 "scaleX": 0.268473953,
                 "scaleY": 9.999962,
                 "scaleZ": 0.267369747
@@ -86239,9 +86239,9 @@
             "posX": 15.9979286,
             "posY": 0.971248269,
             "posZ": 53.17795,
-            "rotX": 1.47329263E-06,
+            "rotX": 1.47329263e-06,
             "rotY": 0.03236353,
-            "rotZ": -4.372361E-07,
+            "rotZ": -4.372361e-07,
             "scaleX": 1.49481773,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49358559
@@ -86353,12 +86353,12 @@
               "GUID": "878918",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -2.82377279E-16,
-                "posY": -1.192094E-06,
-                "posZ": -3.989787E-15,
-                "rotX": 1.503306E-14,
-                "rotY": 8.491254E-06,
-                "rotZ": 4.3255544E-13,
+                "posX": -2.82377279e-16,
+                "posY": -1.192094e-06,
+                "posZ": -3.989787e-15,
+                "rotX": 1.503306e-14,
+                "rotY": 8.491254e-06,
+                "rotZ": 4.3255544e-13,
                 "scaleX": 0.267591178,
                 "scaleY": 10.00001,
                 "scaleZ": 0.267811924
@@ -86415,9 +86415,9 @@
             "posX": 14.4031286,
             "posY": 0.97124815,
             "posZ": 53.17795,
-            "rotX": 1.6586207E-06,
+            "rotX": 1.6586207e-06,
             "rotY": 0.0170635246,
-            "rotZ": -3.87868226E-07,
+            "rotZ": -3.87868226e-07,
             "scaleX": 1.49425888,
             "scaleY": 0.100000381,
             "scaleZ": 1.49425888
@@ -86529,12 +86529,12 @@
               "GUID": "b7223b",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 1.92767521E-11,
-                "posY": -2.331556E-13,
-                "posZ": -3.19112814E-07,
-                "rotX": -1.01675235E-14,
-                "rotY": 1.82073063E-06,
-                "rotZ": -1.01777751E-13,
+                "posX": 1.92767521e-11,
+                "posY": -2.331556e-13,
+                "posZ": -3.19112814e-07,
+                "rotX": -1.01675235e-14,
+                "rotY": 1.82073063e-06,
+                "rotZ": -1.01777751e-13,
                 "scaleX": 0.267691225,
                 "scaleY": 9.999962,
                 "scaleZ": 0.267691225
@@ -86591,9 +86591,9 @@
             "posX": 12.8083286,
             "posY": 0.97124815,
             "posZ": 53.17795,
-            "rotX": 1.88048864E-06,
+            "rotX": 1.88048864e-06,
             "rotY": 0.0169635247,
-            "rotZ": -6.26513668E-07,
+            "rotZ": -6.26513668e-07,
             "scaleX": 1.49235964,
             "scaleY": 0.0999999046,
             "scaleZ": 1.4960525
@@ -86705,12 +86705,12 @@
               "GUID": "f0e64f",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -5.99049557E-08,
-                "posY": -3.14507162E-14,
-                "posZ": -7.968619E-08,
-                "rotX": 8.27674348E-15,
-                "rotY": 2.67450423E-06,
-                "rotZ": -1.01777751E-13,
+                "posX": -5.99049557e-08,
+                "posY": -3.14507162e-14,
+                "posZ": -7.968619e-08,
+                "rotX": 8.27674348e-15,
+                "rotY": 2.67450423e-06,
+                "rotZ": -1.01777751e-13,
                 "scaleX": 0.268031925,
                 "scaleY": 10.00001,
                 "scaleZ": 0.2673703
@@ -86767,9 +86767,9 @@
             "posX": 17.630928,
             "posY": 0.971248031,
             "posZ": 55.4799538,
-            "rotX": 1.51860172E-06,
+            "rotX": 1.51860172e-06,
             "rotY": 0.0170635227,
-            "rotZ": -3.12970457E-07,
+            "rotZ": -3.12970457e-07,
             "scaleX": 1.49358749,
             "scaleY": 0.100000381,
             "scaleZ": 1.4948163
@@ -86881,12 +86881,12 @@
               "GUID": "c36fc6",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -7.983069E-08,
-                "posY": 9.05549236E-14,
-                "posZ": 3.189897E-07,
-                "rotX": 6.284764E-13,
-                "rotY": 1.548111E-05,
-                "rotZ": 8.49060057E-20,
+                "posX": -7.983069e-08,
+                "posY": 9.05549236e-14,
+                "posZ": 3.189897e-07,
+                "rotX": 6.284764e-13,
+                "rotY": 1.548111e-05,
+                "rotZ": 8.49060057e-20,
                 "scaleX": 0.2678116,
                 "scaleY": 9.999962,
                 "scaleZ": 0.267591447
@@ -86943,9 +86943,9 @@
             "posX": 16.0373287,
             "posY": 0.97124815,
             "posZ": 55.4799538,
-            "rotX": 1.60810055E-06,
+            "rotX": 1.60810055e-06,
             "rotY": 0.0170635227,
-            "rotZ": -8.208894E-07,
+            "rotZ": -8.208894e-07,
             "scaleX": 1.49174881,
             "scaleY": 0.100000381,
             "scaleZ": 1.49666786
@@ -87057,12 +87057,12 @@
               "GUID": "b2490d",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 3.19630033E-07,
-                "posY": -1.19208823E-06,
-                "posZ": 3.18618845E-07,
-                "rotX": 3.138934E-14,
-                "rotY": -6.60340561E-07,
-                "rotZ": -1.80882915E-22,
+                "posX": 3.19630033e-07,
+                "posY": -1.19208823e-06,
+                "posZ": 3.18618845e-07,
+                "rotX": 3.138934e-14,
+                "rotY": -6.60340561e-07,
+                "rotZ": -1.80882915e-22,
                 "scaleX": 0.2681417,
                 "scaleY": 9.999962,
                 "scaleZ": 0.267260373
@@ -87119,9 +87119,9 @@
             "posX": 14.4437294,
             "posY": 0.9712481,
             "posZ": 55.4799538,
-            "rotX": 1.29102318E-06,
+            "rotX": 1.29102318e-06,
             "rotY": 0.0170635246,
-            "rotZ": -2.12604661E-07,
+            "rotZ": -2.12604661e-07,
             "scaleX": 1.4930563,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49545956
@@ -87233,12 +87233,12 @@
               "GUID": "08e2e1",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -3.1936986E-07,
-                "posY": 1.17203447E-13,
-                "posZ": 9.32275E-12,
-                "rotX": -1.3710551E-13,
-                "rotY": -2.87450325E-06,
-                "rotZ": 3.43926068E-21,
+                "posX": -3.1936986e-07,
+                "posY": 1.17203447e-13,
+                "posZ": 9.32275e-12,
+                "rotX": -1.3710551e-13,
+                "rotY": -2.87450325e-06,
+                "rotZ": 3.43926068e-21,
                 "scaleX": 0.267906874,
                 "scaleY": 10.00001,
                 "scaleZ": 0.26747632
@@ -87295,9 +87295,9 @@
             "posX": 12.8501291,
             "posY": 0.9712481,
             "posZ": 55.4799538,
-            "rotX": 1.42843032E-06,
+            "rotX": 1.42843032e-06,
             "rotY": 0.0170635227,
-            "rotZ": -6.224989E-07,
+            "rotZ": -6.224989e-07,
             "scaleX": 1.49358749,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49481487
@@ -87409,12 +87409,12 @@
               "GUID": "c2a871",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 1.94376511E-11,
-                "posY": 1.53384165E-14,
-                "posZ": -3.18994125E-07,
-                "rotX": 4.12341521E-13,
-                "rotY": 3.74213823E-06,
-                "rotZ": 1.34655553E-20,
+                "posX": 1.94376511e-11,
+                "posY": 1.53384165e-14,
+                "posZ": -3.18994125e-07,
+                "rotX": 4.12341521e-13,
+                "rotY": 3.74213823e-06,
+                "rotZ": 1.34655553e-20,
                 "scaleX": 0.2678116,
                 "scaleY": 10.00001,
                 "scaleZ": 0.267591685
@@ -87471,9 +87471,9 @@
             "posX": 11.3270292,
             "posY": 0.971248448,
             "posZ": 55.4803543,
-            "rotX": 1.44795945E-06,
+            "rotX": 1.44795945e-06,
             "rotY": 0.0339993164,
-            "rotZ": -2.29442577E-07,
+            "rotZ": -2.29442577e-07,
             "scaleX": 1.49232578,
             "scaleY": 0.0999999642,
             "scaleZ": 1.49108887
@@ -87586,11 +87586,11 @@
               "Name": "Custom_Token",
               "Transform": {
                 "posX": -0.000830397534,
-                "posY": -1.19162041E-06,
+                "posY": -1.19162041e-06,
                 "posZ": -0.000830389268,
-                "rotX": 1.28542137E-14,
-                "rotY": 6.09022436E-06,
-                "rotZ": 2.035555E-13,
+                "rotX": 1.28542137e-14,
+                "rotY": 6.09022436e-06,
+                "rotZ": 2.035555e-13,
                 "scaleX": 0.268038,
                 "scaleY": 10.0000038,
                 "scaleZ": 0.26826036
@@ -87647,9 +87647,9 @@
             "posX": 11.2540293,
             "posY": 0.971248031,
             "posZ": 57.7768555,
-            "rotX": 1.670095E-06,
+            "rotX": 1.670095e-06,
             "rotY": 0.0171635244,
-            "rotZ": -5.074868E-07,
+            "rotZ": -5.074868e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.100000381,
             "scaleZ": 1.49420166
@@ -87764,9 +87764,9 @@
                 "posX": 0.0,
                 "posY": 0.0,
                 "posZ": 0.0,
-                "rotX": -3.02525419E-15,
-                "rotY": 1.13183376E-07,
-                "rotZ": -2.98807751E-24,
+                "rotX": -3.02525419e-15,
+                "rotY": 1.13183376e-07,
+                "rotZ": -2.98807751e-24,
                 "scaleX": 0.267701477,
                 "scaleY": 9.999962,
                 "scaleZ": 0.267701477
@@ -87823,9 +87823,9 @@
             "posX": 12.8482294,
             "posY": 0.971248031,
             "posZ": 57.7768555,
-            "rotX": 1.57921409E-06,
+            "rotX": 1.57921409e-06,
             "rotY": 0.0171635263,
-            "rotZ": -4.633093E-07,
+            "rotZ": -4.633093e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.100000143,
             "scaleZ": 1.49420166
@@ -87937,12 +87937,12 @@
               "GUID": "4ba37f",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -3.19125036E-07,
-                "posY": 2.20131449E-13,
-                "posZ": 3.67974054E-11,
-                "rotX": -3.680001E-14,
-                "rotY": -1.59415549E-06,
-                "rotZ": 5.119482E-22,
+                "posX": -3.19125036e-07,
+                "posY": 2.20131449e-13,
+                "posZ": 3.67974054e-11,
+                "rotX": -3.680001e-14,
+                "rotY": -1.59415549e-06,
+                "rotZ": 5.119482e-22,
                 "scaleX": 0.267701477,
                 "scaleY": 9.999986,
                 "scaleZ": 0.267701477
@@ -87999,9 +87999,9 @@
             "posX": 14.4425287,
             "posY": 0.971247852,
             "posZ": 57.7768555,
-            "rotX": 1.8306888E-06,
+            "rotX": 1.8306888e-06,
             "rotY": 0.0170635227,
-            "rotZ": -4.35892161E-07,
+            "rotZ": -4.35892161e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49420118
@@ -88113,12 +88113,12 @@
               "GUID": "d7973d",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -5.07600524E-11,
-                "posY": 1.192094E-06,
-                "posZ": 1.59562575E-07,
-                "rotX": 1.13307259E-13,
-                "rotY": 3.530154E-06,
-                "rotZ": 3.4905895E-21,
+                "posX": -5.07600524e-11,
+                "posY": 1.192094e-06,
+                "posZ": 1.59562575e-07,
+                "rotX": 1.13307259e-13,
+                "rotY": 3.530154e-06,
+                "rotZ": 3.4905895e-21,
                 "scaleX": 0.2677015,
                 "scaleY": 10.00001,
                 "scaleZ": 0.267701566
@@ -88175,9 +88175,9 @@
             "posX": 16.036829,
             "posY": 0.971248,
             "posZ": 57.7768555,
-            "rotX": 1.715971E-06,
+            "rotX": 1.715971e-06,
             "rotY": 0.0170635246,
-            "rotZ": -4.39491657E-07,
+            "rotZ": -4.39491657e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.100000381,
             "scaleZ": 1.49420214
@@ -88289,12 +88289,12 @@
               "GUID": "d973ae",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 3.19134784E-07,
-                "posY": -1.48569007E-15,
-                "posZ": -1.59542978E-07,
-                "rotX": -2.528293E-14,
-                "rotY": -1.59415549E-06,
-                "rotZ": -4.07111E-13,
+                "posX": 3.19134784e-07,
+                "posY": -1.48569007e-15,
+                "posZ": -1.59542978e-07,
+                "rotX": -2.528293e-14,
+                "rotY": -1.59415549e-06,
+                "rotZ": -4.07111e-13,
                 "scaleX": 0.267701477,
                 "scaleY": 9.999962,
                 "scaleZ": 0.267701417
@@ -88351,9 +88351,9 @@
             "posX": 17.6311283,
             "posY": 0.9712481,
             "posZ": 57.7768555,
-            "rotX": 1.71196E-06,
+            "rotX": 1.71196e-06,
             "rotY": 0.0171635244,
-            "rotZ": -7.76861043E-07,
+            "rotZ": -7.76861043e-07,
             "scaleX": 1.49427986,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49427986
@@ -88465,12 +88465,12 @@
               "GUID": "1b0734",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -4.35513764E-15,
-                "posY": -1.192094E-06,
-                "posZ": 5.581499E-15,
-                "rotX": 1.429262E-13,
-                "rotY": 5.236242E-06,
-                "rotZ": -4.07111E-13,
+                "posX": -4.35513764e-15,
+                "posY": -1.192094e-06,
+                "posZ": 5.581499e-15,
+                "rotX": 1.429262e-13,
+                "rotY": 5.236242e-06,
+                "rotZ": -4.07111e-13,
                 "scaleX": 0.2676875,
                 "scaleY": 10.00001,
                 "scaleZ": 0.2676875
@@ -88529,9 +88529,9 @@
         "posX": -39.1673,
         "posY": 0.714966953,
         "posZ": -38.5991058,
-        "rotX": -1.60081345E-06,
+        "rotX": -1.60081345e-06,
         "rotY": 179.998016,
-        "rotZ": 6.862149E-07,
+        "rotZ": 6.862149e-07,
         "scaleX": 0.78,
         "scaleY": 1.0,
         "scaleZ": 0.78
@@ -88579,9 +88579,9 @@
             "posX": -16.4032021,
             "posY": 0.9712511,
             "posZ": -44.055912,
-            "rotX": -1.43702971E-06,
+            "rotX": -1.43702971e-06,
             "rotY": 179.980026,
-            "rotZ": 5.40706765E-07,
+            "rotZ": 5.40706765e-07,
             "scaleX": 1.49173927,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49174
@@ -88694,11 +88694,11 @@
               "Name": "Custom_Token",
               "Transform": {
                 "posX": 0.000825265364,
-                "posY": 1.516715E-10,
+                "posY": 1.516715e-10,
                 "posZ": 0.0008251765,
-                "rotX": -7.643885E-15,
-                "rotY": 8.650712E-06,
-                "rotZ": -8.905553E-14,
+                "rotX": -7.643885e-15,
+                "rotY": 8.650712e-06,
+                "rotZ": -8.905553e-14,
                 "scaleX": 0.2681434,
                 "scaleY": 10.00001,
                 "scaleZ": 0.268143266
@@ -88755,9 +88755,9 @@
             "posX": -17.9974022,
             "posY": 0.9712514,
             "posZ": -44.05601,
-            "rotX": -1.64404833E-06,
+            "rotX": -1.64404833e-06,
             "rotY": 179.979919,
-            "rotZ": 1.85146249E-07,
+            "rotZ": 1.85146249e-07,
             "scaleX": 1.49235344,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49112606
@@ -88870,11 +88870,11 @@
               "Name": "Custom_Token",
               "Transform": {
                 "posX": 0.0008249523,
-                "posY": -1.19251581E-06,
+                "posY": -1.19251581e-06,
                 "posZ": 0.00082509,
-                "rotX": 7.46747065E-13,
-                "rotY": 8.651336E-06,
-                "rotZ": -8.14221954E-13,
+                "rotX": 7.46747065e-13,
+                "rotY": 8.651336e-06,
+                "rotZ": -8.14221954e-13,
                 "scaleX": 0.268033028,
                 "scaleY": 10.00001,
                 "scaleZ": 0.268253654
@@ -88931,9 +88931,9 @@
             "posX": -14.8090038,
             "posY": 0.9712511,
             "posZ": -44.055912,
-            "rotX": -1.61543051E-06,
+            "rotX": -1.61543051e-06,
             "rotY": 179.98,
-            "rotZ": 4.0295717E-07,
+            "rotZ": 4.0295717e-07,
             "scaleX": 1.48927689,
             "scaleY": 0.100000024,
             "scaleZ": 1.49420118
@@ -88989,7 +88989,7 @@
                 "posX": 5.640928,
                 "posY": 1.15449631,
                 "posZ": -0.06234513,
-                "rotX": -4.664043E-05,
+                "rotX": -4.664043e-05,
                 "rotY": 359.984772,
                 "rotZ": 0.00164768414,
                 "scaleX": 0.4,
@@ -89048,9 +89048,9 @@
                 "posX": 0.0,
                 "posY": 0.0,
                 "posZ": 0.0,
-                "rotX": -8.7013E-13,
-                "rotY": 1.77224738E-05,
-                "rotZ": -1.42488864E-12,
+                "rotX": -8.7013e-13,
+                "rotY": 1.77224738e-05,
+                "rotZ": -1.42488864e-12,
                 "scaleX": 0.268586725,
                 "scaleY": 9.999997,
                 "scaleZ": 0.267701566
@@ -89107,9 +89107,9 @@
             "posX": -13.2148037,
             "posY": 0.971250951,
             "posZ": -44.055912,
-            "rotX": -1.56428507E-06,
+            "rotX": -1.56428507e-06,
             "rotY": 179.980072,
-            "rotZ": 5.665092E-07,
+            "rotZ": 5.665092e-07,
             "scaleX": 1.49358654,
             "scaleY": 0.0999999046,
             "scaleZ": 1.48989081
@@ -89221,12 +89221,12 @@
               "GUID": "77f73c",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 1.51606141E-14,
-                "posY": 1.192094E-06,
-                "posZ": -7.141959E-15,
-                "rotX": 9.0442996E-13,
-                "rotY": 5.23632025E-06,
-                "rotZ": -1.628444E-12,
+                "posX": 1.51606141e-14,
+                "posY": 1.192094e-06,
+                "posZ": -7.141959e-15,
+                "rotX": 9.0442996e-13,
+                "rotY": 5.23632025e-06,
+                "rotZ": -1.628444e-12,
                 "scaleX": 0.267811745,
                 "scaleY": 10.00001,
                 "scaleZ": 0.268476069
@@ -89283,9 +89283,9 @@
             "posX": -11.6206026,
             "posY": 0.9712511,
             "posZ": -44.055912,
-            "rotX": -1.60031209E-06,
+            "rotX": -1.60031209e-06,
             "rotY": 179.979919,
-            "rotZ": 6.39843563E-07,
+            "rotZ": 6.39843563e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.100000143,
             "scaleZ": 1.49420118
@@ -89400,9 +89400,9 @@
                 "posX": 0.0,
                 "posY": 0.0,
                 "posZ": 0.0,
-                "rotX": -3.90860386E-13,
-                "rotY": 6.94337268E-06,
-                "rotZ": 4.07110977E-13,
+                "rotX": -3.90860386e-13,
+                "rotY": 6.94337268e-06,
+                "rotZ": 4.07110977e-13,
                 "scaleX": 0.267701477,
                 "scaleY": 9.999986,
                 "scaleZ": 0.2677016
@@ -89459,9 +89459,9 @@
             "posX": -13.2016029,
             "posY": 0.97125113,
             "posZ": -46.3851128,
-            "rotX": -1.667365E-06,
+            "rotX": -1.667365e-06,
             "rotY": 179.979919,
-            "rotZ": 7.44648E-07,
+            "rotZ": 7.44648e-07,
             "scaleX": 1.494194,
             "scaleY": 0.0999999046,
             "scaleZ": 1.4941926
@@ -89576,9 +89576,9 @@
                 "posX": 0.0,
                 "posY": 0.0,
                 "posZ": 0.0,
-                "rotX": 4.045268E-14,
-                "rotY": 5.56182658E-06,
-                "rotZ": 1.96341517E-21,
+                "rotX": 4.045268e-14,
+                "rotY": 5.56182658e-06,
+                "rotZ": 1.96341517e-21,
                 "scaleX": 0.267702878,
                 "scaleY": 10.00001,
                 "scaleZ": 0.267703116
@@ -89635,9 +89635,9 @@
             "posX": -14.7958031,
             "posY": 0.9712513,
             "posZ": -46.3851128,
-            "rotX": -1.51777328E-06,
+            "rotX": -1.51777328e-06,
             "rotY": 179.980011,
-            "rotZ": 7.11451946E-07,
+            "rotZ": 7.11451946e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.0999999642,
             "scaleZ": 1.49420166
@@ -89749,12 +89749,12 @@
               "GUID": "93731b",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 1.60404535E-15,
-                "posY": -1.19209335E-06,
-                "posZ": 1.22770438E-14,
-                "rotX": -6.33687845E-14,
-                "rotY": 6.30325076E-06,
-                "rotZ": -8.14222E-13,
+                "posX": 1.60404535e-15,
+                "posY": -1.19209335e-06,
+                "posZ": 1.22770438e-14,
+                "rotX": -6.33687845e-14,
+                "rotY": 6.30325076e-06,
+                "rotZ": -8.14222e-13,
                 "scaleX": 0.267701477,
                 "scaleY": 10.0000038,
                 "scaleZ": 0.267701477
@@ -89811,9 +89811,9 @@
             "posX": -16.3900032,
             "posY": 0.97125113,
             "posZ": -46.3851128,
-            "rotX": -1.41135172E-06,
+            "rotX": -1.41135172e-06,
             "rotY": 179.980255,
-            "rotZ": 6.53826532E-07,
+            "rotZ": 6.53826532e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49420166
@@ -89925,12 +89925,12 @@
               "GUID": "965f71",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 9.036148E-11,
-                "posY": 7.654776E-14,
-                "posZ": 3.19125036E-07,
-                "rotX": 3.73653135E-14,
-                "rotY": 6.091475E-06,
-                "rotZ": -1.01777751E-13,
+                "posX": 9.036148e-11,
+                "posY": 7.654776e-14,
+                "posZ": 3.19125036e-07,
+                "rotX": 3.73653135e-14,
+                "rotY": 6.091475e-06,
+                "rotZ": -1.01777751e-13,
                 "scaleX": 0.2677015,
                 "scaleY": 10.00001,
                 "scaleZ": 0.2677015
@@ -89987,9 +89987,9 @@
             "posX": -17.9842033,
             "posY": 0.9712513,
             "posZ": -46.3851128,
-            "rotX": -1.6967274E-06,
+            "rotX": -1.6967274e-06,
             "rotY": 179.980057,
-            "rotZ": 4.67915015E-07,
+            "rotZ": 4.67915015e-07,
             "scaleX": 1.49235344,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49112582
@@ -90102,11 +90102,11 @@
               "Name": "Custom_Token",
               "Transform": {
                 "posX": 0.000824633345,
-                "posY": -7.49916657E-11,
+                "posY": -7.49916657e-11,
                 "posZ": 0.0008250895,
-                "rotX": 7.819226E-14,
-                "rotY": 3.873039E-06,
-                "rotZ": 2.64279218E-21,
+                "rotX": 7.819226e-14,
+                "rotY": 3.873039e-06,
+                "rotZ": 2.64279218e-21,
                 "scaleX": 0.268033028,
                 "scaleY": 10.00001,
                 "scaleZ": 0.2682537
@@ -90163,9 +90163,9 @@
             "posX": -14.8046036,
             "posY": 0.971251249,
             "posZ": -48.67911,
-            "rotX": -1.77293282E-06,
+            "rotX": -1.77293282e-06,
             "rotY": 179.979858,
-            "rotZ": 5.02632361E-07,
+            "rotZ": 5.02632361e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.100000143,
             "scaleZ": 1.49420166
@@ -90280,9 +90280,9 @@
                 "posX": 0.0,
                 "posY": 0.0,
                 "posZ": 0.0,
-                "rotX": 2.7558881E-14,
-                "rotY": 8.65092E-06,
-                "rotZ": -3.56222132E-13,
+                "rotX": 2.7558881e-14,
+                "rotY": 8.65092e-06,
+                "rotZ": -3.56222132e-13,
                 "scaleX": 0.267701477,
                 "scaleY": 9.999986,
                 "scaleZ": 0.267701477
@@ -90339,9 +90339,9 @@
             "posX": -16.3988037,
             "posY": 0.971251249,
             "posZ": -48.67911,
-            "rotX": -1.67925771E-06,
+            "rotX": -1.67925771e-06,
             "rotY": 179.979919,
-            "rotZ": 6.667292E-07,
+            "rotZ": 6.667292e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.0999999642,
             "scaleZ": 1.49420071
@@ -90453,12 +90453,12 @@
               "GUID": "fe2fb3",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 9.935349E-11,
-                "posY": -1.19562766E-13,
-                "posZ": 1.59562589E-07,
-                "rotX": 2.47362677E-13,
-                "rotY": -5.005915E-06,
-                "rotZ": -2.035555E-13,
+                "posX": 9.935349e-11,
+                "posY": -1.19562766e-13,
+                "posZ": 1.59562589e-07,
+                "rotX": 2.47362677e-13,
+                "rotY": -5.005915e-06,
+                "rotZ": -2.035555e-13,
                 "scaleX": 0.267701566,
                 "scaleY": 10.0000038,
                 "scaleZ": 0.267701715
@@ -90515,9 +90515,9 @@
             "posX": -17.9930038,
             "posY": 0.971251249,
             "posZ": -48.67911,
-            "rotX": -1.6426128E-06,
+            "rotX": -1.6426128e-06,
             "rotY": 179.98,
-            "rotZ": 6.160378E-07,
+            "rotZ": 6.160378e-07,
             "scaleX": 1.49420357,
             "scaleY": 0.100000381,
             "scaleZ": 1.49420261
@@ -90629,12 +90629,12 @@
               "GUID": "2d77da",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -6.382396E-07,
-                "posY": 6.93163246E-13,
-                "posZ": -1.59601129E-07,
-                "rotX": 4.55042959E-13,
-                "rotY": 6.089599E-06,
-                "rotZ": 2.41817916E-20,
+                "posX": -6.382396e-07,
+                "posY": 6.93163246e-13,
+                "posZ": -1.59601129e-07,
+                "rotX": 4.55042959e-13,
+                "rotY": 6.089599e-06,
+                "rotZ": 2.41817916e-20,
                 "scaleX": 0.267701149,
                 "scaleY": 9.999962,
                 "scaleZ": 0.267701328
@@ -90691,9 +90691,9 @@
             "posX": -14.8505058,
             "posY": 0.9712513,
             "posZ": -50.98881,
-            "rotX": -1.17048285E-06,
+            "rotX": -1.17048285e-06,
             "rotY": 179.979935,
-            "rotZ": 5.57512237E-07,
+            "rotZ": 5.57512237e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49420166
@@ -90808,9 +90808,9 @@
                 "posX": 0.0,
                 "posY": 0.0,
                 "posZ": 0.0,
-                "rotX": 6.089955E-14,
-                "rotY": -1.5937386E-06,
-                "rotZ": -8.469905E-22,
+                "rotX": 6.089955e-14,
+                "rotY": -1.5937386e-06,
+                "rotZ": -8.469905e-22,
                 "scaleX": 0.267701477,
                 "scaleY": 10.00001,
                 "scaleZ": 0.267701477
@@ -90867,9 +90867,9 @@
             "posX": -16.4447041,
             "posY": 0.9712514,
             "posZ": -50.98881,
-            "rotX": -1.59726767E-06,
+            "rotX": -1.59726767e-06,
             "rotY": 179.980057,
-            "rotZ": 2.96125762E-07,
+            "rotZ": 2.96125762e-07,
             "scaleX": 1.49420071,
             "scaleY": 0.0999999642,
             "scaleZ": 1.49420118
@@ -90981,12 +90981,12 @@
               "GUID": "3325da",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 1.104056E-11,
-                "posY": -1.19209324E-06,
-                "posZ": -1.59562575E-07,
-                "rotX": 2.20253367E-13,
-                "rotY": 6.09022436E-06,
-                "rotZ": 8.14222E-13,
+                "posX": 1.104056e-11,
+                "posY": -1.19209324e-06,
+                "posZ": -1.59562575e-07,
+                "rotX": 2.20253367e-13,
+                "rotY": 6.09022436e-06,
+                "rotZ": 8.14222e-13,
                 "scaleX": 0.2677017,
                 "scaleY": 10.0000038,
                 "scaleZ": 0.2677016
@@ -91043,9 +91043,9 @@
             "posX": -18.0389042,
             "posY": 0.9712513,
             "posZ": -50.98881,
-            "rotX": -1.55535486E-06,
+            "rotX": -1.55535486e-06,
             "rotY": 179.979919,
-            "rotZ": 7.77086257E-07,
+            "rotZ": 7.77086257e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49420166
@@ -91157,12 +91157,12 @@
               "GUID": "cf215a",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -1.02093846E-11,
-                "posY": 7.467005E-14,
-                "posZ": 1.59562518E-07,
-                "rotX": 5.532426E-14,
-                "rotY": 1.82177291E-06,
-                "rotZ": 8.795433E-22,
+                "posX": -1.02093846e-11,
+                "posY": 7.467005e-14,
+                "posZ": 1.59562518e-07,
+                "rotX": 5.532426e-14,
+                "rotY": 1.82177291e-06,
+                "rotZ": 8.795433e-22,
                 "scaleX": 0.267701477,
                 "scaleY": 10.00001,
                 "scaleZ": 0.267701477
@@ -91219,9 +91219,9 @@
             "posX": -17.9999046,
             "posY": 0.971251369,
             "posZ": -53.26091,
-            "rotX": -1.53755434E-06,
+            "rotX": -1.53755434e-06,
             "rotY": 179.979919,
-            "rotZ": 6.24109E-07,
+            "rotZ": 6.24109e-07,
             "scaleX": 1.4899025,
             "scaleY": 0.100000381,
             "scaleZ": 1.4960556
@@ -91334,11 +91334,11 @@
               "Name": "Custom_Token",
               "Transform": {
                 "posX": -0.000824758259,
-                "posY": 4.36199965E-10,
-                "posZ": -5.0008186E-08,
-                "rotX": -5.24480937E-14,
-                "rotY": -2.95506561E-06,
-                "rotZ": 1.35252159E-21,
+                "posY": 4.36199965e-10,
+                "posZ": -5.0008186e-08,
+                "rotX": -5.24480937e-14,
+                "rotY": -2.95506561e-06,
+                "rotZ": 1.35252159e-21,
                 "scaleX": 0.268473953,
                 "scaleY": 9.999962,
                 "scaleZ": 0.267369747
@@ -91395,9 +91395,9 @@
             "posX": -16.4050045,
             "posY": 0.9712515,
             "posZ": -53.26091,
-            "rotX": -1.4775411E-06,
+            "rotX": -1.4775411e-06,
             "rotY": 179.979919,
-            "rotZ": 3.16260753E-07,
+            "rotZ": 3.16260753e-07,
             "scaleX": 1.49481773,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49358559
@@ -91509,12 +91509,12 @@
               "GUID": "878918",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -2.82377279E-16,
-                "posY": -1.192094E-06,
-                "posZ": -3.989787E-15,
-                "rotX": 1.503306E-14,
-                "rotY": 8.491254E-06,
-                "rotZ": 4.3255544E-13,
+                "posX": -2.82377279e-16,
+                "posY": -1.192094e-06,
+                "posZ": -3.989787e-15,
+                "rotX": 1.503306e-14,
+                "rotY": 8.491254e-06,
+                "rotZ": 4.3255544e-13,
                 "scaleX": 0.267591178,
                 "scaleY": 10.00001,
                 "scaleZ": 0.267811924
@@ -91571,9 +91571,9 @@
             "posX": -14.8102055,
             "posY": 0.971251369,
             "posZ": -53.2609138,
-            "rotX": -1.41425585E-06,
+            "rotX": -1.41425585e-06,
             "rotY": 179.979919,
-            "rotZ": 7.425445E-07,
+            "rotZ": 7.425445e-07,
             "scaleX": 1.49425888,
             "scaleY": 0.100000381,
             "scaleZ": 1.49425888
@@ -91685,12 +91685,12 @@
               "GUID": "b7223b",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 1.92767521E-11,
-                "posY": -2.331556E-13,
-                "posZ": -3.19112814E-07,
-                "rotX": -1.01675235E-14,
-                "rotY": 1.82073063E-06,
-                "rotZ": -1.01777751E-13,
+                "posX": 1.92767521e-11,
+                "posY": -2.331556e-13,
+                "posZ": -3.19112814e-07,
+                "rotX": -1.01675235e-14,
+                "rotY": 1.82073063e-06,
+                "rotZ": -1.01777751e-13,
                 "scaleX": 0.267691225,
                 "scaleY": 9.999962,
                 "scaleZ": 0.267691225
@@ -91747,9 +91747,9 @@
             "posX": -13.2154064,
             "posY": 0.971251369,
             "posZ": -53.2609138,
-            "rotX": -1.4233359E-06,
+            "rotX": -1.4233359e-06,
             "rotY": 179.980072,
-            "rotZ": 6.12075837E-07,
+            "rotZ": 6.12075837e-07,
             "scaleX": 1.49235964,
             "scaleY": 0.0999999046,
             "scaleZ": 1.4960525
@@ -91861,12 +91861,12 @@
               "GUID": "f0e64f",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -5.99049557E-08,
-                "posY": -3.14507162E-14,
-                "posZ": -7.968619E-08,
-                "rotX": 8.27674348E-15,
-                "rotY": 2.67450423E-06,
-                "rotZ": -1.01777751E-13,
+                "posX": -5.99049557e-08,
+                "posY": -3.14507162e-14,
+                "posZ": -7.968619e-08,
+                "rotX": 8.27674348e-15,
+                "rotY": 2.67450423e-06,
+                "rotZ": -1.01777751e-13,
                 "scaleX": 0.268031925,
                 "scaleY": 10.00001,
                 "scaleZ": 0.2673703
@@ -91923,9 +91923,9 @@
             "posX": -18.0380058,
             "posY": 0.9712514,
             "posZ": -55.562912,
-            "rotX": -1.63697121E-06,
+            "rotX": -1.63697121e-06,
             "rotY": 179.979919,
-            "rotZ": 5.450815E-07,
+            "rotZ": 5.450815e-07,
             "scaleX": 1.49358749,
             "scaleY": 0.100000381,
             "scaleZ": 1.4948163
@@ -92037,12 +92037,12 @@
               "GUID": "c36fc6",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -7.983069E-08,
-                "posY": 9.05549236E-14,
-                "posZ": 3.189897E-07,
-                "rotX": 6.284764E-13,
-                "rotY": 1.548111E-05,
-                "rotZ": 8.49060057E-20,
+                "posX": -7.983069e-08,
+                "posY": 9.05549236e-14,
+                "posZ": 3.189897e-07,
+                "rotX": 6.284764e-13,
+                "rotY": 1.548111e-05,
+                "rotZ": 8.49060057e-20,
                 "scaleX": 0.2678116,
                 "scaleY": 9.999962,
                 "scaleZ": 0.267591447
@@ -92099,9 +92099,9 @@
             "posX": -16.4444065,
             "posY": 0.971251547,
             "posZ": -55.562912,
-            "rotX": -1.807802E-06,
+            "rotX": -1.807802e-06,
             "rotY": 179.979767,
-            "rotZ": 6.97130361E-07,
+            "rotZ": 6.97130361e-07,
             "scaleX": 1.49174881,
             "scaleY": 0.100000381,
             "scaleZ": 1.49666786
@@ -92213,12 +92213,12 @@
               "GUID": "b2490d",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 3.19630033E-07,
-                "posY": -1.19208823E-06,
-                "posZ": 3.18618845E-07,
-                "rotX": 3.138934E-14,
-                "rotY": -6.60340561E-07,
-                "rotZ": -1.80882915E-22,
+                "posX": 3.19630033e-07,
+                "posY": -1.19208823e-06,
+                "posZ": 3.18618845e-07,
+                "rotX": 3.138934e-14,
+                "rotY": -6.60340561e-07,
+                "rotZ": -1.80882915e-22,
                 "scaleX": 0.2681417,
                 "scaleY": 9.999962,
                 "scaleZ": 0.267260373
@@ -92275,9 +92275,9 @@
             "posX": -14.8508015,
             "posY": 0.9712514,
             "posZ": -55.5629044,
-            "rotX": -1.8356377E-06,
+            "rotX": -1.8356377e-06,
             "rotY": 179.980011,
-            "rotZ": 4.2322884E-07,
+            "rotZ": 4.2322884e-07,
             "scaleX": 1.4930563,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49545956
@@ -92389,12 +92389,12 @@
               "GUID": "08e2e1",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -3.1936986E-07,
-                "posY": 1.17203447E-13,
-                "posZ": 9.32275E-12,
-                "rotX": -1.3710551E-13,
-                "rotY": -2.87450325E-06,
-                "rotZ": 3.43926068E-21,
+                "posX": -3.1936986e-07,
+                "posY": 1.17203447e-13,
+                "posZ": 9.32275e-12,
+                "rotX": -1.3710551e-13,
+                "rotY": -2.87450325e-06,
+                "rotZ": 3.43926068e-21,
                 "scaleX": 0.267906874,
                 "scaleY": 10.00001,
                 "scaleZ": 0.26747632
@@ -92451,9 +92451,9 @@
             "posX": -13.2572,
             "posY": 0.9712514,
             "posZ": -55.5629044,
-            "rotX": -1.48552965E-06,
+            "rotX": -1.48552965e-06,
             "rotY": 179.98,
-            "rotZ": 5.744255E-07,
+            "rotZ": 5.744255e-07,
             "scaleX": 1.49358749,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49481487
@@ -92565,12 +92565,12 @@
               "GUID": "c2a871",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 1.94376511E-11,
-                "posY": 1.53384165E-14,
-                "posZ": -3.18994125E-07,
-                "rotX": 4.12341521E-13,
-                "rotY": 3.74213823E-06,
-                "rotZ": 1.34655553E-20,
+                "posX": 1.94376511e-11,
+                "posY": 1.53384165e-14,
+                "posZ": -3.18994125e-07,
+                "rotX": 4.12341521e-13,
+                "rotY": 3.74213823e-06,
+                "rotZ": 1.34655553e-20,
                 "scaleX": 0.2678116,
                 "scaleY": 10.00001,
                 "scaleZ": 0.267591685
@@ -92627,9 +92627,9 @@
             "posX": -11.7341013,
             "posY": 0.9712515,
             "posZ": -55.5633049,
-            "rotX": -1.80195468E-06,
+            "rotX": -1.80195468e-06,
             "rotY": 179.979935,
-            "rotZ": 4.802745E-07,
+            "rotZ": 4.802745e-07,
             "scaleX": 1.49232578,
             "scaleY": 0.0999999642,
             "scaleZ": 1.49108887
@@ -92742,11 +92742,11 @@
               "Name": "Custom_Token",
               "Transform": {
                 "posX": -0.000830397534,
-                "posY": -1.19162041E-06,
+                "posY": -1.19162041e-06,
                 "posZ": -0.000830389268,
-                "rotX": 1.28542137E-14,
-                "rotY": 6.09022436E-06,
-                "rotZ": 2.035555E-13,
+                "rotX": 1.28542137e-14,
+                "rotY": 6.09022436e-06,
+                "rotZ": 2.035555e-13,
                 "scaleX": 0.268038,
                 "scaleY": 10.0000038,
                 "scaleZ": 0.26826036
@@ -92803,9 +92803,9 @@
             "posX": -18.0382,
             "posY": 0.9712516,
             "posZ": -57.8598061,
-            "rotX": -1.80672362E-06,
+            "rotX": -1.80672362e-06,
             "rotY": 179.979919,
-            "rotZ": 3.392597E-07,
+            "rotZ": 3.392597e-07,
             "scaleX": 1.49427986,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49427986
@@ -92917,12 +92917,12 @@
               "GUID": "1b0734",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -4.35513764E-15,
-                "posY": -1.192094E-06,
-                "posZ": 5.581499E-15,
-                "rotX": 1.429262E-13,
-                "rotY": 5.236242E-06,
-                "rotZ": -4.07111E-13,
+                "posX": -4.35513764e-15,
+                "posY": -1.192094e-06,
+                "posZ": 5.581499e-15,
+                "rotX": 1.429262e-13,
+                "rotY": 5.236242e-06,
+                "rotZ": -4.07111e-13,
                 "scaleX": 0.2676875,
                 "scaleY": 10.00001,
                 "scaleZ": 0.2676875
@@ -92979,9 +92979,9 @@
             "posX": -16.4439011,
             "posY": 0.9712515,
             "posZ": -57.8598061,
-            "rotX": -1.55975E-06,
+            "rotX": -1.55975e-06,
             "rotY": 179.979919,
-            "rotZ": 6.675526E-07,
+            "rotZ": 6.675526e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.100000381,
             "scaleZ": 1.49420214
@@ -93093,12 +93093,12 @@
               "GUID": "d973ae",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": 3.19134784E-07,
-                "posY": -1.48569007E-15,
-                "posZ": -1.59542978E-07,
-                "rotX": -2.528293E-14,
-                "rotY": -1.59415549E-06,
-                "rotZ": -4.07111E-13,
+                "posX": 3.19134784e-07,
+                "posY": -1.48569007e-15,
+                "posZ": -1.59542978e-07,
+                "rotX": -2.528293e-14,
+                "rotY": -1.59415549e-06,
+                "rotZ": -4.07111e-13,
                 "scaleX": 0.267701477,
                 "scaleY": 9.999962,
                 "scaleZ": 0.267701417
@@ -93155,9 +93155,9 @@
             "posX": -14.8496,
             "posY": 0.971251369,
             "posZ": -57.8598061,
-            "rotX": -1.69921464E-06,
+            "rotX": -1.69921464e-06,
             "rotY": 179.98,
-            "rotZ": 5.76227535E-07,
+            "rotZ": 5.76227535e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.0999999046,
             "scaleZ": 1.49420118
@@ -93269,12 +93269,12 @@
               "GUID": "d7973d",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -5.07600524E-11,
-                "posY": 1.192094E-06,
-                "posZ": 1.59562575E-07,
-                "rotX": 1.13307259E-13,
-                "rotY": 3.530154E-06,
-                "rotZ": 3.4905895E-21,
+                "posX": -5.07600524e-11,
+                "posY": 1.192094e-06,
+                "posZ": 1.59562575e-07,
+                "rotX": 1.13307259e-13,
+                "rotY": 3.530154e-06,
+                "rotZ": 3.4905895e-21,
                 "scaleX": 0.2677015,
                 "scaleY": 10.00001,
                 "scaleZ": 0.267701566
@@ -93331,9 +93331,9 @@
             "posX": -11.6611,
             "posY": 0.9712514,
             "posZ": -57.8598061,
-            "rotX": -1.8309313E-06,
+            "rotX": -1.8309313e-06,
             "rotY": 179.979935,
-            "rotZ": 3.91378563E-07,
+            "rotZ": 3.91378563e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.100000381,
             "scaleZ": 1.49420166
@@ -93448,9 +93448,9 @@
                 "posX": 0.0,
                 "posY": 0.0,
                 "posZ": 0.0,
-                "rotX": -3.02525419E-15,
-                "rotY": 1.13183376E-07,
-                "rotZ": -2.98807751E-24,
+                "rotX": -3.02525419e-15,
+                "rotY": 1.13183376e-07,
+                "rotZ": -2.98807751e-24,
                 "scaleX": 0.267701477,
                 "scaleY": 9.999962,
                 "scaleZ": 0.267701477
@@ -93507,9 +93507,9 @@
             "posX": -13.2554016,
             "posY": 0.9712515,
             "posZ": -57.8598061,
-            "rotX": -1.55784448E-06,
+            "rotX": -1.55784448e-06,
             "rotY": 179.979919,
-            "rotZ": 7.71985469E-07,
+            "rotZ": 7.71985469e-07,
             "scaleX": 1.49420166,
             "scaleY": 0.100000143,
             "scaleZ": 1.49420166
@@ -93621,12 +93621,12 @@
               "GUID": "4ba37f",
               "Name": "Custom_Token",
               "Transform": {
-                "posX": -3.19125036E-07,
-                "posY": 2.20131449E-13,
-                "posZ": 3.67974054E-11,
-                "rotX": -3.680001E-14,
-                "rotY": -1.59415549E-06,
-                "rotZ": 5.119482E-22,
+                "posX": -3.19125036e-07,
+                "posY": 2.20131449e-13,
+                "posZ": 3.67974054e-11,
+                "rotX": -3.680001e-14,
+                "rotY": -1.59415549e-06,
+                "rotZ": 5.119482e-22,
                 "scaleX": 0.267701477,
                 "scaleY": 9.999986,
                 "scaleZ": 0.267701477
@@ -93685,9 +93685,9 @@
         "posX": 68.6102142,
         "posY": 0.8999975,
         "posZ": 54.4288445,
-        "rotX": -4.725259E-07,
+        "rotX": -4.725259e-07,
         "rotY": 270.001831,
-        "rotZ": -1.61144533E-06,
+        "rotZ": -1.61144533e-06,
         "scaleX": 5.85000372,
         "scaleY": 1.0,
         "scaleZ": 5.85000372
@@ -93742,9 +93742,9 @@
         "posX": 68.6102142,
         "posY": 0.899997,
         "posZ": 71.68885,
-        "rotX": -4.92273671E-07,
+        "rotX": -4.92273671e-07,
         "rotY": 269.9963,
-        "rotZ": -1.60625427E-06,
+        "rotZ": -1.60625427e-06,
         "scaleX": 5.85000372,
         "scaleY": 1.0,
         "scaleZ": 5.85000372
@@ -93799,9 +93799,9 @@
         "posX": 80.41022,
         "posY": 0.8999964,
         "posZ": 88.94885,
-        "rotX": -5.135298E-07,
+        "rotX": -5.135298e-07,
         "rotY": 269.98233,
-        "rotZ": -1.5968302E-06,
+        "rotZ": -1.5968302e-06,
         "scaleX": 5.75000334,
         "scaleY": 1.0,
         "scaleZ": 5.75000334
@@ -93856,9 +93856,9 @@
         "posX": 80.41022,
         "posY": 0.8999969,
         "posZ": 71.68885,
-        "rotX": -5.23005554E-07,
+        "rotX": -5.23005554e-07,
         "rotY": 269.982025,
-        "rotZ": -1.60795469E-06,
+        "rotZ": -1.60795469e-06,
         "scaleX": 5.85000372,
         "scaleY": 1.0,
         "scaleZ": 5.85000372
@@ -93913,9 +93913,9 @@
         "posX": 80.41022,
         "posY": 0.8999974,
         "posZ": 54.4288445,
-        "rotX": -5.230027E-07,
+        "rotX": -5.230027e-07,
         "rotY": 269.981628,
-        "rotZ": -1.63630523E-06,
+        "rotZ": -1.63630523e-06,
         "scaleX": 5.85000372,
         "scaleY": 1.0,
         "scaleZ": 5.85000372
@@ -93970,9 +93970,9 @@
         "posX": 56.53778,
         "posY": 0.899996638,
         "posZ": 88.952446,
-        "rotX": -5.21824E-07,
+        "rotX": -5.21824e-07,
         "rotY": 269.980835,
-        "rotZ": -1.602338E-06,
+        "rotZ": -1.602338e-06,
         "scaleX": 5.85000372,
         "scaleY": 1.0,
         "scaleZ": 5.85000372
@@ -94027,9 +94027,9 @@
         "posX": 68.6102142,
         "posY": 0.8999965,
         "posZ": 88.94885,
-        "rotX": -5.090771E-07,
+        "rotX": -5.090771e-07,
         "rotY": 269.982056,
-        "rotZ": -1.60123113E-06,
+        "rotZ": -1.60123113e-06,
         "scaleX": 5.75000334,
         "scaleY": 1.0,
         "scaleZ": 5.75000334
@@ -94084,9 +94084,9 @@
         "posX": 35.2866364,
         "posY": 0.9712486,
         "posZ": 28.1667633,
-        "rotX": 1.39255826E-06,
+        "rotX": 1.39255826e-06,
         "rotY": 0.0255385228,
-        "rotZ": -6.647342E-07,
+        "rotZ": -6.647342e-07,
         "scaleX": 1.49358749,
         "scaleY": 0.0999999046,
         "scaleZ": 1.49481487
@@ -94198,12 +94198,12 @@
           "GUID": "c2a871",
           "Name": "Custom_Token",
           "Transform": {
-            "posX": 1.94376511E-11,
-            "posY": 1.53384165E-14,
-            "posZ": -3.18994125E-07,
-            "rotX": 4.12341521E-13,
-            "rotY": 3.74213823E-06,
-            "rotZ": 1.34655553E-20,
+            "posX": 1.94376511e-11,
+            "posY": 1.53384165e-14,
+            "posZ": -3.18994125e-07,
+            "rotX": 4.12341521e-13,
+            "rotY": 3.74213823e-06,
+            "rotZ": 1.34655553e-20,
             "scaleX": 0.2678116,
             "scaleY": 10.00001,
             "scaleZ": 0.267591685
@@ -94260,9 +94260,9 @@
         "posX": 35.2866364,
         "posY": 0.971248567,
         "posZ": 31.5967636,
-        "rotX": 1.57160173E-06,
+        "rotX": 1.57160173e-06,
         "rotY": 0.0255385637,
-        "rotZ": -4.21258022E-07,
+        "rotZ": -4.21258022e-07,
         "scaleX": 1.4930563,
         "scaleY": 0.0999999046,
         "scaleZ": 1.49545956
@@ -94374,12 +94374,12 @@
           "GUID": "08e2e1",
           "Name": "Custom_Token",
           "Transform": {
-            "posX": -3.1936986E-07,
-            "posY": 1.17203447E-13,
-            "posZ": 9.32275E-12,
-            "rotX": -1.3710551E-13,
-            "rotY": -2.87450325E-06,
-            "rotZ": 3.43926068E-21,
+            "posX": -3.1936986e-07,
+            "posY": 1.17203447e-13,
+            "posZ": 9.32275e-12,
+            "rotX": -1.3710551e-13,
+            "rotY": -2.87450325e-06,
+            "rotZ": 3.43926068e-21,
             "scaleX": 0.267906874,
             "scaleY": 10.00001,
             "scaleZ": 0.26747632
@@ -94436,9 +94436,9 @@
         "posX": 35.2866364,
         "posY": 0.971248746,
         "posZ": 29.8967628,
-        "rotX": 1.558272E-06,
+        "rotX": 1.558272e-06,
         "rotY": 0.025618704,
-        "rotZ": -3.89147885E-07,
+        "rotZ": -3.89147885e-07,
         "scaleX": 1.49174881,
         "scaleY": 0.100000381,
         "scaleZ": 1.49666786
@@ -94550,12 +94550,12 @@
           "GUID": "b2490d",
           "Name": "Custom_Token",
           "Transform": {
-            "posX": 3.19630033E-07,
-            "posY": -1.19208823E-06,
-            "posZ": 3.18618845E-07,
-            "rotX": 3.138934E-14,
-            "rotY": -6.60340561E-07,
-            "rotZ": -1.80882915E-22,
+            "posX": 3.19630033e-07,
+            "posY": -1.19208823e-06,
+            "posZ": 3.18618845e-07,
+            "rotX": 3.138934e-14,
+            "rotY": -6.60340561e-07,
+            "rotZ": -1.80882915e-22,
             "scaleX": 0.2681417,
             "scaleY": 9.999962,
             "scaleZ": 0.267260373
@@ -94612,9 +94612,9 @@
         "posX": 35.2866364,
         "posY": 0.9712487,
         "posZ": 26.5167637,
-        "rotX": 1.51468748E-06,
-        "rotY": -3.58231227E-06,
-        "rotZ": -5.953674E-07,
+        "rotX": 1.51468748e-06,
+        "rotY": -3.58231227e-06,
+        "rotZ": -5.953674e-07,
         "scaleX": 1.49358749,
         "scaleY": 0.100000381,
         "scaleZ": 1.4948163
@@ -94726,12 +94726,12 @@
           "GUID": "c36fc6",
           "Name": "Custom_Token",
           "Transform": {
-            "posX": -7.983069E-08,
-            "posY": 9.05549236E-14,
-            "posZ": 3.189897E-07,
-            "rotX": 6.284764E-13,
-            "rotY": 1.548111E-05,
-            "rotZ": 8.49060057E-20,
+            "posX": -7.983069e-08,
+            "posY": 9.05549236e-14,
+            "posZ": 3.189897e-07,
+            "rotX": 6.284764e-13,
+            "rotY": 1.548111e-05,
+            "rotZ": 8.49060057e-20,
             "scaleX": 0.2678116,
             "scaleY": 9.999962,
             "scaleZ": 0.267591447
@@ -94788,9 +94788,9 @@
         "posX": -35.15704,
         "posY": 0.971251,
         "posZ": -29.9550877,
-        "rotX": -1.68235886E-06,
+        "rotX": -1.68235886e-06,
         "rotY": 179.9926,
-        "rotZ": 4.54585859E-07,
+        "rotZ": 4.54585859e-07,
         "scaleX": 1.49174881,
         "scaleY": 0.100000381,
         "scaleZ": 1.49666786
@@ -94902,12 +94902,12 @@
           "GUID": "b2490d",
           "Name": "Custom_Token",
           "Transform": {
-            "posX": 3.19630033E-07,
-            "posY": -1.19208823E-06,
-            "posZ": 3.18618845E-07,
-            "rotX": 3.138934E-14,
-            "rotY": -6.60340561E-07,
-            "rotZ": -1.80882915E-22,
+            "posX": 3.19630033e-07,
+            "posY": -1.19208823e-06,
+            "posZ": 3.18618845e-07,
+            "rotX": 3.138934e-14,
+            "rotY": -6.60340561e-07,
+            "rotZ": -1.80882915e-22,
             "scaleX": 0.2681417,
             "scaleY": 9.999962,
             "scaleZ": 0.267260373
@@ -94964,9 +94964,9 @@
         "posX": -35.1419067,
         "posY": 0.971250832,
         "posZ": -28.2276611,
-        "rotX": -1.38628457E-06,
+        "rotX": -1.38628457e-06,
         "rotY": 179.981964,
-        "rotZ": 4.62296924E-07,
+        "rotZ": 4.62296924e-07,
         "scaleX": 1.49358749,
         "scaleY": 0.0999999046,
         "scaleZ": 1.49481487
@@ -95078,12 +95078,12 @@
           "GUID": "c2a871",
           "Name": "Custom_Token",
           "Transform": {
-            "posX": 1.94376511E-11,
-            "posY": 1.53384165E-14,
-            "posZ": -3.18994125E-07,
-            "rotX": 4.12341521E-13,
-            "rotY": 3.74213823E-06,
-            "rotZ": 1.34655553E-20,
+            "posX": 1.94376511e-11,
+            "posY": 1.53384165e-14,
+            "posZ": -3.18994125e-07,
+            "rotX": 4.12341521e-13,
+            "rotY": 3.74213823e-06,
+            "rotZ": 1.34655553e-20,
             "scaleX": 0.2678116,
             "scaleY": 10.00001,
             "scaleZ": 0.267591685
@@ -95140,9 +95140,9 @@
         "posX": -35.14109,
         "posY": 0.9712508,
         "posZ": -26.5750885,
-        "rotX": -1.69716145E-06,
+        "rotX": -1.69716145e-06,
         "rotY": 180.003876,
-        "rotZ": 1.61927161E-07,
+        "rotZ": 1.61927161e-07,
         "scaleX": 1.49358749,
         "scaleY": 0.100000381,
         "scaleZ": 1.4948163
@@ -95254,12 +95254,12 @@
           "GUID": "c36fc6",
           "Name": "Custom_Token",
           "Transform": {
-            "posX": -7.983069E-08,
-            "posY": 9.05549236E-14,
-            "posZ": 3.189897E-07,
-            "rotX": 6.284764E-13,
-            "rotY": 1.548111E-05,
-            "rotZ": 8.49060057E-20,
+            "posX": -7.983069e-08,
+            "posY": 9.05549236e-14,
+            "posZ": 3.189897e-07,
+            "rotX": 6.284764e-13,
+            "rotY": 1.548111e-05,
+            "rotZ": 8.49060057e-20,
             "scaleX": 0.2678116,
             "scaleY": 9.999962,
             "scaleZ": 0.267591447
@@ -95316,9 +95316,9 @@
         "posX": -35.14109,
         "posY": 0.9712509,
         "posZ": -31.6550884,
-        "rotX": -9.13537E-06,
+        "rotX": -9.13537e-06,
         "rotY": 179.990677,
-        "rotZ": 5.45815055E-06,
+        "rotZ": 5.45815055e-06,
         "scaleX": 1.4930563,
         "scaleY": 0.0999999046,
         "scaleZ": 1.49545956
@@ -95430,12 +95430,12 @@
           "GUID": "08e2e1",
           "Name": "Custom_Token",
           "Transform": {
-            "posX": -3.1936986E-07,
-            "posY": 1.17203447E-13,
-            "posZ": 9.32275E-12,
-            "rotX": -1.3710551E-13,
-            "rotY": -2.87450325E-06,
-            "rotZ": 3.43926068E-21,
+            "posX": -3.1936986e-07,
+            "posY": 1.17203447e-13,
+            "posZ": 9.32275e-12,
+            "rotX": -1.3710551e-13,
+            "rotY": -2.87450325e-06,
+            "rotZ": 3.43926068e-21,
             "scaleX": 0.267906874,
             "scaleY": 10.00001,
             "scaleZ": 0.26747632
@@ -95482,6 +95482,296 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": ""
+        }
+      ]
+    },
+    {
+      "GUID": "176bc4",
+      "Name": "Infinite_Bag",
+      "Transform": {
+        "posX": 29.17,
+        "posY": 0.8830001,
+        "posZ": -31.3288116,
+        "rotX": -1.35849791e-06,
+        "rotY": 179.980026,
+        "rotZ": 6.91915034e-07,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "d6",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "eaee5c",
+          "Name": "Die_6",
+          "Transform": {
+            "posX": -28.6795883,
+            "posY": 3.33315635,
+            "posZ": -27.1268845,
+            "rotX": 85.3196,
+            "rotY": 113.570709,
+            "rotZ": 293.821655,
+            "scaleX": 1.0999999,
+            "scaleY": 1.0999999,
+            "scaleZ": 1.0999999
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "MaterialIndex": 0,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "RotationValues": [
+            {
+              "Value": "1",
+              "Rotation": {
+                "x": -90.0,
+                "y": 0.0,
+                "z": 0.0
+              }
+            },
+            {
+              "Value": "2",
+              "Rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              }
+            },
+            {
+              "Value": "3",
+              "Rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": -90.0
+              }
+            },
+            {
+              "Value": "4",
+              "Rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 90.0
+              }
+            },
+            {
+              "Value": "5",
+              "Rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": -180.0
+              }
+            },
+            {
+              "Value": "6",
+              "Rotation": {
+                "x": 90.0,
+                "y": 0.0,
+                "z": 0.0
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "714214",
+      "Name": "Infinite_Bag",
+      "Transform": {
+        "posX": -29.5,
+        "posY": 0.8829988,
+        "posZ": 31.1668968,
+        "rotX": -1.22645258e-06,
+        "rotY": 179.980026,
+        "rotZ": 4.39969142e-07,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "d6",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "eaee5d",
+          "Name": "Die_6",
+          "Transform": {
+            "posX": -28.6795883,
+            "posY": 3.33315635,
+            "posZ": -27.1268845,
+            "rotX": 85.3196,
+            "rotY": 113.570709,
+            "rotZ": 293.821655,
+            "scaleX": 1.0999999,
+            "scaleY": 1.0999999,
+            "scaleZ": 1.0999999
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "MaterialIndex": 0,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "RotationValues": [
+            {
+              "Value": "1",
+              "Rotation": {
+                "x": -90.0,
+                "y": 0.0,
+                "z": 0.0
+              }
+            },
+            {
+              "Value": "2",
+              "Rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              }
+            },
+            {
+              "Value": "3",
+              "Rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": -90.0
+              }
+            },
+            {
+              "Value": "4",
+              "Rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 90.0
+              }
+            },
+            {
+              "Value": "5",
+              "Rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": -180.0
+              }
+            },
+            {
+              "Value": "6",
+              "Rotation": {
+                "x": 90.0,
+                "y": 0.0,
+                "z": 0.0
+              }
+            }
+          ]
         }
       ]
     }

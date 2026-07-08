@@ -13,6 +13,16 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.9.3 
+- Fixed bug where End of Battle scoring didn't count towards 45 pts primary limit. 
+- Some UI cleanups and buttons changing positions.
+- Refreshed Battlemaster maps
+- Added an endless 6-dice bag next to each players tray just in case something bugs out. 
+- Chess clock rework: new "Pass Chess Clock" and "Pause Chess Clock" game keys (bind them under Options -> Game Keys). Anyone can use them - passing stops the running clock and starts the opponent's, and works even while paused. The old numpad 7/8/9 keys now do the same instead of the confusing per-seat behaviour. 
+- Added play/pause buttons next to each clock in the score overlay. Play starts that clock; pause stops the running clock and, pressed again, resumes whoever was on the clock. 
+- Fixed the chess clock ignoring the next click after a spectator pressed it. 
+- The chess clock now follows the turn: passing the turn while the clock is running automatically switches it to the new active player (a paused or not-yet-started clock is left alone). 
+
 ## v1.9.2 
 - Added set mission button that sets mission to the board state. This is more of a QoL for people who play non-comp modes. 
 - Additional default tokens for basic things to the left of each players board 

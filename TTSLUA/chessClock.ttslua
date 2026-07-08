@@ -119,7 +119,20 @@ function onLoad(json)
     refreshHudHighlight()
     -- Re-apply once Global.UI is guaranteed live (see note in refreshHudHighlight):
     -- the immediate call can lose the load race against the overlay coming up.
-    Wait.time(refreshHudHighlight, 1)
+    -- The onClick wiring is re-pushed too, for the same reason.
+    Wait.time(function()
+        ensureChessStopwatchUI()
+        refreshHudHighlight()
+    end, 1)
+    -- Game Keys (Options -> Game Keys). Shared controls: the target side is
+    -- derived from the clock state, not from who pressed, so a single binding
+    -- serves every player (spectators included) - see PassClock/PauseClock.
+    addHotkey("Pass Chess Clock", function(playerColor, _, _)
+        PassClock(playerColor)
+    end)
+    addHotkey("Pause Chess Clock", function(playerColor, _, _)
+        PauseClock(playerColor)
+    end)
     clockWaitId = Wait.time(Tick, RESOLUTION, -1)
 	end
 
@@ -142,24 +155,17 @@ function onLoad(json)
 	--Allows script buuton to call Gizmo's click functions
 
 
+-- Legacy numpad keys, kept for muscle memory but re-pointed at the shared
+-- state-derived controls (the primary bindings are the "Pass/Pause Chess Clock"
+-- Game Keys registered in onLoad). The old per-seat semantics - 9 Blue-only,
+-- 7 Red-only, each starting the presser's OWN clock while broadcasting "Time
+-- passed" - were misleading: pressed at the end of your turn they paused your
+-- clock instead of passing it.
 function onScriptingButtonDown(index, color)
-  	if index == 9 and color == "Blue" then
-    	broadcastToAll("Time passed by "..Player[color].steam_name, {0,0,1})
-		Click_1(Player[color],1,0)
-	elseif index == 9 and color == "Red" then
-		broadcastToAll("Use button 7 to pass time")
-	end
-
-	if index == 7 and color == "Red" then
-		broadcastToAll("Time passed by "..Player[color].steam_name, {1,0,0})
-  		Click_2(Player[color],1,0)
-	elseif index == 7 and color == "Blue" then
-		broadcastToAll("Use button 9 to pass time")
-	end
-
-	if index == 8 then
-		broadcastToAll("Time Paused", Table)
-		Click_C(Player[color],1,0)
+	if index == 9 or index == 7 then
+		PassClock(color)
+	elseif index == 8 then
+		PauseClock(color)
 	end
 end
 
@@ -175,7 +181,12 @@ end
 	            data.seconds_1 = data.start_1
 	        end
 	        if player.color == "Grey" or (data.DoTurns == true and data.color_1 ~= player.color and data.color_2 ~= player.color and player.color ~= "Black") then
-				holding_1=true
+				-- Guarded click (spectator / colour-mode mismatch): swallow it, but
+				-- RESET the hold state instead of arming it. HUD/hotkey paths have no
+				-- mouse-up to clear holding_1, so arming here leaked an ever-growing
+				-- hold_1Time that swallowed the next legitimate click (Click_C below
+				-- already resets; this now matches it).
+				holding_1=false
 	            hold_1Time=0
 	            return
 	        end
@@ -254,7 +265,8 @@ end
 	            data.seconds_2 = data.start_2
 	        end
 	        if player.color == "Grey" or (data.DoTurns == true and data.color_1 ~= player.color and data.color_2 ~= player.color and player.color ~= "Black") then
-	            holding_2=true
+	            -- Same reset-not-arm fix as Click_1 (see comment there).
+	            holding_2=false
 	            hold_2Time=0
 	            return
 	        end
@@ -908,6 +920,146 @@ function ensureChessStopwatchUI()
 	Global.call("setHudAttribute", {id = "ChsStpPlus1", attr = "onClick", value = guid .. "/AddTime1"})
 	Global.call("setHudAttribute", {id = "ChsStpMinus2", attr = "onClick", value = guid .. "/SubTime2"})
 	Global.call("setHudAttribute", {id = "ChsStpPlus2", attr = "onClick", value = guid .. "/AddTime2"})
+	Global.call("setHudAttribute", {id = "ChsStpPlay1", attr = "onClick", value = guid .. "/PlayClock1"})
+	Global.call("setHudAttribute", {id = "ChsStpPlay2", attr = "onClick", value = guid .. "/PlayClock2"})
+	Global.call("setHudAttribute", {id = "ChsStpPause1", attr = "onClick", value = guid .. "/PauseClock"})
+	Global.call("setHudAttribute", {id = "ChsStpPause2", attr = "onClick", value = guid .. "/PauseClock"})
+end
+
+-- ===== Shared clock controls (HUD play/pause buttons, Game Keys, numpad keys) =====
+-- Design: the affected side is derived from the CLOCK STATE, never from who
+-- pressed - so one binding serves both players and spectators alike. The real
+-- presser is only used for the chat announcement. Gizmo's Click_1/Click_2 keep
+-- their seat/colour-mode guards for direct pill clicks and the physical clock,
+-- so these controls drive them through a synthetic "Black" actor, which those
+-- guards explicitly exempt.
+local CLOCK_ACTOR = {color = "Black"}
+
+-- Accepts a Player instance (XML onClick) or a colour string (hotkeys).
+-- NOTE: XML-callback Player instances are MoonSharp userdata, not Lua tables,
+-- so duck-type the fields instead of checking type(player) == "table".
+local function presserName(player)
+	if type(player) == "string" then
+		local seated = Player[player]
+		if seated and seated.steam_name then
+			return seated.steam_name
+		end
+		return player
+	end
+	if player ~= nil then
+		local ok, name = pcall(function() return player.steam_name end)
+		if ok and name and name ~= "" then
+			return name
+		end
+		local okColor, color = pcall(function() return player.color end)
+		if okColor and color then
+			return tostring(color)
+		end
+	end
+	return "?"
+end
+
+-- 1 = Blue running, 2 = Red running, nil = neither (paused/editing).
+local function clockSideRunning(state)
+	if state == 1 or state == 3 or state == 9 then return 1 end
+	if state == 2 or state == 4 or state == 10 then return 2 end
+	return nil
+end
+
+-- States 5-8 are the physical clock's digit-editing modes (set time/bonus/delay);
+-- remote controls must not fire mid-edit because Click_1/Click_2 double as
+-- digit +/- buttons there.
+local function clockEditing()
+	return data.state >= 5 and data.state <= 8
+end
+
+local function startClockSide(side, byName)
+	if side == 1 then
+		Click_1(CLOCK_ACTOR)
+		broadcastToAll("Clock passed to Blue by " .. byName, {0.4, 0.6, 1})
+	else
+		Click_2(CLOCK_ACTOR)
+		broadcastToAll("Clock passed to Red by " .. byName, {1, 0.4, 0.4})
+	end
+end
+
+-- Pass = stop whichever clock is running and start the other one. When paused,
+-- falls back to whoever ran LAST (storedState), so a pass from pause still
+-- hands the time to the opponent and starts it.
+function PassClock(player)
+	if clockEditing() then
+		broadcastToAll("Clock is in time-setup mode - finish editing first.", {1, 0.6, 0})
+		return
+	end
+	local side = clockSideRunning(data.state) or clockSideRunning(data.storedState)
+	if not side then
+		broadcastToAll("No clock has been started yet - use a play button first.", {1, 0.6, 0})
+		return
+	end
+	startClockSide(side == 1 and 2 or 1, presserName(player))
+end
+
+-- Pause toggle: pauses the running clock; pressed again while paused it
+-- resumes whoever was running (Pause() stashes that side in storedState, and
+-- Resume() restores it exactly - no Click_N, so no time bonus is re-granted).
+-- Before any clock has ever run (start of game) storedState is also the paused
+-- state, so there is nothing to resume and the press is a no-op.
+function PauseClock(player)
+	if clockEditing() then return end
+	local running = clockSideRunning(data.state)
+	if running then
+		Pause()
+		refreshHudHighlight()
+		broadcastToAll("Clock paused by " .. presserName(player), {0.8, 0.8, 0.8})
+		return
+	end
+	local side = clockSideRunning(data.storedState)
+	if not side then return end
+	Resume()
+	SetTurn()
+	refreshHudHighlight()
+	local sideName = (side == 1) and "Blue" or "Red"
+	broadcastToAll("Clock resumed by " .. presserName(player) .. " - " .. sideName .. "'s time is running",
+		(side == 1) and {0.4, 0.6, 1} or {1, 0.4, 0.4})
+end
+
+-- HUD play buttons: explicitly start one side's clock. Doubles as resume after
+-- a pause and as a pass when the other side was running. No-op if that side is
+-- already running.
+local function playClockSide(side, player)
+	if clockEditing() then
+		broadcastToAll("Clock is in time-setup mode - finish editing first.", {1, 0.6, 0})
+		return
+	end
+	if clockSideRunning(data.state) == side then return end
+	local byName = presserName(player)
+	if side == 1 then
+		Click_1(CLOCK_ACTOR)
+		broadcastToAll("Blue clock started by " .. byName, {0.4, 0.6, 1})
+	else
+		Click_2(CLOCK_ACTOR)
+		broadcastToAll("Red clock started by " .. byName, {1, 0.4, 0.4})
+	end
+end
+
+function PlayClock1(player) playClockSide(1, player) end
+function PlayClock2(player) playClockSide(2, player) end
+
+-- Called by startMenu.passTurn after the active player flips: if the clock was
+-- running for the previous player, switch it to the new active player. A
+-- paused, editing, or never-started clock is left alone, so turn passes made
+-- before the game clock is started never start it.
+function SyncClockToTurn(params)
+	local color = params and params.color
+	local side = (color == "Blue" and 1) or (color == "Red" and 2) or nil
+	if not side then return end
+	if clockEditing() then return end
+	local running = clockSideRunning(data.state)
+	if not running or running == side then return end
+	if side == 1 then Click_1(CLOCK_ACTOR) else Click_2(CLOCK_ACTOR) end
+	-- printToAll, not broadcast: passTurn already pops the turn banner.
+	printToAll("Chess clock follows the turn - now running for " .. color .. ".",
+		(side == 1) and {0.4, 0.6, 1} or {1, 0.4, 0.4})
 end
 
 -- Changes the color of the UI buttons based on the set colors
