@@ -182,6 +182,7 @@ MAP_CREATOR_DISPLAY_NAMES = {
     "map_crt_battlemaster_armageddon_desert": "Battlemaster - Desert",
     "map_crt_zim": "Zim",
     "map_crt_t5s2": "T5S2",
+    "map_crt_lct1": "LCT-Pack-1",
 }
 LAYOUT_ART_DECK_GUID = "fb4b5d"
 # A matchup map source may be a Deck or a standard Bag. Bags are the preferred
