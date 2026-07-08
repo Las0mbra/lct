@@ -38,6 +38,10 @@ BTTF_RUINS_MAT_URLS = {}   -- @@BTTF_RUINS_MAT_URLS@@
 BTTF_RUINS_MAT_NAMES = {}   -- @@BTTF_RUINS_MAT_NAMES@@
 DESERT_MAT_URLS = {}   -- @@DESERT_MAT_URLS@@
 DESERT_MAT_NAMES = {}   -- @@DESERT_MAT_NAMES@@
+-- LCT Pack 1 map mat pool, intentionally separate from the manual all-mats pool.
+LCT_MAT_RANDOMIZER_ENABLED = true   -- @@LCT_MAT_RANDOMIZER_ENABLED@@
+LCT_PACK_1_MAT_URLS = {}   -- @@LCT_PACK_1_MAT_URLS@@
+LCT_PACK_1_MAT_NAMES = {}   -- @@LCT_PACK_1_MAT_NAMES@@
 defaultMatTextureURL = "https://steamusercontent-a.akamaihd.net/ugc/15425072743099001267/B83134980FFB54308B44410C44305D245F8DF3F0/"
 gameModeMatTextureURL = "https://steamusercontent-a.akamaihd.net/ugc/11927766457912242969/CF467C9E73E87C1EABF3F2239B0B3BF47ADF00CA/"
 
@@ -4373,7 +4377,9 @@ end
 -- detection/find/apply each fire. Set false once the feature is confirmed.
 BM_MAT_DEBUG = true
 function bmMatDebug(msg)
-    if BM_MAT_DEBUG then printToAll("[BM MAT] " .. msg, {0.4, 0.8, 1}) end
+    if BM_MAT_DEBUG and Global.getVar("DEBUG") == true then
+        printToAll("[BM MAT] " .. msg, {0.4, 0.8, 1})
+    end
 end
 
 -- Frames to wait before the first look: past the card's board wipe (~frame 4) so
@@ -4406,8 +4412,8 @@ function enforceBattlemasterMatsNonInteractive()
     Wait.frames(poll, BM_MAT_FLOOR_FRAMES)
 end
 
-function reskinBattlemasterMatFromPool(urls, label)
-    if not BM_MAT_RANDOMIZER_ENABLED then return end
+function reskinMapMatFromPool(urls, label, enabled)
+    if not enabled then return end
     if type(urls) ~= "table" or #urls == 0 then
         bmMatDebug(label .. " empty -- not baked into this build.")
         return
@@ -4438,12 +4444,20 @@ function reskinBattlemasterMatFromPool(urls, label)
     Wait.frames(poll, BM_MAT_FLOOR_FRAMES)
 end
 
+function reskinBattlemasterMatFromPool(urls, label)
+    reskinMapMatFromPool(urls, label, BM_MAT_RANDOMIZER_ENABLED)
+end
+
 function reskinBattlemasterBttfRuinsMat()
     reskinBattlemasterMatFromPool(BTTF_RUINS_MAT_URLS, "BTTF_RUINS_MAT_URLS")
 end
 
 function reskinBattlemasterDesertMat()
     reskinBattlemasterMatFromPool(DESERT_MAT_URLS, "DESERT_MAT_URLS")
+end
+
+function reskinLctPack1Mat()
+    reskinMapMatFromPool(LCT_PACK_1_MAT_URLS, "LCT_PACK_1_MAT_URLS", LCT_MAT_RANDOMIZER_ENABLED)
 end
 
 -- ===================== Mat Randomizer manual picker =====================
@@ -4575,9 +4589,10 @@ function onMapCardLoaded(params)
         placeLoadedLayoutArtCard(name)
     end
 
-    -- Re-skin selected static Battlemaster maps from creator-specific mat pools.
+    -- Re-skin selected static maps from creator-specific mat pools.
     local loadedCreator = loadedMapCreator(params)
-    if BM_MAT_RANDOMIZER_ENABLED then
+    local lctMatRandomizerActive = loadedCreator == "lct1" and LCT_MAT_RANDOMIZER_ENABLED
+    if BM_MAT_RANDOMIZER_ENABLED or lctMatRandomizerActive then
         bmMatDebug("onMapCardLoaded guid=" .. tostring(params and params.guid)
             .. " provider=" .. tostring(params and params.provider)
             .. " creator=" .. tostring(loadedCreator))
@@ -4585,7 +4600,9 @@ function onMapCardLoaded(params)
     if isBattlemaster then
         enforceBattlemasterMatsNonInteractive()
     end
-    if BM_MAT_RANDOMIZER_ENABLED then
+    if lctMatRandomizerActive then
+        reskinLctPack1Mat()
+    elseif BM_MAT_RANDOMIZER_ENABLED then
         if loadedCreator == "battlemaster_bttf_ruins" or loadedCreator == "battlemaster_bttf" then
             reskinBattlemasterBttfRuinsMat()
         elseif loadedCreator == "battlemaster_armageddon_desert" then
