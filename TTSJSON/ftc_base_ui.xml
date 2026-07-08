@@ -90,7 +90,7 @@
   <Button id="DebugToolsMinBtn" text="—" fontSize="24" textColor="#FFFFFF" color="#B52020" width="44" height="44" roundEdges="true" outline="#2a2a4aCC" outlineSize="3" rectAlignment="UpperRight" offsetXY="-26 -26" onClick="minimizeDebugTools" tooltip="Minimize"/>
 </Panel>
 
-<Panel id="RedHud_VPScores" visibility="Red" active="true" scale="0.43 0.43 0.43" width="1216" height="228" rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="RedHud_VPScores" visibility="Red" active="true" scale="0.40 0.40 0.40" width="1216" height="228" rectAlignment="UpperRight" offsetXY="-167 0" color="rgba(0,0,0,0)" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <HorizontalLayout spacing="6" padding="0" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="UpperLeft">
   <Panel id="RedHud_MainPanel" flexibleWidth="0" preferredWidth="1160" minWidth="1160" preferredHeight="228" minHeight="228" flexibleHeight="0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3">
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleLeft">
@@ -184,8 +184,8 @@
     </Panel>
 </Panel>
 
-<Panel id="BlueHud_VPScores" visibility="Blue" active="true" scale="0.43 0.43 0.43" width="1216" height="228"
-rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="BlueHud_VPScores" visibility="Blue" active="true" scale="0.40 0.40 0.40" width="1216" height="228"
+rectAlignment="UpperRight" offsetXY="-167 0" color="rgba(0,0,0,0)" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <HorizontalLayout spacing="6" padding="0" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="UpperLeft">
   <Panel id="BlueHud_MainPanel" flexibleWidth="0" preferredWidth="1160" minWidth="1160" preferredHeight="228" minHeight="228" flexibleHeight="0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3">
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleLeft">
@@ -279,7 +279,7 @@ rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDraggi
     </Panel>
 </Panel>
 
-<Panel id="GreyHud_VPScores" visibility="Grey" active="true" scale="0.43 0.43 0.43" width="1216" height="155" rectAlignment="UpperRight" offsetXY="-290 -72" color="rgba(0,0,0,0)" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="GreyHud_VPScores" visibility="Grey" active="true" scale="0.40 0.40 0.40" width="1216" height="155" rectAlignment="UpperRight" offsetXY="-167 0" color="rgba(0,0,0,0)" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <HorizontalLayout spacing="6" padding="0" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="UpperLeft">
   <Panel id="GreyHud_MainPanel" flexibleWidth="0" preferredWidth="1160" minWidth="1160" preferredHeight="155" minHeight="155" flexibleHeight="0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3">
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false">
