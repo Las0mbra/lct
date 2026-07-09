@@ -13,6 +13,13 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.10.0
+- Added the first pack of LCT maps, 15 are now in (1 for each matchup) that aim to be both thematic and close to GW terrains that they showed us. Also they will have a lot of texture randomization. The next packs will come soon!
+- Improved clock in the overlay. There is a Pass/Pause button in the overlay. Also I 've added shortcuts (that work now) that allow each player to Pass the clock and Pause/Resume the active clock. Also now the clock (if active) will pass to the other player when passing the turn.
+- Updated the cards from Shinobau, also reduced drastically their image size. This is the first optimization pass that I am working on.
+- Additional overlay fixes, now it should be in a less intrusive/annoying position. It will still "reset" due to how TTS works so keep that in mind.
+
+
 ## v1.9.3 
 - Fixed bug where End of Battle scoring didn't count towards 45 pts primary limit. 
 - Some UI cleanups and buttons changing positions.

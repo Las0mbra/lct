@@ -115,9 +115,9 @@
           <Text id="RedHud_TVWatch1" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         </Panel>
         <HorizontalLayout id="RedHud_PhaseRow1" spacing="2">
-          <Button id="RedHud_Ph11" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmdBlue"/>
-          <Button id="RedHud_Ph21" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMovBlue"/>
-          <Button id="RedHud_Ph31" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseShtBlue"/>
+          <Button id="RedHud_Ph11" text="✴" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmdBlue"/>
+          <Button id="RedHud_Ph21" text="➡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMovBlue"/>
+          <Button id="RedHud_Ph31" text="✜" fontSize="36" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseShtBlue"/>
           <Button id="RedHud_Ph41" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseChrBlue"/>
           <Button id="RedHud_Ph51" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseFgtBlue"/>
         </HorizontalLayout>
@@ -144,9 +144,9 @@
           <Text id="RedHud_TVWatch2" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         </Panel>
         <HorizontalLayout id="RedHud_PhaseRow2" spacing="2">
-          <Button id="RedHud_Ph12" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmdRed"/>
-          <Button id="RedHud_Ph22" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMovRed"/>
-          <Button id="RedHud_Ph32" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseShtRed"/>
+          <Button id="RedHud_Ph12" text="✴" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmdRed"/>
+          <Button id="RedHud_Ph22" text="➡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMovRed"/>
+          <Button id="RedHud_Ph32" text="✜" fontSize="36" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseShtRed"/>
           <Button id="RedHud_Ph42" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseChrRed"/>
           <Button id="RedHud_Ph52" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseFgtRed"/>
         </HorizontalLayout>
@@ -210,9 +210,9 @@ rectAlignment="UpperRight" offsetXY="-167 0" color="rgba(0,0,0,0)" allowDragging
           <Text id="BlueHud_TVWatch1" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         </Panel>
         <HorizontalLayout id="BlueHud_PhaseRow1" spacing="2">
-          <Button id="BlueHud_Ph11" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmdBlue"/>
-          <Button id="BlueHud_Ph21" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMovBlue"/>
-          <Button id="BlueHud_Ph31" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseShtBlue"/>
+          <Button id="BlueHud_Ph11" text="✴" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmdBlue"/>
+          <Button id="BlueHud_Ph21" text="➡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMovBlue"/>
+          <Button id="BlueHud_Ph31" text="✜" fontSize="36" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseShtBlue"/>
           <Button id="BlueHud_Ph41" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseChrBlue"/>
           <Button id="BlueHud_Ph51" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseFgtBlue"/>
         </HorizontalLayout>
@@ -239,9 +239,9 @@ rectAlignment="UpperRight" offsetXY="-167 0" color="rgba(0,0,0,0)" allowDragging
           <Text id="BlueHud_TVWatch2" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         </Panel>
         <HorizontalLayout id="BlueHud_PhaseRow2" spacing="2">
-          <Button id="BlueHud_Ph12" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmdRed"/>
-          <Button id="BlueHud_Ph22" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMovRed"/>
-          <Button id="BlueHud_Ph32" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseShtRed"/>
+          <Button id="BlueHud_Ph12" text="✴" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseCmdRed"/>
+          <Button id="BlueHud_Ph22" text="➡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseMovRed"/>
+          <Button id="BlueHud_Ph32" text="✜" fontSize="36" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseShtRed"/>
           <Button id="BlueHud_Ph42" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseChrRed"/>
           <Button id="BlueHud_Ph52" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick="738804/hudPhaseFgtRed"/>
         </HorizontalLayout>
@@ -301,9 +301,9 @@ rectAlignment="UpperRight" offsetXY="-167 0" color="rgba(0,0,0,0)" allowDragging
           <Text id="GreyHud_TVWatch1" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         </Panel>
         <HorizontalLayout spacing="2">
-          <Button id="GreyHud_Ph11" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick=""/>
-          <Button id="GreyHud_Ph21" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick=""/>
-          <Button id="GreyHud_Ph31" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick=""/>
+          <Button id="GreyHud_Ph11" text="✴" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick=""/>
+          <Button id="GreyHud_Ph21" text="➡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick=""/>
+          <Button id="GreyHud_Ph31" text="✜" fontSize="36" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick=""/>
           <Button id="GreyHud_Ph41" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick=""/>
           <Button id="GreyHud_Ph51" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick=""/>
         </HorizontalLayout>
@@ -330,9 +330,9 @@ rectAlignment="UpperRight" offsetXY="-167 0" color="rgba(0,0,0,0)" allowDragging
           <Text id="GreyHud_TVWatch2" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
         </Panel>
         <HorizontalLayout spacing="2">
-          <Button id="GreyHud_Ph12" text="✸" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick=""/>
-          <Button id="GreyHud_Ph22" text="⇢" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick=""/>
-          <Button id="GreyHud_Ph32" text="◎" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick=""/>
+          <Button id="GreyHud_Ph12" text="✴" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick=""/>
+          <Button id="GreyHud_Ph22" text="➡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick=""/>
+          <Button id="GreyHud_Ph32" text="✜" fontSize="36" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick=""/>
           <Button id="GreyHud_Ph42" text="⚡" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick=""/>
           <Button id="GreyHud_Ph52" text="⚔" fontSize="28" textColor="#FFFFFF30" color="rgba(0,0,0,0)" width="38" height="50" onClick=""/>
         </HorizontalLayout>

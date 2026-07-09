@@ -570,7 +570,7 @@ function takeDiceOut(batch)
 		printToAll('Warning - invalid description. Restored default configuration.', {0.8, 0.5, 0})
 	end
 
-	if data.Step < 1 then
+	if type(data.Step) ~= "number" or data.Step < 1 then
 		setDefaultState()
 		data = JSON.decode(self.getDescription())
 		printToAll('Warning - "step" can\'t be lower than 1. Restored default configuration.', {0.8, 0.5, 0})
