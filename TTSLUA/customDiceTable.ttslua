@@ -73,12 +73,8 @@ clearAllDiceBtn={
     font_size=60, color={0,0,0}, font_color={1,1,1}
 }
 
-rollAllLabel = "Roll all dice"
-rollAllTooltip = "Left-click to roll all dice. Right-click to switch to selecting dice."
-selectAllLabel = "Select all dice"
-selectAllTooltip = "Left-click to select all dice. Right-click to switch to rolling dice."
-rollOrSelectAllBtn={
-    label=rollAllLabel, tooltip=rollAllTooltip, click_function="RollOrSelectDice", function_owner=self,
+rollAllBtn={
+    label="Roll all dice", tooltip="Roll all dice on the mat.", click_function="RollAllDice", function_owner=self,
     position={-3.5, Yoffset ,-0.87}, rotation={0,0,0}, height=50, width=520,
     font_size=60, color={1,1,1}, font_color={0,0,0}
 }
@@ -540,7 +536,6 @@ lethalHitsThreshold = 6
 sustainedHitsThreshold = 6
 sustainedLethalHitsThreshold = 6
 
-rollMode = true
 selectedColor = "White"
 diceType = "Die_6_Rounded"
 customDiceImage = nil
@@ -785,11 +780,6 @@ function callLast5Rolls(obj, player, alt)
     end
 end
 
--- includeMoving: when true, dice that haven't physically settled yet (e.g. just
--- spawned with +Nd6, or still falling back from the roller) are also returned.
--- Used by the roll paths, which don't care about a die's current face since the
--- roller reassigns it. Value-reading callers (row re-roll, delete, tally) leave
--- it false so they only ever see settled faces. Held dice are always excluded.
 -- Bounds of the current mat's lethal-hits zone object, or nil if not found.
 -- Single source of truth: getDice() EXCLUDES dice in this box and
 -- cleanupLethalHits() DESTROYS dice in this box, so they must agree on what
@@ -816,7 +806,8 @@ local function isInBounds(p, b)
         and p.y > b.miny and p.y < b.maxy
 end
 
-function getDice(includeMoving)
+-- Dice on this mat: settled (resting), not held, and outside the lethal zone.
+function getDice()
     local dice = {}
     local b = self.getBounds()
     local left  = b.center.x - b.size.x/2
@@ -839,7 +830,7 @@ function getDice(includeMoving)
     local lbound = getLethalZoneBounds()
 
     for _, o in ipairs(getAllObjects()) do
-        if o.tag == "Dice" and (includeMoving or o.resting) and o.held_by_color == nil then
+        if o.tag == "Dice" and o.resting and o.held_by_color == nil then
             local p = o.getPosition()
             if p.x > left and p.x < right
             and p.z > back and p.z < front
@@ -898,19 +889,14 @@ function modifyBtns()
     for i=1, 6 do
         if lowerUpper then sign = lowerSign else sign = upperSign end
         self.editButton({ index = (17+i*2), label = clearDiceBtnLabel .. i .. sign })
-
-        local selOrRollLabel = "Roll\n"
-        if not rollMode then
-            selOrRollLabel = "Sel\n"
-        end
-        self.editButton({ index = (18+i*2), label = selOrRollLabel .. i .. sign })
+        self.editButton({ index = (18+i*2), label = "Roll\n" .. i .. sign })
     end
 end
 
 -- Reached via obj.call from the "Roll All Dice" hotkey so the right player's
 -- mat handles the roll (each mat scans its own bounds in getDice()).
 function hotkeyRollAllDice(params)
-    RollOrSelectDice(nil, params.playerColor, false)
+    RollAllDice(nil, params.playerColor, false)
 end
 
 -- Reached via obj.call from the "Clear Mat" hotkey. alt=true bypasses the
@@ -919,26 +905,8 @@ function hotkeyClearMat(params)
     clearDiceAll(nil, params.playerColor, true)
 end
 
-function RollOrSelectDice(obj, player, alt)
-    if not alt then
-        if rollMode then
-            scheduleRollAll(player)
-        else
-            Player[player].clearSelectedObjects()
-            for i, die in ipairs(getDice(true)) do
-                die.addToPlayerSelection(player)
-            end
-        end
-    else
-        rollMode = not rollMode
-
-        if rollMode then
-            self.editButton({index=3, label=rollAllLabel, tooltip=rollAllTooltip})
-        else
-            self.editButton({index=3, label=selectAllLabel, tooltip=selectAllTooltip})
-        end
-        modifyBtns()
-    end
+function RollAllDice(obj, player, alt)
+    scheduleRollAll(player)
 end
 
 function RollDiceOrdered(_, player, _)
@@ -1006,7 +974,7 @@ function SelectDeleteDiceX(action, n, selectOthers, lowUp, color)
     if somethingToPrint then printToAll(text , "Yellow") end
     if oneTimeUpper then setLowerUpper( true ) end
 
-    if selDel and rollMode then
+    if selDel then
         moveDiceToRoller(color, Player[color].getSelectedObjects())
     end
 end
@@ -1482,7 +1450,7 @@ function onload()
 	Wait.time(checkDice, data2.Update_Frequency*1,-1)
 
     self.createButton(clearAllDiceBtn)
-    self.createButton(rollOrSelectAllBtn)
+    self.createButton(rollAllBtn)
     self.createButton(orderedRollBtn)
     self.createButton(orderedRollGroup2Btn)
     self.createButton(orderedRollGroup3Btn)
