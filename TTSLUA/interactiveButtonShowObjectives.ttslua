@@ -1,7 +1,7 @@
 -- FTC-GUID: 15d652
 
 local onState  = 'https://steamusercontent-a.akamaihd.net/ugc/15473991661851235143/8834767C61229AE6ED0741E4051392B6D4922AE5/'
-local offState = 'https://steamusercontent-a.akamaihd.net/ugc/12364072905194764916/7393E6D304AF9BA29D630698A289034B55690BFD/'
+local offState = 'https://steamusercontent-a.akamaihd.net/ugc/10740144134536449694/39CFD91BE19B3842102254DD674F222A8BF8A274/'
 local managerGUID = "738804"
 local clickCooldownSeconds = 0.5
 local objectivesOn = false

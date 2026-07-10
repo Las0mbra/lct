@@ -353,15 +353,29 @@ clearLinesBtn={
 
 
 checkCoherencyBtn={
-    label='Coherency Check', tooltip='LEFT CLICK: Show coherency of selected models\n RIGHT CLICK: Toggle off lines\nDrawing new lines will be weird while this is on', click_function='checkCoherency', function_owner=self,
-    position={-6.58, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=5200, scale={0.1,0.1,0.1},
+    label='Coherency', tooltip='LEFT CLICK: Show coherency of selected models\n RIGHT CLICK: Toggle off lines\nDrawing new lines will be weird while this is on', click_function='checkCoherency', function_owner=self,
+    position={-7.20, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=3300, scale={0.1,0.1,0.1},
     font_size=700, color='White', font_color={0,0,0}
 }
 
 engagementRangeBtn={
-    label='Engagement Range', tooltip='LEFT CLICK: Highlight every model within 2" of the selected model(s) for 15s\nRIGHT CLICK: Clear the highlights now', click_function='showEngagementRange', function_owner=self,
-    position={-7.76, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=5800, scale={0.1,0.1,0.1},
+    label='Engagement', tooltip='LEFT CLICK: Highlight every model within 2" of the selected model(s) for 15s\nRIGHT CLICK: Clear the highlights now', click_function='showEngagementRange', function_owner=self,
+    position={-7.97, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=3800, scale={0.1,0.1,0.1},
     font_size=700, color='White', font_color={0,0,0}
+}
+
+highlightBtn={
+    label='Highlight', tooltip='LEFT CLICK: Highlight the selected model(s) in the swatch color (permanent)\nRIGHT CLICK: Remove ALL highlights from every object on the table', click_function='applyHighlightPaint', function_owner=self,
+    position={-6.50, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=3100, scale={0.1,0.1,0.1},
+    font_size=700, color='White', font_color={0,0,0}
+}
+
+-- Colour swatch for the Highlight button. Its face IS the currently chosen
+-- colour; clicking cycles the palette (recoloured live via refreshHighlightSwatch).
+highlightSwatchBtn={
+    label='', tooltip='Highlight color\nLEFT CLICK: next color\nRIGHT CLICK: previous color', click_function='cycleHighlightColor', function_owner=self,
+    position={-6.02, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=1000, scale={0.1,0.1,0.1},
+    font_size=700, color={1,1,0}, font_color={0,0,0}
 }
 
 measure1Btn={
@@ -1525,6 +1539,18 @@ function onload()
     createToolButtonWithBorder(clearLinesBtn)
     createToolButtonWithBorder(checkCoherencyBtn)
     createToolButtonWithBorder(engagementRangeBtn)
+    createToolButtonWithBorder(highlightBtn)
+    createToolButtonWithBorder(highlightSwatchBtn)
+    -- The swatch is recoloured at runtime. Its border shares the click_function,
+    -- so grab the TOP button: the one created later, i.e. the higher index.
+    for _, b in ipairs(self.getButtons() or {}) do
+        if b.click_function == "cycleHighlightColor" then
+            if highlightSwatchIndex == nil or b.index > highlightSwatchIndex then
+                highlightSwatchIndex = b.index
+            end
+        end
+    end
+    refreshHighlightSwatch()
     createToolButtonWithBorder(gap2Btn)
     self.createButton(customDiceSpawnButton)
     -- Created last so it doesn't shift the fixed indices modifyMenu() relies on;
@@ -3307,4 +3333,120 @@ function showEngagementRange(a, b, c)
             printToAll(string.format("Engagement range check finished (%ds elapsed).", ENGAGEMENT_HIGHLIGHT), {1, 1, 1})
         end
     end, ENGAGEMENT_REFRESH, -1)
+end
+
+-- ====================================================================
+-- Highlight painter
+-- LEFT-clicking Highlight paints the player's selected models with the colour
+-- currently shown on the swatch next to it; the swatch cycles its palette on
+-- click (right-click cycles backwards) and its face IS the chosen colour.
+-- Paint is permanent for the session: a paint applied while a model is selected
+-- is also written into SelectionHighlighter's restore-on-deselect snapshot
+-- (setPersistentHighlight), so deselecting restores the paint instead of wiping
+-- it. RIGHT-clicking Highlight removes highlights from every object on the
+-- table -- except models a live coherency/engagement monitor is glowing (their
+-- externalHolds in SelectionHighlighter), which clean up when the monitor stops.
+-- ====================================================================
+local HIGHLIGHT_PALETTE = {
+    {name = "Yellow", rgb = {1, 1, 0}},
+    {name = "Orange", rgb = {1, 0.5, 0}},
+    {name = "Red",    rgb = {1, 0, 0}},
+    {name = "Pink",   rgb = {1, 0.4, 0.7}},
+    {name = "Purple", rgb = {0.7, 0.2, 1}},
+    {name = "Blue",   rgb = {0.2, 0.4, 1}},
+    {name = "Teal",   rgb = {0, 0.9, 0.9}},
+    {name = "Green",  rgb = {0, 1, 0}},
+    {name = "White",  rgb = {1, 1, 1}},
+}
+highlightColorIndex = 1
+highlightSwatchIndex = nil -- resolved in onload after the swatch is created
+
+-- Repaint the swatch's top button to the chosen colour (hover/press too, so it
+-- reads as a solid colour chip) and name the colour in its tooltip.
+function refreshHighlightSwatch()
+    if highlightSwatchIndex == nil then return end
+    local c = HIGHLIGHT_PALETTE[highlightColorIndex]
+    self.editButton({
+        index = highlightSwatchIndex,
+        color = c.rgb, hover_color = c.rgb, press_color = c.rgb,
+        tooltip = "Highlight color: " .. c.name .. "\nLEFT CLICK: next color\nRIGHT CLICK: previous color",
+    })
+end
+
+function cycleHighlightColor(_, _, alt)
+    local step = alt and -1 or 1
+    highlightColorIndex = ((highlightColorIndex - 1 + step) % #HIGHLIGHT_PALETTE) + 1
+    refreshHighlightSwatch()
+end
+
+-- Remove highlights from every object on the table (both players' paint, and
+-- any stray glow), then reset SelectionHighlighter's tracking so currently
+-- selected models fall back to the plain player-colour selection glow on its
+-- next tick. Models glowed by a live monitor (held in SelectionHighlighter's
+-- externalHolds) are left alone -- the monitor owns their highlight lifecycle.
+function clearAllHighlightPaint(playerColor)
+    local sh = getObjectFromGUID(SELECTION_HIGHLIGHTER_GUID)
+    local holds = {}
+    if sh ~= nil then
+        holds = sh.call("getExternalHolds") or {}
+        sh.call("clearPersistentHighlights")
+    end
+    local n = 0
+    for _, o in ipairs(getAllObjects()) do
+        if holds[o.getGUID()] == nil then
+            if o.getHighlightColor() ~= nil then n = n + 1 end
+            o.highlightOff()
+        end
+    end
+    if playerColor then
+        printToColor(string.format("Removed highlights from %d object(s).", n), playerColor, {1, 1, 1})
+    end
+end
+
+-- LEFT click: paint the selection in the swatch colour. RIGHT click: clear all.
+function applyHighlightPaint(a, b, c)
+    -- Support button (a=object, b=color, c=altClick) and hotkey (a=color)
+    -- invocation, mirroring checkCoherency.
+    local playerColor, alt
+    if type(a) == "string" then
+        playerColor = a
+        alt = false
+    else
+        playerColor = b
+        alt = c and true or false
+    end
+
+    if alt then
+        clearAllHighlightPaint(playerColor)
+        return
+    end
+
+    local playerObj = Player[playerColor]
+    if not playerObj then
+        print("Player object not found for color: " .. tostring(playerColor))
+        return
+    end
+
+    local sel = playerObj.getSelectedObjects()
+    if #sel == 0 then
+        printToColor("Select at least one model to highlight.", playerColor, {1, 0.5, 0})
+        return
+    end
+
+    local col = HIGHLIGHT_PALETTE[highlightColorIndex]
+    local sh = getObjectFromGUID(SELECTION_HIGHLIGHTER_GUID)
+    local n = 0
+    for _, o in ipairs(sel) do
+        if not o.isDestroyed() then
+            o.highlightOn(col.rgb)
+            -- The model is selected, so SelectionHighlighter has snapshotted (or
+            -- is about to snapshot) an "original" colour to restore on deselect;
+            -- point that snapshot at our paint so deselecting keeps it.
+            if sh ~= nil then
+                sh.call("setPersistentHighlight", {guid = o.getGUID(), color = col.rgb})
+            end
+            n = n + 1
+        end
+    end
+    printToColor(string.format("Highlighted %d model(s) in %s. RIGHT-CLICK Highlight to remove all highlights.", n, col.name), playerColor, col.rgb)
 end

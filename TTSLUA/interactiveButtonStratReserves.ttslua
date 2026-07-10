@@ -4,7 +4,7 @@
 mat_GUID         = Global.getVar("mat_GUID")
 deployLineHeight = 2.1
 sizeMulti        = 36
-local onState = 'https://steamusercontent-a.akamaihd.net/ugc/11957795369120189754/7FBE556ABCF98255CEB077831D44B255BC42A415/'
+local onState = 'https://steamusercontent-a.akamaihd.net/ugc/9587781878370741630/EB92F79C5AFA714E4ED2561F81FA54EB8B099C98/'
 local offState = 'https://steamusercontent-a.akamaihd.net/ugc/12916446593392721363/53FD560EC918104B95C6D7702DA914B390DFB492/'
 
 function onLoad(saved_data)

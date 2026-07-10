@@ -13,6 +13,12 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.10.1
+- New Highlight button on the dice tray (next to Coherency/Engagement): select models and press it to paint them in the colour shown on the swatch next to it - click the swatch to cycle colours. The paint sticks until you RIGHT-CLICK Highlight, which clears all highlights from the table. Coherency Check and Engagement Range were renamed to Coherency and Engagement to make room.
+- Added Tacoma Open FAQ since it's written by GW Rules team 
+- 2nd performance pass 
+- Changed a bit some icons in the overlay
+
 ## v1.10.0
 - Added the first pack of LCT maps, 15 are now in (1 for each matchup) that aim to be both thematic and close to GW terrains that they showed us. Also they will have a lot of texture randomization. The next packs will come soon!
 - Improved clock in the overlay. There is a Pass/Pause button in the overlay. Also I 've added shortcuts (that work now) that allow each player to Pass the clock and Pause/Resume the active clock. Also now the clock (if active) will pass to the other player when passing the turn.

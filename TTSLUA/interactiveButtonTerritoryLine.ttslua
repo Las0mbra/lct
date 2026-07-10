@@ -5,7 +5,7 @@ mat_GUID         = Global.getVar("mat_GUID")
 deployLineHeight = 2.1
 sizeMulti        = 36
 
-local noLineState = 'https://steamusercontent-a.akamaihd.net/ugc/11257198619749100462/0D359C525B1F77119CA17EB4307B3882E6805C9F/'
+local noLineState = 'https://steamusercontent-a.akamaihd.net/ugc/12932446331391677200/26670D21AC69A469974C90BAA06B0F7A94358459/'
 local lineOnState = 'https://steamusercontent-a.akamaihd.net/ugc/13483922162153684809/EC47EBA4101B6D3127E3C94509BE9C01A426CC08/'
 
 function onLoad(saved_data)

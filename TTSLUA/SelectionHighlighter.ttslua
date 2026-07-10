@@ -58,6 +58,32 @@ function releaseHighlight(params)
     externalHolds[params.guid] = nil
 end
 
+-- Public API for the Highlight painter (customDiceTable). A paint applied while
+-- a model is selected would normally be wiped on deselect (we restore the
+-- pre-selection snapshot); this points the tracked snapshot at the paint colour
+-- instead, so deselecting restores the paint. No-op if the model isn't tracked
+-- yet -- the next checkSelections tick snapshots the already-applied paint as
+-- the original, which achieves the same thing.
+function setPersistentHighlight(params)
+    local e = selectedObjects[params.guid]
+    if e ~= nil then e.originalColor = params.color end
+end
+
+-- Forget every tracked selection snapshot. The painter's clear-all calls this
+-- right before highlightOff-ing the table, so the next tick re-tracks whatever
+-- is selected with clean (nil) snapshots and re-applies the selection glow.
+function clearPersistentHighlights()
+    selectedObjects = {}
+end
+
+-- Guids currently owned by other scripts (live monitors). The painter's
+-- clear-all skips these so it doesn't fight a running monitor's glow.
+function getExternalHolds()
+    local t = {}
+    for guid in pairs(externalHolds) do t[guid] = true end
+    return t
+end
+
 function checkSelections()
     local currentSelections = {}
 

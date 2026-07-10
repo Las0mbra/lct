@@ -5,7 +5,7 @@ mat_GUID         = Global.getVar("mat_GUID")
 deployLineHeight = 2.1
 sizeMulti        = 36
 local onState = 'https://steamusercontent-a.akamaihd.net/ugc/15097634417370475591/2AAD029EBF3BEC3AD5C81C811310A26009273429/'
-local offState = 'https://steamusercontent-a.akamaihd.net/ugc/17418984855118511555/67E24738C33FE085EA314A48DA089F8925396C4E/'
+local offState = 'https://steamusercontent-a.akamaihd.net/ugc/14757168286520639251/5C85FDDAEEC5C058E7E11536DB93A94C59F20CEB/'
 
 function onLoad(saved_data)
     self.createButton({

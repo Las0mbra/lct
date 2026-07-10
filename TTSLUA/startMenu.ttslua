@@ -42,8 +42,8 @@ DESERT_MAT_NAMES = {}   -- @@DESERT_MAT_NAMES@@
 LCT_MAT_RANDOMIZER_ENABLED = true   -- @@LCT_MAT_RANDOMIZER_ENABLED@@
 LCT_PACK_1_MAT_URLS = {}   -- @@LCT_PACK_1_MAT_URLS@@
 LCT_PACK_1_MAT_NAMES = {}   -- @@LCT_PACK_1_MAT_NAMES@@
-defaultMatTextureURL = "https://steamusercontent-a.akamaihd.net/ugc/15425072743099001267/B83134980FFB54308B44410C44305D245F8DF3F0/"
-gameModeMatTextureURL = "https://steamusercontent-a.akamaihd.net/ugc/11927766457912242969/CF467C9E73E87C1EABF3F2239B0B3BF47ADF00CA/"
+defaultMatTextureURL = "https://steamusercontent-a.akamaihd.net/ugc/11325734395194619417/872CDB652BC3D15E79DBC768D03D9298C36DB992/"
+gameModeMatTextureURL = "https://steamusercontent-a.akamaihd.net/ugc/12078323260570499959/EC326002CC534A9BD75EE9157C5D509072A7AE01/"
 
 -- "Back to Selection" restore point. Captured automatically the instant a map
 -- is loaded (before its wipe), so a wrong map can be undone without reloading
@@ -60,13 +60,13 @@ restorePointObjects = nil
 -- "respawn only if missing" guard alone.
 restorePointMissionCardGuids = nil
 matTextures = {
-    {name = "Green", color = {0.00, 0.31, 0.03}, url = "https://steamusercontent-a.akamaihd.net/ugc/11600812045538713232/0064F3B919AEC48D35C233786977578689C81AD1/"},
-    {name = "Blue", color = {0.00, 0.31, 0.44}, url = "https://steamusercontent-a.akamaihd.net/ugc/12661578557139534569/9D589BE05341F1CE8EA20369387C7C5077587AB9/"},
+    {name = "Green", color = {0.00, 0.31, 0.03}, url = "https://steamusercontent-a.akamaihd.net/ugc/11079691797763465477/D6702E876654301F44E0DC5417C1A99B13C53F0E/"},
+    {name = "Blue", color = {0.00, 0.31, 0.44}, url = "https://steamusercontent-a.akamaihd.net/ugc/15793090662305209631/DE9F6615DECEF086ACDEF61B8EDF4DBC700D6781/"},
     {name = "Grey", color = {0.38, 0.40, 0.34}, url = "https://steamusercontent-a.akamaihd.net/ugc/12631014249723827365/F940CC388DB67806FB4FC81A4CEEFFB20C1FDBE8/"},
     {name = "Purple", color = {0.36, 0.26, 0.41}, url = "https://steamusercontent-a.akamaihd.net/ugc/12602332143542612703/BC19D77679D80E92322FC9E22379165CBAE9DC32/"},
     {name = "Red Wood", color = {0.35, 0.16, 0.10}, url = "https://steamusercontent-a.akamaihd.net/ugc/14567327019918795708/2B395E8CAA9F9A19E99B915113B7542882FCB946/"},
     {name = "Grey Stone", color = {0.36, 0.36, 0.34}, url = "https://steamusercontent-a.akamaihd.net/ugc/15897725006336448025/83574B6805DF4E6CEA44EFAB7D5B2B912163D898/"},
-    {name = "Space", color = {0.10, 0.12, 0.23}, url = "https://steamusercontent-a.akamaihd.net/ugc/13505560926700621900/A831EDBDD977E37EC87A6345E80B749203B04F2D/"},
+    {name = "Space", color = {0.10, 0.12, 0.23}, url = "https://steamusercontent-a.akamaihd.net/ugc/12558773339039292347/4E36E9A8342FC6189D40D5A286325BA8CCBC381A/"},
     {name = "Wood", color = {0.42, 0.29, 0.16}, url = "https://steamusercontent-a.akamaihd.net/ugc/12419861650777715682/8DB8967B909015805A234DBEBDA41CBADD0B8CB8/"},
     {name = "Graffiti", color = {0.42, 0.16, 0.35}, url = "https://steamusercontent-a.akamaihd.net/ugc/12776196614710430971/A650BC26568627868595D243ADC23D600F27B107/"},
     {name = "Green 2", color = {0.16, 0.35, 0.10}, url = "https://steamusercontent-a.akamaihd.net/ugc/12197125747641380246/0A4FA198199CF25E6984355BC676F062F2C050F8/"},
