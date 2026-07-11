@@ -1271,6 +1271,10 @@ end
 
 function onObjectDestroy(obj)
     if not obj or not obj.getGUID then return end
+    -- Dice can never carry a yellowscribe (ymc-) card, so skip the sweep: it
+    -- starts with a full Global.UI.getXmlTable() marshal, and mass dice
+    -- destruction (vortex, Clear Mat, bag entry) would pay it once per die.
+    if obj.tag == "Dice" then return end
     removeYellowscribeGlobalCards(obj.getGUID())
 end
 

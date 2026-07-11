@@ -13,11 +13,10 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
-## v1.11.0
-- Reverted vortex to it's previous state where it would destroy objects instead of store them, also now the lid closes again on click!
-
-## v1.10.1
-- New Highlight button on the dice tray (next to Coherency/Engagement): select models and press it to paint them in the colour shown on the swatch next to it - click the swatch to cycle colours. The paint sticks until you RIGHT-CLICK Highlight, which clears all highlights from the table. Coherency Check and Engagement Range were renamed to Coherency and Engagement to make room.
+## v1.10.2
+- Reverted vortex to it's previous state where it would destroy objects instead of store them, also now the lid closes again on click! 
+- Removed Select all dice button from roll dice
+-- New Highlight button on the dice tray (next to Coherency/Engagement): select models and press it to paint them in the colour shown on the swatch next to it - click the swatch to cycle colours. The paint sticks until you RIGHT-CLICK Highlight, which clears all highlights from the table. Coherency Check and Engagement Range were renamed to Coherency and Engagement to make room.
 - Added Tacoma Open FAQ since it's written by GW Rules team 
 - 2nd performance pass 
 - Changed a bit some icons in the overlay
