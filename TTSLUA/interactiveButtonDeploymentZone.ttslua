@@ -1,7 +1,6 @@
 -- FTC-GUID: 8aba11
 
 -- Shared variables
-mat_GUID         = Global.getVar("mat_GUID")
 deployLineHeight = 2.1
 sizeMulti        = 36
 local visibleState = 'https://steamusercontent-a.akamaihd.net/ugc/11888931357205845979/07DA5D6924B1019561DD4092059BB77E610FCE97/'

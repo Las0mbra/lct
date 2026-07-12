@@ -1040,6 +1040,9 @@ GAME_CHANGELOG = {}    -- @@LCT_CHANGELOG@@
 -- Build-wide debug switch. The compiler stamps this true for `--test` builds and
 -- false for `--release`. Other object scripts read it with Global.getVar("DEBUG").
 DEBUG = true   -- @@LCT_DEBUG@@
+-- Reset during script registration; onLoad sets this true only after Global has
+-- restored all state and references used by object scripts.
+FTC_Global_Ready = false
 -- Per-map metadata baked from data/map_manifest.csv at build time (see
 -- bake_map_index in scripts/compile.py). Keyed by card GUID:
 --   {creator=<short id>, display=<full name>, eligible=<bool>}
@@ -1373,6 +1376,12 @@ function onLoad(saved_data)
     -- Shared debug panel: the DebugTools XML panel ships hidden in every build;
     -- reveal it only on --test (DEBUG) builds.
     if DEBUG == true then Global.UI.setAttribute("DebugTools", "active", "true") end
+
+    -- Object scripts can load before Global (TTS gives no ordering guarantee, and
+    -- a guest joining mid-load widens the window), so their load-time
+    -- Global.getVar reads can see nil. They gate those reads on this flag via a
+    -- local whenGlobalReady helper (ported from upstream comp-ftc PR #62).
+    FTC_Global_Ready = true
 end
 
 -- ── SHARED DEBUG PANEL (--test builds only) ──────────────────────────────────

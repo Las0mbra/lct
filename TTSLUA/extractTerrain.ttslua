@@ -19,13 +19,23 @@ playZoneScale= {{x=48.2, y=100, z=48.2} ,
 }
 selectedMat=2
 
-mat_GUID = Global.getVar("mat_GUID")
-felt_GUID = Global.getVar("felt_GUID")
-tableSideBottom_GUID = Global.getVar("tableSideBottom_GUID")
+-- Resolved by assignVariables once Global is ready (this script can load
+-- before Global's onLoad has set the *_GUID variables).
+mat_GUID = nil
+felt_GUID = nil
+tableSideBottom_GUID = nil
+
+-- Defer a callback until Global's onLoad has run (it sets FTC_Global_Ready
+-- last). After 10s run it anyway rather than hang a broken load forever.
+function whenGlobalReady(callback)
+    Wait.condition(callback, function()
+        return Global.getVar("FTC_Global_Ready") == true
+    end, 10, callback)
+end
 
 function onLoad()
 
-    assignVariables()
+    whenGlobalReady(assignVariables)
     --createExtractButton()
     self.setPosition({40,-2,-90})
     self.setRotation({0,180,0})
@@ -107,8 +117,11 @@ confirmNoBtnMirror={
 
 
 function assignVariables()
+    mat_GUID = Global.getVar("mat_GUID")
+    felt_GUID = Global.getVar("felt_GUID")
+    tableSideBottom_GUID = Global.getVar("tableSideBottom_GUID")
     table=getObjectFromGUID(Global.getVar("table_GUID"))
-    mat=getObjectFromGUID(Global.getVar("mat_GUID"))
+    mat=getObjectFromGUID(mat_GUID)
     if mat then
         mat.setPosition({0,mat.getPosition().y,mat.getPosition().z})
     end

@@ -1,7 +1,6 @@
 -- FTC-GUID: 7b7ab8
 
 -- Shared variables
-mat_GUID         = Global.getVar("mat_GUID")
 deployLineHeight = 2.1
 sizeMulti        = 36
 local onState = 'https://steamusercontent-a.akamaihd.net/ugc/9587781878370741630/EB92F79C5AFA714E4ED2561F81FA54EB8B099C98/'
@@ -41,7 +40,8 @@ end
 -- Draw the two quarter‐lines
 function drawLines()
 
-    local mat = getObjectFromGUID(mat_GUID)
+    -- Resolve at click time: a load-time capture can race Global's onLoad.
+    local mat = getObjectFromGUID(Global.getVar("mat_GUID"))
     local lineScale = {x = 0, y = deployLineHeight, z = 0.02}
     local mapBase = mat.getScale().z * sizeMulti -- short edge
     local mapHeight = mat.getScale().x * sizeMulti -- long edge

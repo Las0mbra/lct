@@ -1,7 +1,6 @@
 -- FTC-GUID: 8c71ab
 
 -- Shared variables
-mat_GUID         = Global.getVar("mat_GUID")
 deployLineHeight = 2.1
 deployLineYPos = deployLineHeight-0.1
 sizeMulti        = 36

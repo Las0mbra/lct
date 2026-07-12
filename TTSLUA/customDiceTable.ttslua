@@ -544,11 +544,36 @@ previousRollData = {}
 previousRollStack = {}
 previousRollIndex = 0
 maxPreviousRolls = 10
-rollerGUID = Global.getVar("redCustomDiceRoller_GUID")
-if self.guid == Global.getVar("blueCustomDiceMat_GUID") then
-    rollerGUID = Global.getVar("blueCustomDiceRoller_GUID")
+-- Resolved by initRoller once Global is ready (this script can load before
+-- Global's onLoad has set the *_GUID variables).
+rollerGUID = nil
+roller = nil
+
+-- Defer a callback until Global's onLoad has run (it sets FTC_Global_Ready
+-- last). After 10s run it anyway rather than hang a broken load forever.
+function whenGlobalReady(callback)
+    Wait.condition(callback, function()
+        return Global.getVar("FTC_Global_Ready") == true
+    end, 10, callback)
 end
-roller = getObjectFromGUID(rollerGUID)
+
+function initRoller()
+    rollerGUID = Global.getVar("redCustomDiceRoller_GUID")
+    if self.guid == Global.getVar("blueCustomDiceMat_GUID") then
+        rollerGUID = Global.getVar("blueCustomDiceRoller_GUID")
+    end
+    -- rollerGUID is nil when a click races Global's onLoad (resolveRoller calls
+    -- this lazily); getObjectFromGUID(nil) would error out of the click handler.
+    roller = rollerGUID and getObjectFromGUID(rollerGUID) or nil
+end
+
+function resolveRoller()
+    if not roller then
+        initRoller()
+    end
+    return roller
+end
+
 lastClickTimestamp = 0
 
 local function nowSeconds()
@@ -746,8 +771,13 @@ end
 
 function moveDiceToRoller(color, dice)
     if #dice == 0 then return false end
-    roller.call("setPlayerColor", { color = color })
-    local rollId = roller.call("beginRollBatch", {
+    local activeRoller = resolveRoller()
+    if not activeRoller then
+        printToColor("Dice roller is still loading. Try again in a moment.", color, "Yellow")
+        return false
+    end
+    activeRoller.call("setPlayerColor", { color = color })
+    local rollId = activeRoller.call("beginRollBatch", {
         color = color,
         count = #dice,
     })
@@ -759,8 +789,8 @@ function moveDiceToRoller(color, dice)
     -- a later "clear mat" can't reach back and destroy them wherever they end up.
     forgetLethalHitsForDice(dice)
     for _, die in ipairs(dice) do
-        roller.call("setLastHolder", { obj = die, color = color, rollId = rollId })
-        roller.putObject(die)
+        activeRoller.call("setLastHolder", { obj = die, color = color, rollId = rollId })
+        activeRoller.putObject(die)
     end
 
     storeCurrentDiceAsPreviousRoll()
@@ -774,7 +804,7 @@ end
 
 -- Reset the last spawn position and dice count when the dice area is cleared
 function callLast5Rolls(obj, player, alt)
-    local r = getObjectFromGUID(rollerGUID)
+    local r = resolveRoller()
     if r then
         r.call("printLast5Innovative")
     end
@@ -911,17 +941,32 @@ end
 
 function RollDiceOrdered(_, player, _)
     Player[player].clearSelectedObjects()
-    roller.setVar("orderedOnNextRoll", true)
+    local activeRoller = resolveRoller()
+    if not activeRoller then
+        printToColor("Dice roller is still loading. Try again in a moment.", player, "Yellow")
+        return
+    end
+    activeRoller.setVar("orderedOnNextRoll", true)
     moveDiceToRoller(player, getDice())
 end
 
 function RollDiceOrderedGroup2(obj, player, alt)
-    roller.setVar("groupSizeOnNextRoll", 2)
+    local activeRoller = resolveRoller()
+    if not activeRoller then
+        printToColor("Dice roller is still loading. Try again in a moment.", player, "Yellow")
+        return
+    end
+    activeRoller.setVar("groupSizeOnNextRoll", 2)
     RollDiceOrdered(obj, player, alt)
 end
 
 function RollDiceOrderedGroup3(obj, player, alt)
-    roller.setVar("groupSizeOnNextRoll", 3)
+    local activeRoller = resolveRoller()
+    if not activeRoller then
+        printToColor("Dice roller is still loading. Try again in a moment.", player, "Yellow")
+        return
+    end
+    activeRoller.setVar("groupSizeOnNextRoll", 3)
     RollDiceOrdered(obj, player, alt)
 end
 
@@ -1346,6 +1391,8 @@ end
 
 function onload()
     -- addHotkey("Toggle Floating Icon", toggleFloatingIcon)
+
+    whenGlobalReady(initRoller)
 
     -- Remove any coherency distance labels that leaked into the save.
     cleanupOrphanCoherencyLabels()

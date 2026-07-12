@@ -9,11 +9,27 @@
 menuX = 18
 menuZ = 1.05-1.05
 
-MISSION_PACK_PARIAH_NEXUS = Global.getVar("MISSION_PACK_PARIAH_NEXUS")
+-- Resolved by initGlobalRefs once Global is ready (this script can load before
+-- Global's onLoad has set its variables).
+MISSION_PACK_PARIAH_NEXUS = nil
 
 keepForTerrainEditor = true
 
-mat_GUID = Global.getVar("mat_GUID")
+mat_GUID = nil
+
+-- Defer a callback until Global's onLoad has run (it sets FTC_Global_Ready
+-- last). After 10s run it anyway rather than hang a broken load forever.
+function whenGlobalReady(callback)
+    Wait.condition(callback, function()
+        return Global.getVar("FTC_Global_Ready") == true
+    end, 10, callback)
+end
+
+function initGlobalRefs()
+    MISSION_PACK_PARIAH_NEXUS = Global.getVar("MISSION_PACK_PARIAH_NEXUS")
+    mat_GUID = Global.getVar("mat_GUID")
+    objectiveDebug = Global.getVar("DEBUG") == true
+end
 ttsDebugEnabled = false
 dispositionValues = {"Disruption", "Priority Assets", "Purge the Foe", "Reconnaissance", "Take and Hold"}
 blueDispositionSelected = 1
@@ -133,56 +149,63 @@ function onLoad(saved_data)
     rebuildOverlayTracking()
     syncTerritoryLineButton()
 
-    mat = getObjectFromGUID(mat_GUID)
-    applyMatTexture(false)
-    if simulation then ttsDebugLog("THIS IS "..currentTurn.." TURN") end
+    -- Everything below reads Global's variables (mat_GUID, counters,
+    -- missionPackData, pack constants), so it waits for Global's onLoad. Losing
+    -- that race used to silently clear packSelected on load (see the debug log
+    -- below) and leave the mat/counter references nil.
+    whenGlobalReady(function()
+        initGlobalRefs()
+        mat = getObjectFromGUID(mat_GUID)
+        applyMatTexture(false)
+        if simulation then ttsDebugLog("THIS IS "..currentTurn.." TURN") end
 
-    redTurnCounter = getObjectFromGUID(Global.getVar("redTurnCounter_GUID"))
-    blueTurnCounter = getObjectFromGUID(Global.getVar("blueTurnCounter_GUID"))
-    gameTurnCounter = getObjectFromGUID(Global.getVar("gameTurnCounter_GUID"))
-    redCpCounter = getObjectFromGUID(Global.getVar("redCPCounter_GUID"))
-    blueCpCounter = getObjectFromGUID(Global.getVar("blueCPCounter_GUID"))
-    if inGame == false then
-        Notes.setNotes(notePadTxt)
-    else
-        Notes.setNotes("")
-    end
-    if packSelected then
-        local missionPackTable = Global.getTable("missionPackData")
-        if missionPackTable and missionPackTable[packSelected] then
-            missionPackData = missionPackTable[packSelected]
+        redTurnCounter = getObjectFromGUID(Global.getVar("redTurnCounter_GUID"))
+        blueTurnCounter = getObjectFromGUID(Global.getVar("blueTurnCounter_GUID"))
+        gameTurnCounter = getObjectFromGUID(Global.getVar("gameTurnCounter_GUID"))
+        redCpCounter = getObjectFromGUID(Global.getVar("redCPCounter_GUID"))
+        blueCpCounter = getObjectFromGUID(Global.getVar("blueCPCounter_GUID"))
+        if inGame == false then
+            Notes.setNotes(notePadTxt)
         else
-            packSelected = nil
-            missionPackData = nil
-            ttsDebugLog("missionPackData not available during onLoad; clearing packSelected")
+            Notes.setNotes("")
         end
-    end
-    if shouldPlaceGameModeObjectsOnLoad() then
-        placeGameModeObjects()
-    else
-        hideGameModeObjects()
-    end
-    -- Combat Patrol map bag follows the same hidden-until-selected rule. If a
-    -- 1v1/Solo game destroyed it earlier, getObjectFromGUID is nil and both
-    -- helpers no-op.
-    if combatPatrolMode then
-        showCombatPatrolBag()
-    else
-        hideCombatPatrolBag()
-    end
-    if not gameTurnCounter then
-        ttsDebugLog("gameTurnCounter not found during onLoad")
-    end
-    writeMenus()
-    -- The phase highlight and active-turn strip colours live only in the
-    -- non-persistent Global overlay, so they reset to the XML defaults on reload.
-    -- Re-push them from the restored game state (immediate + a race-safe retry in
-    -- case the overlay isn't live yet when this object's onLoad runs). Guarded by
-    -- inGame so the pre-game setup screen keeps all phase glyphs dimmed.
-    if inGame then
-        updateGameStateHUD()
-        Wait.time(updateGameStateHUD, 1)
-    end
+        if packSelected then
+            local missionPackTable = Global.getTable("missionPackData")
+            if missionPackTable and missionPackTable[packSelected] then
+                missionPackData = missionPackTable[packSelected]
+            else
+                packSelected = nil
+                missionPackData = nil
+                ttsDebugLog("missionPackData not available during onLoad; clearing packSelected")
+            end
+        end
+        if shouldPlaceGameModeObjectsOnLoad() then
+            placeGameModeObjects()
+        else
+            hideGameModeObjects()
+        end
+        -- Combat Patrol map bag follows the same hidden-until-selected rule. If a
+        -- 1v1/Solo game destroyed it earlier, getObjectFromGUID is nil and both
+        -- helpers no-op.
+        if combatPatrolMode then
+            showCombatPatrolBag()
+        else
+            hideCombatPatrolBag()
+        end
+        if not gameTurnCounter then
+            ttsDebugLog("gameTurnCounter not found during onLoad")
+        end
+        writeMenus()
+        -- The phase highlight and active-turn strip colours live only in the
+        -- non-persistent Global overlay, so they reset to the XML defaults on reload.
+        -- Re-push them from the restored game state (immediate + a race-safe retry in
+        -- case the overlay isn't live yet when this object's onLoad runs). Guarded by
+        -- inGame so the pre-game setup screen keeps all phase glyphs dimmed.
+        if inGame then
+            updateGameStateHUD()
+            Wait.time(updateGameStateHUD, 1)
+        end
+    end)
 end
 
 function onSave()
@@ -4701,7 +4724,7 @@ objectiveSpawnY = 1.03       -- fallback height (table surface) used only if the
 objectiveMinSurfaceY = 1.04  -- hard floor for the detected surface; markers never seat below this Y even if the raycast finds something lower (e.g. under a center ruin on some Izar maps)
 objectiveTopOffset = 0.1     -- spawn lift above the detected surface (before the final seat below)
 objectiveSeatClearance = 0.0 -- gap left under a seated marker; 0 = touching, bump up to avoid z-fighting
-objectiveDebug = Global.getVar("DEBUG") == true  -- build-wide debug flag (true on --test builds)
+objectiveDebug = false  -- build-wide debug flag (true on --test builds); set by initGlobalRefs once Global is ready
 -- rotY (optional) overrides only the Y rotation of the placed marker; the
 -- model's existing X/Z tilt is preserved. Omit it to keep the template default.
 -- Tag aliases (new naming convention; old names kept for backwards compatibility):

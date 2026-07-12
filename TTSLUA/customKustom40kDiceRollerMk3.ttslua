@@ -416,10 +416,22 @@ local function ejectBusyDie(guid)
     ejectedDiceNoticeTimer = Wait.time(announceEjectedDice, 0.2)
 end
 
-objectToPlaceDiceOnGUID = thisBoxIsBlue and Global.getVar("blueCustomDiceMat_GUID") or Global.getVar("redCustomDiceMat_GUID")
-objectToPlaceDiceOn = getObjectFromGUID(objectToPlaceDiceOnGUID)
-if objectToPlaceDiceOn == nil then
-    objectToPlaceDiceOn = self
+-- Placeholder until initDiceMat resolves the real mat once Global is ready;
+-- the `self` fallback keeps dice placement functional in the meantime.
+objectToPlaceDiceOnGUID = nil
+objectToPlaceDiceOn = self
+
+-- Defer a callback until Global's onLoad has run (it sets FTC_Global_Ready
+-- last). After 10s run it anyway rather than hang a broken load forever.
+function whenGlobalReady(callback)
+    Wait.condition(callback, function()
+        return Global.getVar("FTC_Global_Ready") == true
+    end, 10, callback)
+end
+
+function initDiceMat()
+    objectToPlaceDiceOnGUID = thisBoxIsBlue and Global.getVar("blueCustomDiceMat_GUID") or Global.getVar("redCustomDiceMat_GUID")
+    objectToPlaceDiceOn = getObjectFromGUID(objectToPlaceDiceOnGUID) or self
 end
 
 function clearDataForGC(data)
@@ -444,10 +456,9 @@ function onLoad(save_state)
 		setDefaultState()
 	end
 
-    -- Re-resolve the dice mat here; the top-level lookup runs before Global
-    -- has finished setting GUIDs, so it can silently fall back to self.
-    objectToPlaceDiceOnGUID = thisBoxIsBlue and Global.getVar("blueCustomDiceMat_GUID") or Global.getVar("redCustomDiceMat_GUID")
-    objectToPlaceDiceOn = getObjectFromGUID(objectToPlaceDiceOnGUID) or self
+    -- Resolve the dice mat only once Global has set its GUIDs; onLoad itself
+    -- can run before Global's onLoad, which used to silently fall back to self.
+    whenGlobalReady(initDiceMat)
 
     -- Always reseed on load. We deliberately ignore any persisted rngState so a
     -- frozen seed can never be baked into the published mod's save (which would

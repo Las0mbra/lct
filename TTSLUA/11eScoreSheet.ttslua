@@ -1,10 +1,12 @@
 -- FTC-GUID: 06d627
 
-startGameObj = getObjectFromGUID(Global.getVar("startMenu_GUID"))
-secondary11ZoneObj = getObjectFromGUID(Global.getVar("secondary11CardZone_GUID"))
-secondary12ZoneObj = getObjectFromGUID(Global.getVar("secondary12CardZone_GUID"))
-secondary21ZoneObj = getObjectFromGUID(Global.getVar("secondary21CardZone_GUID"))
-secondary22ZoneObj = getObjectFromGUID(Global.getVar("secondary22CardZone_GUID"))
+-- GUID-dependent objects; resolved by initGUIDs once Global is ready (this
+-- script can load before Global's onLoad has set the *_GUID variables).
+startGameObj = nil
+secondary11ZoneObj = nil
+secondary12ZoneObj = nil
+secondary21ZoneObj = nil
+secondary22ZoneObj = nil
 redDiscardPosition = { x = 62.54, y = 0.98, z = 16.60 }
 blueDiscardPosition = { x = 62.54, y = 0.98, z = -16.60 }
 redSecondaryBoard_GUID = "66def7"
@@ -30,6 +32,22 @@ enableBtn = { label="ENABLE\nGT\nSCORESHEET\n\n(click here)\n\nDon't enable if y
 }
 
 scoresheetActive = true
+
+-- Defer a callback until Global's onLoad has run (it sets FTC_Global_Ready
+-- last). After 10s run it anyway rather than hang a broken load forever.
+function whenGlobalReady(callback)
+    Wait.condition(callback, function()
+        return Global.getVar("FTC_Global_Ready") == true
+    end, 10, callback)
+end
+
+function initGUIDs()
+    startGameObj = getObjectFromGUID(Global.getVar("startMenu_GUID"))
+    secondary11ZoneObj = getObjectFromGUID(Global.getVar("secondary11CardZone_GUID"))
+    secondary12ZoneObj = getObjectFromGUID(Global.getVar("secondary12CardZone_GUID"))
+    secondary21ZoneObj = getObjectFromGUID(Global.getVar("secondary21CardZone_GUID"))
+    secondary22ZoneObj = getObjectFromGUID(Global.getVar("secondary22CardZone_GUID"))
+end
 
 -- Button k-indexes
 BTN_K_IX_TURN_SUM = 1
@@ -307,12 +325,45 @@ function createSecondarySlotButtons(board, color, slotCenters)
     end
 end
 
+-- Guests resolve button clicks by index against the host's live button list, so
+-- clearing and recreating these buttons opens a desync window where a guest's
+-- click fires the wrong function (e.g. >> acting as >). A board with the
+-- complete callback set is left untouched; only missing/partial/foreign
+-- layouts get the one-time clear-and-rebuild repair.
+function boardHasSecondaryButtons(board, color)
+    local buttons = board.getButtons()
+    if buttons == nil or #buttons ~= 19 then
+        return false
+    end
+
+    local prefix = string.lower(color)
+    local expected = {
+        [(color == "Red") and "drawSecondary1" or "drawSecondary2"] = true,
+        [(color == "Red") and "drawSecondary1Single" or "drawSecondary2Single"] = true,
+        [(color == "Red") and "sortSecondary1" or "sortSecondary2"] = true,
+    }
+    for index = 1, 8 do
+        expected[prefix .. "DiscardSecondarySlot" .. index] = true
+        expected[prefix .. "RecycleSecondarySlot" .. index] = true
+    end
+
+    for _, button in ipairs(buttons) do
+        if not expected[button.click_function] then
+            return false
+        end
+        expected[button.click_function] = nil
+    end
+    return next(expected) == nil
+end
+
 function createSecondaryDrawButtons()
-    clearSecondaryDrawButtons()
     ensureSecondarySlotButtonHandlers()
 
     local redBoard = getObjectFromGUID(redSecondaryBoard_GUID)
-    if redBoard then
+    if redBoard and not boardHasSecondaryButtons(redBoard, "Red") then
+        -- Repair old or partially-created layouts once during initialization.
+        -- Correct live layouts are left untouched to keep guest button indexes stable.
+        redBoard.clearButtons()
         redBoard.createButton(draw1Btn)
         redBoard.createButton(draw1SingleBtn)
         redBoard.createButton(sort1Btn)
@@ -329,7 +380,8 @@ function createSecondaryDrawButtons()
     end
 
     local blueBoard = getObjectFromGUID(blueSecondaryBoard_GUID)
-    if blueBoard then
+    if blueBoard and not boardHasSecondaryButtons(blueBoard, "Blue") then
+        blueBoard.clearButtons()
         blueBoard.createButton(draw2Btn)
         blueBoard.createButton(draw2SingleBtn)
         blueBoard.createButton(sort2Btn)
@@ -347,11 +399,7 @@ function createSecondaryDrawButtons()
 end
 
 function onload(save_data)
-	startGameObj = getObjectFromGUID(Global.getVar("startMenu_GUID"))
-	secondary11ZoneObj = getObjectFromGUID(Global.getVar("secondary11CardZone_GUID"))
-	secondary12ZoneObj = getObjectFromGUID(Global.getVar("secondary12CardZone_GUID"))
-	secondary21ZoneObj = getObjectFromGUID(Global.getVar("secondary21CardZone_GUID"))
-	secondary22ZoneObj = getObjectFromGUID(Global.getVar("secondary22CardZone_GUID"))
+	whenGlobalReady(initGUIDs)
 
 	if save_data ~= "" then
 		local data = JSON.decode(save_data)
@@ -365,8 +413,8 @@ function onload(save_data)
 	end
 
 	self.clearButtons()
-    clearSecondaryDrawButtons()
 	if not scoresheetActive then
+		clearSecondaryDrawButtons()
 		self.createButton(enableBtn)
 		return
 	end
@@ -378,7 +426,7 @@ function onload(save_data)
 	self.createButton( playerTwoTitle )
 	self.createButton( playerTotal[1] )
 	self.createButton( playerTotal[2] )
-    createSecondaryDrawButtons()
+    whenGlobalReady(createSecondaryDrawButtons)
 	syncPlayerTitlesFromSeats()
 
 	local b_xpos = 0
@@ -1160,6 +1208,7 @@ function handleInitialSecondary(zone, discardPosition)
 end
 
 function startGame()
+	initGUIDs()
 	syncPlayerTitlesFromSeats()
 
 	local redFixedObjective1 = handleInitialSecondary(secondary11ZoneObj, redDiscardPosition)
