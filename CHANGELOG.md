@@ -13,6 +13,11 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.10.3
+- Fix load-order race on Global GUIDs and secondary button desync for joining players 
+- Changed Lightning settings from background to Gradient. 
+- Refreshed Battlemaster maps.  
+
 ## v1.10.2
 - Reverted vortex to it's previous state where it would destroy objects instead of store them, also now the lid closes again on click! 
 - Removed Select all dice button from roll dice

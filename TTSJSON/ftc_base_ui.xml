@@ -53,7 +53,7 @@
      only on DEBUG (test) builds, so release builds carry it but never show it.
      Every onClick/onValueChanged handler lives in Global (function definitions in
      global.ttslua). Replaces the old spawned "LCT Debug Panel" tile. -->
-<Panel id="DebugTools" active="false" rectAlignment="UpperLeft" offsetXY="20 -20" scale="0.8 0.8 0.8" width="460" height="660" color="#10141EF2" outline="#31415F" outlineSize="4" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="DebugTools" active="false" rectAlignment="UpperLeft" offsetXY="20 -20" scale="0.8 0.8 0.8" width="460" height="740" color="#10141EF2" outline="#31415F" outlineSize="4" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <VerticalLayout padding="18 18 16 16" spacing="10" childForceExpandHeight="false">
     <Text fontSize="30" fontStyle="Bold" color="#F3F6FA" alignment="MiddleCenter" preferredHeight="42">DEBUG TOOLS</Text>
     <VerticalLayout id="DebugToolsBody" spacing="10" childForceExpandHeight="false">
@@ -79,6 +79,9 @@
       <Button onClick="debugPopulateBattlemasterBttfRuinsCache" color="#2E293D" textColor="#C7B8FF" fontSize="22" tooltip="Debug only: populate the Battlemaster cache using the BTTF Ruins theme">Ruins</Button>
       <Button onClick="debugPopulateBattlemasterArmageddonDesertCache" color="#332B1F" textColor="#FFC76B" fontSize="22" tooltip="Debug only: populate the Battlemaster cache using the Armageddon Desert theme">Desert</Button>
       <Button onClick="debugPopulateBattlemasterBttfCache" color="#29303D" textColor="#8CD9FF" fontSize="22" tooltip="Debug only: populate the Battlemaster cache using the Grimdark Calibration/BTTF theme">BTTF</Button>
+    </HorizontalLayout>
+    <HorizontalLayout spacing="10" preferredHeight="70" flexibleHeight="0" childForceExpandWidth="true">
+      <Button onClick="debugPopulateBattlemasterAllCache" color="#243D2E" textColor="#8CFFC7" fontSize="22" tooltip="Debug only: populate and archive Ruins, Desert, and BTTF in one go -- one save afterward covers all three themes">All 3</Button>
     </HorizontalLayout>
 
     <Panel color="#FFFFFF40" preferredHeight="2" flexibleHeight="0"/>

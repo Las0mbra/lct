@@ -1426,7 +1426,7 @@ function minimizeDebugTools(player, value, id)
         Global.UI.setAttribute("DebugToolsMinBtn", "tooltip", "Restore")
     else
         Global.UI.setAttribute("DebugToolsBody", "active", "true")
-        Global.UI.setAttribute("DebugTools", "height", "660")
+        Global.UI.setAttribute("DebugTools", "height", "740")
         Global.UI.setAttribute("DebugToolsMinBtn", "text", "—")
         Global.UI.setAttribute("DebugToolsMinBtn", "tooltip", "Minimize")
     end
@@ -1499,6 +1499,30 @@ function debugPopulateBattlemasterArmageddonDesertCache(player)
     end
     printToColor("[DEBUG] Battlemaster Armageddon Desert cache population started. Save the mod/table after it completes.", playerColor, {1, 0.78, 0.42})
     spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID, themeName = "armageddon desert"})
+end
+
+-- "All 3" button: runs the Ruins/Desert/BTTF populates back to back on the
+-- spawner, each archived under its theme id (see BM_THEME_ARCHIVES in
+-- battlemasterDynamicSpawner.ttslua), so a single save afterward carries every
+-- theme's import data and import_battlemaster_static_maps.py --all-themes can
+-- do all three imports without three separate populate/save round trips.
+function debugPopulateBattlemasterAllCache(player)
+    local playerColor = player and player.color
+    if DEBUG ~= true then return end
+    local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
+    if not spawner then
+        printToColor("[DEBUG] Battlemaster spawner not found.", playerColor, {1, 0.3, 0.3})
+        return
+    end
+    printToColor("[DEBUG] Battlemaster all-theme cache population started (Ruins, Desert, BTTF). Save the mod/table after it completes.", playerColor, {0.65, 0.9, 1})
+    spawner.call("debugPopulateAllThemes", {
+        playerColor = playerColor,
+        themes = {
+            {id = BATTLEMASTER_BTTF_RUINS_THEME_ID, name = "BTTF Ruins"},
+            {id = BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID, name = "armageddon desert"},
+            {id = BATTLEMASTER_BTTF_THEME_ID, name = "BTTF"},
+        },
+    })
 end
 
 function debugCheckBattlemasterCache(player)

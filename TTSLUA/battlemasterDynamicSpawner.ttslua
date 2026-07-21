@@ -82,6 +82,12 @@ BM_THEME_LIST_KEY = BM_THEME_LIST_KEY or nil
 BM_SYNC_MANIFEST = BM_SYNC_MANIFEST or nil
 BM_LAST_STATUS = BM_LAST_STATUS or "Cache empty. Press Sync."
 BM_REQUESTED_SYNC_THEME_ID = BM_REQUESTED_SYNC_THEME_ID or nil
+-- Per-theme snapshots of {layoutCatalog, cardScriptCache} taken when a debug
+-- populate completes. The live cache only ever holds ONE theme (each sync's
+-- pruneLayoutPayloadCache drops entries not in the incoming catalog), so these
+-- archives are what lets a single saved table feed
+-- import_battlemaster_static_maps.py for every shipped theme in one go.
+BM_THEME_ARCHIVES = BM_THEME_ARCHIVES or {}
 
 -- ============================ Lifecycle ============================
 function onLoad(savedData)
@@ -121,6 +127,7 @@ function onSave()
     themeListKey = BM_THEME_LIST_KEY,
     syncManifest = BM_SYNC_MANIFEST,
     lastStatus = BM_LAST_STATUS,
+    themeArchives = BM_THEME_ARCHIVES,
   })
 end
 
@@ -151,6 +158,7 @@ function restoreSpawnerState(savedData)
   if type(state.themeListKey) == "string" then BM_THEME_LIST_KEY = state.themeListKey end
   if type(state.syncManifest) == "table" then BM_SYNC_MANIFEST = state.syncManifest end
   if type(state.lastStatus) == "string" then BM_LAST_STATUS = state.lastStatus end
+  if type(state.themeArchives) == "table" then BM_THEME_ARCHIVES = state.themeArchives end
 end
 
 -- ============================ Small helpers ============================
@@ -781,14 +789,36 @@ function fetchLayoutPayloadRequestsSequentially(requests, stats, done)
   step()
 end
 
+-- Deep-copies the just-completed theme's layout catalog + card script cache into
+-- BM_THEME_ARCHIVES[themeId], via a JSON round-trip so the archive doesn't alias
+-- the live BM_LAYOUT_CATALOG/BM_CARD_SCRIPT_CACHE tables (the next theme's sync
+-- prunes those in place -- see pruneLayoutPayloadCache -- which would otherwise
+-- corrupt an archive taken by reference). This is what lets one saved table carry
+-- every theme's import data at once instead of only the last one populated.
+function archiveCurrentThemeCache(themeId, themeName)
+  if type(themeId) ~= "string" or themeId == "" then return end
+  local ok, snapshot = pcall(function()
+    return JSON.decode(JSON.encode({layoutCatalog = BM_LAYOUT_CATALOG, cardScriptCache = BM_CARD_SCRIPT_CACHE}))
+  end)
+  if not ok or type(snapshot) ~= "table" then return end
+  BM_THEME_ARCHIVES[themeId] = {
+    themeName = themeName,
+    layoutCatalog = snapshot.layoutCatalog,
+    cardScriptCache = snapshot.cardScriptCache,
+  }
+end
+
 function debugPopulateFullCache(params)
   params = params or {}
+  local onComplete = type(params.onComplete) == "function" and params.onComplete or function() end
   if not (Global and Global.getVar and Global.getVar("DEBUG") == true) then
     setStatus("Full cache populate is only available in debug builds.", "warn")
+    onComplete(false, "debug only")
     return
   end
   if BM_FULL_CACHE_POPULATE_IN_PROGRESS then
     debugCachePrint(params, "Populate already running.", {1, 0.8, 0.25})
+    onComplete(false, "already running")
     return
   end
   local requestedThemeId = tostring(type(params) == "table" and params.themeId or "")
@@ -812,6 +842,7 @@ function debugPopulateFullCache(params)
         local err = "Requested Battlemaster theme not found after sync: " .. requestedThemeName
         setStatus(err, "error")
         debugCachePrint(params, err, {1, 0.3, 0.3})
+        onComplete(false, err)
         return
       end
       debugCachePrint(params, "Active theme confirmed: " .. tostring(theme.name or theme.label or theme.id) .. ".")
@@ -824,6 +855,13 @@ function debugPopulateFullCache(params)
       local scriptRequests, scriptStats = collectMissingCardScriptRequests()
       debugCachePrint(params, "Card scripts: cached " .. tostring(scriptStats.cached)
         .. ", missing/stale " .. tostring(scriptStats.missing) .. ".")
+      local function finishAndArchive(failed)
+        local theme = selectedTheme()
+        if type(theme) == "table" and tostring(theme.id or "") ~= "" then
+          archiveCurrentThemeCache(theme.id, theme.name or theme.label or theme.id)
+        end
+        onComplete(failed == 0, failed > 0 and "some requests failed" or nil)
+      end
       if #scriptRequests == 0 then
         BM_FULL_CACHE_POPULATE_IN_PROGRESS = false
         local failed = tonumber(payloadStats.failed or 0) or 0
@@ -831,6 +869,7 @@ function debugPopulateFullCache(params)
         setStatus("Full cache populated: payloads " .. tostring(payloadStats.cached + (payloadStats.fetched or 0))
           .. ", scripts " .. tostring(scriptStats.cached) .. ", failed " .. tostring(failed) .. ".", tone)
         debugCachePrint(params, "Done. Cache already has prebuilt scripts. Save the table/mod to preserve it.", tone == "warn" and {1, 0.8, 0.25} or {0.45, 1, 0.55})
+        finishAndArchive(failed)
         return
       end
       prebuildCardScriptRequestsSequentially(scriptRequests, scriptStats, function(scriptResult)
@@ -842,6 +881,7 @@ function debugPopulateFullCache(params)
         debugCachePrint(params, "Done. Fetched " .. tostring(payloadStats.fetched or 0)
           .. ", scripts built " .. tostring(scriptResult.built or 0) .. ", failed " .. tostring(failed)
           .. ". Save the table/mod now to bake the cache.", tone == "warn" and {1, 0.8, 0.25} or {0.45, 1, 0.55})
+        finishAndArchive(failed)
       end)
     end
 
@@ -856,7 +896,65 @@ function debugPopulateFullCache(params)
     BM_REQUESTED_SYNC_THEME_ID = nil
     BM_FULL_CACHE_POPULATE_IN_PROGRESS = false
     debugCachePrint(params, "Smart sync failed: " .. tostring(err), {1, 0.3, 0.3})
+    onComplete(false, err)
   end)
+end
+
+-- Runs debugPopulateFullCache once per entry in params.themes (each {id=, name=})
+-- sequentially, so all three shipped Battlemaster themes can be refreshed and
+-- archived from a single button click / single save instead of three separate
+-- populate-then-save round trips. Each theme still goes through the normal
+-- populate path (and gets pruned/archived exactly like a solo click would); this
+-- just chains them via debugPopulateFullCache's onComplete callback so only one
+-- populate is ever in flight at a time.
+BM_ALL_THEMES_POPULATE_IN_PROGRESS = BM_ALL_THEMES_POPULATE_IN_PROGRESS or false
+function debugPopulateAllThemes(params)
+  params = params or {}
+  if not (Global and Global.getVar and Global.getVar("DEBUG") == true) then
+    setStatus("Full cache populate is only available in debug builds.", "warn")
+    return
+  end
+  if BM_FULL_CACHE_POPULATE_IN_PROGRESS or BM_ALL_THEMES_POPULATE_IN_PROGRESS then
+    debugCachePrint(params, "Populate already running.", {1, 0.8, 0.25})
+    return
+  end
+  local themes = type(params.themes) == "table" and params.themes or {}
+  if #themes == 0 then
+    debugCachePrint(params, "No themes given to populate-all.", {1, 0.3, 0.3})
+    return
+  end
+
+  BM_ALL_THEMES_POPULATE_IN_PROGRESS = true
+  local index = 0
+  local failedThemes = 0
+  local function step()
+    index = index + 1
+    local entry = themes[index]
+    if entry == nil then
+      BM_ALL_THEMES_POPULATE_IN_PROGRESS = false
+      local tone = failedThemes > 0 and "warn" or "ok"
+      debugCachePrint(params, "All " .. tostring(#themes) .. " Battlemaster theme(s) processed ("
+        .. tostring(#themes - failedThemes) .. " ok, " .. tostring(failedThemes)
+        .. " failed). Save the table/mod now to bake every theme's cache.",
+        tone == "warn" and {1, 0.8, 0.25} or {0.45, 1, 0.55})
+      return
+    end
+    debugCachePrint(params, "Populating theme " .. tostring(index) .. "/" .. tostring(#themes)
+      .. ": " .. tostring(entry.name or entry.id) .. "...", {0.55, 0.85, 1})
+    debugPopulateFullCache({
+      playerColor = params.playerColor,
+      themeId = entry.id,
+      themeName = entry.name,
+      onComplete = function(ok, err)
+        if not ok then
+          failedThemes = failedThemes + 1
+          debugCachePrint(params, "Theme " .. tostring(entry.name or entry.id) .. " failed: " .. tostring(err), {1, 0.3, 0.3})
+        end
+        step()
+      end,
+    })
+  end
+  step()
 end
 
 -- ============================ Reconstruction (board space) ============================

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Import prebuilt Battlemaster cache entries as normal LCT map cards.
 
-Workflow:
+Single-theme workflow:
   1. Build/load a debug table and click the debug "BM cache <theme>" button that
      matches the terrain theme you want (BM cache Ruins / Desert / BTTF), not the
      generic "BM cache populate". The spawner stores fetched API payloads plus
@@ -16,10 +16,24 @@ Workflow:
      cache blob (the static cards carry the geometry; the spawner no longer needs
      a warm cache), then validate and compile.
 
+All-themes workflow (pairs with the debug "All 3" button):
+  1. Click "All 3" instead of a single theme button. The spawner populates Ruins,
+     Desert, and BTTF back to back and archives each one's layout catalog + card
+     script cache under its theme id (BM_THEME_ARCHIVES in
+     battlemasterDynamicSpawner.ttslua) as it finishes — this is necessary because
+     the live cache only ever holds the LAST theme synced (each new theme's sync
+     prunes the previous theme's cached payloads/scripts).
+  2. Save that table once.
+  3. Run this script with `--all-themes` instead of --creator-tag/--creator-display.
+     It pulls each theme's archived catalog/scripts out of the one saved file and
+     runs the same import (remove-old, add-new, extend manifest) for all three
+     creator tags in a single pass.
+  4. Same `bake_battlemaster_cache.py --clear` + validate/compile finish as above.
+
 Each terrain theme ships as its own creator filter (e.g.
 map_crt_battlemaster_bttf_ruins / "Battlemaster - BTTF Ruins"). The default
 map_crt_battlemaster / "Battlemaster" creator is NOT shipped — run with the
-themed flags or you will create a duplicate fourth set of cards.
+themed flags (or --all-themes) or you will create a duplicate fourth set of cards.
 
 The imported cards are static map cards. The Battlemaster provider hook is
 intentionally stripped; compile.py will inject the normal map-card load hook.
@@ -51,6 +65,29 @@ TYPE_TAG = "map_type_comp"
 OLD_CREATOR_TAGS = {"map_crt_battlemaster_default", CREATOR_TAG}
 DEFAULT_BACK_URL = "https://steamusercontent-a.akamaihd.net/ugc/10791071673581242/E710A69735A01208EFCAE0A13B7FD487275388FB/"
 DEFAULT_FACE_URL = DEFAULT_BACK_URL
+
+# Mirrors BATTLEMASTER_BTTF_RUINS_THEME_ID / BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID /
+# BATTLEMASTER_BTTF_THEME_ID and the Ruins/Desert/BTTF debug buttons in
+# TTSLUA/global.ttslua. --all-themes uses this to pull each theme's
+# BM_THEME_ARCHIVES entry out of one saved table and import it under its
+# existing shipped creator tag, all in a single run.
+KNOWN_BATTLEMASTER_THEMES = [
+    {
+        "theme_id": "tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5",
+        "creator_tag": "map_crt_battlemaster_bttf_ruins",
+        "creator_display": "Battlemaster - BTTF Ruins",
+    },
+    {
+        "theme_id": "tts-theme-6c414c7a-9827-48cf-a89e-aa8ddff66491",
+        "creator_tag": "map_crt_battlemaster_armageddon_desert",
+        "creator_display": "Battlemaster - Desert",
+    },
+    {
+        "theme_id": "tts-theme-grimdark-calibrated-v1",
+        "creator_tag": "map_crt_battlemaster_bttf",
+        "creator_display": "BTTF",
+    },
+]
 
 ARCHETYPE_DISPLAY = {
     "take-and-hold": "Take and Hold",
@@ -319,59 +356,67 @@ def remove_previous_import(target):
     return removed
 
 
-def main():
-    global CREATOR_TAG, CREATOR_DISPLAY, OLD_CREATOR_TAGS
-    ap = argparse.ArgumentParser(description="Import Battlemaster cache as static LCT map cards.")
-    ap.add_argument("source_save", help="TTS save/saved-object JSON whose spawner has a populated cardScriptCache.")
-    ap.add_argument("--target", default=str(DEFAULT_TARGET), help="ftc_base.json to modify.")
-    ap.add_argument("--manifest", default=str(DEFAULT_MANIFEST), help="map_manifest.csv to update.")
-    ap.add_argument("--write", action="store_true", help="Write changes. Without this, only preview.")
-    ap.add_argument("--allow-missing-layout-art", action="store_true", help="Do not fail if existing layout art is missing.")
-    ap.add_argument("--creator-tag", default=DEFAULT_CREATOR_TAG, help="map_crt* tag to add to imported cards and manifest rows.")
-    ap.add_argument("--creator-display", default=DEFAULT_CREATOR_DISPLAY, help="Creator/filter label to append to imported card names.")
-    args = ap.parse_args()
+def layout_catalog_and_scripts_for(state, theme_id, creator_display):
+    """Picks the layout catalog + card script cache to import from.
 
-    CREATOR_TAG = args.creator_tag.strip()
-    CREATOR_DISPLAY = args.creator_display.strip()
+    If theme_id is given, prefer the matching BM_THEME_ARCHIVES snapshot (see
+    battlemasterDynamicSpawner.ttslua) — this is what makes --all-themes work,
+    since the spawner's top-level cache only ever holds the last theme synced.
+    Falls back to the top-level cache (older saves, or a solo single-theme
+    populate that never needed an archive lookup).
+    """
+    if theme_id:
+        archive = (state.get("themeArchives") or {}).get(theme_id)
+        if isinstance(archive, dict):
+            layouts = (archive.get("layoutCatalog") or {}).get("layouts") or []
+            script_cache = archive.get("cardScriptCache") or {}
+            if layouts and script_cache:
+                return layouts, script_cache, f"archived theme {theme_id}"
+    layouts = (state.get("layoutCatalog") or {}).get("layouts") or []
+    script_cache = state.get("cardScriptCache") or {}
+    source_desc = f"top-level cache (no archive found for {theme_id})" if theme_id else "top-level cache"
+    return layouts, script_cache, source_desc
+
+
+def import_one_theme(state, target, target_by_guid, manifest_rows, machinery, args, creator_tag, creator_display, theme_id=None):
+    """Imports a single Battlemaster theme's cache into `target`/`manifest_rows`
+    (both mutated/replaced in place for this run; nothing touches disk here).
+    Returns the updated manifest_rows list."""
+    global CREATOR_TAG, CREATOR_DISPLAY, OLD_CREATOR_TAGS
+    CREATOR_TAG = creator_tag.strip()
+    CREATOR_DISPLAY = creator_display.strip()
     if not CREATOR_TAG.startswith("map_crt") or not CREATOR_DISPLAY:
         sys.exit("ERROR: --creator-tag must start with map_crt and --creator-display must be non-empty.")
     OLD_CREATOR_TAGS = {CREATOR_TAG}
     if CREATOR_TAG == DEFAULT_CREATOR_TAG:
         OLD_CREATOR_TAGS.add("map_crt_battlemaster_default")
 
-    source = json.loads(Path(args.source_save).read_text(encoding="utf-8"))
-    target_path = Path(args.target)
-    manifest_path = Path(args.manifest)
-    target = json.loads(target_path.read_text(encoding="utf-8"))
-    machinery = MACHINERY.read_text(encoding="utf-8")
-    manifest_rows = load_manifest(manifest_path)
+    layouts, script_cache, source_desc = layout_catalog_and_scripts_for(state, theme_id, CREATOR_DISPLAY)
+    if not layouts:
+        sys.exit(f"ERROR: no layoutCatalog.layouts for {CREATOR_DISPLAY} ({source_desc}). "
+                  f"Run the matching BM cache button in TTS, save, then rerun.")
+    if not script_cache:
+        sys.exit(f"ERROR: no cardScriptCache for {CREATOR_DISPLAY} ({source_desc}). "
+                  f"Re-run BM cache populate with the latest spawner, save, then rerun.")
+
     source_bags = source_bags_by_pair(manifest_rows)
     manifest_logical_names = manifest_logical_names_by_pair_slot(manifest_rows)
     layout_art = existing_layout_art_names(target)
 
-    spawner = find_object(source, SPAWNER_GUID)
-    if not spawner:
-        sys.exit(f"ERROR: Battlemaster spawner {SPAWNER_GUID} not found in {args.source_save}.")
-    state_text = spawner.get("LuaScriptState") or ""
-    if not state_text.strip():
-        sys.exit("ERROR: spawner LuaScriptState is empty. Run BM cache populate in TTS, save, then rerun.")
-    state = json.loads(state_text)
-    layouts = (state.get("layoutCatalog") or {}).get("layouts") or []
-    script_cache = state.get("cardScriptCache") or {}
-    if not layouts:
-        sys.exit("ERROR: no layoutCatalog.layouts in Battlemaster cache.")
-    if not script_cache:
-        sys.exit("ERROR: no cardScriptCache in Battlemaster cache. Re-run BM cache populate with the latest spawner, save, then rerun.")
+    # Remove this theme's previous import up front (rather than only at write
+    # time) so stable_guid/stable_deck_id below see the same "used" set a prior
+    # run of this theme would have left behind minus its own old cards — that's
+    # what keeps regenerating a theme's cards idempotent (same content -> same
+    # GUIDs) instead of drifting because the old cards were still "in the way".
+    removed_guids = remove_previous_import(target)
+    manifest_rows = [r for r in manifest_rows if r.get("map_creator_tag") not in OLD_CREATOR_TAGS]
 
-    pre = json.loads(target_path.read_text(encoding="utf-8"))
-    remove_previous_import(pre)
-    used_guids = all_guids(pre)
+    used_guids = all_guids(target)
     used_deck_ids = set()
-    for obj in walk(pre.get("ObjectStates") or []):
+    for obj in walk(target.get("ObjectStates") or []):
         for key in (obj.get("CustomDeck") or {}).keys():
             used_deck_ids.add(str(key))
 
-    target_by_guid = {obj.get("GUID"): obj for obj in walk(target.get("ObjectStates") or []) if obj.get("GUID")}
     new_cards = []
     manifest_additions = []
     missing_art = []
@@ -384,7 +429,8 @@ def main():
         payload_key = layout_payload_key(layout)
         entry = script_cache.get(payload_key)
         if not (isinstance(entry, dict) and isinstance(entry.get("script"), str) and entry.get("script")):
-            sys.exit(f"ERROR: missing prebuilt card script for {payload_key}. Re-run BM cache populate and save.")
+            sys.exit(f"ERROR: missing prebuilt card script for {payload_key} ({CREATOR_DISPLAY}, {source_desc}). "
+                      f"Re-run BM cache populate for this theme and save.")
         logical = logical_name_for(layout, source_info["deck_name"], manifest_logical_names)
         if logical.strip().casefold() not in layout_art:
             missing_art.append(logical)
@@ -408,35 +454,90 @@ def main():
 
     if missing_art and not args.allow_missing_layout_art:
         sample = ", ".join(missing_art[:5])
-        sys.exit(f"ERROR: {len(missing_art)} imported maps have no matching layout art card. First: {sample}")
+        sys.exit(f"ERROR: {len(missing_art)} imported maps have no matching layout art card for {CREATOR_DISPLAY}. First: {sample}")
 
-    print(f"Prepared {len(new_cards)} Battlemaster static map cards ({CREATOR_DISPLAY}).")
-    print(f"Target bags: {len(set(g for g, _ in new_cards))}; manifest rows: {len(manifest_additions)}")
+    print(f"[{CREATOR_DISPLAY}] Prepared {len(new_cards)} Battlemaster static map cards from {source_desc}.")
+    print(f"[{CREATOR_DISPLAY}] Target bags: {len(set(g for g, _ in new_cards))}; "
+          f"manifest rows: {len(manifest_additions)}; previous import removed: {len(removed_guids)}.")
     if missing_art:
-        print(f"WARNING: {len(missing_art)} layout-art matches missing.")
+        print(f"[{CREATOR_DISPLAY}] WARNING: {len(missing_art)} layout-art matches missing.")
 
     if not args.write:
-        print("[preview] no files written; pass --write to update ftc_base.json and map_manifest.csv.")
-        return 0
+        return manifest_rows
 
-    removed_guids = remove_previous_import(target)
-    manifest_rows = [r for r in manifest_rows if r.get("map_creator_tag") not in OLD_CREATOR_TAGS]
     new_guids = {card.get("GUID") for _bag_guid, card in new_cards}
     for bag_guid, card in new_cards:
         bag = target_by_guid.get(bag_guid)
         if not bag:
-            sys.exit(f"ERROR: target source bag {bag_guid} not found in {target_path}.")
+            sys.exit(f"ERROR: target source bag {bag_guid} not found in {args.target}.")
         P.strip_card_to_payload(card)
         bag.setdefault("ContainedObjects", []).append(card)
     for guid in removed_guids:
         if guid and guid not in new_guids:
             P.remove_payload(guid)
     manifest_rows.extend(manifest_additions)
+    return manifest_rows
+
+
+def main():
+    ap = argparse.ArgumentParser(description="Import Battlemaster cache as static LCT map cards.")
+    ap.add_argument("source_save", help="TTS save/saved-object JSON whose spawner has a populated cardScriptCache.")
+    ap.add_argument("--target", default=str(DEFAULT_TARGET), help="ftc_base.json to modify.")
+    ap.add_argument("--manifest", default=str(DEFAULT_MANIFEST), help="map_manifest.csv to update.")
+    ap.add_argument("--write", action="store_true", help="Write changes. Without this, only preview.")
+    ap.add_argument("--allow-missing-layout-art", action="store_true", help="Do not fail if existing layout art is missing.")
+    ap.add_argument("--creator-tag", default=None, help="map_crt* tag to add to imported cards and manifest rows. Required unless --all-themes.")
+    ap.add_argument("--creator-display", default=None, help="Creator/filter label to append to imported card names. Required unless --all-themes.")
+    ap.add_argument("--theme-id", default=None, help="Pull this Battlemaster theme id's archived cache (BM_THEME_ARCHIVES) instead of the spawner's top-level cache. Ignored with --all-themes.")
+    ap.add_argument("--all-themes", action="store_true",
+                     help="Import all three shipped Battlemaster themes (BTTF Ruins, Armageddon Desert, BTTF) from "
+                          "their BM_THEME_ARCHIVES entries in one run -- pairs with the debug 'All 3' button. "
+                          "Mutually exclusive with --creator-tag/--creator-display/--theme-id.")
+    args = ap.parse_args()
+
+    if args.all_themes:
+        if args.creator_tag is not None or args.creator_display is not None or args.theme_id is not None:
+            sys.exit("ERROR: --all-themes cannot be combined with --creator-tag/--creator-display/--theme-id.")
+        theme_configs = KNOWN_BATTLEMASTER_THEMES
+    else:
+        theme_configs = [{
+            "theme_id": args.theme_id,
+            "creator_tag": args.creator_tag or DEFAULT_CREATOR_TAG,
+            "creator_display": args.creator_display or DEFAULT_CREATOR_DISPLAY,
+        }]
+
+    source = json.loads(Path(args.source_save).read_text(encoding="utf-8"))
+    target_path = Path(args.target)
+    manifest_path = Path(args.manifest)
+    target = json.loads(target_path.read_text(encoding="utf-8"))
+    machinery = MACHINERY.read_text(encoding="utf-8")
+    manifest_rows = load_manifest(manifest_path)
+
+    spawner = find_object(source, SPAWNER_GUID)
+    if not spawner:
+        sys.exit(f"ERROR: Battlemaster spawner {SPAWNER_GUID} not found in {args.source_save}.")
+    state_text = spawner.get("LuaScriptState") or ""
+    if not state_text.strip():
+        sys.exit("ERROR: spawner LuaScriptState is empty. Run BM cache populate in TTS, save, then rerun.")
+    state = json.loads(state_text)
+
+    target_by_guid = {obj.get("GUID"): obj for obj in walk(target.get("ObjectStates") or []) if obj.get("GUID")}
+
+    for theme_config in theme_configs:
+        manifest_rows = import_one_theme(
+            state, target, target_by_guid, manifest_rows, machinery, args,
+            creator_tag=theme_config["creator_tag"],
+            creator_display=theme_config["creator_display"],
+            theme_id=theme_config.get("theme_id"),
+        )
+
+    if not args.write:
+        print("[preview] no files written; pass --write to update ftc_base.json and map_manifest.csv.")
+        return 0
 
     target_path.write_text(json.dumps(target, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     write_manifest(manifest_path, manifest_rows)
-    print(f"Wrote {target_path}, {manifest_path}, and data/maps payloads; "
-          f"removed {len(removed_guids)} previous imported card(s).")
+    print(f"Wrote {target_path}, {manifest_path}, and data/maps payloads for {len(theme_configs)} theme(s).")
     print(f"Run: {validation_command_hint()}")
     return 0
 
