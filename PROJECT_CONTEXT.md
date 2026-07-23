@@ -223,7 +223,7 @@ Coherency performs one O(n²) full calculation on a capped selection, then becom
 
 At compile time the manifest becomes Global `MAP_INDEX`, keyed by card GUID with creator ID, creator display name, map type, and eligibility. This lets generation/filter code identify cards while they are still inside bags.
 
-Creator filters live in `mapFilter.ttslua`, persist their own state, and mirror it into Global `activeMapCreators`. Generation filters out `eligible=false` cards and prefers active creators. If no active creator can fill a logical layout slot, it falls back to any eligible creator rather than leave the slot empty. The default active creators at this snapshot are T5S2, Battlemaster BTTF Ruins, Cra5h, and LCT Pack 1.
+Creator filters live in `mapFilter.ttslua`, persist their own state, and mirror it into Global `activeMapCreators`. Generation filters out `eligible=false` cards and prefers active creators. If no active creator can fill a logical layout slot, it falls back to any eligible creator rather than leave the slot empty. The default active creators at this snapshot are Battlemaster - BTTF Ruins and Battlemaster - Grimdark (`battlemaster_bttf`).
 
 Creator tag/display mappings must agree between Python validation and Lua display logic. Logical map matching strips the trailing creator credit from nicknames; changing the name format can break deployment-zone and layout-art resolution.
 

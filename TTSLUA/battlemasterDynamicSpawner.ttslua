@@ -789,22 +789,36 @@ function fetchLayoutPayloadRequestsSequentially(requests, stats, done)
   step()
 end
 
--- Deep-copies the just-completed theme's layout catalog + card script cache into
--- BM_THEME_ARCHIVES[themeId], via a JSON round-trip so the archive doesn't alias
--- the live BM_LAYOUT_CATALOG/BM_CARD_SCRIPT_CACHE tables (the next theme's sync
--- prunes those in place -- see pruneLayoutPayloadCache -- which would otherwise
--- corrupt an archive taken by reference). This is what lets one saved table carry
--- every theme's import data at once instead of only the last one populated.
+function copyTableTree(value)
+  if type(value) ~= "table" then return value end
+  local copy = {}
+  for key, child in pairs(value) do
+    copy[key] = copyTableTree(child)
+  end
+  return copy
+end
+
+function compactLiveCacheAfterAllThemeArchive()
+  BM_LAYOUT_PAYLOAD = nil
+  BM_LAYOUT_PAYLOAD_KEY = nil
+  BM_LAYOUT_PAYLOAD_SLOT = nil
+  BM_LAYOUT_PAYLOAD_CACHE = {}
+  BM_CARD_SCRIPT_CACHE = {}
+  BM_SLOT_PREVIEWS = nil
+  BM_SLOT_PREVIEWS_KEY = nil
+end
+
+-- Copies the just-completed theme's layout catalog + card script cache into
+-- BM_THEME_ARCHIVES[themeId] without serializing the huge cached card scripts.
+-- The archive must not alias the live cache tables: the next theme's sync prunes
+-- those in place (see pruneLayoutPayloadCache). String values are immutable, so
+-- table-copying is enough and avoids the long JSON encode/decode stall.
 function archiveCurrentThemeCache(themeId, themeName)
   if type(themeId) ~= "string" or themeId == "" then return end
-  local ok, snapshot = pcall(function()
-    return JSON.decode(JSON.encode({layoutCatalog = BM_LAYOUT_CATALOG, cardScriptCache = BM_CARD_SCRIPT_CACHE}))
-  end)
-  if not ok or type(snapshot) ~= "table" then return end
   BM_THEME_ARCHIVES[themeId] = {
     themeName = themeName,
-    layoutCatalog = snapshot.layoutCatalog,
-    cardScriptCache = snapshot.cardScriptCache,
+    layoutCatalog = copyTableTree(BM_LAYOUT_CATALOG),
+    cardScriptCache = copyTableTree(BM_CARD_SCRIPT_CACHE),
   }
 end
 
@@ -931,6 +945,7 @@ function debugPopulateAllThemes(params)
     index = index + 1
     local entry = themes[index]
     if entry == nil then
+      compactLiveCacheAfterAllThemeArchive()
       BM_ALL_THEMES_POPULATE_IN_PROGRESS = false
       local tone = failedThemes > 0 and "warn" or "ok"
       debugCachePrint(params, "All " .. tostring(#themes) .. " Battlemaster theme(s) processed ("

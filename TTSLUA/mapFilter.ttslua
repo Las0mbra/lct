@@ -25,7 +25,7 @@ UI_VERTICAL_LIFT = -150
 activeCreators = {}     -- { [creatorId] = true }
 -- Creators toggled on the first time the panel spawns (no saved state yet).
 -- Keys are creator ids = the map_crt_* tag without the "map_crt_" prefix.
-DEFAULT_ENABLED_CREATORS = {"t5s2", "battlemaster_bttf_ruins", "cr5sh", "lct1"}
+DEFAULT_ENABLED_CREATORS = {"battlemaster_bttf_ruins", "battlemaster_bttf"}
 
 -- UI-only display names for creator buttons. The baked MAP_INDEX display remains
 -- authoritative for card suffix validation and summaries.

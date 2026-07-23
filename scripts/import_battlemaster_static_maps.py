@@ -214,6 +214,14 @@ def manifest_logical_names_by_pair_slot(manifest_rows):
     return names
 
 
+def manifest_row_pair_slot(row):
+    pair = pair_key_from_deck_name(row["deck_name"])
+    logical = strip_manifest_creator_credit(row)
+    before_suffix = logical.split(" - ", 1)[0]
+    slot = int(before_suffix.rsplit(" ", 1)[1])
+    return pair, slot
+
+
 def layout_payload_key(layout):
     slot = (layout.get("chapterApprovedSlot") or {}).get("slotIndex", layout.get("slotIndex"))
     pair = layout.get("forcePairKey") or ""
@@ -339,7 +347,8 @@ def existing_layout_art_names(target):
     return {str(c.get("Nickname") or "").strip().casefold() for c in deck.get("ContainedObjects") or []}
 
 
-def remove_previous_import(target):
+def remove_previous_import(target, keep_guids=None):
+    keep_guids = keep_guids or set()
     removed = []
     for obj in walk(target.get("ObjectStates") or []):
         children = obj.get("ContainedObjects")
@@ -348,7 +357,8 @@ def remove_previous_import(target):
         kept = []
         for child in children:
             tags = child.get("Tags") or []
-            if any(tag in OLD_CREATOR_TAGS for tag in tags):
+            guid = child.get("GUID")
+            if guid not in keep_guids and any(tag in OLD_CREATOR_TAGS for tag in tags):
                 removed.append(child.get("GUID"))
             else:
                 kept.append(child)
@@ -402,14 +412,38 @@ def import_one_theme(state, target, target_by_guid, manifest_rows, machinery, ar
     source_bags = source_bags_by_pair(manifest_rows)
     manifest_logical_names = manifest_logical_names_by_pair_slot(manifest_rows)
     layout_art = existing_layout_art_names(target)
+    refreshed_slots = set()
+    for layout in layouts:
+        pair = layout.get("forcePairKey") or ""
+        slot = (layout.get("chapterApprovedSlot") or {}).get("slotIndex", layout.get("slotIndex"))
+        if pair and slot is not None:
+            refreshed_slots.add((pair, int(slot)))
+    preserved_rows = []
+    preserved_guids = set()
+    for row in manifest_rows:
+        if row.get("map_creator_tag") not in OLD_CREATOR_TAGS:
+            continue
+        try:
+            row_slot = manifest_row_pair_slot(row)
+        except (KeyError, TypeError, ValueError):
+            row_slot = None
+        if row_slot not in refreshed_slots:
+            preserved_rows.append(row)
+            if row.get("card_guid"):
+                preserved_guids.add(row["card_guid"])
 
     # Remove this theme's previous import up front (rather than only at write
     # time) so stable_guid/stable_deck_id below see the same "used" set a prior
-    # run of this theme would have left behind minus its own old cards — that's
-    # what keeps regenerating a theme's cards idempotent (same content -> same
-    # GUIDs) instead of drifting because the old cards were still "in the way".
-    removed_guids = remove_previous_import(target)
-    manifest_rows = [r for r in manifest_rows if r.get("map_creator_tag") not in OLD_CREATOR_TAGS]
+    # run of this theme would have left behind minus its old cards for refreshed
+    # slots. Existing cards for slots absent from the incoming Battlemaster
+    # catalog are kept so a partial upstream catalog does not shrink LCT's
+    # 45-map creator set.
+    removed_guids = remove_previous_import(target, keep_guids=preserved_guids)
+    manifest_rows = [
+        r for r in manifest_rows
+        if r.get("map_creator_tag") not in OLD_CREATOR_TAGS
+        or r.get("card_guid") in preserved_guids
+    ]
 
     used_guids = all_guids(target)
     used_deck_ids = set()
@@ -459,6 +493,8 @@ def import_one_theme(state, target, target_by_guid, manifest_rows, machinery, ar
     print(f"[{CREATOR_DISPLAY}] Prepared {len(new_cards)} Battlemaster static map cards from {source_desc}.")
     print(f"[{CREATOR_DISPLAY}] Target bags: {len(set(g for g, _ in new_cards))}; "
           f"manifest rows: {len(manifest_additions)}; previous import removed: {len(removed_guids)}.")
+    if preserved_rows:
+        print(f"[{CREATOR_DISPLAY}] Preserved {len(preserved_rows)} existing card(s) for slot(s) missing from the Battlemaster catalog.")
     if missing_art:
         print(f"[{CREATOR_DISPLAY}] WARNING: {len(missing_art)} layout-art matches missing.")
 

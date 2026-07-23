@@ -104,141 +104,6 @@ eae80b,Take and Hold vs Priority Assets,51f916,TnH vs PA 3 - Dawn of War - T5S2,
 f1e22b,Disruption vs Priority Assets,ef1b89,Dis vs PA 1 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
 f1e22b,Disruption vs Priority Assets,e40491,Dis vs PA 2 - Tipping Point - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
 f1e22b,Disruption vs Priority Assets,b1073f,Dis vs PA 3 - Search and Destroy - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
-4409ba,Disruption vs Disruption,1313d1,Dis vs Dis 1 - Crucible of Battle - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-4409ba,Disruption vs Disruption,00b09b,Dis vs Dis 2 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-4409ba,Disruption vs Disruption,eaa578,Dis vs Dis 3 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-f1e22b,Disruption vs Priority Assets,39ebe9,Dis vs PA 1 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-f1e22b,Disruption vs Priority Assets,8941a9,Dis vs PA 2 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-f1e22b,Disruption vs Priority Assets,8a8288,Dis vs PA 3 - Search and Destroy - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-9ac38f,Purge the Foe vs Disruption,24c719,PtF vs Dis 1 - Search and Destroy - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-9ac38f,Purge the Foe vs Disruption,4b62a8,PtF vs Dis 2 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-9ac38f,Purge the Foe vs Disruption,83f2c3,PtF vs Dis 3 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-2c7cd1,Disruption vs Reconnaissance,4ba270,Dis vs Rec 1 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-2c7cd1,Disruption vs Reconnaissance,2924bb,Dis vs Rec 2 - Dawn of War - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-2c7cd1,Disruption vs Reconnaissance,c79013,Dis vs Rec 3 - Search and Destroy - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-cfeba5,Take and Hold vs Disruption,8549ca,TnH vs Dis 1 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-cfeba5,Take and Hold vs Disruption,c0cb83,TnH vs Dis 2 - Crucible of Battle - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-cfeba5,Take and Hold vs Disruption,9e8a71,TnH vs Dis 3 - Hammer and Anvil - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-7b5ba7,Priority Assets vs Priority Assets,ffa394,PA vs PA 1 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-7b5ba7,Priority Assets vs Priority Assets,309f72,PA vs PA 2 - Crucible of Battle - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-7b5ba7,Priority Assets vs Priority Assets,f6d7a4,PA vs PA 3 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-dc8738,Purge the Foe vs Priority Assets,3619f8,PtF vs PA 1 - Dawn of War - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-dc8738,Purge the Foe vs Priority Assets,32751f,PtF vs PA 2 - Search and Destroy - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-dc8738,Purge the Foe vs Priority Assets,b1438b,PtF vs PA 3 - Hammer and Anvil - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-32e34a,Priority Assets vs Reconnaissance,289b41,PA vs Rec 1 - Crucible of Battle - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-32e34a,Priority Assets vs Reconnaissance,3ecbd0,PA vs Rec 2 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-32e34a,Priority Assets vs Reconnaissance,4dbaf4,PA vs Rec 3 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-eae80b,Take and Hold vs Priority Assets,e7ba95,TnH vs PA 1 - Crucible of Battle - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-eae80b,Take and Hold vs Priority Assets,9f76dc,TnH vs PA 2 - Hammer and Anvil - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-eae80b,Take and Hold vs Priority Assets,3d09b2,TnH vs PA 3 - Dawn of War - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-3ebbd6,Purge the Foe vs Purge the Foe,fe9f5e,PtF vs PtF 1 - Search and Destroy - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-3ebbd6,Purge the Foe vs Purge the Foe,389193,PtF vs PtF 2 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-3ebbd6,Purge the Foe vs Purge the Foe,840eea,PtF vs PtF 3 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-a22c33,Purge the Foe vs Reconnaissance,571d94,PtF vs Recon 1 - Hammer and Anvil - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-a22c33,Purge the Foe vs Reconnaissance,d85905,PtF vs Recon 2 - Dawn of War - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-a22c33,Purge the Foe vs Reconnaissance,187f18,PtF vs Recon 3 - Crucible of Battle - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-1e6711,Take and Hold vs Purge the Foe,2be5b1,TnH vs PtF 1 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-1e6711,Take and Hold vs Purge the Foe,484150,TnH vs PtF 2 - Search and Destroy - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-1e6711,Take and Hold vs Purge the Foe,ba845a,TnH vs PtF 3 - Hammer and Anvil - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-793bc0,Reconnaissance vs Reconnaissance,7baa2b,Rec vs Rec 1 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-793bc0,Reconnaissance vs Reconnaissance,41138d,Rec vs Rec 2 - Crucible of Battle - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-793bc0,Reconnaissance vs Reconnaissance,9430bf,Rec vs Rec 3 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-109a6b,Take and Hold vs Reconnaissance,df1be1,TnH vs Rec 1 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-109a6b,Take and Hold vs Reconnaissance,d20137,TnH vs Rec 2 - Dawn of War - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-109a6b,Take and Hold vs Reconnaissance,bad3a7,TnH vs Rec 3 - Search and Destroy - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-6e0d78,Take and Hold vs Take and Hold,e5002f,TnH vs TnH 1 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-6e0d78,Take and Hold vs Take and Hold,e5c83c,TnH vs TnH 2 - Dawn of War - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-6e0d78,Take and Hold vs Take and Hold,4fbf02,TnH vs TnH 3 - Search and Destroy - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
-4409ba,Disruption vs Disruption,251f65,Dis vs Dis 1 - Crucible of Battle - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-4409ba,Disruption vs Disruption,dc4568,Dis vs Dis 2 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-4409ba,Disruption vs Disruption,90c55d,Dis vs Dis 3 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-f1e22b,Disruption vs Priority Assets,784e00,Dis vs PA 1 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-f1e22b,Disruption vs Priority Assets,eb4554,Dis vs PA 2 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-f1e22b,Disruption vs Priority Assets,e842de,Dis vs PA 3 - Search and Destroy - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-9ac38f,Purge the Foe vs Disruption,3304de,PtF vs Dis 1 - Search and Destroy - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-9ac38f,Purge the Foe vs Disruption,94d32f,PtF vs Dis 2 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-9ac38f,Purge the Foe vs Disruption,ca561c,PtF vs Dis 3 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-2c7cd1,Disruption vs Reconnaissance,bcf428,Dis vs Rec 1 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-2c7cd1,Disruption vs Reconnaissance,b5c7a8,Dis vs Rec 2 - Dawn of War - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-2c7cd1,Disruption vs Reconnaissance,2bc4e8,Dis vs Rec 3 - Search and Destroy - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-cfeba5,Take and Hold vs Disruption,fd5704,TnH vs Dis 1 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-cfeba5,Take and Hold vs Disruption,645cab,TnH vs Dis 2 - Crucible of Battle - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-cfeba5,Take and Hold vs Disruption,d68b65,TnH vs Dis 3 - Hammer and Anvil - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-7b5ba7,Priority Assets vs Priority Assets,681138,PA vs PA 1 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-7b5ba7,Priority Assets vs Priority Assets,6c1d19,PA vs PA 2 - Crucible of Battle - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-7b5ba7,Priority Assets vs Priority Assets,7b4cf4,PA vs PA 3 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-dc8738,Purge the Foe vs Priority Assets,11d1db,PtF vs PA 1 - Dawn of War - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-dc8738,Purge the Foe vs Priority Assets,86c02b,PtF vs PA 2 - Search and Destroy - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-dc8738,Purge the Foe vs Priority Assets,5a155e,PtF vs PA 3 - Hammer and Anvil - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-32e34a,Priority Assets vs Reconnaissance,ca5cd4,PA vs Rec 1 - Crucible of Battle - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-32e34a,Priority Assets vs Reconnaissance,60d80f,PA vs Rec 2 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-32e34a,Priority Assets vs Reconnaissance,b19594,PA vs Rec 3 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-eae80b,Take and Hold vs Priority Assets,3b127f,TnH vs PA 1 - Crucible of Battle - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-eae80b,Take and Hold vs Priority Assets,0e29c0,TnH vs PA 2 - Hammer and Anvil - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-eae80b,Take and Hold vs Priority Assets,19404b,TnH vs PA 3 - Dawn of War - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-3ebbd6,Purge the Foe vs Purge the Foe,c8ef50,PtF vs PtF 1 - Search and Destroy - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-3ebbd6,Purge the Foe vs Purge the Foe,096417,PtF vs PtF 2 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-3ebbd6,Purge the Foe vs Purge the Foe,63d0ff,PtF vs PtF 3 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-a22c33,Purge the Foe vs Reconnaissance,df7cfe,PtF vs Recon 1 - Hammer and Anvil - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-a22c33,Purge the Foe vs Reconnaissance,bcfdec,PtF vs Recon 2 - Dawn of War - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-a22c33,Purge the Foe vs Reconnaissance,d212ee,PtF vs Recon 3 - Crucible of Battle - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-1e6711,Take and Hold vs Purge the Foe,c44c6a,TnH vs PtF 1 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-1e6711,Take and Hold vs Purge the Foe,12f7e8,TnH vs PtF 2 - Search and Destroy - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-1e6711,Take and Hold vs Purge the Foe,563ff0,TnH vs PtF 3 - Hammer and Anvil - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-793bc0,Reconnaissance vs Reconnaissance,2f33eb,Rec vs Rec 1 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-793bc0,Reconnaissance vs Reconnaissance,9965e7,Rec vs Rec 2 - Crucible of Battle - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-793bc0,Reconnaissance vs Reconnaissance,b69514,Rec vs Rec 3 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-109a6b,Take and Hold vs Reconnaissance,1abde7,TnH vs Rec 1 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-109a6b,Take and Hold vs Reconnaissance,85fcb6,TnH vs Rec 2 - Dawn of War - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-109a6b,Take and Hold vs Reconnaissance,63370d,TnH vs Rec 3 - Search and Destroy - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-6e0d78,Take and Hold vs Take and Hold,6697ac,TnH vs TnH 1 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-6e0d78,Take and Hold vs Take and Hold,cd2f7b,TnH vs TnH 2 - Dawn of War - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-6e0d78,Take and Hold vs Take and Hold,56f66c,TnH vs TnH 3 - Search and Destroy - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
-4409ba,Disruption vs Disruption,5d2e44,Dis vs Dis 1 - Crucible of Battle - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-4409ba,Disruption vs Disruption,bfbdb5,Dis vs Dis 2 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-4409ba,Disruption vs Disruption,18eae4,Dis vs Dis 3 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-f1e22b,Disruption vs Priority Assets,8dd416,Dis vs PA 1 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-f1e22b,Disruption vs Priority Assets,32ba6b,Dis vs PA 2 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-f1e22b,Disruption vs Priority Assets,bcc316,Dis vs PA 3 - Search and Destroy - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-9ac38f,Purge the Foe vs Disruption,c381b0,PtF vs Dis 1 - Search and Destroy - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-9ac38f,Purge the Foe vs Disruption,cc7153,PtF vs Dis 2 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-9ac38f,Purge the Foe vs Disruption,8974d6,PtF vs Dis 3 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-2c7cd1,Disruption vs Reconnaissance,9ebe46,Dis vs Rec 1 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-2c7cd1,Disruption vs Reconnaissance,30bc6f,Dis vs Rec 2 - Dawn of War - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-2c7cd1,Disruption vs Reconnaissance,ad1cb2,Dis vs Rec 3 - Search and Destroy - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-cfeba5,Take and Hold vs Disruption,eb3cad,TnH vs Dis 1 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-cfeba5,Take and Hold vs Disruption,95c4bb,TnH vs Dis 2 - Crucible of Battle - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-cfeba5,Take and Hold vs Disruption,63bbe1,TnH vs Dis 3 - Hammer and Anvil - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-7b5ba7,Priority Assets vs Priority Assets,3b1990,PA vs PA 1 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-7b5ba7,Priority Assets vs Priority Assets,d0a4ad,PA vs PA 2 - Crucible of Battle - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-7b5ba7,Priority Assets vs Priority Assets,d5577f,PA vs PA 3 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-dc8738,Purge the Foe vs Priority Assets,926061,PtF vs PA 1 - Dawn of War - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-dc8738,Purge the Foe vs Priority Assets,8a0b82,PtF vs PA 2 - Search and Destroy - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-dc8738,Purge the Foe vs Priority Assets,fbf766,PtF vs PA 3 - Hammer and Anvil - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-32e34a,Priority Assets vs Reconnaissance,a3ac88,PA vs Rec 1 - Crucible of Battle - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-32e34a,Priority Assets vs Reconnaissance,2bb16c,PA vs Rec 2 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-32e34a,Priority Assets vs Reconnaissance,e166a5,PA vs Rec 3 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-eae80b,Take and Hold vs Priority Assets,dc98c8,TnH vs PA 1 - Crucible of Battle - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-eae80b,Take and Hold vs Priority Assets,55542e,TnH vs PA 2 - Hammer and Anvil - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-eae80b,Take and Hold vs Priority Assets,4b80e2,TnH vs PA 3 - Dawn of War - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-3ebbd6,Purge the Foe vs Purge the Foe,45a593,PtF vs PtF 1 - Search and Destroy - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-3ebbd6,Purge the Foe vs Purge the Foe,271478,PtF vs PtF 2 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-3ebbd6,Purge the Foe vs Purge the Foe,daedfd,PtF vs PtF 3 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-a22c33,Purge the Foe vs Reconnaissance,eab2a9,PtF vs Recon 1 - Hammer and Anvil - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-a22c33,Purge the Foe vs Reconnaissance,2c7848,PtF vs Recon 2 - Dawn of War - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-a22c33,Purge the Foe vs Reconnaissance,fe51f6,PtF vs Recon 3 - Crucible of Battle - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-1e6711,Take and Hold vs Purge the Foe,dcb9a7,TnH vs PtF 1 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-1e6711,Take and Hold vs Purge the Foe,524d84,TnH vs PtF 2 - Search and Destroy - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-1e6711,Take and Hold vs Purge the Foe,c15cd6,TnH vs PtF 3 - Hammer and Anvil - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-793bc0,Reconnaissance vs Reconnaissance,475027,Rec vs Rec 1 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-793bc0,Reconnaissance vs Reconnaissance,140a2e,Rec vs Rec 2 - Crucible of Battle - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-793bc0,Reconnaissance vs Reconnaissance,3e2727,Rec vs Rec 3 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-109a6b,Take and Hold vs Reconnaissance,9aece7,TnH vs Rec 1 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-109a6b,Take and Hold vs Reconnaissance,9db3fc,TnH vs Rec 2 - Dawn of War - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-109a6b,Take and Hold vs Reconnaissance,a01108,TnH vs Rec 3 - Search and Destroy - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-6e0d78,Take and Hold vs Take and Hold,e98f58,TnH vs TnH 1 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-6e0d78,Take and Hold vs Take and Hold,4531a6,TnH vs TnH 2 - Dawn of War - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
-6e0d78,Take and Hold vs Take and Hold,b8e139,TnH vs TnH 3 - Search and Destroy - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
 32e34a,Priority Assets vs Reconnaissance,b7205e,PA vs Rec 1 - Crucible of Battle - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
 793bc0,Reconnaissance vs Reconnaissance,e5be08,Rec vs Rec 1 - Sweeping Engagement - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
 4409ba,Disruption vs Disruption,7f0d9e,Dis vs Dis 1 - Crucible of Battle - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
@@ -254,3 +119,138 @@ a22c33,Purge the Foe vs Reconnaissance,447426,PtF vs Recon 1 - Hammer and Anvil 
 3ebbd6,Purge the Foe vs Purge the Foe,8e9f5b,PtF vs PtF 1 - Search and Destroy - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
 2c7cd1,Disruption vs Reconnaissance,b82ab1,Dis vs Rec 1 - Tipping Point - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
 6e0d78,Take and Hold vs Take and Hold,48d805,TnH vs TnH 1 - Tipping Point - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
+4409ba,Disruption vs Disruption,9f7e72,Dis vs Dis 1 - Crucible of Battle - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+4409ba,Disruption vs Disruption,413840,Dis vs Dis 2 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+4409ba,Disruption vs Disruption,e953b8,Dis vs Dis 3 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+f1e22b,Disruption vs Priority Assets,57c176,Dis vs PA 1 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+f1e22b,Disruption vs Priority Assets,5f13c8,Dis vs PA 2 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+f1e22b,Disruption vs Priority Assets,da0cfa,Dis vs PA 3 - Search and Destroy - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+9ac38f,Purge the Foe vs Disruption,0e04f3,PtF vs Dis 1 - Search and Destroy - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+9ac38f,Purge the Foe vs Disruption,2ec366,PtF vs Dis 2 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+9ac38f,Purge the Foe vs Disruption,c88d77,PtF vs Dis 3 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+2c7cd1,Disruption vs Reconnaissance,c5c785,Dis vs Rec 1 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+2c7cd1,Disruption vs Reconnaissance,d38c4a,Dis vs Rec 2 - Dawn of War - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+2c7cd1,Disruption vs Reconnaissance,320302,Dis vs Rec 3 - Search and Destroy - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+cfeba5,Take and Hold vs Disruption,bb31b6,TnH vs Dis 1 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+cfeba5,Take and Hold vs Disruption,d90245,TnH vs Dis 2 - Crucible of Battle - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+cfeba5,Take and Hold vs Disruption,a25c0d,TnH vs Dis 3 - Hammer and Anvil - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+7b5ba7,Priority Assets vs Priority Assets,3f6f41,PA vs PA 1 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+7b5ba7,Priority Assets vs Priority Assets,e7418b,PA vs PA 2 - Crucible of Battle - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+7b5ba7,Priority Assets vs Priority Assets,6d425d,PA vs PA 3 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+dc8738,Purge the Foe vs Priority Assets,13a610,PtF vs PA 1 - Dawn of War - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+dc8738,Purge the Foe vs Priority Assets,7db140,PtF vs PA 2 - Search and Destroy - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+dc8738,Purge the Foe vs Priority Assets,f87054,PtF vs PA 3 - Hammer and Anvil - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+32e34a,Priority Assets vs Reconnaissance,64782f,PA vs Rec 1 - Crucible of Battle - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+32e34a,Priority Assets vs Reconnaissance,534d7c,PA vs Rec 2 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+32e34a,Priority Assets vs Reconnaissance,990d13,PA vs Rec 3 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+eae80b,Take and Hold vs Priority Assets,9faf4d,TnH vs PA 1 - Crucible of Battle - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+eae80b,Take and Hold vs Priority Assets,31680f,TnH vs PA 2 - Hammer and Anvil - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+eae80b,Take and Hold vs Priority Assets,378f44,TnH vs PA 3 - Dawn of War - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+3ebbd6,Purge the Foe vs Purge the Foe,b369f2,PtF vs PtF 1 - Search and Destroy - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+3ebbd6,Purge the Foe vs Purge the Foe,40fdcb,PtF vs PtF 2 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+3ebbd6,Purge the Foe vs Purge the Foe,a8ea5a,PtF vs PtF 3 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+a22c33,Purge the Foe vs Reconnaissance,3ef8e8,PtF vs Recon 1 - Hammer and Anvil - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+a22c33,Purge the Foe vs Reconnaissance,3910d8,PtF vs Recon 2 - Dawn of War - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+a22c33,Purge the Foe vs Reconnaissance,881c35,PtF vs Recon 3 - Crucible of Battle - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+1e6711,Take and Hold vs Purge the Foe,18bea0,TnH vs PtF 1 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+1e6711,Take and Hold vs Purge the Foe,480b13,TnH vs PtF 2 - Search and Destroy - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+1e6711,Take and Hold vs Purge the Foe,264eae,TnH vs PtF 3 - Hammer and Anvil - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+793bc0,Reconnaissance vs Reconnaissance,eeee76,Rec vs Rec 1 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+793bc0,Reconnaissance vs Reconnaissance,26e994,Rec vs Rec 2 - Crucible of Battle - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+793bc0,Reconnaissance vs Reconnaissance,95dd29,Rec vs Rec 3 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+109a6b,Take and Hold vs Reconnaissance,69a514,TnH vs Rec 1 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+109a6b,Take and Hold vs Reconnaissance,fd0877,TnH vs Rec 2 - Dawn of War - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+109a6b,Take and Hold vs Reconnaissance,1c5646,TnH vs Rec 3 - Search and Destroy - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+6e0d78,Take and Hold vs Take and Hold,ce7518,TnH vs TnH 1 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+6e0d78,Take and Hold vs Take and Hold,f4ebc8,TnH vs TnH 2 - Dawn of War - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+6e0d78,Take and Hold vs Take and Hold,74288f,TnH vs TnH 3 - Search and Destroy - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
+4409ba,Disruption vs Disruption,cd39b6,Dis vs Dis 1 - Crucible of Battle - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+4409ba,Disruption vs Disruption,8c5d4d,Dis vs Dis 2 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+4409ba,Disruption vs Disruption,80bfac,Dis vs Dis 3 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+f1e22b,Disruption vs Priority Assets,a9b84e,Dis vs PA 1 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+f1e22b,Disruption vs Priority Assets,0505ec,Dis vs PA 2 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+f1e22b,Disruption vs Priority Assets,df7f0b,Dis vs PA 3 - Search and Destroy - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+9ac38f,Purge the Foe vs Disruption,835b0b,PtF vs Dis 1 - Search and Destroy - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+9ac38f,Purge the Foe vs Disruption,81fa8b,PtF vs Dis 2 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+9ac38f,Purge the Foe vs Disruption,7b1f6e,PtF vs Dis 3 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+2c7cd1,Disruption vs Reconnaissance,8623eb,Dis vs Rec 1 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+2c7cd1,Disruption vs Reconnaissance,c7e6f2,Dis vs Rec 2 - Dawn of War - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+2c7cd1,Disruption vs Reconnaissance,2a1ec7,Dis vs Rec 3 - Search and Destroy - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+cfeba5,Take and Hold vs Disruption,10e710,TnH vs Dis 1 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+cfeba5,Take and Hold vs Disruption,95dee9,TnH vs Dis 2 - Crucible of Battle - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+cfeba5,Take and Hold vs Disruption,539fce,TnH vs Dis 3 - Hammer and Anvil - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+7b5ba7,Priority Assets vs Priority Assets,e62901,PA vs PA 1 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+7b5ba7,Priority Assets vs Priority Assets,5f769c,PA vs PA 2 - Crucible of Battle - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+7b5ba7,Priority Assets vs Priority Assets,029fd2,PA vs PA 3 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+dc8738,Purge the Foe vs Priority Assets,ec9c0c,PtF vs PA 1 - Dawn of War - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+dc8738,Purge the Foe vs Priority Assets,a1f79d,PtF vs PA 2 - Search and Destroy - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+dc8738,Purge the Foe vs Priority Assets,2389b0,PtF vs PA 3 - Hammer and Anvil - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+32e34a,Priority Assets vs Reconnaissance,0ef0fc,PA vs Rec 1 - Crucible of Battle - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+32e34a,Priority Assets vs Reconnaissance,146724,PA vs Rec 2 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+32e34a,Priority Assets vs Reconnaissance,8d100a,PA vs Rec 3 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+eae80b,Take and Hold vs Priority Assets,cd34a3,TnH vs PA 1 - Crucible of Battle - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+eae80b,Take and Hold vs Priority Assets,f75cd9,TnH vs PA 2 - Hammer and Anvil - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+eae80b,Take and Hold vs Priority Assets,b4d977,TnH vs PA 3 - Dawn of War - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+3ebbd6,Purge the Foe vs Purge the Foe,0b805b,PtF vs PtF 1 - Search and Destroy - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+3ebbd6,Purge the Foe vs Purge the Foe,a25194,PtF vs PtF 2 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+3ebbd6,Purge the Foe vs Purge the Foe,378d01,PtF vs PtF 3 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+a22c33,Purge the Foe vs Reconnaissance,e0684f,PtF vs Recon 1 - Hammer and Anvil - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+a22c33,Purge the Foe vs Reconnaissance,a7b12e,PtF vs Recon 2 - Dawn of War - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+a22c33,Purge the Foe vs Reconnaissance,e225b5,PtF vs Recon 3 - Crucible of Battle - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+1e6711,Take and Hold vs Purge the Foe,405536,TnH vs PtF 1 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+1e6711,Take and Hold vs Purge the Foe,b6c65d,TnH vs PtF 2 - Search and Destroy - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+1e6711,Take and Hold vs Purge the Foe,5e6152,TnH vs PtF 3 - Hammer and Anvil - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+793bc0,Reconnaissance vs Reconnaissance,e273d7,Rec vs Rec 1 - Sweeping Engagement - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+793bc0,Reconnaissance vs Reconnaissance,677866,Rec vs Rec 2 - Crucible of Battle - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+793bc0,Reconnaissance vs Reconnaissance,7c3bf0,Rec vs Rec 3 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+109a6b,Take and Hold vs Reconnaissance,3ea7a7,TnH vs Rec 1 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+109a6b,Take and Hold vs Reconnaissance,ea791d,TnH vs Rec 2 - Dawn of War - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+109a6b,Take and Hold vs Reconnaissance,b756e2,TnH vs Rec 3 - Search and Destroy - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+6e0d78,Take and Hold vs Take and Hold,b30171,TnH vs TnH 1 - Tipping Point - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+6e0d78,Take and Hold vs Take and Hold,817dd1,TnH vs TnH 2 - Dawn of War - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+6e0d78,Take and Hold vs Take and Hold,a69f72,TnH vs TnH 3 - Search and Destroy - Battlemaster - Desert,map_crt_battlemaster_armageddon_desert,map_type_comp,Battlemaster - Desert,true
+4409ba,Disruption vs Disruption,cd7de1,Dis vs Dis 1 - Crucible of Battle - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+4409ba,Disruption vs Disruption,57029b,Dis vs Dis 2 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+4409ba,Disruption vs Disruption,ea252c,Dis vs Dis 3 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+f1e22b,Disruption vs Priority Assets,f606fe,Dis vs PA 1 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+f1e22b,Disruption vs Priority Assets,c35129,Dis vs PA 2 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+f1e22b,Disruption vs Priority Assets,aa0107,Dis vs PA 3 - Search and Destroy - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+9ac38f,Purge the Foe vs Disruption,d0adc5,PtF vs Dis 1 - Search and Destroy - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+9ac38f,Purge the Foe vs Disruption,93ef0b,PtF vs Dis 2 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+9ac38f,Purge the Foe vs Disruption,6863a8,PtF vs Dis 3 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+2c7cd1,Disruption vs Reconnaissance,5ba4a2,Dis vs Rec 1 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+2c7cd1,Disruption vs Reconnaissance,b9e38c,Dis vs Rec 2 - Dawn of War - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+2c7cd1,Disruption vs Reconnaissance,79360d,Dis vs Rec 3 - Search and Destroy - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+cfeba5,Take and Hold vs Disruption,7c6cfe,TnH vs Dis 1 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+cfeba5,Take and Hold vs Disruption,98039d,TnH vs Dis 2 - Crucible of Battle - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+cfeba5,Take and Hold vs Disruption,60047b,TnH vs Dis 3 - Hammer and Anvil - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+7b5ba7,Priority Assets vs Priority Assets,b07cc4,PA vs PA 1 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+7b5ba7,Priority Assets vs Priority Assets,765ace,PA vs PA 2 - Crucible of Battle - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+7b5ba7,Priority Assets vs Priority Assets,cb7a61,PA vs PA 3 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+dc8738,Purge the Foe vs Priority Assets,ab7fa6,PtF vs PA 1 - Dawn of War - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+dc8738,Purge the Foe vs Priority Assets,00d52b,PtF vs PA 2 - Search and Destroy - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+dc8738,Purge the Foe vs Priority Assets,add2c0,PtF vs PA 3 - Hammer and Anvil - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+32e34a,Priority Assets vs Reconnaissance,af0b15,PA vs Rec 1 - Crucible of Battle - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+32e34a,Priority Assets vs Reconnaissance,906185,PA vs Rec 2 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+32e34a,Priority Assets vs Reconnaissance,bc8b66,PA vs Rec 3 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+eae80b,Take and Hold vs Priority Assets,d75669,TnH vs PA 1 - Crucible of Battle - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+eae80b,Take and Hold vs Priority Assets,a20f65,TnH vs PA 2 - Hammer and Anvil - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+eae80b,Take and Hold vs Priority Assets,02000b,TnH vs PA 3 - Dawn of War - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+3ebbd6,Purge the Foe vs Purge the Foe,2b6dd0,PtF vs PtF 1 - Search and Destroy - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+3ebbd6,Purge the Foe vs Purge the Foe,901373,PtF vs PtF 2 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+3ebbd6,Purge the Foe vs Purge the Foe,4e759a,PtF vs PtF 3 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+a22c33,Purge the Foe vs Reconnaissance,945fe9,PtF vs Recon 1 - Hammer and Anvil - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+a22c33,Purge the Foe vs Reconnaissance,c91180,PtF vs Recon 2 - Dawn of War - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+a22c33,Purge the Foe vs Reconnaissance,c51558,PtF vs Recon 3 - Crucible of Battle - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+1e6711,Take and Hold vs Purge the Foe,5475f9,TnH vs PtF 1 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+1e6711,Take and Hold vs Purge the Foe,5b4e60,TnH vs PtF 2 - Search and Destroy - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+1e6711,Take and Hold vs Purge the Foe,a4c19b,TnH vs PtF 3 - Hammer and Anvil - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+793bc0,Reconnaissance vs Reconnaissance,92f8e3,Rec vs Rec 1 - Sweeping Engagement - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+793bc0,Reconnaissance vs Reconnaissance,895b18,Rec vs Rec 2 - Crucible of Battle - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+793bc0,Reconnaissance vs Reconnaissance,4fc8e8,Rec vs Rec 3 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+109a6b,Take and Hold vs Reconnaissance,ab94c4,TnH vs Rec 1 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+109a6b,Take and Hold vs Reconnaissance,71cc47,TnH vs Rec 2 - Dawn of War - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+109a6b,Take and Hold vs Reconnaissance,debdc6,TnH vs Rec 3 - Search and Destroy - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+6e0d78,Take and Hold vs Take and Hold,5858eb,TnH vs TnH 1 - Tipping Point - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+6e0d78,Take and Hold vs Take and Hold,2f035a,TnH vs TnH 2 - Dawn of War - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
+6e0d78,Take and Hold vs Take and Hold,daa11f,TnH vs TnH 3 - Search and Destroy - BTTF,map_crt_battlemaster_bttf,map_type_comp,BTTF,true
