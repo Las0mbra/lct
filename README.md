@@ -62,9 +62,9 @@ python3 upgrade_map_zones.py --dry-run  # show what would change, write nothing
 
 ### Battlemaster imports
 
-Battlemaster maps are baked into normal static LCT cards, not spawned dynamically at runtime. Each theme ships as its own creator filter (`Battlemaster - BTTF Ruins`, `BTTF`, `Battlemaster - Desert`), 45 cards apiece, already in the manifest. There is no plain `map_crt_battlemaster` creator, so **always pass `--creator-tag`/`--creator-display`** matching the theme, or you create a duplicate set.
+Battlemaster maps are baked into normal static LCT cards, not spawned dynamically at runtime. Each theme ships as its own creator filter (`Battlemaster - BTTF Ruins`, `BTTF`, `Battlemaster - Desert`, `Battlemaster - Armageddon Ruins`), 45 cards apiece, already in the manifest. There is no plain `map_crt_battlemaster` creator, so **always pass `--creator-tag`/`--creator-display`** matching the theme, or you create a duplicate set.
 
-To (re)import a theme, build a `--test` save, load it, click the matching debug button (`Ruins`/`Desert`/`BTTF` under the DEBUG-gated Battlemaster cache panel), save the table, then:
+To (re)import a theme, build a `--test` save, load it, click the matching debug button (`BTTF Ruins`/`Desert`/`BTTF`/`Arma Ruins` under the DEBUG-gated Battlemaster cache panel), save the table, then:
 
 ```bash
 # preview the 45 generated cards (no changes written)

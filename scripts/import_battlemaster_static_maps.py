@@ -16,17 +16,18 @@ Single-theme workflow:
      cache blob (the static cards carry the geometry; the spawner no longer needs
      a warm cache), then validate and compile.
 
-All-themes workflow (pairs with the debug "All 3" button):
-  1. Click "All 3" instead of a single theme button. The spawner populates Ruins,
-     Desert, and BTTF back to back and archives each one's layout catalog + card
-     script cache under its theme id (BM_THEME_ARCHIVES in
-     battlemasterDynamicSpawner.ttslua) as it finishes — this is necessary because
-     the live cache only ever holds the LAST theme synced (each new theme's sync
-     prunes the previous theme's cached payloads/scripts).
+All-themes workflow (pairs with the debug "All 4" button):
+  1. Click "All 4" instead of a single theme button. The spawner populates BTTF
+     Ruins, Desert, BTTF, and Armageddon Ruins back to back and archives each
+     one's layout catalog + card script cache under its theme id
+     (BM_THEME_ARCHIVES in battlemasterDynamicSpawner.ttslua) as it finishes —
+     this is necessary because the live cache only ever holds the LAST theme
+     synced (each new theme's sync prunes the previous theme's cached
+     payloads/scripts).
   2. Save that table once.
   3. Run this script with `--all-themes` instead of --creator-tag/--creator-display.
      It pulls each theme's archived catalog/scripts out of the one saved file and
-     runs the same import (remove-old, add-new, extend manifest) for all three
+     runs the same import (remove-old, add-new, extend manifest) for all four
      creator tags in a single pass.
   4. Same `bake_battlemaster_cache.py --clear` + validate/compile finish as above.
 
@@ -67,10 +68,11 @@ DEFAULT_BACK_URL = "https://steamusercontent-a.akamaihd.net/ugc/1079107167358124
 DEFAULT_FACE_URL = DEFAULT_BACK_URL
 
 # Mirrors BATTLEMASTER_BTTF_RUINS_THEME_ID / BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID /
-# BATTLEMASTER_BTTF_THEME_ID and the Ruins/Desert/BTTF debug buttons in
-# TTSLUA/global.ttslua. --all-themes uses this to pull each theme's
-# BM_THEME_ARCHIVES entry out of one saved table and import it under its
-# existing shipped creator tag, all in a single run.
+# BATTLEMASTER_BTTF_THEME_ID / BATTLEMASTER_ARMAGEDDON_RUINS_THEME_ID and the
+# BTTF Ruins/Desert/BTTF/Arma Ruins debug buttons in TTSLUA/global.ttslua.
+# --all-themes uses this to pull each theme's BM_THEME_ARCHIVES entry out of
+# one saved table and import it under its existing shipped creator tag, all
+# in a single run.
 KNOWN_BATTLEMASTER_THEMES = [
     {
         "theme_id": "tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5",
@@ -86,6 +88,11 @@ KNOWN_BATTLEMASTER_THEMES = [
         "theme_id": "tts-theme-grimdark-calibrated-v1",
         "creator_tag": "map_crt_battlemaster_bttf",
         "creator_display": "BTTF",
+    },
+    {
+        "theme_id": "tts-theme-7b9218bb-b614-4225-9789-570836525e6a",
+        "creator_tag": "map_crt_battlemaster_armageddon_ruins",
+        "creator_display": "Battlemaster - Armageddon Ruins",
     },
 ]
 
@@ -526,9 +533,9 @@ def main():
     ap.add_argument("--creator-display", default=None, help="Creator/filter label to append to imported card names. Required unless --all-themes.")
     ap.add_argument("--theme-id", default=None, help="Pull this Battlemaster theme id's archived cache (BM_THEME_ARCHIVES) instead of the spawner's top-level cache. Ignored with --all-themes.")
     ap.add_argument("--all-themes", action="store_true",
-                     help="Import all three shipped Battlemaster themes (BTTF Ruins, Armageddon Desert, BTTF) from "
-                          "their BM_THEME_ARCHIVES entries in one run -- pairs with the debug 'All 3' button. "
-                          "Mutually exclusive with --creator-tag/--creator-display/--theme-id.")
+                     help="Import all four shipped Battlemaster themes (BTTF Ruins, Armageddon Desert, BTTF, "
+                          "Armageddon Ruins) from their BM_THEME_ARCHIVES entries in one run -- pairs with the "
+                          "debug 'All 4' button. Mutually exclusive with --creator-tag/--creator-display/--theme-id.")
     args = ap.parse_args()
 
     if args.all_themes:

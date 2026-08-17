@@ -915,9 +915,9 @@ function debugPopulateFullCache(params)
 end
 
 -- Runs debugPopulateFullCache once per entry in params.themes (each {id=, name=})
--- sequentially, so all three shipped Battlemaster themes can be refreshed and
--- archived from a single button click / single save instead of three separate
--- populate-then-save round trips. Each theme still goes through the normal
+-- sequentially, so all shipped Battlemaster themes can be refreshed and
+-- archived from a single button click / single save instead of separate
+-- populate-then-save round trips per theme. Each theme still goes through the normal
 -- populate path (and gets pruned/archived exactly like a solo click would); this
 -- just chains them via debugPopulateFullCache's onComplete callback so only one
 -- populate is ever in flight at a time.

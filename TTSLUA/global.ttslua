@@ -1195,6 +1195,12 @@ function announceVersion()
     end
 end
 
+-- One-shot shoutout printed when the mod itself loads (see onLoad's Wait.time
+-- below), not on every map load.
+function announceWtcWinners()
+    broadcastToAll("Congrats to the winners of WTC 2026, Folger Pyles and Team USA!", {1, 0.84, 0})
+end
+
 -- Push the latest patch number + notes (injected from CHANGELOG.md) into the
 -- splash intro overlay. Runs on every load so the menu always reflects the
 -- build's CHANGELOG, regardless of test/release.
@@ -1319,6 +1325,7 @@ function onLoad(saved_data)
     -- version banner in chat.
     Wait.frames(updateSplashOverlay, 1)
     Wait.time(announceVersion, 3)
+    Wait.time(announceWtcWinners, 3.5)
     if allowMenu then
         if allowAutoSeat and redPlayerID ~= "" and bluePlayerID ~= "" then --  if the game is not started dont autoseat
                 autoSeatAll()
@@ -1394,6 +1401,7 @@ BATTLEMASTER_SPAWNER_GUID = "b4d10a"
 BATTLEMASTER_BTTF_THEME_ID = "tts-theme-grimdark-calibrated-v1"
 BATTLEMASTER_BTTF_RUINS_THEME_ID = "tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5"
 BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID = "tts-theme-6c414c7a-9827-48cf-a89e-aa8ddff66491"
+BATTLEMASTER_ARMAGEDDON_RUINS_THEME_ID = "tts-theme-7b9218bb-b614-4225-9789-570836525e6a"
 
 -- Where the "Dump selected GUIDs" tile lands, and its name so stale dumps can be
 -- cleared before spawning a fresh one (see debugDumpSelectedGuids).
@@ -1501,11 +1509,24 @@ function debugPopulateBattlemasterArmageddonDesertCache(player)
     spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID, themeName = "armageddon desert"})
 end
 
--- "All 3" button: runs the Ruins/Desert/BTTF populates back to back on the
--- spawner, each archived under its theme id (see BM_THEME_ARCHIVES in
--- battlemasterDynamicSpawner.ttslua), so a single save afterward carries every
--- theme's import data and import_battlemaster_static_maps.py --all-themes can
--- do all three imports without three separate populate/save round trips.
+function debugPopulateBattlemasterArmageddonRuinsCache(player)
+    local playerColor = player and player.color
+    if DEBUG ~= true then return end
+    local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
+    if not spawner then
+        printToColor("[DEBUG] Battlemaster spawner not found.", playerColor, {1, 0.3, 0.3})
+        return
+    end
+    printToColor("[DEBUG] Battlemaster Armageddon Ruins cache population started. Save the mod/table after it completes.", playerColor, {1, 0.6, 0.5})
+    spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_ARMAGEDDON_RUINS_THEME_ID, themeName = "armageddon ruins"})
+end
+
+-- "All 4" button: runs the BTTF Ruins/Desert/BTTF/Armageddon Ruins populates
+-- back to back on the spawner, each archived under its theme id (see
+-- BM_THEME_ARCHIVES in battlemasterDynamicSpawner.ttslua), so a single save
+-- afterward carries every theme's import data and
+-- import_battlemaster_static_maps.py --all-themes can do all four imports
+-- without four separate populate/save round trips.
 function debugPopulateBattlemasterAllCache(player)
     local playerColor = player and player.color
     if DEBUG ~= true then return end
@@ -1514,13 +1535,14 @@ function debugPopulateBattlemasterAllCache(player)
         printToColor("[DEBUG] Battlemaster spawner not found.", playerColor, {1, 0.3, 0.3})
         return
     end
-    printToColor("[DEBUG] Battlemaster all-theme cache population started (Ruins, Desert, BTTF). Save the mod/table after it completes.", playerColor, {0.65, 0.9, 1})
+    printToColor("[DEBUG] Battlemaster all-theme cache population started (BTTF Ruins, Desert, BTTF, Armageddon Ruins). Save the mod/table after it completes.", playerColor, {0.65, 0.9, 1})
     spawner.call("debugPopulateAllThemes", {
         playerColor = playerColor,
         themes = {
             {id = BATTLEMASTER_BTTF_RUINS_THEME_ID, name = "BTTF Ruins"},
             {id = BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID, name = "armageddon desert"},
             {id = BATTLEMASTER_BTTF_THEME_ID, name = "BTTF"},
+            {id = BATTLEMASTER_ARMAGEDDON_RUINS_THEME_ID, name = "armageddon ruins"},
         },
     })
 end

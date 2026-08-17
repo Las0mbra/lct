@@ -25,7 +25,14 @@ UI_VERTICAL_LIFT = -150
 activeCreators = {}     -- { [creatorId] = true }
 -- Creators toggled on the first time the panel spawns (no saved state yet).
 -- Keys are creator ids = the map_crt_* tag without the "map_crt_" prefix.
-DEFAULT_ENABLED_CREATORS = {"battlemaster_bttf_ruins", "battlemaster_bttf", "lct1"}
+DEFAULT_ENABLED_CREATORS = {
+    "battlemaster_bttf_ruins",
+    "battlemaster_bttf",
+    "battlemaster_armageddon_ruins",
+    "lct1",
+    "cr5sh",
+    "t5s2",
+}
 
 -- UI-only display names for creator buttons. The baked MAP_INDEX display remains
 -- authoritative for card suffix validation and summaries.
@@ -183,22 +190,14 @@ function buildFilterUI()
             creatorButtonId(c.id), colorFor(c.id), c.display)
     end
 
-    -- Category bulk-toggles share the creator grid's geometry (same cell width,
-    -- column count and spacing) so the two buttons line up over the columns below.
-    local catCells = {}
-    for _, cat in ipairs(CATEGORY_BUTTONS) do
-        catCells[#catCells + 1] = string.format(
-            '<Button id="%s" onClick="onCategoryToggle" color="%s" textColor="#FFFFFF" '
-            .. 'fontSize="34">%s</Button>',
-            categoryButtonId(cat.id), categoryColorFor(cat.id), cat.label)
-    end
-    local categoryRow = string.format(
-        '<GridLayout cellSize="%d %d" spacing="%d %d" constraint="FixedColumnCount" '
-        .. 'constraintCount="%d" preferredHeight="%d">\n%s\n</GridLayout>',
-        FILTER_CELL_W, FILTER_CELL_H, FILTER_SPACING, FILTER_SPACING,
-        FILTER_COLUMNS, FILTER_CELL_H + FILTER_SPACING, table.concat(catCells, "\n"))
+    -- The Competitive/Thematic bulk-toggle row is hidden for now -- the underlying
+    -- category logic (CATEGORY_BUTTONS, categoryActive, onCategoryToggle,
+    -- creatorsOfType, and the categoryButtonId repaint in onCreatorToggle) stays
+    -- intact and functional; it's just not rendered into the XML below, so re-adding
+    -- the row later only means restoring the catCells/categoryRow block that used to
+    -- live here.
 
-    -- Thin rule between the category controls and the creator list.
+    -- Thin rule under the title, above the creator list.
     local separator = '<Panel preferredHeight="4" color="#FFFFFF40" />'
 
     local numRows = math.ceil(#list / FILTER_COLUMNS)
@@ -208,18 +207,18 @@ function buildFilterUI()
     -- columns instead of overhanging past the last column.
     local width = FILTER_COLUMNS * FILTER_CELL_W
         + (FILTER_COLUMNS - 1) * FILTER_SPACING + 28
-    -- title + header rule + category row + separator + creator grid + padding/spacing slack.
-    local height = 70 + 4 + (FILTER_CELL_H + FILTER_SPACING) + 4 + gridHeight + 60
+    -- title + header rule + creator grid + padding/spacing slack.
+    local height = 70 + 4 + gridHeight + 60
 
     local xml = string.format(
         '<VerticalLayout position="0 0 %d" rotation="0 0 0" scale="%s %s 1" width="%d" height="%d" '
         .. 'padding="14 14 14 14" spacing="8" color="#101015E6" childForceExpandHeight="false">\n'
         .. '<Text fontSize="44" color="#FFFFFF" preferredHeight="70">Map Filters</Text>\n'
-        .. '%s\n%s\n%s\n'
+        .. '%s\n'
         .. '<GridLayout cellSize="%d %d" spacing="%d %d" constraint="FixedColumnCount" '
         .. 'constraintCount="%d" preferredHeight="%d">\n%s\n</GridLayout>\n'
         .. '</VerticalLayout>',
-        UI_VERTICAL_LIFT, FILTER_SCALE, FILTER_SCALE, width, height, separator, categoryRow, separator,
+        UI_VERTICAL_LIFT, FILTER_SCALE, FILTER_SCALE, width, height, separator,
         FILTER_CELL_W, FILTER_CELL_H, FILTER_SPACING, FILTER_SPACING,
         FILTER_COLUMNS, gridHeight, table.concat(cells, "\n"))
     -- The filter and the Mat Randomizer square are two siblings in one UI string:
