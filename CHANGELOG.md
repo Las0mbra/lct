@@ -13,6 +13,14 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.11.0
+- Feat: Added an advanced features panel at the top of the panel, near the LCT logo that currently has a button that disables and re-enables terrain colliders. Atm only Battlemaster maps are supported.
+- Feat: Added a new and improved Statshelper based on the one made by Beowulf78.
+- Feat: Add a better animation effect for when Quick roll is used (Right click +xd6 buttons)
+- Bug fix: Clear Mat now removes Lethal Hits too.
+- Improvement: Swapped gain CP button and Total CP buttons for better visual clarity
+
+
 ## v1.10.7 
 - Removed competitive/thematic map filter for now. New thematic/narrative map system will come soon! 
 - Added Armaggedon Ruins map set from Battlemaster that uses the official GW Armageddon terrain ruins.

@@ -4,10 +4,10 @@ version = "1.0-11th Edition"
 useCustomTrayDice = false
 rangeMeleeToggle = 0
 modelWeaponToggle = true
+lightTheme = true
 currentSelection = {}
 spawnedDiceCount = 0
 spawnPosition = nil
-customDieData = nil
 activeCustomTrayDiceConfig = false
 
 --========================
@@ -15,8 +15,7 @@ activeCustomTrayDiceConfig = false
 --========================
 function onSave()
   return JSON.encode({
-    spawnPosition = spawnPosition,
-    customDieData = customDieData
+    spawnPosition = spawnPosition
   })
 end
 
@@ -29,26 +28,108 @@ function onLoad(data)
 	self.addContextMenuItem("Reset Spawn Position", onResetSpawnPositionClicked)
 	spawnPosition = self.positionToWorld({0, 1, 6})
   end
-  --restoreSavedData(data)
   rangeMeleeToggle = 0
-  updateRangeMeleeUI()
+  lightTheme = true
+  applyTheme()
 end
-
-function restoreSavedData(data)
-  if data == nil or data == "" then
-    return
-  end
-
-  local parsedData = JSON.decode(data)
-  if parsedData then
-    --spawnPosition = parsedData.spawnPosition
-    customDieData = parsedData.customDieData
-  end
-end
-
 
 function onVersionClicked()
   printToAll("📘 Weapon Analyzer v" .. version .. " by Old Man", {0.8, 0.8, 0.5})
+end
+
+--========================
+-- 🎨 THEME
+--========================
+-- Named color roles per theme, keyed by role name so every UI builder reads
+-- the same palette instead of hardcoding hex. The dark theme mirrors the
+-- colors baked into ftc_base.json's XmlUI defaults (that JSON governs the
+-- very first render, before any Lua UI.setAttribute call ever runs) --
+-- keep both in sync if either changes.
+THEME = {
+  dark = {
+    bgToggle    = "#111417",
+    bgHeader    = "#24292D",
+    bgFilter0   = "#1C2024",
+    bgFilter1   = "#252A30",
+    bgFilter2   = "#1E2126",
+    bgTable     = "#252525",
+    bgRowRanged = "#252A30CC",
+    bgRowMelee  = "#1E2126CC",
+    bgAttackBtn = "#404040BF",
+    textAccent  = "#e6d36f",
+    textBody    = "#d0d0d0",
+    textBright  = "#fdfcfa",
+    textDim     = "#55606A",
+    bannerBg    = "#15191C",
+    bannerText  = "#C2A661"
+  },
+  light = {
+    bgToggle    = "#E4DEC8",
+    bgHeader    = "#D8CFAE",
+    bgFilter0   = "#EAE3CC",
+    bgFilter1   = "#DED5B8",
+    bgFilter2   = "#D2C8A6",
+    bgTable     = "#F1ECDD",
+    bgRowRanged = "#EAE3CCE6",
+    bgRowMelee  = "#DED5B8E6",
+    bgAttackBtn = "#C9BE9ABF",
+    textAccent  = "#7A5B14",
+    textBody    = "#2B2A25",
+    textBright  = "#141310",
+    textDim     = "#8C8368",
+    bannerBg    = "#C7BB98",
+    bannerText  = "#3D2E10"
+  }
+}
+
+function currentTheme()
+  return lightTheme and THEME.light or THEME.dark
+end
+
+function toggleLightTheme(player, value, id)
+  lightTheme = not lightTheme
+  applyTheme()
+end
+
+function updateLightThemeUI()
+  local t = currentTheme()
+  self.UI.setAttribute("LightThemeToggle", "color", t.bgToggle)
+  self.UI.setAttribute("LightThemeToggle", "text", lightTheme and "Dark Theme" or "Light Theme")
+  self.UI.setAttribute("LightThemeToggle", "textcolor", t.textAccent)
+end
+
+-- Restyles every element the XML bakes statically (buttons + header labels
+-- that don't get rebuilt by drawWeaponData) and then forces the weapon table
+-- to redraw so its rows -- built fresh from currentTheme() each time -- pick
+-- up the new palette too.
+function applyTheme()
+  local t = currentTheme()
+
+  updateLightThemeUI()
+  updateCustomDiceUI()
+  updateRangeMeleeUI()
+  updateWpnModelButtonUI()
+
+  self.UI.setAttribute("Clean", "color", t.bgToggle)
+  self.UI.setAttribute("Clean", "textcolor", t.textAccent)
+  self.UI.setAttribute("ShowStatsBtn", "color", t.bgToggle)
+  self.UI.setAttribute("ShowStatsBtn", "textcolor", t.textAccent)
+
+  -- Each header label sits in its own Panel rather than relying on the
+  -- TableLayout's rowBackgroundColor: that attribute is only honored when
+  -- TTS first builds the row, so setting it here after load doesn't
+  -- reliably repaint an already-rendered row. Panel.color, like every other
+  -- per-element color used elsewhere in this file, does update live.
+  self.UI.setAttribute("HeaderStatsPanel", "color", t.bgHeader)
+  self.UI.setAttribute("HeaderAbilitiesPanel", "color", t.bgHeader)
+  self.UI.setAttribute("HeaderAttacksPanel", "color", t.bgHeader)
+  self.UI.setAttribute("HeaderRangePanel", "color", t.bgHeader)
+  self.UI.setAttribute("HeaderStats", "color", t.textAccent)
+  self.UI.setAttribute("HeaderAbilities", "color", t.textAccent)
+  self.UI.setAttribute("HeaderAttacks", "color", t.textAccent)
+  self.UI.setAttribute("HeaderRange", "color", t.textAccent)
+
+  drawWeaponData(currentSelection)
 end
 
 --========================
@@ -103,6 +184,7 @@ function onCleanClicked(player)
 	updateRangeMeleeUI()
 	updateCustomDiceUI()
 	updateWpnModelButtonUI()
+	cleanCurrentVectorLines()
 	currentSelection = {}
 end
 
@@ -116,15 +198,10 @@ function changeCustomDiceState()
 end
 
 function updateCustomDiceUI()
-	if useCustomTrayDice then
-		self.UI.setAttribute("CustomTrayDiceToggle", "color", "#111417")
-		self.UI.setAttribute("CustomTrayDiceToggle", "text", "☑ Custom Dice")
-		self.UI.setAttribute("CustomTrayDiceToggle", "textcolor", "#e6d36f")
-	else
-		self.UI.setAttribute("CustomTrayDiceToggle", "color", "#111417")
-		self.UI.setAttribute("CustomTrayDiceToggle", "text", "☐ Custom Dice")
-		self.UI.setAttribute("CustomTrayDiceToggle", "textcolor", "#e6d36f")
-	end
+	local t = currentTheme()
+	self.UI.setAttribute("CustomTrayDiceToggle", "color", t.bgToggle)
+	self.UI.setAttribute("CustomTrayDiceToggle", "text", useCustomTrayDice and "☑ Custom Dice" or "☐ Custom Dice")
+	self.UI.setAttribute("CustomTrayDiceToggle", "textcolor", t.textAccent)
 end
 
 function toggleSHRangeMelee(player,value,id)
@@ -140,25 +217,23 @@ function changeRangeMeleeState()
 end
 
 function updateRangeMeleeUI()
-	 local btnText, btnColor, btnTextColor
+    local t = currentTheme()
+    local btnText, btnColor
     if rangeMeleeToggle == 0 then
-        btnText     = "☷ Filter(All)▼"
-        btnColor    = "#1C2024"
-        btnTextColor = "#e6d36f"
+        btnText  = "☷ Filter(All)▼"
+        btnColor = t.bgFilter0
     elseif rangeMeleeToggle == 1 then
-        btnText     = "☷ Range ▼"
-        btnColor    = "#252A30"
-        btnTextColor = "#e6d36f"
+        btnText  = "☷ Range ▼"
+        btnColor = t.bgFilter1
     else
-        btnText     = "☷ Melee ▼"
-        btnColor    = "#1E2126"
-        btnTextColor = "#e6d36f"
+        btnText  = "☷ Melee ▼"
+        btnColor = t.bgFilter2
     end
 
     self.UI.setAttributes("SHRangeToggle", {
         text      = btnText,
         color     = btnColor,
-        textcolor = btnTextColor
+        textcolor = t.textAccent
     })
 end
 
@@ -176,18 +251,10 @@ end
 
 function updateWpnModelButtonUI()
 
-if modelWeaponToggle then
-		self.UI.setAttribute("groupModelWpn", "color", "#24292D")
-		self.UI.setAttribute("groupModelWpn", "text", "☷ Name (Group by: Model) ▼")
-		self.UI.setAttribute("groupModelWpn", "textcolor", "#e6d36f")
-		--self.UI.setAttribute("groupModelWpn", "hoverColor", "#2A3036")
-        --self.UI.setAttribute("groupModelWpn", "borderColor", "#E6D36F")
-        --self.UI.setAttribute("groupModelWpn", "borderWidth", "#1")
-	else
-		self.UI.setAttribute("groupModelWpn", "color", "#24292D")
-		self.UI.setAttribute("groupModelWpn", "text", "☷ Name (Group by: Weapon) ▼")
-		self.UI.setAttribute("groupModelWpn", "textcolor", "#e6d36f")
-	end
+local t = currentTheme()
+self.UI.setAttribute("groupModelWpn", "color", t.bgHeader)
+self.UI.setAttribute("groupModelWpn", "text", modelWeaponToggle and "☷ Name (Group by: Model) ▼" or "☷ Name (Group by: Weapon) ▼")
+self.UI.setAttribute("groupModelWpn", "textcolor", t.textAccent)
 end
 
 
@@ -282,7 +349,7 @@ function createWeaponGroupedSections(figuresData)
             attributes = {
                 preferredWidth = 2600,
                 columnWidths = "800 600 470 180", -- Matches your design
-                rowBackgroundColor = "#252525",
+                rowBackgroundColor = currentTheme().bgTable,
                 childForceExpandHeight = "false"
             },
             children = rows
@@ -335,7 +402,7 @@ function createModelGroupedSections(figuresData)
             attributes = {
                 preferredWidth = 2600,
                 columnWidths = "800 600 470 180", -- Matches your design
-                rowBackgroundColor = "#252525",
+                rowBackgroundColor = currentTheme().bgTable,
                 childForceExpandHeight = "false"
             },
             children = rows
@@ -346,6 +413,7 @@ end
 
 function createModelHeaderRow(modelName, count)--,stats)
 
+    local t = currentTheme()
     local countText = ""
     if count ~= nil and count > 1 then
         countText = "  x" .. count
@@ -366,7 +434,7 @@ function createModelHeaderRow(modelName, count)--,stats)
                 },
                 children = {
                         tag = "Panel",
-						attributes = { image = "https://steamusercontent-a.akamaihd.net/ugc/11792149798079567975/37D94542ECE457F2D58BCE5108FCBE1B800C7F91/" ,
+						attributes = { color = t.bannerBg,
 									   preferredWidth = pwidth or preferredWidth,
 									   raycastTarget = false
 									 },
@@ -375,7 +443,7 @@ function createModelHeaderRow(modelName, count)--,stats)
 							attributes = {
 								text = "<size=42>★ " .. modelName  .. "<b>" .. countText .. "</b>" .. " ★ " .. "</size>",--<size=35>(T:" .. stats.t .. " Sv:" .. stats.sv .. ")</size>",
 								--fontSize = 42,
-								color = "#C2A661 ",
+								color = t.bannerText,
 								alignment = "Middle",
 								offsetXY = "20 0" -- Margins so text isn't stuck to edge
 							}
@@ -441,11 +509,12 @@ function createWeaponRow(w,wpnMode)
 	  else
 		displayName =  w.data.name
       end
+	  local t = currentTheme()
 	  local abilitiesColor
       if string.match(w.data.wpnabilities,"^-$") then
-			abilitiesColor = "#55606A"
+			abilitiesColor = t.textDim
 	  else
-			abilitiesColor = "#d0d0d0"
+			abilitiesColor = t.textBody
 	  end
 	  local displayCell
 	  local statCell
@@ -455,17 +524,17 @@ function createWeaponRow(w,wpnMode)
       local rangeCell
       if w.data.range ~= nil then
         local rangeText = getRangeText(w.data.range)
-        rangeCell = createColoredCell(rangeText,"#252A30CC","#d0d0d0") --#04392740","#d0d0d0")
-		displayCell = createColoredCell(displayName, "#252A30CC","#d0d0d0") --"#04392740"
-		statCell = createColoredCell(w.data.stats, "#252A30CC","#fdfcfa") --"#04392740","#d0d0d0"
-		abilitiesCell = createColoredCell(w.data.wpnabilities,"#252A30CC",abilitiesColor) --,"#04392740","#d0d0d0"
-		attackButtonCell = createButtonCell(attackStr, "N:" .. w.data.name .. "A:" .. attackStr .. "AP:" .. w.data.ap .. "D:" .. w.data.damage .. "Name:" .. w.data.name, "onAttackClicked","#404040BF") --"#043927BF"
+        rangeCell = createButtonCell(rangeText, "rangeButton_" .. w.data.name, "onRangeClicked", t.bgRowRanged, t.textBody)
+		displayCell = createColoredCell(displayName, t.bgRowRanged,t.textBody) --"#04392740"
+		statCell = createColoredCell(w.data.stats, t.bgRowRanged,t.textBright) --"#04392740","#d0d0d0"
+		abilitiesCell = createColoredCell(w.data.wpnabilities,t.bgRowRanged,abilitiesColor) --,"#04392740","#d0d0d0"
+		attackButtonCell = createButtonCell(attackStr, "N:" .. w.data.name .. "A:" .. attackStr .. "AP:" .. w.data.ap .. "D:" .. w.data.damage .. "Name:" .. w.data.name, "onAttackClicked",t.bgAttackBtn,t.textBright) --"#043927BF"
       else
-        rangeCell = createColoredCell("-","#1E2126CC","#55606A") --"#420D0940","#d0d0d0"
-		displayCell = createColoredCell(displayName, "#1E2126CC","#d0d0d0") --"#420D0940"
-		statCell = createColoredCell(w.data.stats, "#1E21260CC","#fdfcfa") --"#420D0940","#d0d0d0"
-		abilitiesCell = createColoredCell(w.data.wpnabilities,"#1E2126CC",abilitiesColor) --"#cccccc"), "#420D0940","#d0d0d0"
-		attackButtonCell = createButtonCell(attackStr, "N:" .. w.data.name .. "A:" .. attackStr .. "AP:" .. w.data.ap .. "D:" .. w.data.damage .. "Name:" .. w.data.name, "onAttackClicked","#404040BF") --"#420D09BF"
+        rangeCell = createColoredCell("-",t.bgRowMelee,t.textDim) --"#420D0940","#d0d0d0"
+		displayCell = createColoredCell(displayName, t.bgRowMelee,t.textBody) --"#420D0940"
+		statCell = createColoredCell(w.data.stats, t.bgRowMelee,t.textBright) --"#420D0940","#d0d0d0"
+		abilitiesCell = createColoredCell(w.data.wpnabilities,t.bgRowMelee,abilitiesColor) --"#cccccc"), "#420D0940","#d0d0d0"
+		attackButtonCell = createButtonCell(attackStr, "N:" .. w.data.name .. "A:" .. attackStr .. "AP:" .. w.data.ap .. "D:" .. w.data.damage .. "Name:" .. w.data.name, "onAttackClicked",t.bgAttackBtn,t.textBright) --"#420D09BF"
       end
 
 
@@ -494,6 +563,77 @@ end
 
 
 -- / BY MODEL
+
+--========================
+-- 🎯 WEAPON RANGE CIRCLE
+--========================
+-- Draws a ring on the table showing how far a weapon can threaten, measured
+-- base-edge to base-edge like 40k actually measures range. Only ranged
+-- weapons carry a printed range, so this is never wired up for melee rows.
+function onRangeClicked(player, value, id)
+  local weaponName = string.sub(id, #"rangeButton_" + 1)
+  if #currentSelection == 0 then
+    printMessage("⚠️  Select some models first!")
+    return
+  end
+  drawRangeForWeapon(weaponName, currentSelection)
+end
+
+-- A row can represent one weapon shared by several models in the selection,
+-- so re-derive per-figure which of them actually carry it rather than trust
+-- the merged row data -- a mixed unit may have some models without this gun.
+function drawRangeForWeapon(name, figures)
+  local figuresData = createFiguresData(figures)
+  for i, v in ipairs(figuresData) do
+    local weapon = getFigureWeaponByName(v, name)
+    if weapon ~= nil then
+      drawFigureRange(weapon.range, figures[i])
+    end
+  end
+end
+
+function getFigureWeaponByName(figureData, weaponName)
+  for i, v in ipairs(figureData.ranged) do
+    if v.name == weaponName then
+      return v
+    end
+  end
+end
+
+-- VectorLines are drawn in the model's own local space and get re-scaled by
+-- TTS to match the object's current scale -- so every raw number here is
+-- first divided by that scale, making the final on-table result a true,
+-- scale-independent inch measurement no matter how big or small this
+-- particular miniature has been scaled.
+function drawFigureRange(range, figure)
+  range = range / figure.getScale()[1]
+  local width = (figure.getBounds().size[1] / 2) / figure.getScale()[1]
+  figure.setVectorLines({getCircleVectorPoints(range + width, 30, 0.5, 0.1 / figure.getScale()[1])})
+end
+
+function getCircleVectorPoints(radius, steps, y, thickness)
+  local points = {}
+  local angle = 360 / steps
+
+  for i = 0, steps do
+    table.insert(points, {
+      math.cos(math.rad(angle * i)) * radius,
+      y,
+      math.sin(math.rad(angle * i)) * radius
+    })
+  end
+
+  return {
+    points = points,
+    thickness = thickness
+  }
+end
+
+function cleanCurrentVectorLines()
+  for i, v in ipairs(currentSelection) do
+    v.setVectorLines({})
+  end
+end
 
 --=============================
 -- 🔎 DATA PARSING HELPERS
@@ -652,18 +792,14 @@ function extractModelName(full)
 end
 
 function getRangeText(range)
-  return range and ("″" .. tostring(range)) or "-"
+  return range and (tostring(range) .. "″") or "-"
 end
 
 --========================
 -- 🧱 UI BUILD HELPERS
 --========================
 
-function createTextCell(txt)
-  return { tag = "Cell", children = { { tag = "Text", attributes = { text = txt } } } }
-end
-
-function createButtonCell(text, id, click, color)
+function createButtonCell(text, id, click, color, textColor)
 	return {
 	tag = "Cell",
 		children = {
@@ -674,7 +810,8 @@ function createButtonCell(text, id, click, color)
 			  id = id,
 			  fontSize = 50,
 			  onClick = click,
-			  color = color or "#363636"
+			  color = color or "#363636",
+			  textColor = textColor or "#f0f0f0"
 			}
 		  }
 		}
@@ -776,13 +913,12 @@ end
 
 function onAttackClicked(player, clickType, id)
 
-	--local attacksNum = string.match(id, "A:(.*)$") or ""
-	local attacksNum = string.match(id, "A:([%dDd]+[%+%-]?%d*)") or ""
-	local apNum = string.match(id, "AP:?([%-]?%d+)") or ""
-	local dNum = string.match(id, "D:([%dDd]+[%+%-]?%d*)") or ""
+	local attacksNum = string.match(id, "A:(.-)AP:") or ""
+	local apNum = string.match(id, "AP:(.-)D:") or ""
+	local dNum = string.match(id, "D:(.-)Name:") or ""
 	local wpnName = string.match(id, "Name:(.+)$")
 
-    if attacksNum then
+    if attacksNum ~= "" then
         if (string.match(attacksNum,"[dD]")) then
 			attacksNum = getBonusAttackValue(attacksNum)
 		end
@@ -914,10 +1050,6 @@ function setDieCustomObject(die)
   local trayConfig = getCustomTrayDiceConfig()
   if trayConfig and trayConfig.customDiceImage then
     die.setCustomObject({ image = trayConfig.customDiceImage, type = 1 })
-    return
-  end
-  if customDieData and customDieData.image then
-    die.setCustomObject({ image = customDieData.image, type = 1 })
   end
 end
 
@@ -927,17 +1059,13 @@ function setDieTint(die, color)
     die.setColorTint(trayConfig.selectedColor)
     return
   end
-  local customTint = customDieData and customDieData.colorTint
-  die.setColorTint(customTint or color)
+  die.setColorTint(color)
 end
 
 function getDiceType()
   local trayConfig = getCustomTrayDiceConfig()
   if trayConfig and trayConfig.diceType then
     return trayConfig.diceType
-  end
-  if customDieData and customDieData.image then
-    return "Custom_Dice"
   end
   return "Die_6"
 end
@@ -1028,44 +1156,6 @@ function findSpawnPositionMarker()
   end
 end
 
-function onResetCustomDiceClicked()
-  customDieData = nil
-  printMessage("Custom die data reset complete!")
-end
-
-function onSetCustomDiceClicked()
-  local die = findCustomDie()
-  if die == nil then
-    printMessage("Place your die in the white zone")
-  else
-    saveCustomDie(die)
-    die.destruct()
-    printMessage("Custom Die successfully configured!")
-  end
-end
-
 function getPositionAboveMe()
   return self.positionToWorld({0, 1, 6})
-end
-
-function findCustomDie()
-  local cast = Physics.cast({
-    debug = true,
-    direction = {0, -1, 0},
-    origin = getPositionAboveMe(),
-    type = 3,
-    size = {4, 1, 4}
-  })
-
-  for i,v in ipairs(cast) do
-    if v.hit_object.tag == "Dice" then
-      return v.hit_object
-    end
-  end
-end
-
-function saveCustomDie(die)
-  customDieData = {}
-  customDieData.colorTint = die.getColorTint()
-  customDieData.image = die.getCustomObject().image
 end

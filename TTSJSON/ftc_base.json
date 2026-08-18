@@ -606,7 +606,7 @@
       "Hands": false,
       "LuaScript": "",
       "LuaScriptState": "",
-      "XmlUI": "<Defaults>\r\n  <!-- General text and button style -->\r\n  <Text fontSize=\"70\" resizeTextForBestFit=\"true\" textAlignment=\"MiddleLeft\" color=\"#f5f5f5\"></Text>\r\n  <Text class=\"Header\" color=\"#e6d36f\" fontSize=\"78\" textAlignment=\"MiddleCenter\"></Text>\r\n  <Button fontSize=\"40\" preferredWidth=\"220\" preferredHeight=\"200\" color=\"#252525\" textColor=\"#f0f0f0\"></Button>\r\n</Defaults>\r\n\r\n<VerticalLayout position=\"-10.125 55 -10\" width=\"2200\" childForceExpandHeight=\"false\" childForceExpandWidth=\"false\" childAlignment=\"MiddleCenter\">\r\n  <!-- Top control bar -->\r\n  <HorizontalLayout preferredHeight=\"99\" childForceExpandHeight=\"false\" childForceExpandWidth=\"false\" spacing=\"5\">\r\n    <Button id = \"CustomTrayDiceToggle\" fontSize = \"36\" preferredWidth = \"300\" preferredHeight = \"100\" onClick = \"toggleCustomTrayDice\" color = \"#111417\" textColor = \"#e6d36f\" >☐ Custom Dice</Button>\r\n\t<Button fontSize=\"62\" preferredWidth=\"1650\" preferredHeight=\"100\" image=\"https://steamusercontent-a.akamaihd.net/ugc/13106677189121603590/4E302CC34017D1549AA5E3CB46E4BF699B7D8B0A/\" onClick=\"onCountClicked\" color=\"white\" showBackground=\"false\" textColor=\"#f8f8f8\">📊  </Button>\r\n    <Button id = \"Clean\" fontSize = \"40\" preferredWidth = \"200\" preferredHeight = \"100\" onClick = \"onCleanClicked\" color = \"#111417\" textColor = \"#e6d36f\" >Clear</Button>\r\n\t<Button id = \"SHRangeToggle\" fontSize = \"40\" preferredWidth = \"300\" preferredHeight = \"100\" onClick = \"toggleSHRangeMelee\" color = \"#1C2024\" textColor = \"#e6d36f\">\"\"</Button>\r\n\t\r\n  </HorizontalLayout>\r\n\r\n  <!-- Header row -->\r\n  <TableLayout preferredHeight=\"130\" preferredWidth=\"2600\" columnWidths=\"800 600 470 180\" rowBackgroundColor=\"#24292D\">\r\n    <Row preferredHeight=\"140\" >\r\n      <Cell><Button id = \"groupModelWpn\"  color = \"#24292D\" textColor = \"#e6d36f\" onClick = \"onGroupModelWpn\" class=\"Header\">☷ Name (Group by: Model) ▼</Button></Cell>\r\n      <Cell><Text class=\"Header\" >Stats</Text></Cell>\r\n      <Cell><Text class=\"Header\" >Weapon Abilities</Text></Cell>\r\n\t  <Cell><Text class=\"Header\" >Total Attacks</Text></Cell>\r\n\t  <Cell><Text class=\"Header\" >Range</Text></Cell>\r\n    </Row>\r\n  </TableLayout>\r\n\r\n  <!-- Data rows -->\r\n\t<VerticalLayout id=\"WeaponContainer\" childForceExpandHeight=\"false\" childForceExpandWidth=\"false\">\r\n\t\r\n\t</VerticalLayout>  \r\n\t\r\n</VerticalLayout>\r\n"
+      "XmlUI": "<Defaults>\r\n  <!-- General text and button style -->\r\n  <Text fontSize=\"70\" resizeTextForBestFit=\"true\" textAlignment=\"MiddleLeft\" color=\"#2B2A25\"></Text>\r\n  <Text class=\"Header\" color=\"#7A5B14\" fontSize=\"78\" textAlignment=\"MiddleCenter\"></Text>\r\n  <Button fontSize=\"40\" preferredWidth=\"220\" preferredHeight=\"200\" color=\"#F1ECDD\" textColor=\"#2B2A25\"></Button>\r\n</Defaults>\r\n\r\n<VerticalLayout position=\"-10.125 55 -10\" width=\"2200\" childForceExpandHeight=\"false\" childForceExpandWidth=\"false\" childAlignment=\"MiddleCenter\">\r\n  <!-- Top control bar -->\r\n  <HorizontalLayout preferredHeight=\"99\" childForceExpandHeight=\"false\" childForceExpandWidth=\"false\" spacing=\"5\">\r\n    <Button id = \"CustomTrayDiceToggle\" fontSize = \"36\" preferredWidth = \"300\" preferredHeight = \"100\" onClick = \"toggleCustomTrayDice\" color = \"#E4DEC8\" textColor = \"#7A5B14\" >☐ Custom Dice</Button>\r\n\t<Button id = \"LightThemeToggle\" fontSize = \"36\" preferredWidth = \"260\" preferredHeight = \"100\" onClick = \"toggleLightTheme\" color = \"#E4DEC8\" textColor = \"#7A5B14\" >Dark Theme</Button>\r\n\t<Button id = \"ShowStatsBtn\" fontSize=\"56\" preferredWidth=\"1390\" preferredHeight=\"100\" onClick=\"onCountClicked\" color=\"#E4DEC8\" textColor=\"#7A5B14\">SHOW WEAPON STATS</Button>\r\n    <Button id = \"Clean\" fontSize = \"40\" preferredWidth = \"200\" preferredHeight = \"100\" onClick = \"onCleanClicked\" color = \"#E4DEC8\" textColor = \"#7A5B14\" >Clear</Button>\r\n\t<Button id = \"SHRangeToggle\" fontSize = \"40\" preferredWidth = \"300\" preferredHeight = \"100\" onClick = \"toggleSHRangeMelee\" color = \"#EAE3CC\" textColor = \"#7A5B14\">☷ Filter(All)▼</Button>\r\n\t\r\n  </HorizontalLayout>\r\n\r\n  <!-- Header row -->\r\n  <TableLayout id = \"HeaderTable\" preferredHeight=\"130\" preferredWidth=\"2600\" columnWidths=\"800 600 470 180\" rowBackgroundColor=\"#D8CFAE\">\r\n    <Row preferredHeight=\"140\" >\r\n      <Cell><Button id = \"groupModelWpn\"  color = \"#D8CFAE\" textColor = \"#7A5B14\" onClick = \"onGroupModelWpn\" class=\"Header\">☷ Name (Group by: Model) ▼</Button></Cell>\r\n      <Cell><Panel id = \"HeaderStatsPanel\" color = \"#D8CFAE\"><Text id = \"HeaderStats\" class=\"Header\" >Stats</Text></Panel></Cell>\r\n      <Cell><Panel id = \"HeaderAbilitiesPanel\" color = \"#D8CFAE\"><Text id = \"HeaderAbilities\" class=\"Header\" >Weapon Abilities</Text></Panel></Cell>\r\n\t  <Cell><Panel id = \"HeaderAttacksPanel\" color = \"#D8CFAE\"><Text id = \"HeaderAttacks\" class=\"Header\" >Total Attacks</Text></Panel></Cell>\r\n\t  <Cell><Panel id = \"HeaderRangePanel\" color = \"#D8CFAE\"><Text id = \"HeaderRange\" class=\"Header\" >Range</Text></Panel></Cell>\r\n    </Row>\r\n  </TableLayout>\r\n\r\n  <!-- Data rows -->\r\n\t<VerticalLayout id=\"WeaponContainer\" childForceExpandHeight=\"false\" childForceExpandWidth=\"false\">\r\n\t\r\n\t</VerticalLayout>  \r\n\t\r\n</VerticalLayout>\r\n"
     },
     {
       "GUID": "b7ac7a",
@@ -652,7 +652,7 @@
       "Hands": false,
       "LuaScript": "",
       "LuaScriptState": "",
-      "XmlUI": "<Defaults>\r\n  <!-- General text and button style -->\r\n  <Text fontSize=\"70\" resizeTextForBestFit=\"true\" textAlignment=\"MiddleLeft\" color=\"#f5f5f5\"></Text>\r\n  <Text class=\"Header\" color=\"#e6d36f\" fontSize=\"78\" textAlignment=\"MiddleCenter\"></Text>\r\n  <Button fontSize=\"40\" preferredWidth=\"220\" preferredHeight=\"200\" color=\"#252525\" textColor=\"#f0f0f0\"></Button>\r\n</Defaults>\r\n\r\n<VerticalLayout position=\"-10.125 55 -10\" width=\"2200\" childForceExpandHeight=\"false\" childForceExpandWidth=\"false\" childAlignment=\"MiddleCenter\">\r\n  <!-- Top control bar -->\r\n  <HorizontalLayout preferredHeight=\"99\" childForceExpandHeight=\"false\" childForceExpandWidth=\"false\" spacing=\"5\">\r\n    <Button id = \"CustomTrayDiceToggle\" fontSize = \"36\" preferredWidth = \"300\" preferredHeight = \"100\" onClick = \"toggleCustomTrayDice\" color = \"#111417\" textColor = \"#e6d36f\" >☐ Custom Dice</Button>\r\n\t<Button fontSize=\"62\" preferredWidth=\"1650\" preferredHeight=\"100\" image=\"https://steamusercontent-a.akamaihd.net/ugc/13106677189121603590/4E302CC34017D1549AA5E3CB46E4BF699B7D8B0A/\" onClick=\"onCountClicked\" color=\"white\" showBackground=\"false\" textColor=\"#f8f8f8\">📊  </Button>\r\n    <Button id = \"Clean\" fontSize = \"40\" preferredWidth = \"200\" preferredHeight = \"100\" onClick = \"onCleanClicked\" color = \"#111417\" textColor = \"#e6d36f\" >Clear</Button>\r\n\t<Button id = \"SHRangeToggle\" fontSize = \"40\" preferredWidth = \"300\" preferredHeight = \"100\" onClick = \"toggleSHRangeMelee\" color = \"#1C2024\" textColor = \"#e6d36f\">\"\"</Button>\r\n\t\r\n  </HorizontalLayout>\r\n\r\n  <!-- Header row -->\r\n  <TableLayout preferredHeight=\"130\" preferredWidth=\"2600\" columnWidths=\"800 600 470 180\" rowBackgroundColor=\"#24292D\">\r\n    <Row preferredHeight=\"140\" >\r\n      <Cell><Button id = \"groupModelWpn\"  color = \"#24292D\" textColor = \"#e6d36f\" onClick = \"onGroupModelWpn\" class=\"Header\">☷ Name (Group by: Model) ▼</Button></Cell>\r\n      <Cell><Text class=\"Header\" >Stats</Text></Cell>\r\n      <Cell><Text class=\"Header\" >Weapon Abilities</Text></Cell>\r\n\t  <Cell><Text class=\"Header\" >Total Attacks</Text></Cell>\r\n\t  <Cell><Text class=\"Header\" >Range</Text></Cell>\r\n    </Row>\r\n  </TableLayout>\r\n\r\n  <!-- Data rows -->\r\n\t<VerticalLayout id=\"WeaponContainer\" childForceExpandHeight=\"false\" childForceExpandWidth=\"false\">\r\n\t\r\n\t</VerticalLayout>  \r\n\t\r\n</VerticalLayout>\r\n"
+      "XmlUI": "<Defaults>\r\n  <!-- General text and button style -->\r\n  <Text fontSize=\"70\" resizeTextForBestFit=\"true\" textAlignment=\"MiddleLeft\" color=\"#2B2A25\"></Text>\r\n  <Text class=\"Header\" color=\"#7A5B14\" fontSize=\"78\" textAlignment=\"MiddleCenter\"></Text>\r\n  <Button fontSize=\"40\" preferredWidth=\"220\" preferredHeight=\"200\" color=\"#F1ECDD\" textColor=\"#2B2A25\"></Button>\r\n</Defaults>\r\n\r\n<VerticalLayout position=\"-10.125 55 -10\" width=\"2200\" childForceExpandHeight=\"false\" childForceExpandWidth=\"false\" childAlignment=\"MiddleCenter\">\r\n  <!-- Top control bar -->\r\n  <HorizontalLayout preferredHeight=\"99\" childForceExpandHeight=\"false\" childForceExpandWidth=\"false\" spacing=\"5\">\r\n    <Button id = \"CustomTrayDiceToggle\" fontSize = \"36\" preferredWidth = \"300\" preferredHeight = \"100\" onClick = \"toggleCustomTrayDice\" color = \"#E4DEC8\" textColor = \"#7A5B14\" >☐ Custom Dice</Button>\r\n\t<Button id = \"LightThemeToggle\" fontSize = \"36\" preferredWidth = \"260\" preferredHeight = \"100\" onClick = \"toggleLightTheme\" color = \"#E4DEC8\" textColor = \"#7A5B14\" >Dark Theme</Button>\r\n\t<Button id = \"ShowStatsBtn\" fontSize=\"56\" preferredWidth=\"1390\" preferredHeight=\"100\" onClick=\"onCountClicked\" color=\"#E4DEC8\" textColor=\"#7A5B14\">SHOW WEAPON STATS</Button>\r\n    <Button id = \"Clean\" fontSize = \"40\" preferredWidth = \"200\" preferredHeight = \"100\" onClick = \"onCleanClicked\" color = \"#E4DEC8\" textColor = \"#7A5B14\" >Clear</Button>\r\n\t<Button id = \"SHRangeToggle\" fontSize = \"40\" preferredWidth = \"300\" preferredHeight = \"100\" onClick = \"toggleSHRangeMelee\" color = \"#EAE3CC\" textColor = \"#7A5B14\">☷ Filter(All)▼</Button>\r\n\t\r\n  </HorizontalLayout>\r\n\r\n  <!-- Header row -->\r\n  <TableLayout id = \"HeaderTable\" preferredHeight=\"130\" preferredWidth=\"2600\" columnWidths=\"800 600 470 180\" rowBackgroundColor=\"#D8CFAE\">\r\n    <Row preferredHeight=\"140\" >\r\n      <Cell><Button id = \"groupModelWpn\"  color = \"#D8CFAE\" textColor = \"#7A5B14\" onClick = \"onGroupModelWpn\" class=\"Header\">☷ Name (Group by: Model) ▼</Button></Cell>\r\n      <Cell><Panel id = \"HeaderStatsPanel\" color = \"#D8CFAE\"><Text id = \"HeaderStats\" class=\"Header\" >Stats</Text></Panel></Cell>\r\n      <Cell><Panel id = \"HeaderAbilitiesPanel\" color = \"#D8CFAE\"><Text id = \"HeaderAbilities\" class=\"Header\" >Weapon Abilities</Text></Panel></Cell>\r\n\t  <Cell><Panel id = \"HeaderAttacksPanel\" color = \"#D8CFAE\"><Text id = \"HeaderAttacks\" class=\"Header\" >Total Attacks</Text></Panel></Cell>\r\n\t  <Cell><Panel id = \"HeaderRangePanel\" color = \"#D8CFAE\"><Text id = \"HeaderRange\" class=\"Header\" >Range</Text></Panel></Cell>\r\n    </Row>\r\n  </TableLayout>\r\n\r\n  <!-- Data rows -->\r\n\t<VerticalLayout id=\"WeaponContainer\" childForceExpandHeight=\"false\" childForceExpandWidth=\"false\">\r\n\t\r\n\t</VerticalLayout>  \r\n\t\r\n</VerticalLayout>\r\n"
     },
     {
       "GUID": "8c71ab",
@@ -45847,414 +45847,6 @@
       "XmlUI": ""
     },
     {
-      "GUID": "a30deb",
-      "Name": "Deck",
-      "Transform": {
-        "posX": 85.0,
-        "posY": -1,
-        "posZ": 11.0,
-        "rotX": 0.0,
-        "rotY": 270.0,
-        "rotZ": 180.0,
-        "scaleX": 1.0,
-        "scaleY": 1.0,
-        "scaleZ": 1.0
-      },
-      "Nickname": "Leviathan deployment cards",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 0.713235259,
-        "g": 0.713235259,
-        "b": 0.713235259
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "Interactable": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": false,
-      "GridProjection": false,
-      "HideWhenFaceDown": true,
-      "Hands": false,
-      "SidewaysCard": false,
-      "DeckIDs": [
-        8500,
-        8300,
-        8700,
-        8600,
-        8200
-      ],
-      "CustomDeck": {
-        "85": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699553457/6F27C3653CB0518112C4809EB8B5BF6885F9DB03/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699547467/AF33B45E180B40143DF89FF2362C3B5B6D68A5D7/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        },
-        "83": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699550647/272FD30B3236FF1D5B8D147617B178431EC3BCAD/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699547467/AF33B45E180B40143DF89FF2362C3B5B6D68A5D7/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        },
-        "87": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699551517/9E41CC4D97DFE183676C58541A6C266034C435B1/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699547467/AF33B45E180B40143DF89FF2362C3B5B6D68A5D7/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        },
-        "86": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699552485/02542C2530E7CD193B2EA75327C6871905A69F1F/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699547467/AF33B45E180B40143DF89FF2362C3B5B6D68A5D7/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        },
-        "82": {
-          "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699548849/B8F86EA5BE2283C31DC971791C7664178940F0BA/",
-          "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699547467/AF33B45E180B40143DF89FF2362C3B5B6D68A5D7/",
-          "NumWidth": 1,
-          "NumHeight": 1,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 0
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "ContainedObjects": [
-        {
-          "GUID": "117c77",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": 85.19666,
-            "posY": 1.003625,
-            "posZ": 5.004832,
-            "rotX": 0.00138585479,
-            "rotY": 270.0,
-            "rotZ": 180.068771,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "Hammer and Anvil",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Tags": [
-            "deploymentCard"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 8500,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "85": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699553457/6F27C3653CB0518112C4809EB8B5BF6885F9DB03/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699547467/AF33B45E180B40143DF89FF2362C3B5B6D68A5D7/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "7e4b95",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": 82.5799942,
-            "posY": 0.9136025,
-            "posZ": 41.00159,
-            "rotX": 8.353586e-07,
-            "rotY": 270.000061,
-            "rotZ": -4.828546e-06,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "Dawn of War",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Tags": [
-            "deploymentCard"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 8300,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "83": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699550647/272FD30B3236FF1D5B8D147617B178431EC3BCAD/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699547467/AF33B45E180B40143DF89FF2362C3B5B6D68A5D7/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "381d7c",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": 82.64931,
-            "posY": 0.913602531,
-            "posZ": 38.396244,
-            "rotX": -5.69308554e-07,
-            "rotY": 270.00235,
-            "rotZ": -1.58710918e-06,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "Sweeping Engagement",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Tags": [
-            "deploymentCard"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 8700,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "87": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699551517/9E41CC4D97DFE183676C58541A6C266034C435B1/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699547467/AF33B45E180B40143DF89FF2362C3B5B6D68A5D7/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "ad4220",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": 82.61078,
-            "posY": 0.91360265,
-            "posZ": 35.7660561,
-            "rotX": -5.063263e-07,
-            "rotY": 269.9989,
-            "rotZ": -1.73885155e-06,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "Search and Destroy",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Tags": [
-            "deploymentCard"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 8600,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "86": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699552485/02542C2530E7CD193B2EA75327C6871905A69F1F/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699547467/AF33B45E180B40143DF89FF2362C3B5B6D68A5D7/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "3c0679",
-          "Name": "CardCustom",
-          "Transform": {
-            "posX": 84.40796,
-            "posY": 0.9997858,
-            "posZ": 5.92601,
-            "rotX": -3.88273151e-07,
-            "rotY": 270.018,
-            "rotZ": 180.001312,
-            "scaleX": 1.0,
-            "scaleY": 1.0,
-            "scaleZ": 1.0
-          },
-          "Nickname": "Crucible of Battle",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.713235259,
-            "g": 0.713235259,
-            "b": 0.713235259
-          },
-          "Tags": [
-            "deploymentCard"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "CardID": 8200,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "82": {
-              "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699548849/B8F86EA5BE2283C31DC971791C7664178940F0BA/",
-              "BackURL": "http://cloud-3.steamusercontent.com/ugc/2047496435699547467/AF33B45E180B40143DF89FF2362C3B5B6D68A5D7/",
-              "NumWidth": 1,
-              "NumHeight": 1,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 0
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        }
-      ]
-    },
-    {
       "GUID": "2c6243",
       "Name": "Deck",
       "Transform": {
@@ -86911,6 +86503,52 @@
       "DragSelectable": true,
       "Autoraise": true,
       "Sticky": true,
+      "Tooltip": false,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "ed17d0",
+      "Name": "BlockSquare",
+      "Transform": {
+        "posX": 83.0,
+        "posY": 0.0,
+        "posZ": 20.0,
+        "rotX": 0.0,
+        "rotY": 90.0,
+        "rotZ": 0.0,
+        "scaleX": 1.0,
+        "scaleY": 0.9508736,
+        "scaleZ": 1.0
+      },
+      "Nickname": "Advanced Features Panel",
+      "Description": "",
+      "GMNotes": "AdvancedFeatures",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0,
+        "a": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": true,
+      "MeasureMovement": false,
+      "DragSelectable": false,
+      "Autoraise": false,
+      "Sticky": false,
       "Tooltip": false,
       "GridProjection": false,
       "HideWhenFaceDown": false,

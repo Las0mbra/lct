@@ -36,6 +36,32 @@ blueDispositionSelected = 1
 redDispositionSelected = 3
 matTextureSelected = 1
 missionSetupControlsVisible = false
+-- Optional terrain pass-through mode, controlled by the Advanced Features XML
+-- panel (ed17d0). Collider snapshots make the second press a true reversal
+-- instead of blindly enabling colliders that may originally have been disabled.
+ADVANCED_FEATURES_GUID = "ed17d0"
+terrainPassThroughEnabled = false
+terrainPassThroughOriginalStates = {}
+TERRAIN_PASS_THROUGH_TAGS = {
+    "CO",
+    "EF",
+    "GH",
+    "AB",
+    "Pipes",
+    "Generator",
+    "Corner",
+    "Long Barrier",
+    "Short Barrier",
+    "Small L",
+    "Small L flip",
+    "Tower",
+}
+TERRAIN_PASS_THROUGH_COLLIDER_TYPES = {
+    "BoxCollider",
+    "MeshCollider",
+    "SphereCollider",
+    "CapsuleCollider",
+}
 -- True for the per-size singles buttons (Colosseum / Strike Force / Boarding
 -- Action). Like Combat Patrol these run with no mission-matrix bags/tiles and a
 -- missions-only Generate (no fb4b5d layout art), but without the Combat Patrol map
@@ -107,6 +133,8 @@ function onLoad(saved_data)
     deployMode = nil
     combatPatrolMode = false
     matrixPropsDisabled = false
+    terrainPassThroughEnabled = false
+    terrainPassThroughOriginalStates = {}
     if saved_data ~= "" then
         local loaded_data = JSON.decode(saved_data)
         gameMode = loaded_data.svgameMode
@@ -125,6 +153,8 @@ function onLoad(saved_data)
         redDispositionSelected = loaded_data.svredDispositionSelected or redDispositionSelected
         matTextureSelected = loaded_data.svMatTextureSelected or matTextureSelected
         missionSetupControlsVisible = loaded_data.svMissionSetupControlsVisible
+        terrainPassThroughEnabled = loaded_data.svTerrainPassThroughEnabled or false
+        terrainPassThroughOriginalStates = loaded_data.svTerrainPassThroughOriginalStates or {}
         if missionSetupControlsVisible == nil then
             missionSetupControlsVisible = gameMode == "game" and not inGame
         end
@@ -148,6 +178,15 @@ function onLoad(saved_data)
     end
     rebuildOverlayTracking()
     syncTerritoryLineButton()
+    if terrainPassThroughEnabled then
+        -- Component state is not dependable across a TTS save/reload. Re-apply
+        -- after the restored objects have had a couple of frames to register;
+        -- objects still loading custom assets are deferred individually below.
+        Wait.frames(applyTerrainPassThroughMode, 2)
+    end
+    -- Object load order is not deterministic, so refresh the separate XML panel
+    -- after both scripts have had time to register their public functions.
+    Wait.frames(syncAdvancedFeaturesPanel, 2)
 
     -- Everything below reads Global's variables (mat_GUID, counters,
     -- missionPackData, pack constants), so it waits for Global's onLoad. Losing
@@ -226,6 +265,8 @@ function onSave()
         svredDispositionSelected = redDispositionSelected,
         svMatTextureSelected = matTextureSelected,
         svMissionSetupControlsVisible = missionSetupControlsVisible,
+        svTerrainPassThroughEnabled = terrainPassThroughEnabled,
+        svTerrainPassThroughOriginalStates = terrainPassThroughOriginalStates,
         -- DEBUG tag-editing accumulator. Small (~45 maps x a few markers), so
         -- safe to persist on every save -- this is the whole point: it carries an
         -- editing session out to scripts/apply_map_tags_from_save.py.
@@ -4223,6 +4264,173 @@ function rebuildOverlayTracking()
             hardenOverlayObject(obj)
         end
     end
+end
+
+-- ***********************
+-- TERRAIN PASS-THROUGH
+-- ***********************
+
+function hasTerrainPassThroughTag(obj)
+    if not obj or obj.isDestroyed() then return false end
+    for _, tag in ipairs(TERRAIN_PASS_THROUGH_TAGS) do
+        if obj.hasTag(tag) then return true end
+    end
+    return false
+end
+
+-- Snapshot every relevant collider plus the physics flags we temporarily
+-- harden. Stored by GUID so the mode remains exactly reversible after a save.
+function captureTerrainPassThroughState(obj)
+    if not obj or obj.isDestroyed() then return nil end
+    local guid = obj.getGUID()
+    if not guid or guid == "" then return nil end
+
+    local existing = terrainPassThroughOriginalStates[guid]
+    if existing then return existing end
+
+    local state = {
+        locked = obj.getLock(),
+        useGravity = obj.use_gravity,
+        colliders = {},
+    }
+    for _, colliderType in ipairs(TERRAIN_PASS_THROUGH_COLLIDER_TYPES) do
+        local enabledStates = {}
+        for index, collider in ipairs(obj.getComponentsInChildren(colliderType) or {}) do
+            enabledStates[index] = collider.get("enabled") ~= false
+        end
+        state.colliders[colliderType] = enabledStates
+    end
+    terrainPassThroughOriginalStates[guid] = state
+    return state
+end
+
+function setTerrainObjectPassThrough(obj)
+    if not hasTerrainPassThroughTag(obj) then return 0 end
+    if not captureTerrainPassThroughState(obj) then return 0 end
+
+    -- A collider-free unlocked object can fall through the table. Terrain is
+    -- normally locked already, but harden it while the mode is active and put
+    -- its original flags back when the mode is disabled.
+    obj.setLock(true)
+    obj.use_gravity = false
+
+    local colliderCount = 0
+    for _, colliderType in ipairs(TERRAIN_PASS_THROUGH_COLLIDER_TYPES) do
+        for _, collider in ipairs(obj.getComponentsInChildren(colliderType) or {}) do
+            collider.set("enabled", false)
+            colliderCount = colliderCount + 1
+        end
+    end
+    return colliderCount
+end
+
+function restoreTerrainPassThroughState(obj, state)
+    if not obj or obj.isDestroyed() then return 0 end
+
+    local colliderCount = 0
+    for _, colliderType in ipairs(TERRAIN_PASS_THROUGH_COLLIDER_TYPES) do
+        local original = state and state.colliders and state.colliders[colliderType] or {}
+        for index, collider in ipairs(obj.getComponentsInChildren(colliderType) or {}) do
+            local wasEnabled = original[index]
+            if wasEnabled == nil then wasEnabled = true end
+            collider.set("enabled", wasEnabled)
+            colliderCount = colliderCount + 1
+        end
+    end
+
+    -- Restore colliders before unlocking/re-enabling gravity so an originally
+    -- movable object cannot fall through the table between assignments.
+    if state then
+        if state.useGravity ~= nil then obj.use_gravity = state.useGravity end
+        if state.locked ~= nil then obj.setLock(state.locked) end
+    end
+    return colliderCount
+end
+
+-- Custom-model colliders may not exist on the frame the object spawns. Wait for
+-- the asset to finish loading, with a bounded fallback for a broken asset URL.
+function scheduleTerrainPassThroughObject(obj)
+    if not terrainPassThroughEnabled or not obj then return end
+    local function applyIfStillEnabled()
+        if terrainPassThroughEnabled and obj and not obj.isDestroyed() then
+            setTerrainObjectPassThrough(obj)
+        end
+    end
+    Wait.condition(applyIfStillEnabled, function()
+        return obj == nil or obj.isDestroyed() or (not obj.spawning and not obj.loading_custom)
+    end, 15, applyIfStillEnabled)
+end
+
+function applyTerrainPassThroughMode()
+    local objects = getObjectsWithAnyTags(TERRAIN_PASS_THROUGH_TAGS) or {}
+    local colliderCount = 0
+    for _, obj in ipairs(objects) do
+        if obj and not obj.isDestroyed() then
+            if obj.spawning or obj.loading_custom then
+                scheduleTerrainPassThroughObject(obj)
+            else
+                colliderCount = colliderCount + setTerrainObjectPassThrough(obj)
+            end
+        end
+    end
+    return #objects, colliderCount
+end
+
+function restoreTerrainPassThroughMode()
+    local objectCount = 0
+    local colliderCount = 0
+    for guid, state in pairs(terrainPassThroughOriginalStates) do
+        local obj = getObjectFromGUID(guid)
+        if obj and not obj.isDestroyed() then
+            colliderCount = colliderCount + restoreTerrainPassThroughState(obj, state)
+            objectCount = objectCount + 1
+        end
+    end
+    terrainPassThroughOriginalStates = {}
+    return objectCount, colliderCount
+end
+
+function terrainPassThroughIsEnabled()
+    return terrainPassThroughEnabled == true
+end
+
+function syncAdvancedFeaturesPanel()
+    local panel = getObjectFromGUID(ADVANCED_FEATURES_GUID)
+    if not panel then return end
+    pcall(function()
+        panel.call("syncAdvancedFeaturesUI")
+    end)
+end
+
+function toggleTerrainPassThrough()
+    terrainPassThroughEnabled = not terrainPassThroughEnabled
+    local objectCount = 0
+    if terrainPassThroughEnabled then
+        objectCount = applyTerrainPassThroughMode()
+    else
+        objectCount = restoreTerrainPassThroughMode()
+    end
+
+    syncAdvancedFeaturesPanel()
+    local status = terrainPassThroughEnabled and "ON" or "OFF"
+    local color = terrainPassThroughEnabled and {0.35, 0.90, 1.00} or {0.75, 0.75, 0.75}
+    broadcastToAll(string.format("Disable terrain colliders: %s (%d tagged objects).", status, objectCount), color)
+end
+
+-- Universal events are delivered to object scripts as well as Global. This
+-- keeps the active mode working for terrain loaded later and after state swaps.
+function onObjectSpawn(obj)
+    if terrainPassThroughEnabled then scheduleTerrainPassThroughObject(obj) end
+end
+
+function onObjectStateChange(obj, oldStateGuid)
+    if terrainPassThroughEnabled then scheduleTerrainPassThroughObject(obj) end
+end
+
+function onObjectDestroy(obj)
+    if not obj or not terrainPassThroughOriginalStates then return end
+    local guid = obj.getGUID()
+    if guid and guid ~= "" then terrainPassThroughOriginalStates[guid] = nil end
 end
 
 -- Bring the territory toggle (7e7711) back in line with what's actually on the
