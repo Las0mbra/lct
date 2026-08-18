@@ -1,15 +1,18 @@
 -- FTC-GUID: b7ac7a,7c7c20
 
-version = "2.14.2"
+version = "1.0-11th Edition"
+useCustomTrayDice = false
+rangeMeleeToggle = 0
+modelWeaponToggle = true
 currentSelection = {}
-weaponColors = {}
 spawnedDiceCount = 0
-savedPositions = {}
 spawnPosition = nil
 customDieData = nil
-useCustomTrayDice = false
 activeCustomTrayDiceConfig = false
 
+--========================
+-- 📦 INITIALIZATION
+--========================
 function onSave()
   return JSON.encode({
     spawnPosition = spawnPosition,
@@ -18,13 +21,17 @@ function onSave()
 end
 
 function onLoad(data)
-  self.addContextMenuItem("Set Custom Dice", onSetCustomDiceClicked)
-  self.addContextMenuItem("Reset Custom Dice", onResetCustomDiceClicked)
-  self.addContextMenuItem("Set Spawn Position", onSetSpawnPositionClicked)
-  self.addContextMenuItem("Reset Spawn Position", onResetSpawnPositionClicked)
+  self.tooltip = false
+  self.setColorTint({0, 0, 0, 0})
   self.addContextMenuItem("Version", onVersionClicked)
-  restoreSavedData(data)
-  setupStatsHelperTopRow()
+  if(getStatsHelperCustomDiceMat() == nil) then
+	self.addContextMenuItem("Set Spawn Position", onSetSpawnPositionClicked)
+	self.addContextMenuItem("Reset Spawn Position", onResetSpawnPositionClicked)
+	spawnPosition = self.positionToWorld({0, 1, 6})
+  end
+  --restoreSavedData(data)
+  rangeMeleeToggle = 0
+  updateRangeMeleeUI()
 end
 
 function restoreSavedData(data)
@@ -34,56 +41,905 @@ function restoreSavedData(data)
 
   local parsedData = JSON.decode(data)
   if parsedData then
-    spawnPosition = parsedData.spawnPosition
+    --spawnPosition = parsedData.spawnPosition
     customDieData = parsedData.customDieData
   end
 end
 
-function setupStatsHelperTopRow()
-  local ui = self.UI.getXmlTable()
-  if not ui or not ui[2] or not ui[2].children or not ui[2].children[1] then
-    return
+
+function onVersionClicked()
+  printToAll("📘 Weapon Analyzer v" .. version .. " by Old Man", {0.8, 0.8, 0.5})
+end
+
+--========================
+-- 🎯 SELECTION HANDLING
+--========================
+function setCurrentSelection(player)
+  local selected = player.getSelectedObjects()
+  if #selected == 0 then
+    printMessage("⚠️  Select some models first!")
+    return false
   end
-  ui[2].children[1].children = {
-    {
-      tag = "Button",
-      attributes = {
-        text = "Show weapon stats",
-        onClick = "onCountClicked",
-        fontSize = "60",
-        preferredWidth = "1800",
-        preferredHeight = "100"
-      }
-    },
-    {
-      tag = "Button",
-      attributes = {
-        text = customTrayDiceToggleText(),
-        id = "CustomTrayDiceToggle",
-        onClick = "toggleCustomTrayDice",
-        fontSize = "36",
-        preferredWidth = "450",
-        preferredHeight = "100",
-        color = customTrayDiceToggleColor(),
-        textColor = "#000000"
-      }
-    }
-  }
-  self.UI.setXmlTable(ui)
+
+  -- Filter out models without descriptions
+  local validSelection = {}
+  for _, obj in ipairs(selected) do
+    local desc = obj.getDescription()
+    if desc and desc ~= "" then
+      table.insert(validSelection, obj)
+    end
+  end
+
+  if #validSelection == 0 then
+    printMessage("⚠️  No valid models with weapon data found!")
+    return false
+  end
+
+  currentSelection = validSelection
+  return true
 end
 
-function customTrayDiceToggleText()
-  return useCustomTrayDice and "☑ Custom Dice" or "☐ Custom Dice"
+--========================
+-- ⚙️ BUTTON HANDLERS
+--========================
+
+--MAIN FUNCTION--
+function onCountClicked(player)
+  currentSelection = {}
+  if setCurrentSelection(player) then
+	spawnedDiceCount = 0
+	drawWeaponData(currentSelection)
+	updateCustomDiceUI()
+	updateRangeMeleeUI()
+	updateWpnModelButtonUI()
+  end
 end
 
-function customTrayDiceToggleColor()
-  return useCustomTrayDice and "#38C172" or "#FFFFFF"
+function onCleanClicked(player)
+	rangeMeleeToggle = 0
+	spawnedDiceCount = 0
+	modelWeaponToggle = true
+	drawWeaponData({})
+	updateRangeMeleeUI()
+	updateCustomDiceUI()
+	updateWpnModelButtonUI()
+	currentSelection = {}
 end
 
 function toggleCustomTrayDice(player, value, id)
-  useCustomTrayDice = not useCustomTrayDice
-  self.UI.setAttribute("CustomTrayDiceToggle", "color", customTrayDiceToggleColor())
-  self.UI.setAttribute("CustomTrayDiceToggle", "text", customTrayDiceToggleText())
+  changeCustomDiceState()
+  updateCustomDiceUI()
+end
+
+function changeCustomDiceState()
+	 useCustomTrayDice = not useCustomTrayDice
+end
+
+function updateCustomDiceUI()
+	if useCustomTrayDice then
+		self.UI.setAttribute("CustomTrayDiceToggle", "color", "#111417")
+		self.UI.setAttribute("CustomTrayDiceToggle", "text", "☑ Custom Dice")
+		self.UI.setAttribute("CustomTrayDiceToggle", "textcolor", "#e6d36f")
+	else
+		self.UI.setAttribute("CustomTrayDiceToggle", "color", "#111417")
+		self.UI.setAttribute("CustomTrayDiceToggle", "text", "☐ Custom Dice")
+		self.UI.setAttribute("CustomTrayDiceToggle", "textcolor", "#e6d36f")
+	end
+end
+
+function toggleSHRangeMelee(player,value,id)
+	changeRangeMeleeState()
+	drawWeaponData(currentSelection)
+	updateRangeMeleeUI()
+	updateWpnModelButtonUI()
+	updateCustomDiceUI()
+end
+
+function changeRangeMeleeState()
+	rangeMeleeToggle = (rangeMeleeToggle + 1) % 3
+end
+
+function updateRangeMeleeUI()
+	 local btnText, btnColor, btnTextColor
+    if rangeMeleeToggle == 0 then
+        btnText     = "☷ Filter(All)▼"
+        btnColor    = "#1C2024"
+        btnTextColor = "#e6d36f"
+    elseif rangeMeleeToggle == 1 then
+        btnText     = "☷ Range ▼"
+        btnColor    = "#252A30"
+        btnTextColor = "#e6d36f"
+    else
+        btnText     = "☷ Melee ▼"
+        btnColor    = "#1E2126"
+        btnTextColor = "#e6d36f"
+    end
+
+    self.UI.setAttributes("SHRangeToggle", {
+        text      = btnText,
+        color     = btnColor,
+        textcolor = btnTextColor
+    })
+end
+
+function onGroupModelWpn(player,value,id)
+	changeWpnModelState()
+	drawWeaponData(currentSelection)
+	updateWpnModelButtonUI()
+	updateCustomDiceUI()
+	updateRangeMeleeUI()
+end
+
+function changeWpnModelState()
+	modelWeaponToggle = not modelWeaponToggle
+end
+
+function updateWpnModelButtonUI()
+
+if modelWeaponToggle then
+		self.UI.setAttribute("groupModelWpn", "color", "#24292D")
+		self.UI.setAttribute("groupModelWpn", "text", "☷ Name (Group by: Model) ▼")
+		self.UI.setAttribute("groupModelWpn", "textcolor", "#e6d36f")
+		--self.UI.setAttribute("groupModelWpn", "hoverColor", "#2A3036")
+        --self.UI.setAttribute("groupModelWpn", "borderColor", "#E6D36F")
+        --self.UI.setAttribute("groupModelWpn", "borderWidth", "#1")
+	else
+		self.UI.setAttribute("groupModelWpn", "color", "#24292D")
+		self.UI.setAttribute("groupModelWpn", "text", "☷ Name (Group by: Weapon) ▼")
+		self.UI.setAttribute("groupModelWpn", "textcolor", "#e6d36f")
+	end
+end
+
+
+--========================
+-- 📋 DATA COLLECTION
+--========================
+function drawWeaponData(figures)
+  local data = createFiguresData(figures)
+  drawWeaponsDataUI(data)
+end
+
+function drawWeaponsDataUI(figuresData)
+  local ui = self.UI.getXmlTable()
+  if modelWeaponToggle then
+	ui[2].children[3].children = createModelGroupedSections(figuresData)
+  else
+	ui[2].children[3].children = createWeaponGroupedSections(figuresData)
+  end
+  self.UI.setXmlTable(ui)
+end
+
+--========================
+-- 🧩 GROUPED TABLE CREATION
+--========================
+
+
+--BY WEAPON
+
+
+function createWeaponsMap(figuresData)
+	local result = {}
+	if(rangeMeleeToggle ~= 2) then
+		for i,v in ipairs(figuresData) do
+			convertWeaponDataToMap(v.ranged, result)
+		end
+	end
+	if(rangeMeleeToggle ~= 1) then
+		for i,v in ipairs(figuresData) do
+			convertWeaponDataToMap(v.melee, result)
+		end
+	end
+	return result
+end
+
+function convertWeaponDataToMap(weaponsData, resultData)
+  for i,v in ipairs(weaponsData) do
+    local key = getWeaponKey(v)
+    if resultData[key] == nil then
+      resultData[key] = {
+        count = 0,
+        attack = 0,
+        data = v
+      }
+    end
+    resultData[key].count = resultData[key].count + 1
+    resultData[key].attack = resultData[key].attack + v.attack
+  end
+end
+
+function getWeaponKey(weaponData)
+  local n = string.lower(weaponData.name)
+  local att = weaponData.attack
+  local acc = weaponData.accuracy
+  local str = weaponData.strength
+  local ap = weaponData.ap
+  local d = weaponData.damage
+  return n..att..acc..str..ap..d
+end
+
+
+function createWeaponGroupedSections(figuresData)
+
+    local rows = {}
+
+	if #figuresData > 0 then
+		table.insert(
+			rows,
+			createModelHeaderRow("Models",#figuresData)--,stats)
+		)
+	end
+
+	local weaponMap = createWeaponsMap(figuresData)
+
+	for _, w in pairs(weaponMap) do
+		table.insert(rows, createWeaponRow(w,true))
+	end
+
+    -- 3. Wrap everything cleanly in a single TableLayout container
+    return {
+        {
+            tag = "TableLayout",
+            attributes = {
+                preferredWidth = 2600,
+                columnWidths = "800 600 470 180", -- Matches your design
+                rowBackgroundColor = "#252525",
+                childForceExpandHeight = "false"
+            },
+            children = rows
+        }
+    }
+
+end
+
+
+-- / BY WEAPON
+
+
+-- BY MODEL
+
+function createModelGroupedSections(figuresData)
+
+    local rows = {}
+    local groupedModels = groupFiguresByName(figuresData)
+
+    for modelName, modelFigures in pairs(groupedModels) do
+
+
+		--local firstFig = modelFigures[1] or {}
+        --local stats = {
+        --    m  = firstFig.m  or "?",
+        --    t  = firstFig.t  or "?",
+        --    sv = firstFig.sv or "?",
+        --    w  = firstFig.w  or "?",
+        --    ld = firstFig.ld or "?"
+        --}
+
+        -- 1. Insert the header formatted as a Table Row
+        table.insert(
+            rows,
+            createModelHeaderRow(modelName, #modelFigures)--,stats)
+        )
+
+        -- 2. Insert the weapon rows directly following that header
+        local weaponMap = collectWeapons(modelFigures)
+        for _, w in pairs(weaponMap) do
+            table.insert(rows, createWeaponRow(w,false))
+        end
+
+    end
+
+    -- 3. Wrap everything cleanly in a single TableLayout container
+    return {
+        {
+            tag = "TableLayout",
+            attributes = {
+                preferredWidth = 2600,
+                columnWidths = "800 600 470 180", -- Matches your design
+                rowBackgroundColor = "#252525",
+                childForceExpandHeight = "false"
+            },
+            children = rows
+        }
+    }
+
+end
+
+function createModelHeaderRow(modelName, count)--,stats)
+
+    local countText = ""
+    if count ~= nil and count > 1 then
+        countText = "  x" .. count
+    end
+
+    return {
+        tag = "Row",
+        attributes = {
+            preferredHeight = 80,
+            --backgroundColor = "#15191C"
+        },
+        children = {
+            {
+                tag = "Cell",
+                attributes = {
+                    columnSpan = 5, -- Span across all weapon stat columns
+                    --dontUseAsHeight = "true"
+                },
+                children = {
+                        tag = "Panel",
+						attributes = { image = "https://steamusercontent-a.akamaihd.net/ugc/11792149798079567975/37D94542ECE457F2D58BCE5108FCBE1B800C7F91/" ,
+									   preferredWidth = pwidth or preferredWidth,
+									   raycastTarget = false
+									 },
+						children = {
+						tag = "Text",
+							attributes = {
+								text = "<size=42>★ " .. modelName  .. "<b>" .. countText .. "</b>" .. " ★ " .. "</size>",--<size=35>(T:" .. stats.t .. " Sv:" .. stats.sv .. ")</size>",
+								--fontSize = 42,
+								color = "#C2A661 ",
+								alignment = "Middle",
+								offsetXY = "20 0" -- Margins so text isn't stuck to edge
+							}
+                    }
+                }
+            }
+        }
+    }
+
+end
+
+
+function collectWeapons(modelFigures)
+
+    -- 🧮 Collect and combine weapons
+    local weaponMap = {}
+    for _, fig in ipairs(modelFigures) do
+		if(rangeMeleeToggle ~= 2) then
+			for _, w in ipairs(fig.ranged) do
+				local acc = fig.bs or "?"
+				local key = "r_"..w.name .. "_" .. acc
+				weaponMap[key] = weaponMap[key] or { data = w, count = 0, accuracy = acc, is_melee = false }
+				weaponMap[key].count = weaponMap[key].count + 1
+			end
+		end
+		if(rangeMeleeToggle ~= 1) then
+			for _, w in ipairs(fig.melee) do
+				local acc = fig.ws or "?"
+				local key = "m_" .. w.name .. "_" .. acc
+				weaponMap[key] = weaponMap[key] or { data = w, count = 0, accuracy = acc, is_melee = true }
+				weaponMap[key].count = weaponMap[key].count + 1
+			end
+		end
+	end
+
+    return weaponMap
+
+end
+
+
+function createWeaponRow(w,wpnMode)
+
+    -- ⚔️ Weapon rows
+
+      local attackStr = ""
+        if w.data.bonusAttack and w.data.bonusAttack ~= "" then
+          attackStr = w.data.bonusAttack
+        elseif w.data.attack and tonumber(w.data.attack) then
+          attackStr = tostring(w.data.attack)
+        else
+          attackStr = "0"
+        end
+
+        local decomposed = DecomposeAttackStr(attackStr)
+        decomposed.numD6 = decomposed.numD6 * w.count * w.data.wpnMultiplier
+        decomposed.numD3 = decomposed.numD3 * w.count * w.data.wpnMultiplier
+        decomposed.rawNum = decomposed.rawNum * w.count * w.data.wpnMultiplier
+        attackStr = ComposeAttack(decomposed)
+
+	  local displayName
+	  if wpnMode and w.count > 1 then
+		displayName =  w.data.name .. " x" .. w.count
+	  else
+		displayName =  w.data.name
+      end
+	  local abilitiesColor
+      if string.match(w.data.wpnabilities,"^-$") then
+			abilitiesColor = "#55606A"
+	  else
+			abilitiesColor = "#d0d0d0"
+	  end
+	  local displayCell
+	  local statCell
+	  local abilitiesCell
+	  local attackButtonCell
+
+      local rangeCell
+      if w.data.range ~= nil then
+        local rangeText = getRangeText(w.data.range)
+        rangeCell = createColoredCell(rangeText,"#252A30CC","#d0d0d0") --#04392740","#d0d0d0")
+		displayCell = createColoredCell(displayName, "#252A30CC","#d0d0d0") --"#04392740"
+		statCell = createColoredCell(w.data.stats, "#252A30CC","#fdfcfa") --"#04392740","#d0d0d0"
+		abilitiesCell = createColoredCell(w.data.wpnabilities,"#252A30CC",abilitiesColor) --,"#04392740","#d0d0d0"
+		attackButtonCell = createButtonCell(attackStr, "N:" .. w.data.name .. "A:" .. attackStr .. "AP:" .. w.data.ap .. "D:" .. w.data.damage .. "Name:" .. w.data.name, "onAttackClicked","#404040BF") --"#043927BF"
+      else
+        rangeCell = createColoredCell("-","#1E2126CC","#55606A") --"#420D0940","#d0d0d0"
+		displayCell = createColoredCell(displayName, "#1E2126CC","#d0d0d0") --"#420D0940"
+		statCell = createColoredCell(w.data.stats, "#1E21260CC","#fdfcfa") --"#420D0940","#d0d0d0"
+		abilitiesCell = createColoredCell(w.data.wpnabilities,"#1E2126CC",abilitiesColor) --"#cccccc"), "#420D0940","#d0d0d0"
+		attackButtonCell = createButtonCell(attackStr, "N:" .. w.data.name .. "A:" .. attackStr .. "AP:" .. w.data.ap .. "D:" .. w.data.damage .. "Name:" .. w.data.name, "onAttackClicked","#404040BF") --"#420D09BF"
+      end
+
+
+    return {
+
+        tag="Row",
+
+        attributes={
+
+            preferredHeight=100
+
+        },
+
+        children={
+
+            displayCell,
+            statCell,
+            abilitiesCell,
+            attackButtonCell,
+            rangeCell
+
+        }
+
+    }
+end
+
+
+-- / BY MODEL
+
+--=============================
+-- 🔎 DATA PARSING HELPERS
+--=============================
+function createFiguresData(figures)
+  local result = {}
+  for _, v in ipairs(figures) do
+    table.insert(result, parseFigureData(v))
+  end
+  return result
+end
+
+function parseFigureData(figure)
+  local desc = figure.getDescription()
+  local lines = splitStr(removeEmptyLines(desc), "\n")
+  local result = { ranged = {}, melee = {} }
+  result.figureName = figure.getName()
+
+  for i, line in ipairs(lines) do
+    local blockName = getBlockName(line)
+    if blockName and blockName ~= "abilities" then
+      result[blockName] = parseWeaponBlock(lines, i)
+    end
+  end
+
+  -- Stats line parsing - REMOVE COLOR TAGS FIRST
+  local statsHeaders = {"m","t","sv","w","ld","oc"}
+  local statsLine = removeColorTags(lines[2] or "")  -- Clean the line first
+  local stats = splitStr(statsLine, " ")
+  for i, h in ipairs(statsHeaders) do
+    result[h] = stats[i]
+  end
+
+  return result
+end
+
+function parseWeaponBlock(arr, fromIndex)
+  local result = {}
+  local i = fromIndex
+  while i < #arr do
+    local name        = parseWeaponName(arr[i + 1])
+    local statsRaw    = removeColorTags(arr[i + 2])
+
+	local tempMainWpnStats = getWeaponMainStats(statsRaw)
+
+    table.insert(result, {
+      name          = name,
+      stats         = tempMainWpnStats[1],
+      range         = parseRange(statsRaw),
+      attack        = parseWeaponAttack(statsRaw),
+      bonusAttack   = parseWeaponBonusAttack(statsRaw),
+	  wpnabilities = tempMainWpnStats[2],
+	  wpnMultiplier = getWpnMultipliers(name),
+	  accuracy      = parseWeaponAccuracy(statsRaw) or "",
+      strength      = getWeaponStatValue(statsRaw, "S") or "",
+      ap            = getWeaponStatValue(statsRaw, "AP") or "",
+      damage        = getWeaponStatValue(statsRaw, "D") or "",
+    })
+    if getBlockName(arr[i + 3]) ~= nil then
+      return result
+    end
+    i = i + 2
+  end
+  return result
+end
+
+function getBlockName(str)
+  if not str then return nil end
+  if str:match("[rR]anged [wW]eapons") then return "ranged" end
+  if str:match("[mM]elee [wW]eapons") then return "melee" end
+  if str:match("[aA]bilities") then return "abilities" end
+  return nil
+end
+
+--========================
+-- ⚔️ WEAPON STATS HELPERS
+--========================
+function parseWeaponName(data)
+  local trimmedSpaces = data:gsub("%s+$", "") --string.match(data, "^(.-)%s*$")
+  return string.sub(trimmedSpaces, 9, -4)
+end
+
+function removeColorTags(str)
+  return str:gsub("%[%x+%]", ""):gsub("%[%-%]", "")
+end
+
+function parseWeaponAttack(stats)
+  local stat = getWeaponStatValue(stats, "A")
+  return tonumber(stat) or 0
+end
+
+function parseWeaponBonusAttack(stats)
+  local stat = getWeaponStatValue(stats, "A")
+  if tonumber(stat) == nil then
+    return stat
+  end
+  return nil
+end
+
+function parseWeaponAccuracy(stats)
+  return  getWeaponStatValue(stats, "BS") or getWeaponStatValue(stats, "WS")
+end
+
+function getWeaponStatValue(stats, statName)
+  local statPairs = splitStr(stats, " ")
+  for i,v in ipairs(statPairs) do
+    local stat = splitStr(v, ":")
+    if stat[1] == statName then
+      return stat[2]
+    end
+  end
+end
+
+function getWeaponMainStats(stats)
+	local result = {}
+	result[1] = string.match(stats, "A[^%[]*")
+	result[2] = string.match(stats, "%[.*")
+	if result[2] then
+		result[1] = "" .. string.match(result[1], "(.-)%s*$") .. ""
+	else
+		result[2] = "-"
+	end
+
+	return result
+end
+
+function getWpnMultipliers(name)
+	return string.match(name, "^(%d+)[xX]") or 1
+end
+
+
+function parseRange(stats)
+  local inches = string.find(stats, "″") or string.find(stats, '"')
+  if inches != nil then
+    return tonumber(string.sub(stats, 1, inches - 1))
+  end
+end
+
+--========================
+-- 📚 GROUPING + DISPLAY
+--========================
+
+function groupFiguresByName(data)
+  local grouped = {}
+  for _, fig in ipairs(data) do
+    local name = extractModelName(fig.figureName or "Unknown Model")
+    grouped[name] = grouped[name] or {}
+    table.insert(grouped[name], fig)
+  end
+  return grouped
+end
+
+function extractModelName(full)
+  local name = full:gsub("%[.-%]", ""):gsub("^%s*[%d/]+%s*", "")
+  return TrimString(name)
+end
+
+function getRangeText(range)
+  return range and ("″" .. tostring(range)) or "-"
+end
+
+--========================
+-- 🧱 UI BUILD HELPERS
+--========================
+
+function createTextCell(txt)
+  return { tag = "Cell", children = { { tag = "Text", attributes = { text = txt } } } }
+end
+
+function createButtonCell(text, id, click, color)
+	return {
+	tag = "Cell",
+		children = {
+		  {
+			tag = "Button",
+			attributes = {
+			  text = text,
+			  id = id,
+			  fontSize = 50,
+			  onClick = click,
+			  color = color or "#363636"
+			}
+		  }
+		}
+	}
+end
+
+function createTextCell(text, color)
+  return {
+    tag = "Cell",
+
+    children = {
+      {
+        tag = "Text",
+        attributes = {
+          text = text,
+          color = color or "#f5f5f5",
+        }
+      }
+    }
+  }
+end
+
+function createColoredCell(text, bgColor, fcolor)
+  return {
+   tag = "Cell",
+    children = {
+      {
+        tag = "Panel",
+        attributes = { color = bgColor or "#252525" }, -- Colors the background
+        children = {
+          {
+            tag = "Text",
+            attributes = {
+              text = text,
+              color = fcolor or "#f5f5f5", -- fcolor applies to text color d0d0d0
+			  offsetXY = "10 0", -- Margins so text isn't stuck to edge
+
+            }
+          }
+        }
+      }
+    }
+  }
+end
+
+--========================
+-- 🧮 ATTACK PARSING
+--========================
+function DecomposeAttackStr(attack)
+  local numD6, numD3, rawNum = 0, 0, 0
+  for _, v in ipairs(splitStr(attack, "+")) do
+    v = TrimString(v)
+    local nd6 = v:match("^([0-9]*)[dD]6$")
+    if nd6 == "" then nd6 = 1 end
+    if nd6 then numD6 = numD6 + tonumber(nd6) end
+    local nd3 = v:match("^([0-9]*)[dD]3$")
+    if nd3 == "" then nd3 = 1 end
+    if nd3 then numD3 = numD3 + tonumber(nd3) end
+    if v:match("^[0-9]+$") then rawNum = rawNum + tonumber(v) end
+  end
+  return { numD6 = numD6, numD3 = numD3, rawNum = rawNum }
+end
+
+function ComposeAttack(d)
+  local parts = {}
+  if d.numD6 > 0 then table.insert(parts, (d.numD6 == 1 and "D6" or (d.numD6 .. "D6"))) end
+  if d.numD3 > 0 then table.insert(parts, (d.numD3 == 1 and "D3" or (d.numD3 .. "D3"))) end
+  if d.rawNum > 0 then table.insert(parts, tostring(d.rawNum)) end
+  return #parts > 0 and table.concat(parts, "+") or "0"
+end
+
+--========================
+-- 🌈 UTILITIES
+--========================
+function printMessage(txt, color)
+  broadcastToAll(txt, color or {1, 0.8, 0.3})
+end
+
+function TrimString(s)
+  local a = s:match("^%s*()")
+  local b = s:match("()%s*$", a)
+  return s:sub(a, b - 1)
+end
+
+function removeEmptyLines(str)
+  return str:gsub("\n%s*\n", "\n")
+end
+
+function splitStr(input, sep)
+  local t, pattern = {}, "[^" .. (sep or "%s") .. "]+"
+  for str in string.gmatch(input, pattern) do table.insert(t, str) end
+  return t
+end
+
+
+--=============
+--SPAWN DICE
+--=============
+
+function onAttackClicked(player, clickType, id)
+
+	--local attacksNum = string.match(id, "A:(.*)$") or ""
+	local attacksNum = string.match(id, "A:([%dDd]+[%+%-]?%d*)") or ""
+	local apNum = string.match(id, "AP:?([%-]?%d+)") or ""
+	local dNum = string.match(id, "D:([%dDd]+[%+%-]?%d*)") or ""
+	local wpnName = string.match(id, "Name:(.+)$")
+
+    if attacksNum then
+        if (string.match(attacksNum,"[dD]")) then
+			attacksNum = getBonusAttackValue(attacksNum)
+		end
+		spawnDices(attacksNum, apNum, dNum, wpnName, spawnedDiceCount)
+		spawnedDiceCount = spawnedDiceCount + attacksNum
+    else
+        print("Error: Could not extract attack data from ID: " .. tostring(id))
+    end
+end
+
+
+function getBonusAttackAppendum(appendum)
+  if tonumber(appendum) ~= nil then
+    return tonumber(appendum)
+  end
+
+  if string.find(appendum, "D") ~= nil then
+    local split = splitStr(appendum, "D")
+    local count = (#split == 2) and tonumber(split[1]) or 1
+    local value = (#split == 2) and tonumber(split[2]) or tonumber(split[1])
+    local result = 0
+
+    -- Roll the dice and display each result
+    for i = 1, count do
+      local roll = math.random(value)
+      printMessage("Rolling one D" .. value .. ", the value is: " .. roll)
+      result = result + roll
+    end
+    return result
+  end
+
+  return 0
+end
+
+
+function getBonusAttackValue(bonusAttack)
+  local appendums = splitStr(bonusAttack, "+")
+  local result = 0
+  for i,app in ipairs(appendums) do
+    result = result + getBonusAttackAppendum(app)
+  end
+  return result
+end
+
+
+function spawnDices(count, ap,d, wpnName, offset)
+
+  local previousTrayDiceConfig = activeCustomTrayDiceConfig
+  activeCustomTrayDiceConfig = readCustomTrayDiceConfig()
+
+  -- Anchor the grid on the dice mat so dice land where the mat can manage them.
+  -- Fall back to this object only if the mat can't be resolved.
+  local anchor = getStatsHelperCustomDiceMat() or nil
+  local anchorRotation = nil
+  if(anchor ~= nil) then
+		anchorRotation = anchor.getRotation() + Vector(0.0, 180.0, 0.0)
+  else
+		anchorRotation = self.getRotation() + Vector(0.0, 180.0, 0.0)
+  end
+  local color = {math.random(), math.random(), math.random()}
+
+  -- Hard-cap total stats dice at 128, matching the mat's own spawn limit, so a
+  -- huge attack count can never exceed the grid's footprint.
+  local diceLimit = 128
+  if offset + count > diceLimit then
+    printMessage("Dice limit reached - Clear or Load Models Again")
+    count = math.max(0, diceLimit - offset)
+  end
+
+  -- Advance grid/row/col to the running offset so each weapon's batch tiles
+  -- after the previous one (5 columns x 5 rows per grid block).
+  local grid, row, col = 0, 0, 0
+  for i = 1, offset do
+    col = col + 1
+    if col > 4 then col = 0; row = row + 1
+      if row > 4 then row = 0; grid = grid + 1 end
+    end
+  end
+
+  local tooltip  = " [C2A661]AP:[-]".. ap .."[-]  [e85545]D:[-]".. d
+  local tPosition
+  for i = 1, count do
+	if(anchor==nil) then
+		tPosition = {
+						spawnPosition[1] + (col - 2) * 0.6,
+						spawnPosition[2] + 0.5,
+						spawnPosition[3] + (row - 2) * 0.6
+						}
+	else
+		tPosition = anchor.positionToWorld({4 - grid * 1.5 - col * 0.25, 0.5, -0.3 + row * 0.25})
+	end
+      local die = spawnObject({
+      type = getDiceType(),
+	  position = tPosition,
+      rotation = anchorRotation,
+      callback_function = function(dice)
+        setDieTint(dice, color)
+        dice.setName("[E6C75A]" .. wpnName .. "[-]")
+		dice.setDescription(tooltip)
+      end
+    })
+    setDieCustomObject(die)
+
+	--Wait.time(function()
+    --spawnObject({
+    --    type = getDiceType(),
+    --    position = tPosition,
+    --    rotation = anchorRotation,
+    --    callback_function = function(dice)
+    --        setDieTint(dice, color)
+    --        dice.setName(tooltip)
+    --        setDieCustomObject(dice)
+    --    end
+    --})
+	--end, i * 0.05)
+
+    col = col + 1
+    if col > 4 then col = 0; row = row + 1
+      if row > 4 then row = 0; grid = grid + 1 end
+    end
+
+  end
+
+  activeCustomTrayDiceConfig = previousTrayDiceConfig
+
+end
+
+function setDieCustomObject(die)
+  local trayConfig = getCustomTrayDiceConfig()
+  if trayConfig and trayConfig.customDiceImage then
+    die.setCustomObject({ image = trayConfig.customDiceImage, type = 1 })
+    return
+  end
+  if customDieData and customDieData.image then
+    die.setCustomObject({ image = customDieData.image, type = 1 })
+  end
+end
+
+function setDieTint(die, color)
+  local trayConfig = getCustomTrayDiceConfig()
+  if trayConfig and trayConfig.selectedColor then
+    die.setColorTint(trayConfig.selectedColor)
+    return
+  end
+  local customTint = customDieData and customDieData.colorTint
+  die.setColorTint(customTint or color)
+end
+
+function getDiceType()
+  local trayConfig = getCustomTrayDiceConfig()
+  if trayConfig and trayConfig.diceType then
+    return trayConfig.diceType
+  end
+  if customDieData and customDieData.image then
+    return "Custom_Dice"
+  end
+  return "Die_6"
 end
 
 function getCustomTrayDiceConfig()
@@ -129,7 +985,8 @@ function getStatsHelperCustomDiceMat()
 end
 
 function onResetSpawnPositionClicked()
-  spawnPosition = nil
+  spawnPosition = self.positionToWorld({0, 1, 6})
+  spawnedDiceCount = 0
   printMessage("Spawn position reset complete!")
 end
 
@@ -171,10 +1028,6 @@ function findSpawnPositionMarker()
   end
 end
 
-function onVersionClicked()
-  print(version)
-end
-
 function onResetCustomDiceClicked()
   customDieData = nil
   printMessage("Custom die data reset complete!")
@@ -192,7 +1045,7 @@ function onSetCustomDiceClicked()
 end
 
 function getPositionAboveMe()
-  return self.positionToWorld({0, 3, 8})
+  return self.positionToWorld({0, 1, 6})
 end
 
 function findCustomDie()
@@ -216,576 +1069,3 @@ function saveCustomDie(die)
   customDieData.colorTint = die.getColorTint()
   customDieData.image = die.getCustomObject().image
 end
-function setCurrentSelection(player)
-  if (#player.getSelectedObjects() == 0) then
-    printMessage("Select some models first!")
-    return false
-  end
-  currentSelection = player.getSelectedObjects()
-  return true
-end
-
-function onCountClicked(player)
-  cleanUpWeaponsData()
-  if setCurrentSelection(player) then
-    drawWeaponData(player.getSelectedObjects())
-  end
-end
-
-function cleanUpWeaponsData()
-  drawWeaponData({})
-  spawnedDiceCount = 0
-end
-
-function drawWeaponData(figures)
-  drawWeaponsDataUI(createWeaponsMap(createFiguresData(figures)))
-end
-
-function drawWeaponsDataUI(weaponMap)
-  local ui = self.UI.getXmlTable()
-  ui[2].children[3].children = createWeaponTableRows(weaponMap)
-  self.UI.setXmlTable(ui)
-end
-
-function createWeaponTableRows(weaponMap)
-  local result = {}
-  for i,v in pairs(weaponMap) do
-    table.insert(result, createWeaponRowUI(v))
-  end
-  return result
-end
-
-function createWeaponRowUI(weaponData)
-  return {
-    tag = "Row",
-    attributes = {
-      preferredHeight = 130
-    },
-    children = {
-      createTextCell(weaponData.data.name),
-      createTextCell(weaponData.data.stats),
-      createTextCell(weaponData.count),
-      createButtonCell(getAttackInfo(weaponData), getAttackButtonId(weaponData), "onAttackClicked", weaponData.side),
-      createButtonCell(getRangeText(weaponData.data.range), "rangeButton_"..weaponData.data.name, "onRangeClicked"),
-    }
-  }
-end
-
-function getAttackButtonId(weaponData)
-  local acc = weaponData.data.accuracy
-  local str = weaponData.data.strength
-  local ap = weaponData.data.ap
-  local d = weaponData.data.damage
-  return "attackButton__"..weaponData.data.name.."__"..acc.."__"..str.."__"..ap.."__"..d
-end
-
-function getWeaponDataFromAttackButtonId(id)
-  local arr = splitStr(id, "__")
-  return {
-    name = arr[2],
-    accuracy = arr[3],
-    strength = arr[4],
-    ap = arr[5],
-    damage = arr[6]
-  }
-end
-
-function getAttackInfo(weaponData)
-  local result = "";
-  if weaponData.attack != 0 then
-    result = result..tostring(weaponData.attack)
-  end
-  if weaponData.data.bonusAttack then
-    local pref = weaponData.count > 1 and weaponData.count..'*' or ''
-    return pref..weaponData.data.bonusAttack
-  end
-  return result
-end
-
--- Lay weapon dice out using the dice mat's own bounded 5x5 grid -- the same
--- contained layout the mat's +Nd6 buttons use -- instead of the old open-ended
--- 20-wide march. Big batches (e.g. 27 then 48 attacks) used to overflow the mat
--- in both axes and land where the mat's getDice() can no longer see them, so
--- they couldn't be rolled or cleared. Anchoring on the mat keeps every die
--- inside the mat's footprint. Per-weapon colour and the AP/weapon tooltip are
--- unchanged. The mat object is only READ here (positionToWorld/getRotation); no
--- mat script is modified.
-function spawnDices(count, color, weaponName, offset, ap, strength, dmg, melta, devastating, ignoreCover)
-  local previousTrayDiceConfig = activeCustomTrayDiceConfig
-  activeCustomTrayDiceConfig = readCustomTrayDiceConfig()
-
-  -- Anchor the grid on the dice mat so dice land where the mat can manage them.
-  -- Fall back to this object only if the mat can't be resolved.
-  local anchor = getStatsHelperCustomDiceMat() or self
-  local anchorRotation = anchor.getRotation() + Vector(0.0, 180.0, 0.0)
-
-  -- Hard-cap total stats dice at 128, matching the mat's own spawn limit, so a
-  -- huge attack count can never exceed the grid's footprint.
-  local diceLimit = 128
-  if offset + count > diceLimit then
-    printMessage("Dice limit reached!")
-    count = math.max(0, diceLimit - offset)
-  end
-
-  -- Advance grid/row/col to the running offset so each weapon's batch tiles
-  -- after the previous one (5 columns x 5 rows per grid block).
-  local grid, row, col = 0, 0, 0
-  for i = 1, offset do
-    col = col + 1
-    if col > 4 then col = 0; row = row + 1
-      if row > 4 then row = 0; grid = grid + 1 end
-    end
-  end
-
-  local apStr    = tostring(ap or "0")
-  local meltaStr = (melta and melta ~= "") and " [ffffff](Melta "..melta..")[-]" or ""
-  local devStr   = devastating == true and " [ffffff](Dev)[-]" or ""
-  local igorStr  = ignoreCover == true and " [ffffff](Ig Cover)[-]" or ""
-  local tooltip  = "[000000]|[-][ffff00] AP: "..apStr.." "..weaponName.."[-]"..devStr..meltaStr..igorStr
-
-  for i = 1, count do
-    local die = spawnObject({
-      type = getDiceType(),
-      position = anchor.positionToWorld({4 - grid * 1.5 - col * 0.25, 0.5, -0.3 + row * 0.25}),
-      rotation = anchorRotation,
-      callback_function = function(dice)
-        setDieTint(dice, color)
-        dice.setName(tooltip)
-      end
-    })
-    setDieCustomObject(die)
-
-    col = col + 1
-    if col > 4 then col = 0; row = row + 1
-      if row > 4 then row = 0; grid = grid + 1 end
-    end
-  end
-
-  activeCustomTrayDiceConfig = previousTrayDiceConfig
-end
-
-function setDieCustomObject(die)
-  local trayConfig = getCustomTrayDiceConfig()
-  if trayConfig and trayConfig.customDiceImage then
-    die.setCustomObject({ image = trayConfig.customDiceImage, type = 1 })
-    return
-  end
-  if customDieData and customDieData.image then
-    die.setCustomObject({ image = customDieData.image, type = 1 })
-  end
-end
-
-function setDieTint(die, color)
-  local trayConfig = getCustomTrayDiceConfig()
-  if trayConfig and trayConfig.selectedColor then
-    die.setColorTint(trayConfig.selectedColor)
-    return
-  end
-  local customTint = customDieData and customDieData.colorTint
-  die.setColorTint(customTint or color)
-end
-
-function getDiceType()
-  local trayConfig = getCustomTrayDiceConfig()
-  if trayConfig and trayConfig.diceType then
-    return trayConfig.diceType
-  end
-  if customDieData and customDieData.image then
-    return "Custom_Dice"
-  end
-  return "Die_6"
-end
-
-function onAttackClicked(player, _, id)
-  if (#currentSelection == 0) then
-    return
-  end
-  spawnDicesForWeaponByFigures(getWeaponDataFromAttackButtonId(id), currentSelection)
-end
-
-function spawnDicesForWeaponByFigures(weaponStats, figures)
-  local weaponMap = createWeaponsMap(createFiguresData(figures))
-  local weaponData = findWeaponByStats(weaponMap, weaponStats)
-  if weaponData != nil then
-    spawnDicesForWeapon(weaponData)
-  end
-end
-
-function findWeaponByStats(weaponMap, stats)
-  local key = getWeaponKey(stats)
-  for i,v in pairs(weaponMap) do
-    if i == key then
-      return v
-    end
-  end
-end
-
-function spawnDicesForWeapon(weaponMapData)
-  local ap         = weaponMapData.data.ap or "0"
-  local strength   = weaponMapData.data.strength or "?"
-  local dmg        = weaponMapData.data.damage or "?"
-  local melta      = weaponMapData.data.melta or ""
-  local devastating = weaponMapData.data.devastating or false
-  local ignoreCover = weaponMapData.data.ignoreCover or false
-
-  local attacks = getWeaponMapAttacks(weaponMapData)
-  spawnDices(attacks, getWeaponColor(getWeaponKey(weaponMapData.data)), getWeaponDescription(weaponMapData.data), spawnedDiceCount, ap,  strength,dmg, melta,  devastating, ignoreCover)
-  spawnedDiceCount = spawnedDiceCount + attacks
-end
-
-
-function getWeaponMapAttacks(weaponMapData)
-  if weaponMapData.data.bonusAttack then
-    return getBonusAttackValueForCount(weaponMapData.data.bonusAttack, weaponMapData.count)
-  end
-  return weaponMapData.attack
-end
-
-function getBonusAttackAppendum(appendum)
-  if tonumber(appendum) ~= nil then
-    return tonumber(appendum)
-  end
-
-  if string.find(appendum, "D") ~= nil then
-    local split = splitStr(appendum, "D")
-    local count = (#split == 2) and tonumber(split[1]) or 1
-    local value = (#split == 2) and tonumber(split[2]) or tonumber(split[1])
-    local result = 0
-
-    -- Roll the dice and display each result
-    for i = 1, count do
-      local roll = math.random(value)
-      printMessage("Rolling one D" .. value .. ", the value is: " .. roll)
-      result = result + roll
-    end
-    return result
-  end
-
-  return 0
-end
-
-
-function getBonusAttackValueForCount(bonusAttack, count)
-  local result = 0
-  for i = 1, count do
-    result = result + getBonusAttackValue(bonusAttack)
-  end
-  return result
-end
-
-function getBonusAttackValue(bonusAttack)
-  local appendums = splitStr(bonusAttack, "+")
-  local result = 0
-  for i,app in ipairs(appendums) do
-    result = result + getBonusAttackAppendum(app)
-  end
-  return result
-end
-
-function getBonusAttackAppendum(appendum)
-  if tonumber(appendum) != nil then
-    return tonumber(appendum)
-  end
-  if string.find(appendum, "D") != nil then
-    local split = splitStr(appendum, "D")
-    local count = (#split == 2) and tonumber(split[1]) or 1
-    local value = (#split == 2) and tonumber(split[2]) or tonumber(split[1])
-    local result = 0
-    for i = 1, count do
-      local rnd = math.random(value)
-      printMessage("Rolling one D"..value..", the value is: "..rnd)
-      result = result + rnd
-    end
-    return result
-  end
-  return 0
-end
-
-function getWeaponDescription(weaponData)
-  return "[c6c930]"..weaponData.name.." [-]"
-end
-
-function getWeaponColor(name)
-  if weaponColors[name] == nil then
-    local color = {math.random(), math.random(), math.random()}
-    weaponColors[name] = color
-  end
-
-  return weaponColors[name]
-end
-
-function onRangeClicked(player, _, id)
-end
-
-function getRangeText(range)
-  if range == nil then
-    return "-"
-  end
-  return "″"..tostring(range)
-end
-
-function createButtonCell(text, id, click, side)
-  return {
-    tag = "Cell",
-    children = {
-      {
-        tag = "Button",
-        attributes = {
-          text = text,
-          id = id,
-          onClick = click,
-          color = side and "#FFD6E8" or "#FFFFFF",
-          tooltip = side and "Can't shoot together with main weapon" or nil,
-          tooltipBackgroundColor = "#141414FB",
-          tooltipTextColor = "#CCCCCC",
-          tooltipFontSize = "60"
-        }
-      }
-    }
-  }
-end
-
-function createTextCell(text)
-  return {
-    tag = "Cell",
-    children = {
-      {
-        tag = "Text",
-        attributes = {
-          text = text
-        }
-      }
-    }
-  }
-end
-
-function createFiguresData(figures)
-  local result = {}
-  for i,v in ipairs(figures) do
-    table.insert(result, parseFigureData(v))
-  end
-  return result
-end
-
-function createWeaponsMap(figuresData)
-  local result = {}
-  for i,v in ipairs(figuresData) do
-    convertWeaponDataToMap(v.ranged, result)
-  end
-  for i,v in ipairs(figuresData) do
-    convertWeaponDataToMap(v.melee, result)
-  end
-  return result
-end
-
-function convertWeaponDataToMap(weaponsData, resultData)
-  for i,v in ipairs(weaponsData) do
-    local key = getWeaponKey(v)
-    if resultData[key] == nil then
-      resultData[key] = {
-        count = 0,
-        attack = 0,
-        data = v
-      }
-    end
-    resultData[key].count = resultData[key].count + 1
-    resultData[key].attack = resultData[key].attack + v.attack
-    resultData[key].side = v.side
-  end
-end
-
-function getWeaponKey(weaponData)
-  local acc = weaponData.accuracy
-  local str = weaponData.strength
-  local ap = weaponData.ap
-  local d = weaponData.damage
-  return weaponData.name..acc..str..ap..d
-end
-
-function parseFigureData(figure)
-  local trimmed = removeEmptyLines(figure.getDescription())
-  local arr = splitStr(trimmed, "\n")
-  local result = {
-    ranged = {},
-    melee = {}
-  }
-  for i,v in ipairs(arr) do
-    if (getBlockName(v) != nil) and (getBlockName(v) != "abilities") then
-      result[getBlockName(v)] = parseWeaponBlock(arr, i)
-    end
-  end
-
-  markPistols(result.ranged)
-  local statsHeaders = {"m", "t", "sv", "w", "ld", "oc"}
-  local stats = splitStr(arr[2] or "", " ")
-  for i,v in ipairs(statsHeaders) do
-    result[v] = stats[i]
-  end
-  return result
-end
-
-function removeEmptyLines(str)
-  return string.gsub(str, "\n%s*\n", "\n")
-end
-
-function markPistols(weaponsData)
-  local haveNonPistols = haveNonPistols(weaponsData)
-
-  for i,v in ipairs(weaponsData) do
-    if isPistol(v) and haveNonPistols then
-      v.name = v.name.." (Side)"
-      v.side = true
-    end
-  end
-end
-
-function haveNonPistols(weaponsData)
-  for i,v in ipairs(weaponsData) do
-    if isPistol(v) == false then
-      return true
-    end
-  end
-
-  return false
-end
-
-function isPistol(weaponData)
-  local pistolTags = {"pl", "pistol"}
-  for i,v in ipairs(pistolTags) do
-    if string.find(string.lower(weaponData.stats), v) then
-      return true
-    end
-  end
-
-  return false
-end
-function parseWeaponBlock(arr, fromIndex)
-  local result = {}
-  local i = fromIndex
-  while i < #arr do
-    local name        = parseWeaponName(arr[i + 1])
-    local statsRaw    = removeColorTags(arr[i + 2])
-    local bracket     = statsRaw:match("%[(.-)%]")
-    local melta       = nil
-    local devastating = false
-    local ignoreCover = false
-    if bracket then
-      for rule in bracket:lower():gmatch("([^,]+)") do
-        rule = TrimString(rule)
-        if rule:find("melta") then
-          local m = bracket:match("[Mm]elta%s*(%d+)")
-          if m then melta = tonumber(m) end
-        elseif rule:find("devastating wounds") then
-          devastating = true
-        elseif rule:find("ignore cover") or rule:find("ignores cover") then
-          ignoreCover = true
-        end
-      end
-    end
-    table.insert(result, {
-      name          = name,
-      stats         = statsRaw,
-      range         = parseRange(statsRaw),
-      attack        = parseWeaponAttack(statsRaw),
-      bonusAttack   = parseWeaponBonusAttack(statsRaw),
-      accuracy      = parseWeaponAccuracy(statsRaw) or "",
-      strength      = getWeaponStatValue(statsRaw, "S") or "",
-      ap            = getWeaponStatValue(statsRaw, "AP") or "",
-      damage        = getWeaponStatValue(statsRaw, "D") or "",
-      melta         = melta,
-      devastating  = devastating,
-      ignoreCover   = ignoreCover
-    })
-    if getBlockName(arr[i + 3]) ~= nil then
-      return result
-    end
-    i = i + 2
-  end
-  return result
-end
-
-
-
-function removeColorTags(str)
-  str = string.gsub(str, "%[7bc596%]", "")
-  str = string.gsub(str, "%[%-%]", "")
-  return str
-end
-
-function parseWeaponName(data)
-  local trimmedSpaces = string.match(data, "^(.-)%s*$")
-
-  return string.sub(trimmedSpaces, 9, -4)
-end
-
-function parseWeaponAccuracy(stats)
-  return  getWeaponStatValue(stats, "BS") or getWeaponStatValue(stats, "WS")
-end
-
-function parseWeaponAttack(stats)
-  local stat = getWeaponStatValue(stats, "A")
-  return tonumber(stat) or 0
-end
-
-function parseWeaponBonusAttack(stats)
-  local stat = getWeaponStatValue(stats, "A")
-  if tonumber(stat) == nil then
-    return stat
-  end
-  return nil
-end
-
-function getWeaponStatValue(stats, statName)
-  local statPairs = splitStr(stats, " ")
-  for i,v in ipairs(statPairs) do
-    local stat = splitStr(v, ":")
-    if stat[1] == statName then
-      return stat[2]
-    end
-  end
-end
-
-function parseRange(stats)
-  local inches = string.find(stats, "″") or string.find(stats, '"')
-  if inches != nil then
-    return tonumber(string.sub(stats, 1, inches - 1))
-  end
-end
-
-function getBlockName(str)
-  if str == nil then
-    return
-  end
-  if (string.find(str, "[rR]anged [wW]eapons") != nil) then
-    return "ranged"
-  end
-  if (string.find(str, "[mM]elee [wW]eapons") != nil) then
-    return "melee"
-  end
-  if (string.find(str, "[aA]bilities") != nil) then
-    return "abilities"
-  end
-end
-
-function splitStr(inputstr, sep)
-  if sep == nil then
-    sep = "%s"
-  end
-  local t={}
-  for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-    table.insert(t, str)
-  end
-  return t
-end
-
-function printMessage(text, color)
-  color = color or {1, 0.5, 0}
-  broadcastToAll(text, color)
-end
-
-  function TrimString(s)
-    local a = s:match("^%s*()")
-    local b = s:match("()%s*$", a)
-    return s:sub(a, b - 1)
-  end
-

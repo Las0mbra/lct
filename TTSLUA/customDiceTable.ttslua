@@ -1251,6 +1251,15 @@ local quickRollPalette = {
 }
 local lastQuickRollColorIndex = 0
 
+-- Use TTS's native dice-value animation for quick rolls. On dice, setValue()
+-- behaves like setRotationValue(): TTS lifts the die, smoothly rotates it to the
+-- requested face, then releases it. Do not follow this with setRotation(), which
+-- would cancel that animation and snap the die directly to its final face.
+local function animateQuickRollDie(die, finalValue)
+    if not die or die.isDestroyed() then return end
+    die.setValue(finalValue)
+end
+
 -- Set already-spawned dice to values from the roller's xoshiro stream so they
 -- appear instantly rolled, without ever entering the bag. Falls back to
 -- math.random only if the roller object can't be reached. All dice in the roll
@@ -1277,16 +1286,11 @@ function quickRollSpawnedDice(player, dice, faces, dieLabel)
         -- Custom dice are spawned with setCustomObject, which reloads the object
         -- asynchronously. Setting the value synchronously here races that reload
         -- and the value is lost when the die snaps back to its spawn orientation,
-        -- so every die shows the same default face. Defer the value (and snap the
-        -- rotation explicitly, like the bag roll's setValueCallback does) until the
-        -- reload has settled. Plain dice don't reload, but the short defer is
-        -- harmless for them.
+        -- so every die shows the same default face. Defer until the reload has
+        -- settled, then let TTS animate the die to v natively.
+        -- Plain dice don't reload, but the short defer is harmless for them.
         Wait.frames(function()
-            die.setValue(v)
-            local rotValues = die.getRotationValues()
-            if rotValues and rotValues[v] then
-                die.setRotation(rotValues[v].rotation + Vector(0, 180, 0))
-            end
+            animateQuickRollDie(die, v)
         end, 2)
         total = total + v
     end
@@ -1633,10 +1637,11 @@ function moveLethalHits(isSustainedAndLethal)
                 y = start.y,
                 z = start.z + (currentRow * lethalSpacing),
             }
-            -- Track this die as a lethal hit. cleanupLethalHits decides whether to
-            -- destroy it by its CURRENT position (is it still in the zone?), not by
-            -- a stored slot, so we just need a truthy marker keyed by GUID here.
-            originalPositions[die.getGUID()] = true
+            -- Track this die as a lethal hit, remembering exactly where we parked
+            -- it. cleanupLethalHits compares against this recorded slot rather
+            -- than the "Lethal Hit Zone" decal's own bounds, which don't actually
+            -- cover this parking grid (see cleanupLethalHits).
+            originalPositions[die.getGUID()] = parked
             die.setPosition(parked)
             movedCount = movedCount + 1
             currentCol = currentCol + 1
@@ -1650,18 +1655,30 @@ function moveLethalHits(isSustainedAndLethal)
     return movedCount
 end
 
+-- True when a die is still sitting where moveLethalHits parked it. Compared on
+-- x/z only (physics can nudge y); eps comfortably below the 1.1 park spacing so
+-- a die in its own slot matches but one dragged away does not.
+local function isStillParked(curPos, parkedPos)
+    if not curPos or not parkedPos then return false end
+    local dx = curPos.x - parkedPos.x
+    local dz = curPos.z - parkedPos.z
+    return (dx * dx + dz * dz) <= (0.75 * 0.75)
+end
+
 function cleanupLethalHits()
-    -- Only destroy dice that are STILL inside the lethal-hits zone -- using the
-    -- exact same bounds getDice() uses to EXCLUDE them. A die tagged lethal but
-    -- since dragged back onto the mat or below it is no longer ours to delete
-    -- here: on-mat dice are handled by the clearDiceX that runs right after this
-    -- in clearDiceAll, and off-mat dice should survive. Sharing one definition
-    -- means no die can fall between the two (excluded from clearing yet
-    -- unrecognised for cleanup) and become permanently unclearable.
-    local zone = getLethalZoneBounds()
-    for guid, _ in pairs(originalPositions) do
+    -- Only destroy dice that are STILL where we parked them. This is compared
+    -- against the die's OWN recorded slot (set in moveLethalHits) rather than the
+    -- "Lethal Hit Zone" decal's world bounds: that decal is a visual marker whose
+    -- position/size doesn't actually cover the real parking grid (lethalStartPos
+    -- runs well outside it), so bounds-checking against it silently destroyed
+    -- nothing while still wiping the tracking below -- lethal dice were "removed"
+    -- from bookkeeping but left sitting on the table forever. A die tagged lethal
+    -- but since dragged back onto the mat or elsewhere is no longer ours to
+    -- delete here: on-mat dice are handled by the clearDiceX that runs right
+    -- after this in clearDiceAll, and off-mat dice should survive.
+    for guid, parkedPos in pairs(originalPositions) do
         local die = getObjectFromGUID(guid)
-        if die and isInBounds(die.getPosition(), zone) then
+        if die and isStillParked(die.getPosition(), parkedPos) then
             die.destruct()
         end
     end

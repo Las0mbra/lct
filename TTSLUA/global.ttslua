@@ -1349,9 +1349,9 @@ function onLoad(saved_data)
     Wait.time(function()
         -- Stat Helper: move to active positions
         local redStatHelper = getObjectFromGUID("7c7c20")
-        if redStatHelper then redStatHelper.setPosition({-4.078736, 0.87, 34.7377625}) end
+        if redStatHelper then redStatHelper.setPosition({-4.078736, 0.87, 34.5}) end
         local blueStatHelper = getObjectFromGUID("b7ac7a")
-        if blueStatHelper then blueStatHelper.setPosition({4.078736, 0.86, -34.7377625}) end
+        if blueStatHelper then blueStatHelper.setPosition({4.078736, 0.86, -34.5}) end
 
         -- Vortex: raise to Y=0.6
         local redVortex = getObjectFromGUID(RedVortexGUID)
