@@ -1232,6 +1232,8 @@ end
 
 deployLineHeight = 4.2
 deployLineYPos = deployLineHeight-0.1
+deployCircleHeight = 2.1
+deployCircleYPos = deployCircleHeight-0.1
 sizeMulti = 36
 -- Arrow offset/size mirror the disposition picker (dispositionArrowOffset 5.75,
 -- arrow width 600, font 300) so the Deployment Zone row matches them visually.
@@ -1247,6 +1249,7 @@ deployOffset = 0
 -- available (for example during a broken/partial load).
 deployOverlaySurfaceEpsilon = 0.01
 deploymentOverlayGUIDs = {}
+deploymentCircleOverlayGUIDs = {}
 nineInchOverlayGUIDs = {}
 territoryOverlayGUIDs = {}
 
@@ -3599,16 +3602,24 @@ function setDeployHeight()
     for _, guid in ipairs(deploymentOverlayGUIDs) do
         local found = getObjectFromGUID(guid)
         if found then
-            alignOverlayToMat(found)
+            if deploymentCircleOverlayGUIDs[guid] then
+                local pos = found.getPosition()
+                found.setPosition({pos[1], deployCircleYPos + deployOffset, pos[3]})
+            else
+                alignOverlayToMat(found)
+            end
         end
     end
 
-    -- Cloned custom circle meshes can report their old bounds on the clone frame.
-    -- Re-align once they have had time to finish registering their new scale.
+    -- Spawned line blocks can report stale bounds on their first frame. Re-align
+    -- those once registered, but never bounds-align cloned circle meshes: their
+    -- custom collider bounds do not match the visible ring and lift the circle.
     Wait.frames(function()
         for _, guid in ipairs(deploymentOverlayGUIDs) do
             local found = getObjectFromGUID(guid)
-            if found then alignOverlayToMat(found) end
+            if found and not deploymentCircleOverlayGUIDs[guid] then
+                alignOverlayToMat(found)
+            end
         end
     end, 2)
 end
@@ -3928,11 +3939,8 @@ function drawCircle(drawData, type)
     if circleObj then
         circleObj.setLock(true)
         circleObj.interactable = false
-        circleObj.setScale({drawData.fromCenter, deployLineHeight, drawData.fromCenter})
-        circleObj.setPosition({0, deployLineYPos, 0})
-        circleObj.setColorTint(getDeploymentOverlayColor(drawData.color))
-        circleObj.setGMNotes(type)
-        circleObj.setName("")
+        circleObj.use_gravity = false
+        circleObj.auto_raise = false
         local blockComp = circleObj.getComponent("BoxCollider")
         if blockComp then
             blockComp.set("enabled", false)
@@ -3941,7 +3949,16 @@ function drawCircle(drawData, type)
         if meshComp then
             meshComp.set("enabled", false)
         end
+        -- Colliders must be off before the teleport below, or the clone can
+        -- spawn briefly overlapping terrain at the map center and get shoved
+        -- upward by physics de-penetration over the next few ticks.
+        circleObj.setScale({drawData.fromCenter, deployCircleHeight, drawData.fromCenter})
+        circleObj.setPosition({0, deployCircleYPos, 0})
+        circleObj.setColorTint(getDeploymentOverlayColor(drawData.color))
+        circleObj.setGMNotes(type)
+        circleObj.setName("")
         trackOverlayObject(circleObj, type)
+        deploymentCircleOverlayGUIDs[circleObj.getGUID()] = true
     end
 end
 
@@ -3976,11 +3993,8 @@ function drawCircleNotCentered(drawData, type, centerX, centerZ)
     if circleObj then
         circleObj.setLock(true)
         circleObj.interactable = false
-        circleObj.setScale({drawData.fromCenter, deployLineHeight, drawData.fromCenter})
-        circleObj.setPosition({centerX, deployLineYPos, centerZ})
-        circleObj.setColorTint(getDeploymentOverlayColor(drawData.color))
-        circleObj.setGMNotes(type)
-        circleObj.setName("")
+        circleObj.use_gravity = false
+        circleObj.auto_raise = false
         local blockComp = circleObj.getComponent("BoxCollider")
         if blockComp then
             blockComp.set("enabled", false)
@@ -3989,7 +4003,16 @@ function drawCircleNotCentered(drawData, type, centerX, centerZ)
         if meshComp then
             meshComp.set("enabled", false)
         end
+        -- Colliders must be off before the teleport below, or the clone can
+        -- spawn briefly overlapping terrain and get shoved upward by physics
+        -- de-penetration over the next few ticks.
+        circleObj.setScale({drawData.fromCenter, deployCircleHeight, drawData.fromCenter})
+        circleObj.setPosition({centerX, deployCircleYPos, centerZ})
+        circleObj.setColorTint(getDeploymentOverlayColor(drawData.color))
+        circleObj.setGMNotes(type)
+        circleObj.setName("")
         trackOverlayObject(circleObj, type)
+        deploymentCircleOverlayGUIDs[circleObj.getGUID()] = true
     end
 end
 
@@ -4066,11 +4089,8 @@ function drawCircleDeployment(drawData)
     if circleObj then
         circleObj.setLock(true)
         circleObj.interactable = false
-        circleObj.setScale({drawData.radius, deployLineHeight, drawData.radius})
-        circleObj.setPosition({centerX, deployLineYPos, centerZ})
-        circleObj.setColorTint(getDeploymentOverlayColor(drawData.color))
-        circleObj.setGMNotes("deployZone")
-        circleObj.setName("")
+        circleObj.use_gravity = false
+        circleObj.auto_raise = false
         local blockComp = circleObj.getComponent("BoxCollider")
         if blockComp then
             blockComp.set("enabled", false)
@@ -4079,7 +4099,16 @@ function drawCircleDeployment(drawData)
         if meshComp then
             meshComp.set("enabled", false)
         end
+        -- Colliders must be off before the teleport below, or the clone can
+        -- spawn briefly overlapping terrain and get shoved upward by physics
+        -- de-penetration over the next few ticks.
+        circleObj.setScale({drawData.radius, deployCircleHeight, drawData.radius})
+        circleObj.setPosition({centerX, deployCircleYPos, centerZ})
+        circleObj.setColorTint(getDeploymentOverlayColor(drawData.color))
+        circleObj.setGMNotes("deployZone")
+        circleObj.setName("")
         trackOverlayObject(circleObj, "deployZone")
+        deploymentCircleOverlayGUIDs[circleObj.getGUID()] = true
     end
 end
 
@@ -4291,6 +4320,7 @@ end
 -- by its GMNotes tag so the toggles regain control of orphaned objects.
 function rebuildOverlayTracking()
     deploymentOverlayGUIDs = {}
+    deploymentCircleOverlayGUIDs = {}
     nineInchOverlayGUIDs = {}
     territoryOverlayGUIDs = {}
 
@@ -4298,6 +4328,9 @@ function rebuildOverlayTracking()
         local note = obj.getGMNotes()
         if note == "deployZone" then
             table.insert(deploymentOverlayGUIDs, obj.getGUID())
+            if obj.getType() == "Custom_Model" then
+                deploymentCircleOverlayGUIDs[obj.getGUID()] = true
+            end
             hardenOverlayObject(obj)
         elseif note == "deployZone9" then
             table.insert(nineInchOverlayGUIDs, obj.getGUID())
@@ -4521,6 +4554,7 @@ function destroyDeployZones()
     destroyTrackedOverlayObjects(deploymentOverlayGUIDs)
     destroyTrackedOverlayObjects(nineInchOverlayGUIDs)
     deploymentOverlayGUIDs = {}
+    deploymentCircleOverlayGUIDs = {}
     nineInchOverlayGUIDs = {}
 end
 
