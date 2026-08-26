@@ -4,7 +4,7 @@ version = "1.0-11th Edition"
 useCustomTrayDice = false
 rangeMeleeToggle = 0
 modelWeaponToggle = true
-lightTheme = true
+lightTheme = false
 currentSelection = {}
 spawnedDiceCount = 0
 spawnPosition = nil
@@ -29,7 +29,8 @@ function onLoad(data)
 	spawnPosition = self.positionToWorld({0, 1, 6})
   end
   rangeMeleeToggle = 0
-  lightTheme = true
+  modelWeaponToggle = true
+  lightTheme = false
   applyTheme()
 end
 

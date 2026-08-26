@@ -18,7 +18,9 @@ then run `python3 compile.py --release`.
 - Feat: Added a new and improved Statshelper based on the one made by Beowulf78.
 - Feat: Add a better animation effect for when Quick roll is used (Right click +xd6 buttons)
 - Bug fix: Clear Mat now removes Lethal Hits too.
-- Improvement: Swapped gain CP button and Total CP buttons for better visual clarity
+- Improvement: additional dice roller resiliency changes 
+- UI: Improved initial intro screen for better patch notes visibility 
+- Maps: Added 3 new themes (Lava Temple - Imperium Ice Colony - Mars Base) as parts of LCT Pack 1.
 
 
 ## v1.10.7 

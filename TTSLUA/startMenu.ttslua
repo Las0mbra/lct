@@ -1241,6 +1241,10 @@ deployPickerArrowFontSize = 300
 
 defaultDeployHeight=2
 deployOffset = 0
+-- Keep overlays visually touching the play surface without intersecting it.
+-- `defaultDeployHeight` remains the fallback when the surface bounds are not
+-- available (for example during a broken/partial load).
+deployOverlaySurfaceEpsilon = 0.01
 deploymentOverlayGUIDs = {}
 nineInchOverlayGUIDs = {}
 territoryOverlayGUIDs = {}
@@ -3560,14 +3564,52 @@ function drawDeployZone(zone)
     setDeployHeight()
 end
 
+function alignOverlayToMat(obj)
+    if not obj or obj.isDestroyed() then return false end
+
+    local surface = getObjectFromGUID(mat_GUID)
+    if not surface then
+        local pos = obj.getPosition()
+        obj.setPosition({pos[1], defaultDeployHeight + deployOffset, pos[3]})
+        return false
+    end
+
+    local surfaceBounds = surface.getBounds()
+    local overlayBounds = obj.getBounds()
+    if not surfaceBounds or not surfaceBounds.center or not surfaceBounds.size
+        or not overlayBounds or not overlayBounds.center or not overlayBounds.size then
+        local pos = obj.getPosition()
+        obj.setPosition({pos[1], defaultDeployHeight + deployOffset, pos[3]})
+        return false
+    end
+
+    local surfaceTop = surfaceBounds.center.y + (surfaceBounds.size.y / 2)
+    local overlayBottom = overlayBounds.center.y - (overlayBounds.size.y / 2)
+    local pos = obj.getPosition()
+    obj.setPosition({
+        pos[1],
+        pos[2] + (surfaceTop + deployOffset + deployOverlaySurfaceEpsilon - overlayBottom),
+        pos[3],
+    })
+    return true
+end
+
 function setDeployHeight()
     for _, guid in ipairs(deploymentOverlayGUIDs) do
         local found = getObjectFromGUID(guid)
         if found then
-            local pos = found.getPosition()
-            found.setPosition({pos[1], defaultDeployHeight + deployOffset, pos[3]})
+            alignOverlayToMat(found)
         end
     end
+
+    -- Cloned custom circle meshes can report their old bounds on the clone frame.
+    -- Re-align once they have had time to finish registering their new scale.
+    Wait.frames(function()
+        for _, guid in ipairs(deploymentOverlayGUIDs) do
+            local found = getObjectFromGUID(guid)
+            if found then alignOverlayToMat(found) end
+        end
+    end, 2)
 end
 
 function drawRectangle(drawData)
@@ -4452,6 +4494,9 @@ function spawnLine(linePos, lineRot, lineScale, color, type)
         position = linePos,
         rotation = lineRot,
         scale = {x = lineScale.x, y = lineScale.y * 0.5625, z = lineScale.z},
+        callback_function = function(spawnedLine)
+            alignOverlayToMat(spawnedLine)
+        end,
     })
     if lineObj then
         lineObj.setLock(true)
@@ -5866,10 +5911,7 @@ function drawTerritoryLine()
         end
         for _, guid in ipairs(territoryOverlayGUIDs) do
             local found = getObjectFromGUID(guid)
-            if found then
-                local p = found.getPosition()
-                found.setPosition({p[1], defaultDeployHeight + deployOffset, p[3]})
-            end
+            if found then alignOverlayToMat(found) end
         end
         return
     end
@@ -5929,10 +5971,7 @@ function drawTerritoryLine()
     -- Match the lift applied to deployment overlays so it sits at table height.
     for _, guid in ipairs(territoryOverlayGUIDs) do
         local found = getObjectFromGUID(guid)
-        if found then
-            local p = found.getPosition()
-            found.setPosition({p[1], defaultDeployHeight + deployOffset, p[3]})
-        end
+        if found then alignOverlayToMat(found) end
     end
 end
 

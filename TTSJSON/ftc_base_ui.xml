@@ -21,7 +21,9 @@
 
   <Panel id="SplashChangelog" width="1360" height="500" offsetXY="0 0" color="#182233CC" outline="#31415F99" outlineSize="3">
     <Text text="Patch Notes" fontSize="34" color="#F3F6FA" fontStyle="Bold" offsetXY="0 220" alignment="MiddleCenter"/>
-    <Text id="SplashChangelogText" text="* Dropped support for 10E legacy&#10;* Gaining or Decreasing CP via widget or overlay now is logged in chat for tracking.&#10;* Added colours to disposition picker for better matching&#10;* Added deployment picker based on disposition, currently we only have 3 deployment zones per disposition match up but that will change as GW shows more stuff.&#10;* Added VP limitations for primary, secondaries and total scores.&#10;* Changed scoreboard buttons&#10;* Added the option to change table mat (more to come!)&#10;* Lots of new tokens!&#10;* Major code cleanup." fontSize="26" color="#D8E1EA" offsetXY="0 -40" width="1280" height="400" alignment="UpperLeft"/>
+    <VerticalScrollView id="SplashChangelogScroll" width="1300" height="400" offsetXY="0 -40" color="#00000000" scrollSensitivity="30" verticalScrollbarVisibility="AutoHide">
+      <Text id="SplashChangelogText" text="* Dropped support for 10E legacy&#10;* Gaining or Decreasing CP via widget or overlay now is logged in chat for tracking.&#10;* Added colours to disposition picker for better matching&#10;* Added deployment picker based on disposition, currently we only have 3 deployment zones per disposition match up but that will change as GW shows more stuff.&#10;* Added VP limitations for primary, secondaries and total scores.&#10;* Changed scoreboard buttons&#10;* Added the option to change table mat (more to come!)&#10;* Lots of new tokens!&#10;* Major code cleanup." fontSize="26" color="#D8E1EA" width="1260" height="900" alignment="UpperLeft"/>
+    </VerticalScrollView>
   </Panel>
 
   <Button id="redBtn" color="#B52020" textColor="#FFFFFF" width="460" height="150" fontSize="52" fontStyle="Bold" roundEdges="true" onClick="placeToRed" outline="#F06A6A" outlineSize="4" offsetXY="-540 -350">Red</Button>
