@@ -1402,6 +1402,9 @@ BATTLEMASTER_BTTF_THEME_ID = "tts-theme-grimdark-calibrated-v1"
 BATTLEMASTER_BTTF_RUINS_THEME_ID = "tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5"
 BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID = "tts-theme-6c414c7a-9827-48cf-a89e-aa8ddff66491"
 BATTLEMASTER_ARMAGEDDON_RUINS_THEME_ID = "tts-theme-7b9218bb-b614-4225-9789-570836525e6a"
+LCT_PACK_1_ICE_THEME_ID = "tts-theme-36235f46-c306-4738-b33d-cca12bee9cfc"
+LCT_PACK_1_LAVA_THEME_ID = "tts-theme-5d7d19f2-af5d-4c1c-b2b2-d839b3a8ea8f"
+LCT_PACK_1_MARS_THEME_ID = "tts-theme-5933b001-4acd-453e-af37-acf01356429b"
 
 -- Where the "Dump selected GUIDs" tile lands, and its name so stale dumps can be
 -- cleared before spawning a fresh one (see debugDumpSelectedGuids).
@@ -1543,6 +1546,31 @@ function debugPopulateBattlemasterAllCache(player)
             {id = BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID, name = "armageddon desert"},
             {id = BATTLEMASTER_BTTF_THEME_ID, name = "BTTF"},
             {id = BATTLEMASTER_ARMAGEDDON_RUINS_THEME_ID, name = "armageddon ruins"},
+        },
+    })
+end
+
+-- Composite LCT Pack 1 cache: each archived theme contributes exactly one
+-- chapter-approved slot during the Python import (Ice=1, Lava=2, Mars=3).
+-- These themes are community/pending at the API, so this one debug batch opts
+-- into approvedOnly=false without changing the spawner's persisted default.
+function debugPopulateBattlemasterLctPack1Cache(player)
+    local playerColor = player and player.color
+    if DEBUG ~= true then return end
+    local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
+    if not spawner then
+        printToColor("[DEBUG] Battlemaster spawner not found.", playerColor, {1, 0.3, 0.3})
+        return
+    end
+    printToColor("[DEBUG] LCT Pack 1 composite cache population started (Ice slot 1, Lava slot 2, Mars slot 3). Save the table after 3/3 themes complete.", playerColor, {0.65, 0.9, 1})
+    spawner.call("debugPopulateAllThemes", {
+        playerColor = playerColor,
+        approvedOnly = false,
+        footprintBorder = true,
+        themes = {
+            {id = LCT_PACK_1_ICE_THEME_ID, name = "lct - ice colony"},
+            {id = LCT_PACK_1_LAVA_THEME_ID, name = "lct - lava temple v2.1"},
+            {id = LCT_PACK_1_MARS_THEME_ID, name = "lct - mars base"},
         },
     })
 end

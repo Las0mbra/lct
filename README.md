@@ -76,3 +76,29 @@ python3 import_battlemaster_static_maps.py /path/to/DebugTable.json \
 python3 bake_battlemaster_cache.py --clear   # reset the shipped spawner cache to cold
 python3 validate_maps.py --require-map-tags && python3 compile.py --test
 ```
+
+`LCT - Pack 1` is a composite Battlemaster import rather than a normal
+single-theme import. Its three layout slots are intentionally fixed:
+
+- Layout 1: `lct - ice colony`
+- Layout 2: `lct - lava temple v2.1`
+- Layout 3: `lct - mars base`
+
+Build and load a debug save, click `LCT P1` in the Battlemaster cache panel,
+wait for the `3/3` completion message, and save the table. The dedicated button
+temporarily includes public community/pending themes for this batch without
+changing the normal approved-only Battlemaster setting. Then preview and apply
+the replacement:
+
+```bash
+python3 import_battlemaster_static_maps.py /path/to/DebugTable.json --lct-pack-1
+python3 import_battlemaster_static_maps.py /path/to/DebugTable.json --lct-pack-1 --write
+python3 bake_battlemaster_cache.py --clear
+python3 validate_maps.py --require-map-tags && python3 compile.py --test
+```
+
+The importer refuses incomplete archives before writing anything. A successful
+write removes every old `map_crt_lct1` card, manifest row, and obsolete terrain
+payload, then installs exactly 45 static cards under the single
+`LCT - Pack 1` map-filter entry. That filter is opt-in by default, and its maps
+keep the Ice/Lava/Mars mats baked into their Battlemaster terrain.

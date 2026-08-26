@@ -29,7 +29,6 @@ DEFAULT_ENABLED_CREATORS = {
     "battlemaster_bttf_ruins",
     "battlemaster_bttf",
     "battlemaster_armageddon_ruins",
-    "lct1",
     "cr5sh",
     "t5s2",
 }
@@ -38,7 +37,7 @@ DEFAULT_ENABLED_CREATORS = {
 -- authoritative for card suffix validation and summaries.
 CREATOR_DISPLAY_OVERRIDES = {
     battlemaster_bttf = "Battlemaster - Grimdark",
-    lct1 = "LCT Pack 1",
+    lct1 = "LCT - Pack 1",
 }
 
 -- The filter only applies during mission setup, so the panel is dropped once the

@@ -14,6 +14,7 @@ sys.path.insert(0, str(SCRIPT_DIR))
 import validate_maps
 import compile as compile_script
 import extract_map_payloads
+import import_battlemaster_static_maps as battlemaster_import
 
 
 ROOT = SCRIPT_DIR.parent
@@ -124,6 +125,137 @@ class ValidateMapsTest(unittest.TestCase):
                 "TnH vs Rec 1 - Tipping Point - T5S2"
             ),
         )
+
+    def test_lct_pack_one_debug_workflow_is_wired_and_opt_in(self):
+        global_lua = (ROOT / "TTSLUA" / "global.ttslua").read_text()
+        spawner_lua = (ROOT / "TTSLUA" / "battlemasterDynamicSpawner.ttslua").read_text()
+        map_filter_lua = (ROOT / "TTSLUA" / "mapFilter.ttslua").read_text()
+        start_menu_lua = (ROOT / "TTSLUA" / "startMenu.ttslua").read_text()
+        ui_xml = (ROOT / "TTSJSON" / "ftc_base_ui.xml").read_text()
+
+        default_start = map_filter_lua.index("DEFAULT_ENABLED_CREATORS = {")
+        default_end = map_filter_lua.index("}", default_start)
+        default_block = map_filter_lua[default_start:default_end]
+        self.assertNotIn('"lct1"', default_block)
+        self.assertIn('lct1 = "LCT - Pack 1"', map_filter_lua)
+        self.assertEqual("LCT - Pack 1", validate_maps.MAP_CREATOR_DISPLAY_NAMES["map_crt_lct1"])
+        self.assertIn("LCT_MAT_RANDOMIZER_ENABLED = false", start_menu_lua)
+        self.assertFalse(compile_script.LCT_MAT_RANDOMIZER_ENABLED)
+
+        self.assertIn("debugPopulateBattlemasterLctPack1Cache", global_lua)
+        self.assertIn('approvedOnly = false', global_lua)
+        self.assertIn('onClick="debugPopulateBattlemasterLctPack1Cache"', ui_xml)
+        self.assertIn("BM_SYNC_APPROVED_ONLY_OVERRIDE", spawner_lua)
+        self.assertIn("BM_TERRAIN_PLATE_MESH_BASE_URL", spawner_lua)
+        self.assertIn("battlemaster-rugged-\" .. tostring(asset.plate) .. \"-\" .. suffix .. \".obj", spawner_lua)
+        # LCT P1's own visual preference (bordered plate) is opt-in per populate
+        # via params.footprintBorder, wired through debugPopulateAllThemes and
+        # baked into the cache build key so toggling it invalidates stale scripts.
+        self.assertIn("BM_FOOTPRINT_BORDER_ENABLED", spawner_lua)
+        self.assertIn("footprintBorder = true", global_lua)
+        self.assertIn("footprintBorder:", spawner_lua)
+        # Verified against a live Battlemaster export (Legacy/3state.json): the
+        # default/top-level state is the plain floor plate, and both terrain
+        # looks are manual alternates -- neither is picked as "correct".
+        self.assertIn('local objectState = makeCommonObject("Custom_Model", transform, "")', spawner_lua)
+        self.assertIn('objectState.States = {["2"] = ruggedState, ["3"] = smoothState}', spawner_lua)
+        for shape_id in ("01-shortline", "02-smallrect", "03-longline", "04-bigrect", "05-triangle"):
+            self.assertIn(f'plate="{shape_id}"', spawner_lua)
+        # theme.t (present on some themes, absent on others -- verified live for
+        # all three LCT themes plus Armageddon Desert) points at the per-theme
+        # footprint floor diffuse; BM_TERRAIN_PLATE_DIFFUSE_URL is only the
+        # fallback for themes without one.
+        self.assertIn("function themeFootprintDiffuseUrl()", spawner_lua)
+        self.assertIn("DiffuseURL = themeFootprintDiffuseUrl()", spawner_lua)
+        for config in battlemaster_import.LCT_PACK_1_SLOT_THEMES:
+            self.assertIn(config["theme_id"], global_lua)
+
+    def _synthetic_lct_composite_state(self):
+        manifest_rows, issues = validate_maps.load_map_manifest(MANIFEST_PATH)
+        self.assertEqual([], issues)
+        pairs = sorted(battlemaster_import.source_bags_by_pair(manifest_rows))
+        self.assertEqual(battlemaster_import.LCT_PACK_1_EXPECTED_PER_SLOT, len(pairs))
+
+        archives = {}
+        for config in battlemaster_import.LCT_PACK_1_SLOT_THEMES:
+            layouts = []
+            scripts = {}
+            for pair in pairs:
+                layout = {
+                    "forcePairKey": pair,
+                    "layoutKey": f"synthetic-{pair}-slot-{config['slot']}",
+                    "chapterApprovedSlot": {"slotIndex": config["slot"]},
+                }
+                layouts.append(layout)
+                scripts[battlemaster_import.layout_payload_key(layout)] = {
+                    "script": 'objectJSONs = {\n  [[{"Name":"BlockSquare"}]],\n}\n',
+                }
+            archives[config["theme_id"]] = {
+                "themeName": config["theme_name"],
+                "layoutCatalog": {"layouts": layouts},
+                "cardScriptCache": scripts,
+            }
+        return {"themeArchives": archives}, pairs
+
+    def test_lct_composite_selects_exact_theme_for_each_layout_slot(self):
+        state, pairs = self._synthetic_lct_composite_state()
+        records = battlemaster_import.prepare_composite_layouts(
+            state, battlemaster_import.LCT_PACK_1_SLOT_THEMES, pairs
+        )
+
+        self.assertEqual(45, len(records))
+        expected_theme_by_slot = {
+            config["slot"]: config["theme_id"]
+            for config in battlemaster_import.LCT_PACK_1_SLOT_THEMES
+        }
+        counts = {}
+        for record in records:
+            counts[record["slot"]] = counts.get(record["slot"], 0) + 1
+            self.assertEqual(expected_theme_by_slot[record["slot"]], record["theme_id"])
+        self.assertEqual({1: 15, 2: 15, 3: 15}, counts)
+
+    def test_lct_composite_rejects_an_incomplete_selected_slot(self):
+        state, pairs = self._synthetic_lct_composite_state()
+        ice_id = battlemaster_import.LCT_PACK_1_SLOT_THEMES[0]["theme_id"]
+        state["themeArchives"][ice_id]["layoutCatalog"]["layouts"].pop()
+
+        with self.assertRaisesRegex(ValueError, r"layout 1 has 14 map\(s\); expected 15"):
+            battlemaster_import.prepare_composite_layouts(
+                state, battlemaster_import.LCT_PACK_1_SLOT_THEMES, pairs
+            )
+
+    def test_lct_composite_never_falls_back_to_the_live_cache(self):
+        state, pairs = self._synthetic_lct_composite_state()
+        state["layoutCatalog"] = state["themeArchives"][
+            battlemaster_import.LCT_PACK_1_SLOT_THEMES[0]["theme_id"]
+        ]["layoutCatalog"]
+        state["cardScriptCache"] = state["themeArchives"][
+            battlemaster_import.LCT_PACK_1_SLOT_THEMES[0]["theme_id"]
+        ]["cardScriptCache"]
+        state["themeArchives"] = {}
+
+        with self.assertRaisesRegex(ValueError, "missing archived theme"):
+            battlemaster_import.prepare_composite_layouts(
+                state, battlemaster_import.LCT_PACK_1_SLOT_THEMES, pairs
+            )
+
+    def test_battlemaster_manifest_writer_keeps_repository_line_endings(self):
+        row = {
+            "deck_guid": "abcdef",
+            "deck_name": "Take and Hold vs Take and Hold",
+            "card_guid": "123456",
+            "card_name": "TnH vs TnH 1 - Tipping Point - Test",
+            "map_creator_tag": "map_crt_test",
+            "map_type_tag": "map_type_comp",
+            "creator_display": "Test",
+            "eligible": "true",
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "manifest.csv"
+            battlemaster_import.write_manifest(path, [row])
+            contents = path.read_bytes()
+        self.assertNotIn(b"\r\n", contents)
+        self.assertTrue(contents.endswith(b"\n"))
 
     def test_creator_suffix_must_match_creator_tag(self):
         states = copy.deepcopy(self.object_states)

@@ -80,8 +80,9 @@ BTTF_RUINS_MAT_URLS = {}   -- @@BTTF_RUINS_MAT_URLS@@
 BTTF_RUINS_MAT_NAMES = {}   -- @@BTTF_RUINS_MAT_NAMES@@
 DESERT_MAT_URLS = {}   -- @@DESERT_MAT_URLS@@
 DESERT_MAT_NAMES = {}   -- @@DESERT_MAT_NAMES@@
--- LCT Pack 1 map mat pool, intentionally separate from the manual all-mats pool.
-LCT_MAT_RANDOMIZER_ENABLED = true   -- @@LCT_MAT_RANDOMIZER_ENABLED@@
+-- Legacy LCT city-mat pool. The composite LCT Pack 1 keeps each selected
+-- Battlemaster theme's own baked mat, so automatic replacement stays disabled.
+LCT_MAT_RANDOMIZER_ENABLED = false   -- @@LCT_MAT_RANDOMIZER_ENABLED@@
 LCT_PACK_1_MAT_URLS = {}   -- @@LCT_PACK_1_MAT_URLS@@
 LCT_PACK_1_MAT_NAMES = {}   -- @@LCT_PACK_1_MAT_NAMES@@
 defaultMatTextureURL = "https://steamusercontent-a.akamaihd.net/ugc/11325734395194619417/872CDB652BC3D15E79DBC768D03D9298C36DB992/"
@@ -2652,7 +2653,7 @@ function normalizeMissionName(s)
     return (s:lower():gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
-mapCreatorDisplaySuffixes = {"Cra5hNatural", "BTTF", "Battlemaster - BTTF Ruins", "Battlemaster - Desert", "Battlemaster - Armageddon Ruins", "Zim", "T5S2", "LCT-Pack-1"}
+mapCreatorDisplaySuffixes = {"Cra5hNatural", "BTTF", "Battlemaster - BTTF Ruins", "Battlemaster - Desert", "Battlemaster - Armageddon Ruins", "Zim", "T5S2", "LCT - Pack 1"}
 
 -- Map cards carry creator credit at the end of their visible nickname. Strip
 -- only a recognized creator suffix when matching shared layout art or reading

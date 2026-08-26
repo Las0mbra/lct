@@ -31,6 +31,19 @@ All-themes workflow (pairs with the debug "All 4" button):
      creator tags in a single pass.
   4. Same `bake_battlemaster_cache.py --clear` + validate/compile finish as above.
 
+Composite LCT Pack 1 workflow (pairs with the debug "LCT P1" button):
+  1. Click "LCT P1" and wait for all three themes to finish, then save once.
+     The debug batch includes public community/pending themes and archives Ice
+     Colony, Lava Temple v2.1, and Mars Base independently.
+  2. Run this script with `--lct-pack-1`. It requires a complete 15-map slot
+     from each archive, then composes one 45-map creator set:
+       layout 1 -> LCT Ice Colony
+       layout 2 -> LCT Lava Temple v2.1
+       layout 3 -> LCT Mars Base
+  3. Preview first, then rerun with `--write`. The write removes the old
+     map_crt_lct1 set completely (cards, manifest rows, and obsolete payloads)
+     before installing the composite `LCT - Pack 1` set.
+
 Each terrain theme ships as its own creator filter (e.g.
 map_crt_battlemaster_bttf_ruins / "Battlemaster - BTTF Ruins"). The default
 map_crt_battlemaster / "Battlemaster" creator is NOT shipped — run with the
@@ -93,6 +106,27 @@ KNOWN_BATTLEMASTER_THEMES = [
         "theme_id": "tts-theme-7b9218bb-b614-4225-9789-570836525e6a",
         "creator_tag": "map_crt_battlemaster_armageddon_ruins",
         "creator_display": "Battlemaster - Armageddon Ruins",
+    },
+]
+
+LCT_PACK_1_CREATOR_TAG = "map_crt_lct1"
+LCT_PACK_1_CREATOR_DISPLAY = "LCT - Pack 1"
+LCT_PACK_1_EXPECTED_PER_SLOT = 15
+LCT_PACK_1_SLOT_THEMES = [
+    {
+        "slot": 1,
+        "theme_id": "tts-theme-36235f46-c306-4738-b33d-cca12bee9cfc",
+        "theme_name": "LCT - Ice Colony",
+    },
+    {
+        "slot": 2,
+        "theme_id": "tts-theme-5d7d19f2-af5d-4c1c-b2b2-d839b3a8ea8f",
+        "theme_name": "LCT - Lava Temple v2.1",
+    },
+    {
+        "slot": 3,
+        "theme_id": "tts-theme-5933b001-4acd-453e-af37-acf01356429b",
+        "theme_name": "LCT - Mars Base",
     },
 ]
 
@@ -175,7 +209,7 @@ def load_manifest(path):
 def write_manifest(path, rows):
     fieldnames = ["deck_guid", "deck_name", "card_guid", "card_name", "map_creator_tag", "map_type_tag", "creator_display", "eligible"]
     with path.open("w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=fieldnames)
+        w = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
         w.writeheader()
         w.writerows(rows)
 
@@ -236,6 +270,95 @@ def layout_payload_key(layout):
     if not key and layout.get("id") is not None:
         key = f"{layout['id']}@{layout.get('updatedAt', '')}"
     return f"{pair}|slot:{slot}|layout:{key}"
+
+
+def layout_slot(layout):
+    return int((layout.get("chapterApprovedSlot") or {}).get("slotIndex", layout.get("slotIndex")))
+
+
+def archived_theme_data(state, theme_id, theme_name):
+    """Return a complete per-theme archive, never the mutable top-level cache.
+
+    Composite imports deliberately require archives because each contributing
+    theme supplies a different slot. Falling back to the final live cache could
+    silently build all three slots from the last theme populated.
+    """
+    archive = (state.get("themeArchives") or {}).get(theme_id)
+    if not isinstance(archive, dict):
+        raise ValueError(f"missing archived theme {theme_name} ({theme_id})")
+    layouts = (archive.get("layoutCatalog") or {}).get("layouts") or []
+    script_cache = archive.get("cardScriptCache") or {}
+    if not isinstance(layouts, list) or not layouts:
+        raise ValueError(f"archived theme {theme_name} has no layoutCatalog.layouts")
+    if not isinstance(script_cache, dict) or not script_cache:
+        raise ValueError(f"archived theme {theme_name} has no cardScriptCache")
+    return layouts, script_cache
+
+
+def prepare_composite_layouts(state, slot_themes, expected_pairs):
+    """Select and validate one complete layout slot from each archived theme.
+
+    Returns records containing the selected layout and its cached card script.
+    All validation happens before the target save, manifest, or payload files are
+    touched, so an incomplete debug save cannot partially replace a creator set.
+    """
+    expected_pairs = set(expected_pairs)
+    selected_records = []
+    seen_slots = set()
+
+    for config in slot_themes:
+        slot = int(config["slot"])
+        theme_id = config["theme_id"]
+        theme_name = config["theme_name"]
+        if slot in seen_slots:
+            raise ValueError(f"composite configuration repeats layout slot {slot}")
+        seen_slots.add(slot)
+
+        layouts, script_cache = archived_theme_data(state, theme_id, theme_name)
+        selected = [layout for layout in layouts if layout_slot(layout) == slot]
+        if len(selected) != LCT_PACK_1_EXPECTED_PER_SLOT:
+            raise ValueError(
+                f"{theme_name} layout {slot} has {len(selected)} map(s); "
+                f"expected {LCT_PACK_1_EXPECTED_PER_SLOT}"
+            )
+
+        records_by_pair = {}
+        for layout in selected:
+            pair = str(layout.get("forcePairKey") or "")
+            if not pair:
+                raise ValueError(f"{theme_name} layout {slot} contains an entry without forcePairKey")
+            if pair in records_by_pair:
+                raise ValueError(f"{theme_name} layout {slot} repeats force pair {pair}")
+            payload_key = layout_payload_key(layout)
+            entry = script_cache.get(payload_key)
+            if not (isinstance(entry, dict) and isinstance(entry.get("script"), str) and entry.get("script")):
+                raise ValueError(f"{theme_name} is missing prebuilt card script for {payload_key}")
+            records_by_pair[pair] = {
+                "layout": layout,
+                "script_entry": entry,
+                "slot": slot,
+                "theme_id": theme_id,
+                "theme_name": theme_name,
+                "payload_key": payload_key,
+            }
+
+        actual_pairs = set(records_by_pair)
+        if actual_pairs != expected_pairs:
+            missing = sorted(expected_pairs - actual_pairs)
+            extra = sorted(actual_pairs - expected_pairs)
+            detail = []
+            if missing:
+                detail.append("missing pairs: " + ", ".join(missing))
+            if extra:
+                detail.append("unexpected pairs: " + ", ".join(extra))
+            raise ValueError(f"{theme_name} layout {slot} does not match source bags ({'; '.join(detail)})")
+
+        selected_records.extend(records_by_pair[pair] for pair in sorted(records_by_pair))
+
+    expected_total = LCT_PACK_1_EXPECTED_PER_SLOT * len(slot_themes)
+    if len(selected_records) != expected_total:
+        raise ValueError(f"composite pack prepared {len(selected_records)} maps; expected {expected_total}")
+    return selected_records
 
 
 def objectjson_entries_from_cached_script(script):
@@ -354,8 +477,9 @@ def existing_layout_art_names(target):
     return {str(c.get("Nickname") or "").strip().casefold() for c in deck.get("ContainedObjects") or []}
 
 
-def remove_previous_import(target, keep_guids=None):
+def remove_previous_import(target, keep_guids=None, creator_tags=None):
     keep_guids = keep_guids or set()
+    creator_tags = set(creator_tags or OLD_CREATOR_TAGS)
     removed = []
     for obj in walk(target.get("ObjectStates") or []):
         children = obj.get("ContainedObjects")
@@ -365,7 +489,7 @@ def remove_previous_import(target, keep_guids=None):
         for child in children:
             tags = child.get("Tags") or []
             guid = child.get("GUID")
-            if guid not in keep_guids and any(tag in OLD_CREATOR_TAGS for tag in tags):
+            if guid not in keep_guids and any(tag in creator_tags for tag in tags):
                 removed.append(child.get("GUID"))
             else:
                 kept.append(child)
@@ -522,6 +646,102 @@ def import_one_theme(state, target, target_by_guid, manifest_rows, machinery, ar
     return manifest_rows
 
 
+def import_lct_pack_1(state, target, target_by_guid, manifest_rows, machinery, args):
+    """Replace the old LCT Pack 1 creator with the strict Ice/Lava/Mars mix."""
+    global CREATOR_TAG, CREATOR_DISPLAY, OLD_CREATOR_TAGS
+    CREATOR_TAG = LCT_PACK_1_CREATOR_TAG
+    CREATOR_DISPLAY = LCT_PACK_1_CREATOR_DISPLAY
+    OLD_CREATOR_TAGS = {CREATOR_TAG}
+
+    # Preflight every archive, selected slot, force pair, and card script before
+    # removing the old creator from the in-memory target. This is intentionally
+    # stricter than the single-theme partial-catalog preservation behavior.
+    source_bags = source_bags_by_pair(manifest_rows)
+    try:
+        records = prepare_composite_layouts(state, LCT_PACK_1_SLOT_THEMES, source_bags)
+    except (KeyError, TypeError, ValueError) as exc:
+        sys.exit(f"ERROR: LCT Pack 1 composite cache is incomplete: {exc}. "
+                 "Run the debug 'LCT P1' button, wait for 3/3 themes, save, then rerun.")
+
+    manifest_logical_names = manifest_logical_names_by_pair_slot(manifest_rows)
+    layout_art = existing_layout_art_names(target)
+    removed_guids = remove_previous_import(target, creator_tags={CREATOR_TAG})
+    manifest_rows = [r for r in manifest_rows if r.get("map_creator_tag") != CREATOR_TAG]
+
+    used_guids = all_guids(target)
+    used_deck_ids = set()
+    for obj in walk(target.get("ObjectStates") or []):
+        for key in (obj.get("CustomDeck") or {}).keys():
+            used_deck_ids.add(str(key))
+
+    new_cards = []
+    manifest_additions = []
+    missing_art = []
+    slot_counts = {}
+
+    for record in sorted(records, key=lambda r: (r["layout"].get("forcePairKey") or "", r["slot"])):
+        layout = record["layout"]
+        pair = layout.get("forcePairKey") or ""
+        source_info = source_bags[pair]
+        logical = logical_name_for(layout, source_info["deck_name"], manifest_logical_names)
+        if logical.strip().casefold() not in layout_art:
+            missing_art.append(logical)
+        card_name = f"{logical} - {CREATOR_DISPLAY}"
+        # Deliberately omit theme id from the identity seed. A later visual-theme
+        # refresh for the same creator/pair/slot should update payload content
+        # without needlessly changing the public map-card GUID.
+        seed = f"{CREATOR_TAG}|{record['payload_key']}"
+        card_guid = stable_guid("card|" + seed, used_guids)
+        deck_id = stable_deck_id("deck|" + seed, used_deck_ids)
+        script = static_card_script(record["script_entry"]["script"], machinery)
+        card = make_static_map_card(card_guid, card_name, script, layout.get("previewUrl") or DEFAULT_FACE_URL, deck_id)
+        new_cards.append((source_info["deck_guid"], card))
+        manifest_additions.append({
+            "deck_guid": source_info["deck_guid"],
+            "deck_name": source_info["deck_name"],
+            "card_guid": card_guid,
+            "card_name": card_name,
+            "map_creator_tag": CREATOR_TAG,
+            "map_type_tag": TYPE_TAG,
+            "creator_display": CREATOR_DISPLAY,
+            "eligible": "true",
+        })
+        slot_counts[record["slot"]] = slot_counts.get(record["slot"], 0) + 1
+
+    expected_total = LCT_PACK_1_EXPECTED_PER_SLOT * len(LCT_PACK_1_SLOT_THEMES)
+    if len(new_cards) != expected_total:
+        sys.exit(f"ERROR: prepared {len(new_cards)} LCT Pack 1 cards; expected {expected_total}.")
+    if missing_art and not args.allow_missing_layout_art:
+        sample = ", ".join(missing_art[:5])
+        sys.exit(f"ERROR: {len(missing_art)} LCT Pack 1 maps have no matching layout art. First: {sample}")
+
+    split = ", ".join(
+        f"layout {config['slot']} {config['theme_name']}={slot_counts.get(config['slot'], 0)}"
+        for config in LCT_PACK_1_SLOT_THEMES
+    )
+    print(f"[{CREATOR_DISPLAY}] Prepared {len(new_cards)} composite static map cards ({split}).")
+    print(f"[{CREATOR_DISPLAY}] Target bags: {len(set(g for g, _ in new_cards))}; "
+          f"old creator cards removed: {len(removed_guids)}.")
+    if missing_art:
+        print(f"[{CREATOR_DISPLAY}] WARNING: {len(missing_art)} layout-art matches missing.")
+
+    if not args.write:
+        return manifest_rows
+
+    new_guids = {card.get("GUID") for _bag_guid, card in new_cards}
+    for bag_guid, card in new_cards:
+        bag = target_by_guid.get(bag_guid)
+        if not bag:
+            sys.exit(f"ERROR: target source bag {bag_guid} not found in {args.target}.")
+        P.strip_card_to_payload(card)
+        bag.setdefault("ContainedObjects", []).append(card)
+    for guid in removed_guids:
+        if guid and guid not in new_guids:
+            P.remove_payload(guid)
+    manifest_rows.extend(manifest_additions)
+    return manifest_rows
+
+
 def main():
     ap = argparse.ArgumentParser(description="Import Battlemaster cache as static LCT map cards.")
     ap.add_argument("source_save", help="TTS save/saved-object JSON whose spawner has a populated cardScriptCache.")
@@ -529,19 +749,28 @@ def main():
     ap.add_argument("--manifest", default=str(DEFAULT_MANIFEST), help="map_manifest.csv to update.")
     ap.add_argument("--write", action="store_true", help="Write changes. Without this, only preview.")
     ap.add_argument("--allow-missing-layout-art", action="store_true", help="Do not fail if existing layout art is missing.")
-    ap.add_argument("--creator-tag", default=None, help="map_crt* tag to add to imported cards and manifest rows. Required unless --all-themes.")
-    ap.add_argument("--creator-display", default=None, help="Creator/filter label to append to imported card names. Required unless --all-themes.")
-    ap.add_argument("--theme-id", default=None, help="Pull this Battlemaster theme id's archived cache (BM_THEME_ARCHIVES) instead of the spawner's top-level cache. Ignored with --all-themes.")
+    ap.add_argument("--creator-tag", default=None, help="map_crt* tag to add to imported cards and manifest rows. Omit with --all-themes/--lct-pack-1.")
+    ap.add_argument("--creator-display", default=None, help="Creator/filter label to append to imported card names. Omit with --all-themes/--lct-pack-1.")
+    ap.add_argument("--theme-id", default=None, help="Pull this Battlemaster theme id's archived cache (BM_THEME_ARCHIVES) instead of the spawner's top-level cache. Omit with --all-themes/--lct-pack-1.")
     ap.add_argument("--all-themes", action="store_true",
                      help="Import all four shipped Battlemaster themes (BTTF Ruins, Armageddon Desert, BTTF, "
                           "Armageddon Ruins) from their BM_THEME_ARCHIVES entries in one run -- pairs with the "
                           "debug 'All 4' button. Mutually exclusive with --creator-tag/--creator-display/--theme-id.")
+    ap.add_argument("--lct-pack-1", action="store_true",
+                    help="Replace map_crt_lct1 with the 45-map composite pack from the debug 'LCT P1' archives: "
+                         "Ice layout 1, Lava layout 2, Mars layout 3. Mutually exclusive with all creator/theme flags.")
     args = ap.parse_args()
 
+    if args.all_themes and args.lct_pack_1:
+        sys.exit("ERROR: --all-themes and --lct-pack-1 are mutually exclusive.")
     if args.all_themes:
         if args.creator_tag is not None or args.creator_display is not None or args.theme_id is not None:
             sys.exit("ERROR: --all-themes cannot be combined with --creator-tag/--creator-display/--theme-id.")
         theme_configs = KNOWN_BATTLEMASTER_THEMES
+    elif args.lct_pack_1:
+        if args.creator_tag is not None or args.creator_display is not None or args.theme_id is not None:
+            sys.exit("ERROR: --lct-pack-1 cannot be combined with --creator-tag/--creator-display/--theme-id.")
+        theme_configs = None
     else:
         theme_configs = [{
             "theme_id": args.theme_id,
@@ -566,13 +795,20 @@ def main():
 
     target_by_guid = {obj.get("GUID"): obj for obj in walk(target.get("ObjectStates") or []) if obj.get("GUID")}
 
-    for theme_config in theme_configs:
-        manifest_rows = import_one_theme(
-            state, target, target_by_guid, manifest_rows, machinery, args,
-            creator_tag=theme_config["creator_tag"],
-            creator_display=theme_config["creator_display"],
-            theme_id=theme_config.get("theme_id"),
+    if args.lct_pack_1:
+        manifest_rows = import_lct_pack_1(
+            state, target, target_by_guid, manifest_rows, machinery, args
         )
+        import_count = 1
+    else:
+        for theme_config in theme_configs:
+            manifest_rows = import_one_theme(
+                state, target, target_by_guid, manifest_rows, machinery, args,
+                creator_tag=theme_config["creator_tag"],
+                creator_display=theme_config["creator_display"],
+                theme_id=theme_config.get("theme_id"),
+            )
+        import_count = len(theme_configs)
 
     if not args.write:
         print("[preview] no files written; pass --write to update ftc_base.json and map_manifest.csv.")
@@ -580,7 +816,10 @@ def main():
 
     target_path.write_text(json.dumps(target, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     write_manifest(manifest_path, manifest_rows)
-    print(f"Wrote {target_path}, {manifest_path}, and data/maps payloads for {len(theme_configs)} theme(s).")
+    if args.lct_pack_1:
+        print(f"Wrote {target_path}, {manifest_path}, and data/maps payloads for the LCT Pack 1 composite.")
+    else:
+        print(f"Wrote {target_path}, {manifest_path}, and data/maps payloads for {import_count} theme(s).")
     print(f"Run: {validation_command_hint()}")
     return 0
 

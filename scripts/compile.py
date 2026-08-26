@@ -66,7 +66,7 @@ CURATED_MAT_CSV = SCRIPT_DIR.parent / "data" / "curated_maps.csv"
 DESERT_MAT_CSV = SCRIPT_DIR.parent / "data" / "desert.csv"
 LCT_MAT_CSV = SCRIPT_DIR.parent / "data" / "lct_mats_city.csv"
 BM_MAT_RANDOMIZER_ENABLED = False
-LCT_MAT_RANDOMIZER_ENABLED = True
+LCT_MAT_RANDOMIZER_ENABLED = False
 GLOBAL_LUA = "global.ttslua"
 
 # The Battlemaster dynamic spawner bakes the canonical map-card machinery into

@@ -104,21 +104,6 @@ eae80b,Take and Hold vs Priority Assets,51f916,TnH vs PA 3 - Dawn of War - T5S2,
 f1e22b,Disruption vs Priority Assets,ef1b89,Dis vs PA 1 - Sweeping Engagement - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
 f1e22b,Disruption vs Priority Assets,e40491,Dis vs PA 2 - Tipping Point - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
 f1e22b,Disruption vs Priority Assets,b1073f,Dis vs PA 3 - Search and Destroy - T5S2,map_crt_t5s2,map_type_comp,T5S2,true
-32e34a,Priority Assets vs Reconnaissance,b7205e,PA vs Rec 1 - Crucible of Battle - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
-793bc0,Reconnaissance vs Reconnaissance,e5be08,Rec vs Rec 1 - Sweeping Engagement - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
-4409ba,Disruption vs Disruption,7f0d9e,Dis vs Dis 1 - Crucible of Battle - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
-7b5ba7,Priority Assets vs Priority Assets,01ca21,PA vs PA 1 - Sweeping Engagement - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
-f1e22b,Disruption vs Priority Assets,2929f5,Dis vs PA 1 - Sweeping Engagement - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
-9ac38f,Purge the Foe vs Disruption,cc45b2,PtF vs Dis 1 - Search and Destroy - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
-109a6b,Take and Hold vs Reconnaissance,ac68ae,TnH vs Rec 1 - Tipping Point - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
-1e6711,Take and Hold vs Purge the Foe,9a1cb2,TnH vs PtF 1 - Sweeping Engagement - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
-eae80b,Take and Hold vs Priority Assets,952278,TnH vs PA 1 - Crucible of Battle - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
-cfeba5,Take and Hold vs Disruption,763b3a,TnH vs Dis 1 - Sweeping Engagement - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
-dc8738,Purge the Foe vs Priority Assets,b062ba,PtF vs PA 1 - Dawn of War - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
-a22c33,Purge the Foe vs Reconnaissance,447426,PtF vs Recon 1 - Hammer and Anvil - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
-3ebbd6,Purge the Foe vs Purge the Foe,8e9f5b,PtF vs PtF 1 - Search and Destroy - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
-2c7cd1,Disruption vs Reconnaissance,1eee89,Dis vs Rec 1 - Tipping Point - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
-6e0d78,Take and Hold vs Take and Hold,48d805,TnH vs TnH 1 - Tipping Point - LCT-Pack-1,map_crt_lct1,map_type_comp,LCT-Pack-1,true
 4409ba,Disruption vs Disruption,b9f3a3,Dis vs Dis 1 - Crucible of Battle - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
 4409ba,Disruption vs Disruption,5df453,Dis vs Dis 2 - Tipping Point - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
 4409ba,Disruption vs Disruption,70a548,Dis vs Dis 3 - Sweeping Engagement - Battlemaster - BTTF Ruins,map_crt_battlemaster_bttf_ruins,map_type_comp,Battlemaster - BTTF Ruins,true
@@ -299,3 +284,48 @@ a22c33,Purge the Foe vs Reconnaissance,7a10bd,PtF vs Recon 3 - Crucible of Battl
 6e0d78,Take and Hold vs Take and Hold,812694,TnH vs TnH 1 - Tipping Point - Battlemaster - Armageddon Ruins,map_crt_battlemaster_armageddon_ruins,map_type_comp,Battlemaster - Armageddon Ruins,true
 6e0d78,Take and Hold vs Take and Hold,08a298,TnH vs TnH 2 - Dawn of War - Battlemaster - Armageddon Ruins,map_crt_battlemaster_armageddon_ruins,map_type_comp,Battlemaster - Armageddon Ruins,true
 6e0d78,Take and Hold vs Take and Hold,7714c8,TnH vs TnH 3 - Search and Destroy - Battlemaster - Armageddon Ruins,map_crt_battlemaster_armageddon_ruins,map_type_comp,Battlemaster - Armageddon Ruins,true
+4409ba,Disruption vs Disruption,f379a9,Dis vs Dis 1 - Crucible of Battle - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+4409ba,Disruption vs Disruption,d1b1e9,Dis vs Dis 2 - Tipping Point - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+4409ba,Disruption vs Disruption,3ccf60,Dis vs Dis 3 - Sweeping Engagement - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+f1e22b,Disruption vs Priority Assets,e1d932,Dis vs PA 1 - Sweeping Engagement - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+f1e22b,Disruption vs Priority Assets,74e6c5,Dis vs PA 2 - Tipping Point - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+f1e22b,Disruption vs Priority Assets,a669e5,Dis vs PA 3 - Search and Destroy - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+9ac38f,Purge the Foe vs Disruption,e9851e,PtF vs Dis 1 - Search and Destroy - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+9ac38f,Purge the Foe vs Disruption,36460b,PtF vs Dis 2 - Tipping Point - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+9ac38f,Purge the Foe vs Disruption,f21c15,PtF vs Dis 3 - Sweeping Engagement - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+2c7cd1,Disruption vs Reconnaissance,3f4d6c,Dis vs Rec 1 - Tipping Point - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+2c7cd1,Disruption vs Reconnaissance,4bea6a,Dis vs Rec 2 - Dawn of War - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+2c7cd1,Disruption vs Reconnaissance,7970fd,Dis vs Rec 3 - Search and Destroy - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+cfeba5,Take and Hold vs Disruption,163d61,TnH vs Dis 1 - Sweeping Engagement - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+cfeba5,Take and Hold vs Disruption,f9ff6c,TnH vs Dis 2 - Crucible of Battle - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+cfeba5,Take and Hold vs Disruption,aac809,TnH vs Dis 3 - Hammer and Anvil - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+7b5ba7,Priority Assets vs Priority Assets,6538ff,PA vs PA 1 - Sweeping Engagement - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+7b5ba7,Priority Assets vs Priority Assets,7561ca,PA vs PA 2 - Crucible of Battle - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+7b5ba7,Priority Assets vs Priority Assets,3a0d17,PA vs PA 3 - Tipping Point - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+dc8738,Purge the Foe vs Priority Assets,2960bb,PtF vs PA 1 - Dawn of War - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+dc8738,Purge the Foe vs Priority Assets,7edf6f,PtF vs PA 2 - Search and Destroy - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+dc8738,Purge the Foe vs Priority Assets,090f59,PtF vs PA 3 - Hammer and Anvil - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+32e34a,Priority Assets vs Reconnaissance,204955,PA vs Rec 1 - Crucible of Battle - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+32e34a,Priority Assets vs Reconnaissance,53ac8a,PA vs Rec 2 - Tipping Point - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+32e34a,Priority Assets vs Reconnaissance,1ae47e,PA vs Rec 3 - Sweeping Engagement - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+eae80b,Take and Hold vs Priority Assets,41613a,TnH vs PA 1 - Crucible of Battle - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+eae80b,Take and Hold vs Priority Assets,01f04f,TnH vs PA 2 - Hammer and Anvil - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+eae80b,Take and Hold vs Priority Assets,e563ee,TnH vs PA 3 - Dawn of War - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+3ebbd6,Purge the Foe vs Purge the Foe,c522db,PtF vs PtF 1 - Search and Destroy - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+3ebbd6,Purge the Foe vs Purge the Foe,53443e,PtF vs PtF 2 - Tipping Point - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+3ebbd6,Purge the Foe vs Purge the Foe,f9a44b,PtF vs PtF 3 - Sweeping Engagement - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+a22c33,Purge the Foe vs Reconnaissance,58167e,PtF vs Recon 1 - Hammer and Anvil - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+a22c33,Purge the Foe vs Reconnaissance,4da15d,PtF vs Recon 2 - Dawn of War - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+a22c33,Purge the Foe vs Reconnaissance,3edf8d,PtF vs Recon 3 - Crucible of Battle - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+1e6711,Take and Hold vs Purge the Foe,aaff6f,TnH vs PtF 1 - Sweeping Engagement - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+1e6711,Take and Hold vs Purge the Foe,1b5488,TnH vs PtF 2 - Search and Destroy - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+1e6711,Take and Hold vs Purge the Foe,5d62d3,TnH vs PtF 3 - Hammer and Anvil - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+793bc0,Reconnaissance vs Reconnaissance,15e4be,Rec vs Rec 1 - Sweeping Engagement - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+793bc0,Reconnaissance vs Reconnaissance,1f821a,Rec vs Rec 2 - Crucible of Battle - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+793bc0,Reconnaissance vs Reconnaissance,75878a,Rec vs Rec 3 - Tipping Point - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+109a6b,Take and Hold vs Reconnaissance,fe23cc,TnH vs Rec 1 - Tipping Point - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+109a6b,Take and Hold vs Reconnaissance,b7f2e0,TnH vs Rec 2 - Dawn of War - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+109a6b,Take and Hold vs Reconnaissance,24d0d8,TnH vs Rec 3 - Search and Destroy - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+6e0d78,Take and Hold vs Take and Hold,0d8ed4,TnH vs TnH 1 - Tipping Point - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+6e0d78,Take and Hold vs Take and Hold,d30aa9,TnH vs TnH 2 - Dawn of War - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
+6e0d78,Take and Hold vs Take and Hold,594bb2,TnH vs TnH 3 - Search and Destroy - LCT - Pack 1,map_crt_lct1,map_type_comp,LCT - Pack 1,true
