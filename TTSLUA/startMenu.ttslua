@@ -1229,7 +1229,7 @@ function setDeployZonesMode(mode, preserveSelected)
     deploySelected = #DeployZonesData
 end
 
-deployLineHeight = 2.1
+deployLineHeight = 4.2
 deployLineYPos = deployLineHeight-0.1
 sizeMulti = 36
 -- Arrow offset/size mirror the disposition picker (dispositionArrowOffset 5.75,
