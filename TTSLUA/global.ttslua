@@ -1397,6 +1397,12 @@ end
 -- its onClick/onValueChanged handlers to the functions below (Global owns the UI, so
 -- no per-object script is needed). XML callbacks pass (player, value, id), so the
 -- handlers take the Player object and read its .color.
+-- Every populate call below for a specific theme ID passes approvedOnly = false.
+-- These are shipped/known themes we already trust by ID, so they shouldn't
+-- depend on Battlemaster's live "approved" discovery filter -- confirmed
+-- Armageddon Desert's approvalState is currently "community" on Battlemaster's
+-- own platform (not a code/ID problem here), which silently dropped it from the
+-- default approved-only sync and made its button fail to find the theme at all.
 BATTLEMASTER_SPAWNER_GUID = "b4d10a"
 BATTLEMASTER_BTTF_THEME_ID = "tts-theme-grimdark-calibrated-v1"
 BATTLEMASTER_BTTF_RUINS_THEME_ID = "tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5"
@@ -1485,7 +1491,7 @@ function debugPopulateBattlemasterBttfRuinsCache(player)
         return
     end
     printToColor("[DEBUG] Battlemaster BTTF Ruins cache population started. Save the mod/table after it completes.", playerColor, {0.78, 0.72, 1})
-    spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_BTTF_RUINS_THEME_ID, themeName = "BTTF Ruins"})
+    spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_BTTF_RUINS_THEME_ID, themeName = "BTTF Ruins", approvedOnly = false})
 end
 
 function debugPopulateBattlemasterBttfCache(player)
@@ -1497,7 +1503,7 @@ function debugPopulateBattlemasterBttfCache(player)
         return
     end
     printToColor("[DEBUG] Battlemaster BTTF cache population started. Save the mod/table after it completes.", playerColor, {0.55, 0.85, 1})
-    spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_BTTF_THEME_ID, themeName = "BTTF"})
+    spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_BTTF_THEME_ID, themeName = "BTTF", approvedOnly = false})
 end
 
 function debugPopulateBattlemasterArmageddonDesertCache(player)
@@ -1509,7 +1515,7 @@ function debugPopulateBattlemasterArmageddonDesertCache(player)
         return
     end
     printToColor("[DEBUG] Battlemaster Armageddon Desert cache population started. Save the mod/table after it completes.", playerColor, {1, 0.78, 0.42})
-    spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID, themeName = "armageddon desert"})
+    spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID, themeName = "armageddon desert", approvedOnly = false})
 end
 
 function debugPopulateBattlemasterArmageddonRuinsCache(player)
@@ -1521,7 +1527,7 @@ function debugPopulateBattlemasterArmageddonRuinsCache(player)
         return
     end
     printToColor("[DEBUG] Battlemaster Armageddon Ruins cache population started. Save the mod/table after it completes.", playerColor, {1, 0.6, 0.5})
-    spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_ARMAGEDDON_RUINS_THEME_ID, themeName = "armageddon ruins"})
+    spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_ARMAGEDDON_RUINS_THEME_ID, themeName = "armageddon ruins", approvedOnly = false})
 end
 
 -- "All 4" button: runs the BTTF Ruins/Desert/BTTF/Armageddon Ruins populates
@@ -1541,6 +1547,7 @@ function debugPopulateBattlemasterAllCache(player)
     printToColor("[DEBUG] Battlemaster all-theme cache population started (BTTF Ruins, Desert, BTTF, Armageddon Ruins). Save the mod/table after it completes.", playerColor, {0.65, 0.9, 1})
     spawner.call("debugPopulateAllThemes", {
         playerColor = playerColor,
+        approvedOnly = false,
         themes = {
             {id = BATTLEMASTER_BTTF_RUINS_THEME_ID, name = "BTTF Ruins"},
             {id = BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID, name = "armageddon desert"},
