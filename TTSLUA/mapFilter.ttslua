@@ -206,6 +206,11 @@ function buildFilterUI()
         + (FILTER_COLUMNS - 1) * FILTER_SPACING + 28
     -- title + header rule + creator grid + padding/spacing slack.
     local height = 70 + 4 + gridHeight + 60
+    -- Both panels are forced to one shared box height (see the setXml call below);
+    -- if the mat/theme panel on the right needs more room than the creator list
+    -- does, grow the shared height to fit it instead of letting its content get
+    -- squeezed. See matRandoPanelMinHeight for why a shortfall here is silent.
+    height = math.max(height, matRandoPanelMinHeight())
 
     local xml = string.format(
         '<VerticalLayout position="0 0 %d" rotation="0 0 0" scale="%s %s 1" width="%d" height="%d" '
@@ -264,7 +269,7 @@ end
 -- controls only fill the top; the empty space below the "Table Theme" heading is
 -- reserved for the table-theme controls being added next.
 -- Vertical sizes trimmed ~10% (from 70/100/90/50/8) to keep the panel compact.
-MAT_RANDO_TITLE_H = 63   -- "Map Mat Picker" title and the "Table Theme" heading
+MAT_RANDO_TITLE_H = 63   -- "Game Mat" title and the "Table Theme" heading
 MAT_RANDO_ROW_H = 90     -- picker row (arrows + value)
 MAT_RANDO_BTN_H = 81     -- shared Apply / Random / Default row
 MAT_RANDO_ARROW_W = 160  -- fixed width of each arrow button
@@ -296,6 +301,7 @@ TABLE_THEMES = {
 -- the labels unreadable, so they wrap across rows (mirrors the creator grid below).
 TABLE_THEME_COLUMNS = 4
 TABLE_THEME_CELL_H = 70
+THEME_GRID_SPACING = 10
 
 -- Currently-selected theme index, read from startMenu so the panel can mark the
 -- active swatch. 0 if the menu isn't ready (nothing marked).
@@ -306,6 +312,25 @@ function currentTableThemeIndex()
         if ok and type(idx) == "number" then return idx end
     end
     return 0
+end
+
+-- The mat/theme panel's own required content height, independent of whatever
+-- height the filter panel on its left happens to need. Both panels are forced
+-- to share one box height (see buildFilterUI); if that shared height comes out
+-- smaller than this, VerticalLayout has nowhere else to find the missing space
+-- except by shrinking the two bare <Text> titles toward zero -- the Buttons,
+-- Panels, and GridLayout below them all carry a fixed preferredHeight and can't
+-- be squeezed, so the titles silently collapse to invisible instead.
+function matRandoPanelMinHeight()
+    local themeRows = math.ceil(#TABLE_THEMES / TABLE_THEME_COLUMNS)
+    local themeGridH = themeRows * (TABLE_THEME_CELL_H + THEME_GRID_SPACING)
+    local children = {
+        MAT_RANDO_TITLE_H, MAT_RANDO_RULE_H, MAT_RANDO_ROW_H, MAT_RANDO_BTN_H,
+        MAT_RANDO_RULE_H, MAT_RANDO_TITLE_H, MAT_RANDO_RULE_H, themeGridH,
+    }
+    local total = 2 * MAT_RANDO_PAD + MAT_RANDO_SPACING * (#children - 1)
+    for _, h in ipairs(children) do total = total + h end
+    return total
 end
 
 function buildMatRandoPanel(width, height)
@@ -331,7 +356,7 @@ function buildMatRandoPanel(width, height)
     -- Cell width = the inner content width (panel width minus the L/R padding) split
     -- across the columns, with the inter-cell spacing removed. Height reserved is the
     -- number of wrapped rows times (cell + spacing).
-    local themeSpacing = 10
+    local themeSpacing = THEME_GRID_SPACING
     local themeInnerW = width - 2 * MAT_RANDO_PAD
     local themeCellW = math.floor(
         (themeInnerW - (TABLE_THEME_COLUMNS - 1) * themeSpacing) / TABLE_THEME_COLUMNS)
@@ -345,14 +370,14 @@ function buildMatRandoPanel(width, height)
     return string.format(
         '<VerticalLayout position="%d 0 %d" rotation="0 0 0" scale="%s %s 1" width="%d" height="%d" '
         .. 'padding="%d %d %d %d" spacing="%d" color="#101015E6" childForceExpandHeight="false">\n'
-        .. '<Text fontSize="44" color="#FFFFFF" preferredHeight="%d">Map Mat Picker</Text>\n'
+        .. '<Text fontSize="44" color="#FFFFFF" preferredHeight="%d" flexibleHeight="0">Game Mat</Text>\n'
         .. '<Panel preferredHeight="%d" color="#FFFFFF40" flexibleHeight="0" />\n'
         .. '<HorizontalLayout spacing="12" preferredHeight="%d" flexibleHeight="0" childForceExpandWidth="false">\n'
-        .. '<Button id="matRandoPrev" onClick="onMatRandoPrev" color="#000000" textColor="#FFFFFF" '
+        .. '<Button id="matRandoPrev" onClick="onMatRandoPrev" color="#3D4852" textColor="#FFFFFF" '
         .. 'fontSize="50" preferredWidth="%d" flexibleWidth="0">&lt;-</Button>\n'
         .. '<Panel color="#FFFFFF" flexibleWidth="1"><Text id="matRandoValue" fontSize="40" '
         .. 'color="#000000" alignment="MiddleCenter">%s</Text></Panel>\n'
-        .. '<Button id="matRandoNext" onClick="onMatRandoNext" color="#000000" textColor="#FFFFFF" '
+        .. '<Button id="matRandoNext" onClick="onMatRandoNext" color="#3D4852" textColor="#FFFFFF" '
         .. 'fontSize="50" preferredWidth="%d" flexibleWidth="0">-&gt;</Button>\n'
         .. '</HorizontalLayout>\n'
         -- Apply / Random / Default share one row: childForceExpandWidth makes the
@@ -366,7 +391,7 @@ function buildMatRandoPanel(width, height)
         .. 'fontSize="36">Default</Button>\n'
         .. '</HorizontalLayout>\n'
         .. '<Panel preferredHeight="%d" color="#FFFFFF40" flexibleHeight="0" />\n'
-        .. '<Text fontSize="44" color="#FFFFFF" preferredHeight="%d">Table Theme</Text>\n'
+        .. '<Text fontSize="44" color="#FFFFFF" preferredHeight="%d" flexibleHeight="0">Table Theme</Text>\n'
         .. '<Panel preferredHeight="%d" color="#FFFFFF40" flexibleHeight="0" />\n'
         .. '%s\n'
         .. '</VerticalLayout>',

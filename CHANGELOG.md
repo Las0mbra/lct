@@ -13,7 +13,8 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
-## v1.11.0
+## v1.11.1
+- Bug fixes: Fixed Lava theme footprint border, map picker UI arrow bugs and also updated Mothmy Titanias token bag!
 - Maps: Updated all Layouts (art and maps) based on GW August update. All battlemaster maps should be up and working. 
 - Maps: Added 3 new themes (Lava Temple - Imperium Ice Colony - Mars Base) as parts of LCT Pack 1.
 - Feat: Added an advanced features panel at the top of the panel, near the LCT logo that currently has a button that disables and re-enables terrain colliders. Atm only Battlemaster maps are supported.
