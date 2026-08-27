@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Import prebuilt Battlemaster cache entries as normal LCT map cards.
+"""Legacy fallback: import a TTS-populated Battlemaster cache as static cards.
+
+Prefer sync_battlemaster_maps.py for normal updates.  It talks to the public API
+and reconstructs maps outside TTS, avoiding the huge persisted cache that makes
+debug tables stall during save/rewind.  This importer remains useful for
+emergency offline recovery when the cache was rebuilt with the current spawner.
 
 Single-theme workflow:
   1. Build/load a debug table and click the debug "BM cache <theme>" button that
@@ -71,6 +76,9 @@ DEFAULT_MANIFEST = ROOT / "data" / "map_manifest.csv"
 MACHINERY = ROOT / "data" / "map_card_machinery.lua"
 SPAWNER_GUID = "b4d10a"
 OBJECTJSONS_MARKER = "objectJSONs = {"
+RECONSTRUCTION_SCHEMA_VERSION = 2
+FOOTPRINT_PROFILE_BATTLEMASTER = "battlemaster-two-state"
+FOOTPRINT_PROFILE_LCT = "lct-three-state"
 DEFAULT_CREATOR_TAG = "map_crt_battlemaster"
 DEFAULT_CREATOR_DISPLAY = "Battlemaster"
 CREATOR_TAG = DEFAULT_CREATOR_TAG
@@ -91,21 +99,25 @@ KNOWN_BATTLEMASTER_THEMES = [
         "theme_id": "tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5",
         "creator_tag": "map_crt_battlemaster_bttf_ruins",
         "creator_display": "Battlemaster - BTTF Ruins",
+        "footprint_profile": FOOTPRINT_PROFILE_BATTLEMASTER,
     },
     {
         "theme_id": "tts-theme-6c414c7a-9827-48cf-a89e-aa8ddff66491",
         "creator_tag": "map_crt_battlemaster_armageddon_desert",
         "creator_display": "Battlemaster - Desert",
+        "footprint_profile": FOOTPRINT_PROFILE_BATTLEMASTER,
     },
     {
         "theme_id": "tts-theme-grimdark-calibrated-v1",
         "creator_tag": "map_crt_battlemaster_bttf",
         "creator_display": "BTTF",
+        "footprint_profile": FOOTPRINT_PROFILE_BATTLEMASTER,
     },
     {
         "theme_id": "tts-theme-7b9218bb-b614-4225-9789-570836525e6a",
         "creator_tag": "map_crt_battlemaster_armageddon_ruins",
         "creator_display": "Battlemaster - Armageddon Ruins",
+        "footprint_profile": FOOTPRINT_PROFILE_BATTLEMASTER,
     },
 ]
 
@@ -276,6 +288,21 @@ def layout_slot(layout):
     return int((layout.get("chapterApprovedSlot") or {}).get("slotIndex", layout.get("slotIndex")))
 
 
+def validate_archive_reconstruction(archive, theme_name, expected_footprint_profile):
+    version = archive.get("reconstructionSchemaVersion")
+    if version != RECONSTRUCTION_SCHEMA_VERSION:
+        raise ValueError(
+            f"archived theme {theme_name} uses reconstruction schema {version!r}; "
+            f"expected {RECONSTRUCTION_SCHEMA_VERSION}"
+        )
+    profile = archive.get("footprintProfile")
+    if profile != expected_footprint_profile:
+        raise ValueError(
+            f"archived theme {theme_name} uses footprint profile {profile!r}; "
+            f"expected {expected_footprint_profile!r}"
+        )
+
+
 def archived_theme_data(state, theme_id, theme_name):
     """Return a complete per-theme archive, never the mutable top-level cache.
 
@@ -286,6 +313,7 @@ def archived_theme_data(state, theme_id, theme_name):
     archive = (state.get("themeArchives") or {}).get(theme_id)
     if not isinstance(archive, dict):
         raise ValueError(f"missing archived theme {theme_name} ({theme_id})")
+    validate_archive_reconstruction(archive, theme_name, FOOTPRINT_PROFILE_LCT)
     layouts = (archive.get("layoutCatalog") or {}).get("layouts") or []
     script_cache = archive.get("cardScriptCache") or {}
     if not isinstance(layouts, list) or not layouts:
@@ -497,7 +525,12 @@ def remove_previous_import(target, keep_guids=None, creator_tags=None):
     return removed
 
 
-def layout_catalog_and_scripts_for(state, theme_id, creator_display):
+def layout_catalog_and_scripts_for(
+    state,
+    theme_id,
+    creator_display,
+    expected_footprint_profile=None,
+):
     """Picks the layout catalog + card script cache to import from.
 
     If theme_id is given, prefer the matching BM_THEME_ARCHIVES snapshot (see
@@ -509,6 +542,8 @@ def layout_catalog_and_scripts_for(state, theme_id, creator_display):
     if theme_id:
         archive = (state.get("themeArchives") or {}).get(theme_id)
         if isinstance(archive, dict):
+            if expected_footprint_profile is not None:
+                validate_archive_reconstruction(archive, creator_display, expected_footprint_profile)
             layouts = (archive.get("layoutCatalog") or {}).get("layouts") or []
             script_cache = archive.get("cardScriptCache") or {}
             if layouts and script_cache:
@@ -519,7 +554,18 @@ def layout_catalog_and_scripts_for(state, theme_id, creator_display):
     return layouts, script_cache, source_desc
 
 
-def import_one_theme(state, target, target_by_guid, manifest_rows, machinery, args, creator_tag, creator_display, theme_id=None):
+def import_one_theme(
+    state,
+    target,
+    target_by_guid,
+    manifest_rows,
+    machinery,
+    args,
+    creator_tag,
+    creator_display,
+    theme_id=None,
+    expected_footprint_profile=None,
+):
     """Imports a single Battlemaster theme's cache into `target`/`manifest_rows`
     (both mutated/replaced in place for this run; nothing touches disk here).
     Returns the updated manifest_rows list."""
@@ -532,7 +578,16 @@ def import_one_theme(state, target, target_by_guid, manifest_rows, machinery, ar
     if CREATOR_TAG == DEFAULT_CREATOR_TAG:
         OLD_CREATOR_TAGS.add("map_crt_battlemaster_default")
 
-    layouts, script_cache, source_desc = layout_catalog_and_scripts_for(state, theme_id, CREATOR_DISPLAY)
+    try:
+        layouts, script_cache, source_desc = layout_catalog_and_scripts_for(
+            state,
+            theme_id,
+            CREATOR_DISPLAY,
+            expected_footprint_profile,
+        )
+    except ValueError as exc:
+        sys.exit(f"ERROR: incompatible Battlemaster cache for {CREATOR_DISPLAY}: {exc}. "
+                 "Re-run the matching debug cache button with the latest spawner and save again.")
     if not layouts:
         sys.exit(f"ERROR: no layoutCatalog.layouts for {CREATOR_DISPLAY} ({source_desc}). "
                   f"Run the matching BM cache button in TTS, save, then rerun.")
@@ -807,6 +862,7 @@ def main():
                 creator_tag=theme_config["creator_tag"],
                 creator_display=theme_config["creator_display"],
                 theme_id=theme_config.get("theme_id"),
+                expected_footprint_profile=theme_config.get("footprint_profile"),
             )
         import_count = len(theme_configs)
 

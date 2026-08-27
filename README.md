@@ -17,7 +17,7 @@ python3 compile.py --no-validate   # skip the map-card validation gate
 
 ### Map terrain payloads (`data/maps/`)
 
-Each map card's `LuaScript` is a canonical load/clear machinery head followed by an `objectJSONs = { ... }` terrain blob. Those blobs total ~27 MB, so they live **outside** `ftc_base.json`, one file per map: `data/maps/<card_guid>.lua`. `validate_maps.py` folds each payload back in for its checks; `compile.py` re-injects `head + payload` **byte-for-byte** during the build (before the Load Map hook pass), so the compiled save is identical to the old inline one (a stripped card with no payload file is a build error).
+Each map card's `LuaScript` is a canonical load/clear machinery head followed by an `objectJSONs = { ... }` terrain blob. Those blobs total ~38 MB, so they live **outside** `ftc_base.json`, one file per map: `data/maps/<card_guid>.lua`. `validate_maps.py` folds each payload back in for its checks; `compile.py` re-injects `head + payload` **byte-for-byte** during the build (before the Load Map hook pass), so the compiled save is identical to the old inline one (a stripped card with no payload file is a build error).
 
 Pull terrain back out after re-exporting from TTS or after an import (add `--dry-run` to preview, `audit_map_payloads.py --sizes|--strict` to inspect):
 
@@ -62,43 +62,76 @@ python3 upgrade_map_zones.py --dry-run  # show what would change, write nothing
 
 ### Battlemaster imports
 
-Battlemaster maps are baked into normal static LCT cards, not spawned dynamically at runtime. Each theme ships as its own creator filter (`Battlemaster - BTTF Ruins`, `BTTF`, `Battlemaster - Desert`, `Battlemaster - Armageddon Ruins`), 45 cards apiece, already in the manifest. There is no plain `map_crt_battlemaster` creator, so **always pass `--creator-tag`/`--creator-display`** matching the theme, or you create a duplicate set.
+Battlemaster maps are baked into normal static LCT cards, not spawned dynamically at runtime. The supported updater now runs entirely outside TTS: it fetches the public Battlemaster API, reconstructs the compact terrain payloads in Python, and prepares normal source cards and payload files.
 
-To (re)import a theme, build a `--test` save, load it, click the matching debug button (`BTTF Ruins`/`Desert`/`BTTF`/`Arma Ruins` under the DEBUG-gated Battlemaster cache panel), save the table, then:
+Run it from the repository root. Every command is preview-only unless `--write` is present:
 
 ```bash
-# preview the 45 generated cards (no changes written)
-python3 import_battlemaster_static_maps.py /path/to/DebugTable.json \
-    --creator-tag map_crt_battlemaster_bttf_ruins --creator-display "Battlemaster - BTTF Ruins"
-# rerun with --write to place the cards and update the manifest (idempotent per theme)
-python3 import_battlemaster_static_maps.py /path/to/DebugTable.json \
-    --creator-tag map_crt_battlemaster_bttf_ruins --creator-display "Battlemaster - BTTF Ruins" --write
-python3 bake_battlemaster_cache.py --clear   # reset the shipped spawner cache to cold
-python3 validate_maps.py --require-map-tags && python3 compile.py --test
+# One 45-card pack; granular flags can be combined.
+python3 scripts/sync_battlemaster_maps.py --desert
+python3 scripts/sync_battlemaster_maps.py --desert --bttf --write
+
+# The four packs formerly populated by the debug "All 4" button (180 cards).
+python3 scripts/sync_battlemaster_maps.py --all-four
+
+# Atomic Ice layout 1 + Lava layout 2 + Mars layout 3 (45 cards).
+python3 scripts/sync_battlemaster_maps.py --lct-pack-1
+
+# All Four plus LCT Pack 1 (225 cards).
+python3 scripts/sync_battlemaster_maps.py --all
 ```
 
-`LCT - Pack 1` is a composite Battlemaster import rather than a normal
-single-theme import. Its three layout slots are intentionally fixed:
+The granular selectors are `--bttf-ruins`, `--desert`, `--bttf`,
+`--armageddon-ruins`, and `--lct-pack-1` (`--lct-p1` is an alias).
+
+Footprint states are selected by pack, with an explicit contract:
+
+- The four Battlemaster packs contain two states: rugged terrain is the
+  top-level/default state and smooth terrain is state 2.
+- LCT Pack 1 contains three states: its theme-specific custom bordered floor is
+  the top-level/default state, rugged terrain is state 2, and smooth terrain is
+  state 3.
+
+Preview validates every reconstructed footprint against that state count,
+ordering, asset pairing, transform, and objective-tag contract. A mismatched
+profile or partially reconstructed map aborts before any source file is changed.
+
+For a reproducible review/apply split, save the normalized API responses during
+preview and apply that exact snapshot later without another network request:
+
+```bash
+python3 scripts/sync_battlemaster_maps.py --all \
+    --snapshot-out /tmp/lct-battlemaster.json
+python3 scripts/sync_battlemaster_maps.py --all \
+    --snapshot-in /tmp/lct-battlemaster.json --write
+```
+
+Before any source write, the updater requires complete 15-pair slot sets,
+matching catalog/payload identities, zero skipped terrain parts, valid
+deployment/layout-art mappings, unique identities, and a clean full-map
+validation against a temporary payload overlay. It preserves existing public
+card GUIDs and deck IDs. Semantically unchanged terrain retains its original
+bytes, avoiding a large no-op diff.
+
+`--write` stages every replacement before changing source, updates
+`TTSJSON/ftc_base.json`, `data/map_manifest.csv`, and `data/maps/` as one
+rollback-capable operation, then runs strict map validation, both Python test
+suites, the payload audit, and `compile.py --test`. A failed post-write check
+restores every affected source file. Use `--skip-compile-test` only when a debug
+build is deliberately unnecessary.
+
+`LCT - Pack 1` remains a composite pack with fixed slots:
 
 - Layout 1: `lct - ice colony`
 - Layout 2: `lct - lava temple v2.1`
 - Layout 3: `lct - mars base`
 
-Build and load a debug save, click `LCT P1` in the Battlemaster cache panel,
-wait for the `3/3` completion message, and save the table. The dedicated button
-temporarily includes public community/pending themes for this batch without
-changing the normal approved-only Battlemaster setting. Then preview and apply
-the replacement:
-
-```bash
-python3 import_battlemaster_static_maps.py /path/to/DebugTable.json --lct-pack-1
-python3 import_battlemaster_static_maps.py /path/to/DebugTable.json --lct-pack-1 --write
-python3 bake_battlemaster_cache.py --clear
-python3 validate_maps.py --require-map-tags && python3 compile.py --test
-```
-
-The importer refuses incomplete archives before writing anything. A successful
-write removes every old `map_crt_lct1` card, manifest row, and obsolete terrain
-payload, then installs exactly 45 static cards under the single
-`LCT - Pack 1` map-filter entry. That filter is opt-in by default, and its maps
-keep the Ice/Lava/Mars mats baked into their Battlemaster terrain.
+The DEBUG-gated `All 4`/`LCT P1` cache buttons and
+`import_battlemaster_static_maps.py` remain only as a legacy/offline fallback
+when a cache has been rebuilt with the current spawner. They are no longer part
+of the normal update path: their large persisted `LuaScriptState` forces TTS to
+repeatedly serialize tens of megabytes during save/rewind, which is the source
+of the long UI stalls. New
+legacy cache archives also record their reconstruction schema and footprint
+profile, so the importer rejects stale caches built with the former all-three-
+state behavior.

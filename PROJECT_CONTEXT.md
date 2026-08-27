@@ -4,25 +4,32 @@
 
 ## Snapshot
 
-- Reviewed: 2026-07-21
-- Branch/commit: `main` at local commit `695f1f0` (`additional dev tools for handling battlemaster maps`), one commit ahead of `origin/main` (`e03f480`) at review time.
-- History reviewed: all 340 commits reachable from all local/remote refs, from `d81bafc` (2026-04-06) through `695f1f0` (2026-07-21), plus focused diffs and per-file histories for the systems below.
+- Reviewed: 2026-08-27
+- Branch/commit: `main` at `3abefab` (`removed announcement`), aligned with `origin/main` before the external Battlemaster-sync working-tree implementation described below.
+- History reviewed: all 361 commits reachable from local/remote refs, from `d81bafc` (2026-04-06) through `3abefab` (2026-08-26), plus focused diffs and per-file histories for the systems below.
 - Project: a Tabletop Simulator (TTS) save for Warhammer 40,000 11th edition, forked from Hutber's FTC table and heavily refactored.
-- Current inventory: 255 manifest-listed competitive map cards across 15 source bags, plus 3 Combat Patrol payload cards outside the manifest. All 258 expected terrain payload files exist.
-- Validation at review time: 0 errors, 1 warning; all 255 manifest maps use v2 loader machinery; 25 Python behavioral tests pass.
-- Known validation warning: card `fd3d94` (`TnH vs Rec 1 - Tipping Point - T5S2`) has home/neutral objective tags but no required center/triangle pattern.
+- Current inventory: 330 manifest-listed competitive map cards across 15 source bags, plus 3 Combat Patrol payload cards outside the manifest. All 333 expected terrain payload files exist.
+- Validation at review time: 0 errors, 1 warning; all 330 manifest maps use v2 loader machinery. The map-validation suite has 31 tests; the external-sync suite has 23 (54 total).
+- Known validation warning: card `fd3d94` lacks the expected center/triangle objective-tag pattern.
 
-### Latest local commit at this snapshot
+### Active working-tree implementation at this snapshot
 
-Commit `695f1f0` is not yet on `origin/main`. It contains:
+Battlemaster updates are moving out of TTS. The new primary path consists of:
 
-- `CHANGELOG.md`: adds a top `v1.10.3` entry.
-- `TTSJSON/ftc_base_ui.xml`: expands the debug panel and adds an `All 3` Battlemaster cache button.
-- `TTSLUA/global.ttslua`: exposes the `All 3` debug action.
-- `TTSLUA/battlemasterDynamicSpawner.ttslua`: archives per-theme caches and sequences multi-theme population.
-- `scripts/import_battlemaster_static_maps.py`: adds an `--all-themes` import path using those archives.
+- `scripts/battlemaster_reconstruct.py`: a deterministic, pure-Python port of the Lua compact-catalog reconstruction logic.
+- `scripts/sync_battlemaster_maps.py`: public API fetch/snapshot, granular pack selection, strict preflight, rollback-capable source update, and post-write validation/compile.
+- `scripts/test_sync_battlemaster_maps.py`: reconstruction, selector, snapshot, and atomic LCT Pack 1 regression tests.
 
-Its new workflow is: populate Ruins, Desert, and BTTF sequentially in one debug table; archive each theme before the live one-theme cache is pruned; save once; import all three static map sets in one Python run.
+`--all-four` replaces the debug `All 4` workflow, `--lct-pack-1` replaces `LCT P1`, and `--all` updates both groups (225 cards). The 2026-08-27 live snapshot fetched only 45 shared geometry payloads and reconstructed 10,125 top-level TTS objects. Its applied sync preserved all 225 card GUIDs, corrected 165 card-art records, converted the 180 four-pack payloads to two-state footprints, and retained all 45 LCT payloads byte-for-byte. Post-write validation, 54 tests, payload audit, compile, and a second idempotence preview all passed; only the unrelated `fd3d94` objective-tag warning remains.
+
+Footprints have two explicit reconstruction profiles. `battlemaster-two-state`
+uses rugged terrain as state 1 and smooth terrain as state 2, matching
+`Legacy/2state.json`. `lct-three-state` uses the theme-specific custom bordered
+floor as state 1 and the same rugged/smooth terrains as states 2/3. Pack config,
+not the incidental presence of a theme `t` field, chooses the profile. The
+external updater preflights every footprint's count, ordering, paired URLs,
+transform, and tags. The legacy TTS path uses the same profiles and schema-tags
+its caches so the old all-three-state archives are rejected.
 
 ## The shortest useful mental model
 
@@ -58,10 +65,13 @@ The source JSON is deliberately incomplete as a playable artifact. The compiled 
 | `data/map_manifest.csv` | Map GUID, source bag, logical name, creator, type, display label, and eligibility. |
 | `data/maps/` | Extracted `objectJSONs = { ... }` terrain blobs, one per card GUID. |
 | `scripts/validate_maps.py` | Structural/cross-file validator used directly and as the compiler gate. |
-| `scripts/test_validate_maps.py` | 25 behavioral/regression tests for runtime contracts the structural validator cannot model. |
+| `scripts/test_validate_maps.py` | Behavioral/regression tests for runtime contracts the structural validator cannot model. |
+| `scripts/battlemaster_reconstruct.py` | Pure-Python port of Battlemaster template/theme/lite-payload reconstruction. |
+| `scripts/sync_battlemaster_maps.py` | Primary external Battlemaster updater: selectors, API snapshots, reconstruction, transactional install, validation, and test compile. |
+| `scripts/test_sync_battlemaster_maps.py` | External updater and reconstruction regression tests. |
 | `scripts/extract_map_payloads.py` / `map_payloads.py` / `audit_map_payloads.py` | Terrain payload extraction, shared helpers, and inventory/size audit. |
 | `scripts/normalize_map_card.py` | Converts foreign map cards to canonical machinery, tags, notes, credits, and GUID rules. |
-| `scripts/import_battlemaster_static_maps.py` | Converts a populated Battlemaster spawner cache into normal static LCT map cards and manifest rows. |
+| `scripts/import_battlemaster_static_maps.py` | Legacy fallback that converts a populated TTS spawner cache into static cards. Normal updates use `sync_battlemaster_maps.py`. |
 | `scripts/bake_battlemaster_cache.py` | Inspects/bakes/clears persisted spawner state. Static shipped maps should not require a warm runtime cache. |
 | `builds/` | Generated playable saves. Do not treat these as source. |
 
@@ -73,7 +83,7 @@ Run from the repository root unless a command says otherwise:
 
 ```bash
 python3 scripts/validate_maps.py --require-map-tags
-python3 -m unittest scripts.test_validate_maps
+python3 -m unittest scripts.test_validate_maps scripts.test_sync_battlemaster_maps
 python3 scripts/audit_map_payloads.py --strict
 python3 scripts/compile.py --test
 ```
@@ -216,9 +226,9 @@ Coherency performs one O(n²) full calculation on a capped selection, then becom
 
 `data/map_manifest.csv` is authoritative for normal map cards. At this snapshot it contains:
 
-- 45 each: T5S2, Cra5hNatural, Battlemaster BTTF Ruins, Battlemaster Desert, and BTTF.
-- 15 each: Zim and LCT Pack 1.
-- 255 eligible maps total, all currently tagged `map_type_comp`.
+- 45 each: T5S2, Cra5hNatural, LCT Pack 1, Battlemaster BTTF Ruins, Battlemaster Desert, BTTF/Grimdark, and Battlemaster Armageddon Ruins.
+- 15: Zim.
+- 330 eligible maps total, all currently tagged `map_type_comp`.
 - 15 source bags, corresponding to the 15 unordered/symmetric disposition matchups.
 
 At compile time the manifest becomes Global `MAP_INDEX`, keyed by card GUID with creator ID, creator display name, map type, and eligibility. This lets generation/filter code identify cards while they are still inside bags.
@@ -330,7 +340,7 @@ The shared draggable debug panel currently provides:
 - Red/Blue dice scan benchmarks (`getAllObjects` versus box `Physics.cast`).
 - Red roller known-vector RNG test.
 - Selected-GUID dump to a spawned tile, first removing stale dump tiles.
-- Battlemaster cache populate/check, per-theme population, and the `695f1f0` sequential `All 3` population workflow.
+- Legacy Battlemaster cache populate/check, per-theme population, `All 4`, and `LCT P1` workflows. Normal map refreshes now use the external Python sync command, avoiding TTS cache serialization.
 - Custom table-mat URL input forwarded to the start menu's mat logic.
 
 Other debug paths:
@@ -351,23 +361,25 @@ The historical sequence matters because the code contains both approaches:
 3. `3039dba` deliberately pivoted from runtime cache dependence to static map migration.
 4. Merge `7651fb8` brought in the static-card system and larger supporting UI/tool work.
 
-Shipped Battlemaster maps are now ordinary canonical cards in three creator sets, 45 maps each:
+Shipped API-derived maps are ordinary canonical cards in five creator sets, 45 maps each:
 
 - `map_crt_battlemaster_bttf_ruins` / Battlemaster - BTTF Ruins
 - `map_crt_battlemaster_armageddon_desert` / Battlemaster - Desert
 - `map_crt_battlemaster_bttf` / BTTF (UI override: Battlemaster - Grimdark)
+- `map_crt_battlemaster_armageddon_ruins` / Battlemaster - Armageddon Ruins
+- `map_crt_lct1` / LCT - Pack 1 (Ice slot 1, Lava slot 2, Mars slot 3)
 
 There must not be a fourth generic `map_crt_battlemaster` shipped set.
 
-The spawner remains valuable development infrastructure. It smart-syncs API manifests/themes/layout catalogs, prunes stale cache entries, reconstructs board-space mats/terrain/objective tags from templates and theme mappings, builds canonical loader scripts, and can return complete transient card JSON through an exactly-once callback. Network buttons are debug-only; cached static cards are the release path.
+The spawner remains legacy development infrastructure. It smart-syncs API manifests/themes/layout catalogs, prunes stale cache entries, reconstructs board-space mats/terrain/objective tags from templates and theme mappings, builds canonical loader scripts, and can return complete transient card JSON through an exactly-once callback. Network buttons are debug-only; cached static cards are the release path. Do not use `All 4` or `LCT P1` for routine updates: their persisted archives/card scripts make TTS serialize tens of megabytes on each save/rewind callback and cause the observed repeated UI stalls.
 
 The live spawner cache holds only one theme because each sync prunes payloads outside the incoming catalog. Commit `695f1f0` adds archives that deep-copy completed per-theme catalog/script data through a JSON round-trip, preventing later in-place pruning from mutating earlier snapshots.
 
-Static import is intentionally idempotent per creator: it removes the previous imported creator set, generates stable card/deck identifiers, preserves logical matchup/slot naming and layout-art compatibility, appends creator credit/tags, strips the transient provider hook, and leaves the compiler to inject the normal static map hook. After import, clear the shipped dynamic cache, validate strictly, test, and compile.
+The primary external sync is preview-first and idempotent per creator. It fetches community-inclusive theme discovery plus the exact selected catalogs, deduplicates the shared geometry requests, validates complete pair/slot sets and catalog/payload identities, reconstructs with zero tolerated skips, enforces the selected footprint profile, preserves existing card/deck identity, and retains byte-identical terrain when only generated GUIDs differ. `LCT Pack 1` is preflighted as one indivisible 45-card composite. A write is staged and rollback-capable, then strict validation, both unit suites, payload audit, and a test compile run before TTS inspection.
 
 ## History: why the architecture looks this way
 
-The complete history is unusually dense (340 commits in roughly three months), but these are the durable arcs:
+The complete history is unusually dense (361 commits in roughly five months), but these are the durable arcs:
 
 - **Apr 6-20 — FTC fork and table cleanup:** compiler rewrite, clock/VP/CP widgets, removal of legacy boards/tokens, deployment picker, early instant-spawn/roll behavior, and base UI cleanup.
 - **Apr 21-30 — overlay, xoshiro, and mission prototypes:** scoring overlay/phase integration, xoshiro128++ replaces host `rand`, automatic roller experiments, secondary managers/scoreboard, and first mission/disposition generator.
@@ -393,7 +405,7 @@ History pitfalls:
 ```bash
 git status --short --branch
 python3 scripts/validate_maps.py --require-map-tags
-python3 -m unittest scripts.test_validate_maps
+python3 -m unittest scripts.test_validate_maps scripts.test_sync_battlemaster_maps
 ```
 
 Read the active diff first. `ftc_base.json` and Lua files are often edited together through a TTS export/import workflow; unrelated modifications belong to the current developer.
@@ -403,7 +415,7 @@ Read the active diff first. `ftc_base.json` and Lua files are often edited toget
 ```bash
 python3 -m py_compile scripts/*.py
 python3 scripts/validate_maps.py --require-map-tags
-python3 -m unittest scripts.test_validate_maps
+python3 -m unittest scripts.test_validate_maps scripts.test_sync_battlemaster_maps
 python3 scripts/compile.py --test
 ```
 

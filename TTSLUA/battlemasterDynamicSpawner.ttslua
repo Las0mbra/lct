@@ -28,17 +28,17 @@ BM_DEFAULT_CARD_FACE_URL = BM_DEFAULT_CARD_FACE_URL or "https://steamusercontent
 BM_INCLUDE_BATTLEMAT = true
 BM_BATTLEMAT_POS_Y = BM_BATTLEMAT_POS_Y or -10.13
 
--- Built-in terrain footprint plates, matched to a template by width/height.
--- Verified against a live export straight from the real Battlemaster spawner
--- (GMNotes="BattlemasterSpawned", see Legacy/3state.json): every footprint is a
--- three-state object where the TOP-LEVEL/default state is the plain "no-border"
--- floor plate, and states 2/3 are the rugged and smooth terrain looks -- both
--- always present as manual alternates, never selected "correct vs opposite" by
--- template name. `plate` is the shape slug Battlemaster's own CDN uses (each
--- shape has its own numeric prefix, not a shared one) -- guessing a single
--- prefix for every shape 404s for 4 of 5. The floor plate's diffuse is
--- per-theme (see themeFootprintDiffuseUrl below); this constant is only the
--- fallback for themes that don't provide one (e.g. BTTF Ruins/Armageddon Ruins).
+-- Built-in terrain footprints, matched to a template by width/height. Ordinary
+-- Battlemaster themes use the two-state structure verified in Legacy/qq2.json --
+-- a live capture of Battlemaster's own spawner output (GMNotes="BattlemasterSpawned"
+-- on every piece), all 16 footprints across all 5 known shapes: rugged assetbundle
+-- as the top-level/default state and smooth as state 2. LCT themes use three
+-- states: their custom bordered floor first, then those same rugged/smooth
+-- terrains as states 2/3. `plate` is the shape slug used by Battlemaster's CDN;
+-- each shape has its own numeric prefix.
+BM_RECONSTRUCTION_SCHEMA_VERSION = 2
+BM_FOOTPRINT_PROFILE_BATTLEMASTER = "battlemaster-two-state"
+BM_FOOTPRINT_PROFILE_LCT = "lct-three-state"
 BM_TERRAIN_PLATE_MESH_BASE_URL = BM_TERRAIN_PLATE_MESH_BASE_URL
   or "https://assets.battlemaster.online/tts/terrain-plates/v1/"
 BM_TERRAIN_PLATE_DIFFUSE_URL = BM_TERRAIN_PLATE_DIFFUSE_URL
@@ -100,12 +100,10 @@ BM_REQUESTED_SYNC_THEME_ID = BM_REQUESTED_SYNC_THEME_ID or nil
 -- deliberately not persisted: normal Battlemaster workflows remain approved-only,
 -- while a curated debug batch may explicitly fetch community/pending themes.
 BM_SYNC_APPROVED_ONLY_OVERRIDE = BM_SYNC_APPROVED_ONLY_OVERRIDE or nil
--- Debug-only override selecting the "5mm-border" footprint plate mesh instead
--- of the default "no-border" one (both verified live on Battlemaster's CDN for
--- every plate shape). Not persisted, reset at the start/end of every populate
--- like BM_SYNC_APPROVED_ONLY_OVERRIDE above -- set per populate via
--- params.footprintBorder, e.g. for the "LCT P1" button's own visual preference.
-BM_FOOTPRINT_BORDER_ENABLED = BM_FOOTPRINT_BORDER_ENABLED or false
+-- Transient reconstruction profile selected per debug populate. The legacy
+-- params.footprintBorder boolean is still accepted below so older Global scripts
+-- opt into the same LCT three-state structure instead of silently changing shape.
+BM_FOOTPRINT_PROFILE = BM_FOOTPRINT_PROFILE or BM_FOOTPRINT_PROFILE_BATTLEMASTER
 -- Per-theme snapshots of {layoutCatalog, cardScriptCache} taken when a debug
 -- populate completes. The live cache only ever holds ONE theme (each sync's
 -- pruneLayoutPayloadCache drops entries not in the incoming catalog), so these
@@ -128,6 +126,7 @@ end
 function onSave()
   return JSON.encode({
     version = 1,
+    reconstructionSchemaVersion = BM_RECONSTRUCTION_SCHEMA_VERSION,
     archetypeAIndex = BM_ARCHETYPE_A_INDEX,
     archetypeBIndex = BM_ARCHETYPE_B_INDEX,
     themeIndex = BM_THEME_INDEX,
@@ -852,6 +851,8 @@ function archiveCurrentThemeCache(themeId, themeName)
   if type(themeId) ~= "string" or themeId == "" then return end
   BM_THEME_ARCHIVES[themeId] = {
     themeName = themeName,
+    reconstructionSchemaVersion = BM_RECONSTRUCTION_SCHEMA_VERSION,
+    footprintProfile = BM_FOOTPRINT_PROFILE,
     layoutCatalog = copyTableTree(BM_LAYOUT_CATALOG),
     cardScriptCache = copyTableTree(BM_CARD_SCRIPT_CACHE),
   }
@@ -872,7 +873,15 @@ function debugPopulateFullCache(params)
   end
   local requestedThemeId = tostring(type(params) == "table" and params.themeId or "")
   local requestedThemeName = tostring(type(params) == "table" and params.themeName or requestedThemeId)
-  BM_FOOTPRINT_BORDER_ENABLED = params.footprintBorder == true
+  local requestedFootprintProfile = tostring(params.footprintProfile or "")
+  if requestedFootprintProfile == "" and (params.customFootprint == true or params.footprintBorder == true) then
+    requestedFootprintProfile = BM_FOOTPRINT_PROFILE_LCT
+  end
+  if requestedFootprintProfile == BM_FOOTPRINT_PROFILE_LCT then
+    BM_FOOTPRINT_PROFILE = BM_FOOTPRINT_PROFILE_LCT
+  else
+    BM_FOOTPRINT_PROFILE = BM_FOOTPRINT_PROFILE_BATTLEMASTER
+  end
   BM_SYNC_APPROVED_ONLY_OVERRIDE = nil
   if type(params.approvedOnly) == "boolean" then
     BM_SYNC_APPROVED_ONLY_OVERRIDE = params.approvedOnly
@@ -1006,6 +1015,8 @@ function debugPopulateAllThemes(params)
       themeId = entry.id,
       themeName = entry.name,
       approvedOnly = params.approvedOnly,
+      footprintProfile = params.footprintProfile,
+      customFootprint = params.customFootprint,
       footprintBorder = params.footprintBorder,
       onComplete = function(ok, err)
         if not ok then
@@ -1097,9 +1108,8 @@ end
 
 function terrainPlateMeshUrl(asset)
   if asset == nil or asset.plate == nil then return "" end
-  local suffix = BM_FOOTPRINT_BORDER_ENABLED and "5mm-border" or "no-border"
   return BM_TERRAIN_PLATE_MESH_BASE_URL
-    .. "battlemaster-rugged-" .. tostring(asset.plate) .. "-" .. suffix .. ".obj"
+    .. "battlemaster-rugged-" .. tostring(asset.plate) .. "-5mm-border.obj"
 end
 
 -- Union objective decoder: covers the API spec (c/c1/c2) AND the legacy V2 code's t; all map to
@@ -1140,12 +1150,10 @@ function themeUrl(index)
   return value ~= nil and tostring(value) or ""
 end
 
--- The theme catalog's top-level `t` field (present on some themes, absent on
--- others -- e.g. present for Ice Colony/Lava/Mars/Armageddon Desert, absent for
--- BTTF Ruins/Armageddon Ruins/Grimdark) is {footprintDiffuseUrlIndex, -1, 1}:
--- a per-theme floor texture for the footprint plate, verified against the live
--- API for all three LCT themes. Falls back to the generic constant for themes
--- that don't provide one.
+-- The theme catalog's top-level `t` field is
+-- {footprintDiffuseUrlIndex, -1, 1}. It supplies state 1's custom floor texture
+-- for LCT's three-state footprint profile. Ordinary Battlemaster profiles never
+-- build a floor plate and therefore do not consume this value.
 function themeFootprintDiffuseUrl()
   if type(BM_THEME_PAYLOAD) ~= "table" or type(BM_THEME_PAYLOAD.t) ~= "table" then
     return BM_TERRAIN_PLATE_DIFFUSE_URL
@@ -1153,6 +1161,15 @@ function themeFootprintDiffuseUrl()
   local url = themeUrl(BM_THEME_PAYLOAD.t[1])
   if url == "" then return BM_TERRAIN_PLATE_DIFFUSE_URL end
   return url
+end
+
+function buildTerrainAssetState(asset, style, transform)
+  local state = makeCommonObject("Custom_Assetbundle", transform, "")
+  state.CustomAssetbundle = {
+    AssetbundleURL = terrainAssetUrl(asset, style), AssetbundleSecondaryURL = "",
+    MaterialIndex = 0, TypeIndex = 0, LoopingEffectIndex = 0,
+  }
+  return state
 end
 
 -- Plain object table in BOARD coordinates. Adaptation from V2: NO GMNotes marker (the canonical
@@ -1206,7 +1223,9 @@ function buildBattlematFromTheme()
   return objectState
 end
 
--- Returns a terrain-plate object table (board space, no GMNotes) or nil if no asset matches.
+-- Returns one footprint object (board space, no GMNotes) or nil if no asset
+-- matches. Battlemaster is rugged/smooth (states 1/2); LCT prepends its custom
+-- bordered floor and exposes rugged/smooth as states 2/3.
 function buildTerrainPlate(instance, template)
   local width = tonumber(template[2]) or 1
   local height = tonumber(template[3]) or 1
@@ -1226,28 +1245,23 @@ function buildTerrainPlate(instance, template)
   local posY = (mirrorCode == 1 or mirrorCode == 2) and 1.02 or 0.980388
   local transform = makeTransform(centerX + pivot.x, posY, centerY + pivot.y, normalizeRotation(360 - rotation), {x=1, y=1, z=1}, extraRot)
 
-  -- Default/top-level state is the plain "no-border" floor plate -- verified
-  -- against a live Battlemaster export (Legacy/3state.json). Both terrain looks
-  -- are manual alternates; the API never picks one as "correct" for a template.
-  local objectState = makeCommonObject("Custom_Model", transform, "")
-  objectState.CustomMesh = {
-    MeshURL = terrainPlateMeshUrl(asset), DiffuseURL = themeFootprintDiffuseUrl(),
-    NormalURL = "", ColliderURL = "", Convex = false, MaterialIndex = 3, TypeIndex = 4,
-    CustomShader = {SpecularColor = {r=1, g=1, b=1}, SpecularIntensity = 0, SpecularSharpness = 2, FresnelStrength = 0},
-    CastShadows = true,
-  }
-
-  local ruggedState = makeCommonObject("Custom_Assetbundle", transform, "")
-  ruggedState.CustomAssetbundle = {
-    AssetbundleURL = terrainAssetUrl(asset, "rugged"), AssetbundleSecondaryURL = "",
-    MaterialIndex = 0, TypeIndex = 0, LoopingEffectIndex = 0,
-  }
-  local smoothState = makeCommonObject("Custom_Assetbundle", transform, "")
-  smoothState.CustomAssetbundle = {
-    AssetbundleURL = terrainAssetUrl(asset, "smooth"), AssetbundleSecondaryURL = "",
-    MaterialIndex = 0, TypeIndex = 0, LoopingEffectIndex = 0,
-  }
-  objectState.States = {["2"] = ruggedState, ["3"] = smoothState}
+  local objectState = nil
+  if BM_FOOTPRINT_PROFILE == BM_FOOTPRINT_PROFILE_LCT then
+    objectState = makeCommonObject("Custom_Model", transform, "")
+    objectState.CustomMesh = {
+      MeshURL = terrainPlateMeshUrl(asset), DiffuseURL = themeFootprintDiffuseUrl(),
+      NormalURL = "", ColliderURL = "", Convex = false, MaterialIndex = 3, TypeIndex = 4,
+      CustomShader = {SpecularColor = {r=1, g=1, b=1}, SpecularIntensity = 0, SpecularSharpness = 2, FresnelStrength = 0},
+      CastShadows = true,
+    }
+    local ruggedState = buildTerrainAssetState(asset, "rugged", transform)
+    local smoothState = buildTerrainAssetState(asset, "smooth", transform)
+    objectState.States = {["2"] = ruggedState, ["3"] = smoothState}
+  else
+    objectState = buildTerrainAssetState(asset, "rugged", transform)
+    local smoothState = buildTerrainAssetState(asset, "smooth", transform)
+    objectState.States = {["2"] = smoothState}
+  end
   applyTagsToObject(objectState, objectiveTagsFromInstance(instance))
   return objectState
 end
@@ -1567,10 +1581,11 @@ function stringChecksum(text)
 end
 
 function cardScriptBuildKey()
-  return "machinery:" .. tostring(string.len(BM_MAP_CARD_MACHINERY)) .. ":" .. tostring(stringChecksum(BM_MAP_CARD_MACHINERY))
+  return "reconstruction:" .. tostring(BM_RECONSTRUCTION_SCHEMA_VERSION)
+    .. "|machinery:" .. tostring(string.len(BM_MAP_CARD_MACHINERY)) .. ":" .. tostring(stringChecksum(BM_MAP_CARD_MACHINERY))
     .. "|theme:" .. tostring(BM_THEME_PAYLOAD_KEY or "")
     .. "|battlemat:" .. tostring(BM_INCLUDE_BATTLEMAT == true)
-    .. "|footprintBorder:" .. tostring(BM_FOOTPRINT_BORDER_ENABLED == true)
+    .. "|footprintProfile:" .. tostring(BM_FOOTPRINT_PROFILE)
 end
 
 function cachedCardScriptEntry(payloadKey)

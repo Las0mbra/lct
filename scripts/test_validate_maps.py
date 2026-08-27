@@ -154,24 +154,23 @@ class ValidateMapsTest(unittest.TestCase):
         self.assertIn('onClick="debugPopulateBattlemasterLctPack1Cache"', ui_xml)
         self.assertIn("BM_SYNC_APPROVED_ONLY_OVERRIDE", spawner_lua)
         self.assertIn("BM_TERRAIN_PLATE_MESH_BASE_URL", spawner_lua)
-        self.assertIn("battlemaster-rugged-\" .. tostring(asset.plate) .. \"-\" .. suffix .. \".obj", spawner_lua)
-        # LCT P1's own visual preference (bordered plate) is opt-in per populate
-        # via params.footprintBorder, wired through debugPopulateAllThemes and
-        # baked into the cache build key so toggling it invalidates stale scripts.
-        self.assertIn("BM_FOOTPRINT_BORDER_ENABLED", spawner_lua)
-        self.assertIn("footprintBorder = true", global_lua)
-        self.assertIn("footprintBorder:", spawner_lua)
-        # Verified against a live Battlemaster export (Legacy/3state.json): the
-        # default/top-level state is the plain floor plate, and both terrain
-        # looks are manual alternates -- neither is picked as "correct".
-        self.assertIn('local objectState = makeCommonObject("Custom_Model", transform, "")', spawner_lua)
+        self.assertIn('battlemaster-rugged-" .. tostring(asset.plate) .. "-5mm-border.obj', spawner_lua)
+        # Footprint shape is a theme-family contract: ordinary Battlemaster maps
+        # are rugged/smooth states 1/2, while LCT prepends its bordered custom
+        # texture and uses states 2/3 for the same rugged/smooth terrains.
+        self.assertIn('BM_FOOTPRINT_PROFILE_BATTLEMASTER = "battlemaster-two-state"', spawner_lua)
+        self.assertIn('BM_FOOTPRINT_PROFILE_LCT = "lct-three-state"', spawner_lua)
+        self.assertIn('footprintProfile = "lct-three-state"', global_lua)
+        self.assertIn("footprintProfile:", spawner_lua)
+        self.assertIn("BM_RECONSTRUCTION_SCHEMA_VERSION = 2", spawner_lua)
+        self.assertIn('objectState = buildTerrainAssetState(asset, "rugged", transform)', spawner_lua)
+        self.assertIn('objectState.States = {["2"] = smoothState}', spawner_lua)
+        self.assertIn('objectState = makeCommonObject("Custom_Model", transform, "")', spawner_lua)
         self.assertIn('objectState.States = {["2"] = ruggedState, ["3"] = smoothState}', spawner_lua)
         for shape_id in ("01-shortline", "02-smallrect", "03-longline", "04-bigrect", "05-triangle"):
             self.assertIn(f'plate="{shape_id}"', spawner_lua)
-        # theme.t (present on some themes, absent on others -- verified live for
-        # all three LCT themes plus Armageddon Desert) points at the per-theme
-        # footprint floor diffuse; BM_TERRAIN_PLATE_DIFFUSE_URL is only the
-        # fallback for themes without one.
+        # theme.t supplies LCT's custom state-1 floor texture; standard
+        # Battlemaster footprints do not build a floor-plate state.
         self.assertIn("function themeFootprintDiffuseUrl()", spawner_lua)
         self.assertIn("DiffuseURL = themeFootprintDiffuseUrl()", spawner_lua)
         for config in battlemaster_import.LCT_PACK_1_SLOT_THEMES:
@@ -199,6 +198,8 @@ class ValidateMapsTest(unittest.TestCase):
                 }
             archives[config["theme_id"]] = {
                 "themeName": config["theme_name"],
+                "reconstructionSchemaVersion": battlemaster_import.RECONSTRUCTION_SCHEMA_VERSION,
+                "footprintProfile": battlemaster_import.FOOTPRINT_PROFILE_LCT,
                 "layoutCatalog": {"layouts": layouts},
                 "cardScriptCache": scripts,
             }
@@ -227,6 +228,18 @@ class ValidateMapsTest(unittest.TestCase):
         state["themeArchives"][ice_id]["layoutCatalog"]["layouts"].pop()
 
         with self.assertRaisesRegex(ValueError, r"layout 1 has 14 map\(s\); expected 15"):
+            battlemaster_import.prepare_composite_layouts(
+                state, battlemaster_import.LCT_PACK_1_SLOT_THEMES, pairs
+            )
+
+    def test_lct_composite_rejects_stale_two_state_archive(self):
+        state, pairs = self._synthetic_lct_composite_state()
+        ice_id = battlemaster_import.LCT_PACK_1_SLOT_THEMES[0]["theme_id"]
+        state["themeArchives"][ice_id]["footprintProfile"] = (
+            battlemaster_import.FOOTPRINT_PROFILE_BATTLEMASTER
+        )
+
+        with self.assertRaisesRegex(ValueError, "expected 'lct-three-state'"):
             battlemaster_import.prepare_composite_layouts(
                 state, battlemaster_import.LCT_PACK_1_SLOT_THEMES, pairs
             )

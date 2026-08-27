@@ -1566,7 +1566,7 @@ function debugPopulateBattlemasterLctPack1Cache(player)
     spawner.call("debugPopulateAllThemes", {
         playerColor = playerColor,
         approvedOnly = false,
-        footprintBorder = true,
+        footprintProfile = "lct-three-state",
         themes = {
             {id = LCT_PACK_1_ICE_THEME_ID, name = "lct - ice colony"},
             {id = LCT_PACK_1_LAVA_THEME_ID, name = "lct - lava temple v2.1"},
