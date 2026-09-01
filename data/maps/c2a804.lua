@@ -22,9 +22,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345097959,
-    "g": 0.345097959,
-    "b": 0.345097959
+    "r": 0.345097452,
+    "g": 0.345097452,
+    "b": 0.345097452
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -79,7 +79,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -91,6 +91,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Pipes"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -211,7 +214,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -223,6 +226,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "CO"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -542,7 +548,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -554,6 +560,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Small L flip"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -672,7 +681,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -684,6 +693,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Pipes"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -812,9 +824,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.3450979,
-    "g": 0.3450979,
-    "b": 0.3450979
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "Tags": [
     "obj_home_blue"
@@ -880,9 +892,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345097959,
-    "g": 0.345097959,
-    "b": 0.345097959
+    "r": 0.345097452,
+    "g": 0.345097452,
+    "b": 0.345097452
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -937,7 +949,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -949,6 +961,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "CO"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -1276,9 +1291,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345097959,
-    "g": 0.345097959,
-    "b": 0.345097959
+    "r": 0.345097452,
+    "g": 0.345097452,
+    "b": 0.345097452
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -1333,7 +1348,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -1345,6 +1360,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Small L flip"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -1398,7 +1416,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -1410,6 +1428,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Small L"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -1463,7 +1484,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -1475,6 +1496,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Small L flip"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -1536,9 +1560,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345097959,
-    "g": 0.345097959,
-    "b": 0.345097959
+    "r": 0.345097452,
+    "g": 0.345097452,
+    "b": 0.345097452
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -1593,7 +1617,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Tower = Dense\nWalls = Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -1605,6 +1629,10 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Short Barrier",
+    "Tower"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -1798,9 +1826,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345097959,
-    "g": 0.345097959,
-    "b": 0.345097959
+    "r": 0.345097452,
+    "g": 0.345097452,
+    "b": 0.345097452
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -1863,9 +1891,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.3450979,
-    "g": 0.3450979,
-    "b": 0.3450979
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "Tags": [
     "obj_neutral"
@@ -1923,7 +1951,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -1935,6 +1963,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "GH"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -2247,14 +2278,14 @@ objectJSONs = {
     "posY": 1.09310293,
     "posZ": -12.023735,
     "rotX": 3.56355122E-05,
-    "rotY": 0.02880616,
+    "rotY": 0.0288061667,
     "rotZ": 3.815528E-05,
     "scaleX": 1.0,
     "scaleY": 1.0,
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -2266,6 +2297,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Generator"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -2386,7 +2420,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -2398,6 +2432,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "EF"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -2711,7 +2748,7 @@ objectJSONs = {
     "posZ": -0.727918148,
     "rotX": -5.9887293E-07,
     "rotY": 262.2896,
-    "rotZ": 5.93469878E-08,
+    "rotZ": 5.93470126E-08,
     "scaleX": 1.0,
     "scaleY": 1.0,
     "scaleZ": 1.0
@@ -2725,9 +2762,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.3450979,
-    "g": 0.3450979,
-    "b": 0.3450979
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "Tags": [
     "obj_center"
@@ -2779,13 +2816,13 @@ objectJSONs = {
     "posZ": 4.031897,
     "rotX": -4.876629E-06,
     "rotY": 82.3900146,
-    "rotZ": 6.19207367E-06,
+    "rotZ": 6.19207458E-06,
     "scaleX": 1.0,
     "scaleY": 1.0,
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -2797,6 +2834,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Corner"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -2850,7 +2890,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -2862,6 +2902,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "AB"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -3173,7 +3216,7 @@ objectJSONs = {
     "posX": -3.98119116,
     "posY": 1.00077617,
     "posZ": -14.9664078,
-    "rotX": -6.390317E-07,
+    "rotX": -6.390319E-07,
     "rotY": 270.0,
     "rotZ": 3.30460665E-07,
     "scaleX": 1.0,
@@ -3189,9 +3232,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345097959,
-    "g": 0.345097959,
-    "b": 0.345097959
+    "r": 0.345097452,
+    "g": 0.345097452,
+    "b": 0.345097452
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -3246,7 +3289,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -3258,6 +3301,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Long Barrier"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -3319,9 +3365,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.3450979,
-    "g": 0.3450979,
-    "b": 0.3450979
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "Tags": [
     "obj_center"
@@ -3379,7 +3425,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -3391,6 +3437,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "AB"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -3702,7 +3751,7 @@ objectJSONs = {
     "posX": 3.98119116,
     "posY": 0.9803881,
     "posZ": 14.9664078,
-    "rotX": -6.390316E-07,
+    "rotX": -6.39031839E-07,
     "rotY": 90.0,
     "rotZ": 3.30460665E-07,
     "scaleX": 1.0,
@@ -3718,9 +3767,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345097959,
-    "g": 0.345097959,
-    "b": 0.345097959
+    "r": 0.345097452,
+    "g": 0.345097452,
+    "b": 0.345097452
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -3775,7 +3824,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -3787,6 +3836,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Long Barrier"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -3848,9 +3900,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.3450979,
-    "g": 0.3450979,
-    "b": 0.3450979
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "Tags": [
     "obj_neutral"
@@ -3908,7 +3960,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -3920,6 +3972,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "GH"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -4239,7 +4294,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -4251,6 +4306,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "EF"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -4578,9 +4636,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345097959,
-    "g": 0.345097959,
-    "b": 0.345097959
+    "r": 0.345097452,
+    "g": 0.345097452,
+    "b": 0.345097452
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -4635,7 +4693,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -4647,6 +4705,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Corner"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -4700,7 +4761,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -4712,6 +4773,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Generator"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -4840,9 +4904,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345097959,
-    "g": 0.345097959,
-    "b": 0.345097959
+    "r": 0.345097452,
+    "g": 0.345097452,
+    "b": 0.345097452
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -4897,7 +4961,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Tower = Dense\nWalls = Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -4909,6 +4973,10 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Short Barrier",
+    "Tower"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -5102,9 +5170,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345097959,
-    "g": 0.345097959,
-    "b": 0.345097959
+    "r": 0.345097452,
+    "g": 0.345097452,
+    "b": 0.345097452
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -5159,7 +5227,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -5171,6 +5239,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Small L flip"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -5232,9 +5303,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.3450979,
-    "g": 0.3450979,
-    "b": 0.3450979
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "Tags": [
     "obj_home_red"
@@ -5292,7 +5363,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -5304,6 +5375,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Small L"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,

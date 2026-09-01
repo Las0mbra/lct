@@ -8,9 +8,9 @@ emergency offline recovery when the cache was rebuilt with the current spawner.
 
 Single-theme workflow:
   1. Build/load a debug table and click the debug "BM cache <theme>" button that
-     matches the terrain theme you want (BM cache Ruins / Desert / BTTF), not the
-     generic "BM cache populate". The spawner stores fetched API payloads plus
-     prebuilt card scripts in its LuaScriptState.
+     matches the terrain theme you want (BTTF Ruins / BTTF / Armageddon Ruins),
+     not the generic "BM cache populate". The spawner stores fetched API payloads
+     plus prebuilt card scripts in its LuaScriptState.
   2. Save that table.
   3. Run this script with the saved JSON, passing --creator-tag/--creator-display
      for that theme. It copies the terrain blobs into canonical LCT map cards,
@@ -21,10 +21,10 @@ Single-theme workflow:
      cache blob (the static cards carry the geometry; the spawner no longer needs
      a warm cache), then validate and compile.
 
-All-themes workflow (pairs with the debug "All 4" button):
-  1. Click "All 4" instead of a single theme button. The spawner populates BTTF
-     Ruins, Desert, BTTF, and Armageddon Ruins back to back and archives each
-     one's layout catalog + card script cache under its theme id
+All-themes workflow (pairs with the debug "All BM" button):
+  1. Click "All BM" instead of a single theme button. The spawner populates BTTF
+     Ruins, BTTF, and Armageddon Ruins back to back and archives each one's
+     layout catalog + card script cache under its theme id
      (BM_THEME_ARCHIVES in battlemasterDynamicSpawner.ttslua) as it finishes —
      this is necessary because the live cache only ever holds the LAST theme
      synced (each new theme's sync prunes the previous theme's cached
@@ -32,7 +32,7 @@ All-themes workflow (pairs with the debug "All 4" button):
   2. Save that table once.
   3. Run this script with `--all-themes` instead of --creator-tag/--creator-display.
      It pulls each theme's archived catalog/scripts out of the one saved file and
-     runs the same import (remove-old, add-new, extend manifest) for all four
+     runs the same import (remove-old, add-new, extend manifest) for all three
      creator tags in a single pass.
   4. Same `bake_battlemaster_cache.py --clear` + validate/compile finish as above.
 
@@ -52,7 +52,7 @@ Composite LCT Pack 1 workflow (pairs with the debug "LCT P1" button):
 Each terrain theme ships as its own creator filter (e.g.
 map_crt_battlemaster_bttf_ruins / "Battlemaster - BTTF Ruins"). The default
 map_crt_battlemaster / "Battlemaster" creator is NOT shipped — run with the
-themed flags (or --all-themes) or you will create a duplicate fourth set of cards.
+themed flags (or --all-themes) or you will create an extra duplicate set of cards.
 
 The imported cards are static map cards. The Battlemaster provider hook is
 intentionally stripped; compile.py will inject the normal map-card load hook.
@@ -88,9 +88,9 @@ OLD_CREATOR_TAGS = {"map_crt_battlemaster_default", CREATOR_TAG}
 DEFAULT_BACK_URL = "https://steamusercontent-a.akamaihd.net/ugc/10791071673581242/E710A69735A01208EFCAE0A13B7FD487275388FB/"
 DEFAULT_FACE_URL = DEFAULT_BACK_URL
 
-# Mirrors BATTLEMASTER_BTTF_RUINS_THEME_ID / BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID /
-# BATTLEMASTER_BTTF_THEME_ID / BATTLEMASTER_ARMAGEDDON_RUINS_THEME_ID and the
-# BTTF Ruins/Desert/BTTF/Arma Ruins debug buttons in TTSLUA/global.ttslua.
+# Mirrors BATTLEMASTER_BTTF_RUINS_THEME_ID / BATTLEMASTER_BTTF_THEME_ID /
+# BATTLEMASTER_ARMAGEDDON_RUINS_THEME_ID and the BTTF Ruins/BTTF/Arma Ruins
+# debug buttons in TTSLUA/global.ttslua.
 # --all-themes uses this to pull each theme's BM_THEME_ARCHIVES entry out of
 # one saved table and import it under its existing shipped creator tag, all
 # in a single run.
@@ -99,12 +99,6 @@ KNOWN_BATTLEMASTER_THEMES = [
         "theme_id": "tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5",
         "creator_tag": "map_crt_battlemaster_bttf_ruins",
         "creator_display": "Battlemaster - BTTF Ruins",
-        "footprint_profile": FOOTPRINT_PROFILE_BATTLEMASTER,
-    },
-    {
-        "theme_id": "tts-theme-6c414c7a-9827-48cf-a89e-aa8ddff66491",
-        "creator_tag": "map_crt_battlemaster_armageddon_desert",
-        "creator_display": "Battlemaster - Desert",
         "footprint_profile": FOOTPRINT_PROFILE_BATTLEMASTER,
     },
     {
@@ -808,9 +802,9 @@ def main():
     ap.add_argument("--creator-display", default=None, help="Creator/filter label to append to imported card names. Omit with --all-themes/--lct-pack-1.")
     ap.add_argument("--theme-id", default=None, help="Pull this Battlemaster theme id's archived cache (BM_THEME_ARCHIVES) instead of the spawner's top-level cache. Omit with --all-themes/--lct-pack-1.")
     ap.add_argument("--all-themes", action="store_true",
-                     help="Import all four shipped Battlemaster themes (BTTF Ruins, Armageddon Desert, BTTF, "
-                          "Armageddon Ruins) from their BM_THEME_ARCHIVES entries in one run -- pairs with the "
-                          "debug 'All 4' button. Mutually exclusive with --creator-tag/--creator-display/--theme-id.")
+                     help="Import all three shipped Battlemaster themes (BTTF Ruins, BTTF, Armageddon Ruins) "
+                          "from their BM_THEME_ARCHIVES entries in one run -- pairs with the debug 'All BM' "
+                          "button. Mutually exclusive with --creator-tag/--creator-display/--theme-id.")
     ap.add_argument("--lct-pack-1", action="store_true",
                     help="Replace map_crt_lct1 with the 45-map composite pack from the debug 'LCT P1' archives: "
                          "Ice layout 1, Lava layout 2, Mars layout 3. Mutually exclusive with all creator/theme flags.")

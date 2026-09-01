@@ -79,12 +79,11 @@
     </HorizontalLayout>
     <HorizontalLayout spacing="10" preferredHeight="70" flexibleHeight="0" childForceExpandWidth="true">
       <Button onClick="debugPopulateBattlemasterBttfRuinsCache" color="#2E293D" textColor="#C7B8FF" fontSize="22" tooltip="Debug only: populate the Battlemaster cache using the BTTF Ruins theme">BTTF Ruins</Button>
-      <Button onClick="debugPopulateBattlemasterArmageddonDesertCache" color="#332B1F" textColor="#FFC76B" fontSize="22" tooltip="Debug only: populate the Battlemaster cache using the Armageddon Desert theme">Desert</Button>
       <Button onClick="debugPopulateBattlemasterBttfCache" color="#29303D" textColor="#8CD9FF" fontSize="22" tooltip="Debug only: populate the Battlemaster cache using the Grimdark Calibration/BTTF theme">BTTF</Button>
       <Button onClick="debugPopulateBattlemasterArmageddonRuinsCache" color="#331F29" textColor="#FF9CC7" fontSize="22" tooltip="Debug only: populate the Battlemaster cache using the Armageddon Ruins theme">Arma Ruins</Button>
     </HorizontalLayout>
     <HorizontalLayout spacing="10" preferredHeight="70" flexibleHeight="0" childForceExpandWidth="true">
-      <Button onClick="debugPopulateBattlemasterAllCache" color="#243D2E" textColor="#8CFFC7" fontSize="22" tooltip="Debug only: populate and archive BTTF Ruins, Desert, BTTF, and Armageddon Ruins in one go -- one save afterward covers all four themes">All 4</Button>
+      <Button onClick="debugPopulateBattlemasterAllCache" color="#243D2E" textColor="#8CFFC7" fontSize="22" tooltip="Debug only: populate and archive BTTF Ruins, BTTF, and Armageddon Ruins in one go -- one save afterward covers all three themes">All BM</Button>
       <Button onClick="debugPopulateBattlemasterLctPack1Cache" color="#25364A" textColor="#9FE8FF" fontSize="22" tooltip="Debug only: archive LCT Ice, Lava, and Mars for the composite LCT Pack 1 import (layouts 1/2/3 respectively)">LCT P1</Button>
     </HorizontalLayout>
 

@@ -22,6 +22,30 @@ Battlemaster updates are moving out of TTS. The new primary path consists of:
 
 `--all-four` replaces the debug `All 4` workflow, `--lct-pack-1` replaces `LCT P1`, and `--all` updates both groups (225 cards). The 2026-08-27 live snapshot fetched only 45 shared geometry payloads and reconstructed 10,125 top-level TTS objects. Its applied sync preserved all 225 card GUIDs, corrected 165 card-art records, converted the 180 four-pack payloads to two-state footprints, and retained all 45 LCT payloads byte-for-byte. Post-write validation, 54 tests, payload audit, compile, and a second idempotence preview all passed; only the unrelated `fd3d94` objective-tag warning remains.
 
+### Working-tree delta (2026-09-01)
+
+Cra5hNatural (45 cards), Zim (15 cards), and Battlemaster - Desert (45 cards)
+have been retired. The current source inventory is 225 competitive maps (45 each
+for T5S2, LCT Pack 1, BTTF Ruins, BTTF/Grimdark, and Armageddon Ruins), plus the
+3 Combat Patrol payload cards. The deployment fallback lists now use the retained
+T5S2 set. The external updater exposes the three remaining Battlemaster packs via
+`--all-battlemaster` (with `--all-four` retained only as a compatibility alias),
+and `--all` covers those packs plus LCT Pack 1 (180 cards). A repeatable
+`--pack KEY` selector is generated from `PACKS`, so a newly configured pack is
+selectable without adding a dedicated CLI flag.
+New tables pre-enable exactly LCT Pack 1, T5S2, and Battlemaster - Armageddon
+Ruins in the Map Filter; an existing TTS save still restores its persisted filter
+selection as designed.
+
+Verification found exactly those 105 card GUIDs removed from both manifest and
+source save, with no added GUIDs or unrelated object-field changes. All 15 source
+bags now contain 15 maps, and both deployment fallback tables contain the same
+complete 45-card T5S2 set with correct source-bag assignments. Strict validation
+passes with 0 errors and the single pre-existing `fd3d94` warning; 58 tests,
+strict payload audit, Python compilation, and `compile.py --test` pass. A live preview of all
+three retained Battlemaster packs reconstructed 135 cards/6,075 top-level terrain
+objects and proposed zero changes while preserving all 135 card GUIDs.
+
 Footprints have two explicit reconstruction profiles. `battlemaster-two-state`
 uses rugged terrain as state 1 and smooth terrain as state 2, matching
 `Legacy/2state.json`. `lct-three-state` uses the theme-specific custom bordered
@@ -340,7 +364,7 @@ The shared draggable debug panel currently provides:
 - Red/Blue dice scan benchmarks (`getAllObjects` versus box `Physics.cast`).
 - Red roller known-vector RNG test.
 - Selected-GUID dump to a spawned tile, first removing stale dump tiles.
-- Legacy Battlemaster cache populate/check, per-theme population, `All 4`, and `LCT P1` workflows. Normal map refreshes now use the external Python sync command, avoiding TTS cache serialization.
+- Legacy Battlemaster cache populate/check, per-theme population, `All BM`, and `LCT P1` workflows. Normal map refreshes now use the external Python sync command, avoiding TTS cache serialization.
 - Custom table-mat URL input forwarded to the start menu's mat logic.
 
 Other debug paths:
@@ -361,17 +385,16 @@ The historical sequence matters because the code contains both approaches:
 3. `3039dba` deliberately pivoted from runtime cache dependence to static map migration.
 4. Merge `7651fb8` brought in the static-card system and larger supporting UI/tool work.
 
-Shipped API-derived maps are ordinary canonical cards in five creator sets, 45 maps each:
+Shipped API-derived maps are ordinary canonical cards in four creator sets, 45 maps each:
 
 - `map_crt_battlemaster_bttf_ruins` / Battlemaster - BTTF Ruins
-- `map_crt_battlemaster_armageddon_desert` / Battlemaster - Desert
 - `map_crt_battlemaster_bttf` / BTTF (UI override: Battlemaster - Grimdark)
 - `map_crt_battlemaster_armageddon_ruins` / Battlemaster - Armageddon Ruins
 - `map_crt_lct1` / LCT - Pack 1 (Ice slot 1, Lava slot 2, Mars slot 3)
 
 There must not be a fourth generic `map_crt_battlemaster` shipped set.
 
-The spawner remains legacy development infrastructure. It smart-syncs API manifests/themes/layout catalogs, prunes stale cache entries, reconstructs board-space mats/terrain/objective tags from templates and theme mappings, builds canonical loader scripts, and can return complete transient card JSON through an exactly-once callback. Network buttons are debug-only; cached static cards are the release path. Do not use `All 4` or `LCT P1` for routine updates: their persisted archives/card scripts make TTS serialize tens of megabytes on each save/rewind callback and cause the observed repeated UI stalls.
+The spawner remains legacy development infrastructure. It smart-syncs API manifests/themes/layout catalogs, prunes stale cache entries, reconstructs board-space mats/terrain/objective tags from templates and theme mappings, builds canonical loader scripts, and can return complete transient card JSON through an exactly-once callback. Network buttons are debug-only; cached static cards are the release path. Do not use `All BM` or `LCT P1` for routine updates: their persisted archives/card scripts make TTS serialize tens of megabytes on each save/rewind callback and cause the observed repeated UI stalls.
 
 The live spawner cache holds only one theme because each sync prunes payloads outside the incoming catalog. Commit `695f1f0` adds archives that deep-copy completed per-theme catalog/script data through a JSON round-trip, preventing later in-place pruning from mutating earlier snapshots.
 

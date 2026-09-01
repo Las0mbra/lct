@@ -27,7 +27,7 @@ activeCreators = {}     -- { [creatorId] = true }
 -- Keys are creator ids = the map_crt_* tag without the "map_crt_" prefix.
 DEFAULT_ENABLED_CREATORS = {
     "lct1",
-    "battlemaster_bttf_ruins",
+    "t5s2",
     "battlemaster_armageddon_ruins",
 }
 

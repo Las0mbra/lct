@@ -1392,14 +1392,10 @@ end
 -- handlers take the Player object and read its .color.
 -- Every populate call below for a specific theme ID passes approvedOnly = false.
 -- These are shipped/known themes we already trust by ID, so they shouldn't
--- depend on Battlemaster's live "approved" discovery filter -- confirmed
--- Armageddon Desert's approvalState is currently "community" on Battlemaster's
--- own platform (not a code/ID problem here), which silently dropped it from the
--- default approved-only sync and made its button fail to find the theme at all.
+-- depend on Battlemaster's live "approved" discovery filter.
 BATTLEMASTER_SPAWNER_GUID = "b4d10a"
 BATTLEMASTER_BTTF_THEME_ID = "tts-theme-grimdark-calibrated-v1"
 BATTLEMASTER_BTTF_RUINS_THEME_ID = "tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5"
-BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID = "tts-theme-6c414c7a-9827-48cf-a89e-aa8ddff66491"
 BATTLEMASTER_ARMAGEDDON_RUINS_THEME_ID = "tts-theme-7b9218bb-b614-4225-9789-570836525e6a"
 LCT_PACK_1_ICE_THEME_ID = "tts-theme-36235f46-c306-4738-b33d-cca12bee9cfc"
 LCT_PACK_1_LAVA_THEME_ID = "tts-theme-5d7d19f2-af5d-4c1c-b2b2-d839b3a8ea8f"
@@ -1499,18 +1495,6 @@ function debugPopulateBattlemasterBttfCache(player)
     spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_BTTF_THEME_ID, themeName = "BTTF", approvedOnly = false})
 end
 
-function debugPopulateBattlemasterArmageddonDesertCache(player)
-    local playerColor = player and player.color
-    if DEBUG ~= true then return end
-    local spawner = getObjectFromGUID(BATTLEMASTER_SPAWNER_GUID)
-    if not spawner then
-        printToColor("[DEBUG] Battlemaster spawner not found.", playerColor, {1, 0.3, 0.3})
-        return
-    end
-    printToColor("[DEBUG] Battlemaster Armageddon Desert cache population started. Save the mod/table after it completes.", playerColor, {1, 0.78, 0.42})
-    spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID, themeName = "armageddon desert", approvedOnly = false})
-end
-
 function debugPopulateBattlemasterArmageddonRuinsCache(player)
     local playerColor = player and player.color
     if DEBUG ~= true then return end
@@ -1523,12 +1507,12 @@ function debugPopulateBattlemasterArmageddonRuinsCache(player)
     spawner.call("debugPopulateFullCache", {playerColor = playerColor, themeId = BATTLEMASTER_ARMAGEDDON_RUINS_THEME_ID, themeName = "armageddon ruins", approvedOnly = false})
 end
 
--- "All 4" button: runs the BTTF Ruins/Desert/BTTF/Armageddon Ruins populates
+-- "All BM" button: runs the BTTF Ruins/BTTF/Armageddon Ruins populates
 -- back to back on the spawner, each archived under its theme id (see
 -- BM_THEME_ARCHIVES in battlemasterDynamicSpawner.ttslua), so a single save
 -- afterward carries every theme's import data and
--- import_battlemaster_static_maps.py --all-themes can do all four imports
--- without four separate populate/save round trips.
+-- import_battlemaster_static_maps.py --all-themes can do all three imports
+-- without three separate populate/save round trips.
 function debugPopulateBattlemasterAllCache(player)
     local playerColor = player and player.color
     if DEBUG ~= true then return end
@@ -1537,13 +1521,12 @@ function debugPopulateBattlemasterAllCache(player)
         printToColor("[DEBUG] Battlemaster spawner not found.", playerColor, {1, 0.3, 0.3})
         return
     end
-    printToColor("[DEBUG] Battlemaster all-theme cache population started (BTTF Ruins, Desert, BTTF, Armageddon Ruins). Save the mod/table after it completes.", playerColor, {0.65, 0.9, 1})
+    printToColor("[DEBUG] Battlemaster all-theme cache population started (BTTF Ruins, BTTF, Armageddon Ruins). Save the mod/table after it completes.", playerColor, {0.65, 0.9, 1})
     spawner.call("debugPopulateAllThemes", {
         playerColor = playerColor,
         approvedOnly = false,
         themes = {
             {id = BATTLEMASTER_BTTF_RUINS_THEME_ID, name = "BTTF Ruins"},
-            {id = BATTLEMASTER_ARMAGEDDON_DESERT_THEME_ID, name = "armageddon desert"},
             {id = BATTLEMASTER_BTTF_THEME_ID, name = "BTTF"},
             {id = BATTLEMASTER_ARMAGEDDON_RUINS_THEME_ID, name = "armageddon ruins"},
         },

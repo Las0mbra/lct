@@ -31,7 +31,7 @@ python3 extract_map_payloads.py   # strip terrain to data/maps/, shrink the save
 
 At build time `bake_map_index` generates a GUID-keyed `MAP_INDEX` table (`{creator, display, type, eligible}`) from the CSV and stamps it into the `@@MAP_INDEX@@` marker in `TTSLUA/global.ttslua`. Runtime systems (mission generation, map filter) read it via `Global.getTable("MAP_INDEX")` — this lets them look up a card's creator/eligibility even while it's still inside a deck. The source keeps an empty `MAP_INDEX = {}` default so uncompiled builds stay valid.
 
-Map-card nicknames and manifest `card_name` values carry a trailing creator credit (e.g. ` - Cra5hNatural`, ` - T5S2`); runtime matching strips it when resolving layout art and deployment zones. Creator tag→display mappings must stay aligned between `MAP_CREATOR_DISPLAY_NAMES` (`validate_maps.py`) and `mapCreatorDisplaySuffixes` (`startMenu.ttslua`); validation rejects mismatches.
+Map-card nicknames and manifest `card_name` values carry a trailing creator credit (e.g. ` - T5S2`, ` - BTTF`); runtime matching strips it when resolving layout art and deployment zones. Creator tag→display mappings must stay aligned between `MAP_CREATOR_DISPLAY_NAMES` (`validate_maps.py`) and `mapCreatorDisplaySuffixes` (`startMenu.ttslua`); validation rejects mismatches.
 
 ### Validation
 
@@ -53,6 +53,16 @@ Every map card uses **one** canonical load/clear machinery (`data/map_card_machi
 
 New creators must first be added to `MAP_CREATOR_DISPLAY_NAMES` (`validate_maps.py`) and `mapCreatorDisplaySuffixes` (`startMenu.ttslua`).
 
+### Retiring a map pack
+
+Pack removal crosses several source layers; deleting only the cards leaves either orphaned payloads or runtime fallbacks that resolve deleted GUIDs:
+
+1. Remove the pack's cards from the 15 shared matchup bags in `ftc_base.json`, plus assets used only by that pack.
+2. Remove its manifest rows and matching `data/maps/<guid>.lua` payloads.
+3. Remove its creator display/suffix and any pack-specific mat logic. If a retired pack supplied the hand-written deployment fallbacks, replace those GUIDs with a retained complete 45-card pack.
+4. For an API-derived pack, remove its `PACKS` entry from `sync_battlemaster_maps.py` and its legacy cache theme/debug control.
+5. Run strict validation, both unit suites, `audit_map_payloads.py --strict`, and `compile.py --test`.
+
 Upgrading v1 map cards to v2 (deferred wipe that loads/clears reliably) is a separate, explicit step — never done by a normal build:
 
 ```bash
@@ -68,25 +78,27 @@ Run it from the repository root. Every command is preview-only unless `--write` 
 
 ```bash
 # One 45-card pack; granular flags can be combined.
-python3 scripts/sync_battlemaster_maps.py --desert
-python3 scripts/sync_battlemaster_maps.py --desert --bttf --write
+python3 scripts/sync_battlemaster_maps.py --bttf
+python3 scripts/sync_battlemaster_maps.py --bttf --armageddon-ruins --write
 
-# The four packs formerly populated by the debug "All 4" button (180 cards).
-python3 scripts/sync_battlemaster_maps.py --all-four
+# All three shipped Battlemaster packs (135 cards).
+python3 scripts/sync_battlemaster_maps.py --all-battlemaster
 
 # Atomic Ice layout 1 + Lava layout 2 + Mars layout 3 (45 cards).
 python3 scripts/sync_battlemaster_maps.py --lct-pack-1
 
-# All Four plus LCT Pack 1 (225 cards).
+# All configured packs, including LCT Pack 1 (180 cards).
 python3 scripts/sync_battlemaster_maps.py --all
 ```
 
-The granular selectors are `--bttf-ruins`, `--desert`, `--bttf`,
-`--armageddon-ruins`, and `--lct-pack-1` (`--lct-p1` is an alias).
+The granular selectors are `--bttf-ruins`, `--bttf`, `--armageddon-ruins`, and
+`--lct-pack-1` (`--lct-p1` is an alias). `--pack KEY` is a repeatable generic
+selector generated from `PACKS`; the former `--all-four` spelling remains a
+deprecated alias for `--all-battlemaster`.
 
 Footprint states are selected by pack, with an explicit contract:
 
-- The four Battlemaster packs contain two states: rugged terrain is the
+- The three Battlemaster packs contain two states: rugged terrain is the
   top-level/default state and smooth terrain is state 2.
 - LCT Pack 1 contains three states: its theme-specific custom bordered floor is
   the top-level/default state, rugged terrain is state 2, and smooth terrain is
@@ -120,13 +132,19 @@ suites, the payload audit, and `compile.py --test`. A failed post-write check
 restores every affected source file. Use `--skip-compile-test` only when a debug
 build is deliberately unnecessary.
 
+To register a new Battlemaster pack, add one `PackSpec` to `PACKS`. Standard
+packs join both aggregate selectors automatically and are immediately selectable
+with `--pack KEY`; add a convenience flag only if desired. Also register the new
+creator tag/display in the Python validator and Lua suffix table. Add it to the
+legacy theme list/debug batch only when offline TTS-cache recovery is required.
+
 `LCT - Pack 1` remains a composite pack with fixed slots:
 
 - Layout 1: `lct - ice colony`
 - Layout 2: `lct - lava temple v2.1`
 - Layout 3: `lct - mars base`
 
-The DEBUG-gated `All 4`/`LCT P1` cache buttons and
+The DEBUG-gated `All BM`/`LCT P1` cache buttons and
 `import_battlemaster_static_maps.py` remain only as a legacy/offline fallback
 when a cache has been rebuilt with the current spawner. They are no longer part
 of the normal update path: their large persisted `LuaScriptState` forces TTS to

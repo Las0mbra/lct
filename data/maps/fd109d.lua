@@ -1,70 +1,5 @@
 objectJSONs = {
   [[{
-  "GUID": "18ec26",
-  "Name": "Custom_Model",
-  "Transform": {
-    "posX": 20.3773022,
-    "posY": 1.02898443,
-    "posZ": 2.20311451,
-    "rotX": 4.16881668E-10,
-    "rotY": 319.08847,
-    "rotZ": 0.0,
-    "scaleX": 1.0,
-    "scaleY": 1.0,
-    "scaleZ": 1.0
-  },
-  "Nickname": "",
-  "Description": "",
-  "GMNotes": "",
-  "AltLookAngle": {
-    "x": 0.0,
-    "y": 0.0,
-    "z": 0.0
-  },
-  "ColorDiffuse": {
-    "r": 1.0,
-    "g": 1.0,
-    "b": 1.0
-  },
-  "LayoutGroupSortIndex": 0,
-  "Value": 0,
-  "Locked": true,
-  "Grid": true,
-  "Snap": true,
-  "IgnoreFoW": false,
-  "MeasureMovement": false,
-  "DragSelectable": true,
-  "Autoraise": true,
-  "Sticky": true,
-  "Tooltip": true,
-  "GridProjection": false,
-  "HideWhenFaceDown": false,
-  "Hands": false,
-  "CustomMesh": {
-    "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/15722175118512329474/AEA089BD07A7240658AC47363E6F5EAB82A12946/",
-    "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12240639000076399855/027E0FFE4AE181B684426DE94B0C2D2183A25BFC/",
-    "NormalURL": "",
-    "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/12528314468478728362/F29857925A649FA2E20DE37043C8055FFBF7A303/",
-    "Convex": false,
-    "MaterialIndex": 3,
-    "TypeIndex": 4,
-    "CustomShader": {
-      "SpecularColor": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "SpecularIntensity": 0.0,
-      "SpecularSharpness": 2.0,
-      "FresnelStrength": 0.0
-    },
-    "CastShadows": true
-  },
-  "LuaScript": "",
-  "LuaScriptState": "",
-  "XmlUI": ""
-}]],
-  [[{
   "GUID": "f543f6",
   "Name": "Custom_Model",
   "Transform": {
@@ -79,7 +14,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -91,6 +26,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "GH"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -396,6 +334,74 @@ objectJSONs = {
   ]
 }]],
   [[{
+  "GUID": "18ec26",
+  "Name": "Custom_Model",
+  "Transform": {
+    "posX": 20.98,
+    "posY": 1.03,
+    "posZ": 2.72,
+    "rotX": 4.16881668E-10,
+    "rotY": 319.08847,
+    "rotZ": 0.0,
+    "scaleX": 1.0,
+    "scaleY": 1.0,
+    "scaleZ": 1.0
+  },
+  "Nickname": "",
+  "Description": "Light",
+  "GMNotes": "",
+  "AltLookAngle": {
+    "x": 0.0,
+    "y": 0.0,
+    "z": 0.0
+  },
+  "ColorDiffuse": {
+    "r": 1.0,
+    "g": 1.0,
+    "b": 1.0
+  },
+  "Tags": [
+    "Long Barrier"
+  ],
+  "LayoutGroupSortIndex": 0,
+  "Value": 0,
+  "Locked": true,
+  "Grid": true,
+  "Snap": true,
+  "IgnoreFoW": false,
+  "MeasureMovement": false,
+  "DragSelectable": true,
+  "Autoraise": true,
+  "Sticky": true,
+  "Tooltip": true,
+  "GridProjection": false,
+  "HideWhenFaceDown": false,
+  "Hands": false,
+  "CustomMesh": {
+    "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/15722175118512329474/AEA089BD07A7240658AC47363E6F5EAB82A12946/",
+    "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12240639000076399855/027E0FFE4AE181B684426DE94B0C2D2183A25BFC/",
+    "NormalURL": "",
+    "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/12528314468478728362/F29857925A649FA2E20DE37043C8055FFBF7A303/",
+    "Convex": false,
+    "MaterialIndex": 3,
+    "TypeIndex": 4,
+    "CustomShader": {
+      "SpecularColor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "SpecularIntensity": 0.0,
+      "SpecularSharpness": 2.0,
+      "FresnelStrength": 0.0
+    },
+    "CastShadows": true
+  },
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "XmlUI": ""
+}]],
+  [[{
   "GUID": "26a3fc",
   "Name": "Custom_Model",
   "Transform": {
@@ -410,7 +416,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -422,6 +428,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Small L"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -548,9 +557,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345098019,
-    "g": 0.345098019,
-    "b": 0.345098019
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "Tags": [
     "obj_home_blue"
@@ -616,9 +625,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345098019,
-    "g": 0.345098019,
-    "b": 0.345098019
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "Tags": [
     "obj_neutral"
@@ -676,7 +685,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -688,6 +697,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "GH"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -1007,7 +1019,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -1019,6 +1031,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Small L"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -1061,9 +1076,9 @@ objectJSONs = {
   "GUID": "911146",
   "Name": "Custom_Model",
   "Transform": {
-    "posX": -20.3558426,
+    "posX": -21.01,
     "posY": 1.050776,
-    "posZ": -2.275917,
+    "posZ": -2.84,
     "rotX": 8.360686E-07,
     "rotY": 139.241638,
     "rotZ": 180.0,
@@ -1080,9 +1095,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345098019,
-    "g": 0.345098019,
-    "b": 0.345098019
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -1126,9 +1141,9 @@ objectJSONs = {
   "GUID": "8aae70",
   "Name": "Custom_Model",
   "Transform": {
-    "posX": -20.3773022,
-    "posY": 1.33142877,
-    "posZ": -2.20311451,
+    "posX": -20.98,
+    "posY": 1.03,
+    "posZ": -2.72,
     "rotX": 4.16881779E-10,
     "rotY": 139.088486,
     "rotZ": -1.24240419E-17,
@@ -1137,7 +1152,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -1149,6 +1164,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Long Barrier"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -1194,15 +1212,15 @@ objectJSONs = {
     "posX": -14.0232067,
     "posY": 1.804563,
     "posZ": -11.4493694,
-    "rotX": -0.0008674956,
+    "rotX": -0.0008674958,
     "rotY": 270.0,
-    "rotZ": -0.0007553633,
+    "rotZ": -0.00075536326,
     "scaleX": 1.0,
     "scaleY": 1.0,
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -1214,6 +1232,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "CO"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -1541,9 +1562,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345098019,
-    "g": 0.345098019,
-    "b": 0.345098019
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -1606,9 +1627,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345098019,
-    "g": 0.345098019,
-    "b": 0.345098019
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -1663,7 +1684,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -1675,6 +1696,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "EF"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -1994,7 +2018,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -2006,6 +2030,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Small L flip"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -2049,7 +2076,7 @@ objectJSONs = {
   "Name": "Custom_Model",
   "Transform": {
     "posX": -15.662899,
-    "posY": 1.09152412,
+    "posY": 1.07,
     "posZ": -3.66078162,
     "rotX": -2.10672783E-06,
     "rotY": 48.57257,
@@ -2059,7 +2086,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -2071,6 +2098,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Generator"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -2191,7 +2221,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -2203,6 +2233,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Small L flip"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -2264,9 +2297,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345098019,
-    "g": 0.345098019,
-    "b": 0.345098019
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -2311,7 +2344,7 @@ objectJSONs = {
   "Name": "Custom_Model",
   "Transform": {
     "posX": -5.781129,
-    "posY": 1.28283238,
+    "posY": 1.03,
     "posZ": -11.97732,
     "rotX": -3.122882E-06,
     "rotY": 218.90181,
@@ -2321,7 +2354,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -2333,6 +2366,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Pipes"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -2445,7 +2481,7 @@ objectJSONs = {
     "posX": -2.264083,
     "posY": 0.9803885,
     "posZ": 13.02052,
-    "rotX": 1.36613962E-05,
+    "rotX": 1.36614008E-05,
     "rotY": 42.2159462,
     "rotZ": 9.007592E-06,
     "scaleX": 1.0,
@@ -2461,9 +2497,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345098019,
-    "g": 0.345098019,
-    "b": 0.345098019
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -2526,9 +2562,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345098019,
-    "g": 0.345098019,
-    "b": 0.345098019
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "Tags": [
     "obj_center"
@@ -2576,7 +2612,7 @@ objectJSONs = {
   "Name": "Custom_Model",
   "Transform": {
     "posX": -4.910031,
-    "posY": 1.10069227,
+    "posY": 1.03,
     "posZ": 4.424304,
     "rotX": 0.0,
     "rotY": 180.0,
@@ -2586,7 +2622,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -2598,6 +2634,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "AB"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -2897,7 +2936,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Tower = Dense\nWalls = Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -2909,6 +2948,10 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Short Barrier",
+    "Tower"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -3084,7 +3127,7 @@ objectJSONs = {
   "Name": "Custom_Model",
   "Transform": {
     "posX": -4.95878935,
-    "posY": 1.09794021,
+    "posY": 1.03,
     "posZ": -4.327556,
     "rotX": 0.0,
     "rotY": 1.00179122E-05,
@@ -3094,7 +3137,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -3106,6 +3149,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Corner"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -3167,9 +3213,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345098019,
-    "g": 0.345098019,
-    "b": 0.345098019
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -3224,7 +3270,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Tower = Dense\nWalls = Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -3236,6 +3282,10 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Short Barrier",
+    "Tower"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -3421,7 +3471,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -3433,6 +3483,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "AB"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -3724,7 +3777,7 @@ objectJSONs = {
     "posX": 5.82499456,
     "posY": 0.980388165,
     "posZ": 11.9944286,
-    "rotX": -5.049487E-07,
+    "rotX": -5.0494873E-07,
     "rotY": 308.875549,
     "rotZ": -5.977893E-08,
     "scaleX": 1.0,
@@ -3740,9 +3793,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345098019,
-    "g": 0.345098019,
-    "b": 0.345098019
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -3787,7 +3840,7 @@ objectJSONs = {
   "Name": "Custom_Model",
   "Transform": {
     "posX": 5.781129,
-    "posY": 1.03038812,
+    "posY": 1.03,
     "posZ": 11.97732,
     "rotX": -3.122882E-06,
     "rotY": 38.90181,
@@ -3797,7 +3850,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -3809,6 +3862,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Pipes"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -3919,7 +3975,7 @@ objectJSONs = {
   "Name": "Custom_Model",
   "Transform": {
     "posX": 4.95878935,
-    "posY": 1.02753913,
+    "posY": 1.03,
     "posZ": 4.327556,
     "rotX": 0.0,
     "rotY": 180.0,
@@ -3929,7 +3985,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -3941,6 +3997,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Corner"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -4002,9 +4061,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345098019,
-    "g": 0.345098019,
-    "b": 0.345098019
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -4067,9 +4126,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345098019,
-    "g": 0.345098019,
-    "b": 0.345098019
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,
@@ -4124,7 +4183,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -4136,6 +4195,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Small L flip"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -4197,9 +4259,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345098019,
-    "g": 0.345098019,
-    "b": 0.345098019
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "Tags": [
     "obj_neutral"
@@ -4265,9 +4327,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345098019,
-    "g": 0.345098019,
-    "b": 0.345098019
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "Tags": [
     "obj_home_red"
@@ -4325,7 +4387,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -4337,6 +4399,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "EF"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -4648,15 +4713,15 @@ objectJSONs = {
     "posX": 14.0232067,
     "posY": 1.784175,
     "posZ": 11.4493694,
-    "rotX": -0.0008674955,
+    "rotX": -0.0008674957,
     "rotY": 90.0,
-    "rotZ": -0.00075536326,
+    "rotZ": -0.0007553633,
     "scaleX": 1.0,
     "scaleY": 1.0,
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -4668,6 +4733,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "CO"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -4987,7 +5055,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Dense",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -4999,6 +5067,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Generator"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -5119,7 +5190,7 @@ objectJSONs = {
     "scaleZ": 1.0
   },
   "Nickname": "",
-  "Description": "",
+  "Description": "Light",
   "GMNotes": "",
   "AltLookAngle": {
     "x": 0.0,
@@ -5131,6 +5202,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 1.0
   },
+  "Tags": [
+    "Small L flip"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -5173,10 +5247,10 @@ objectJSONs = {
   "GUID": "5269d4",
   "Name": "Custom_Model",
   "Transform": {
-    "posX": 20.3558426,
+    "posX": 21.01,
     "posY": 1.030388,
-    "posZ": 2.275917,
-    "rotX": 8.360697E-07,
+    "posZ": 2.84,
+    "rotX": 8.36069944E-07,
     "rotY": 319.241638,
     "rotZ": 180.0,
     "scaleX": 1.0,
@@ -5192,9 +5266,9 @@ objectJSONs = {
     "z": 0.0
   },
   "ColorDiffuse": {
-    "r": 0.345098019,
-    "g": 0.345098019,
-    "b": 0.345098019
+    "r": 0.34509784,
+    "g": 0.34509784,
+    "b": 0.34509784
   },
   "LayoutGroupSortIndex": 0,
   "Value": 0,

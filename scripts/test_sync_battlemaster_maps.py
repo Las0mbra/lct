@@ -16,6 +16,7 @@ sys.path.insert(0, str(SCRIPT_DIR))
 import battlemaster_reconstruct as reconstruct
 import import_battlemaster_static_maps as legacy
 import sync_battlemaster_maps as sync
+import validate_maps
 
 
 def synthetic_catalogs():
@@ -276,17 +277,26 @@ class BattlemasterSyncTest(unittest.TestCase):
         args = parser.parse_args(list(arguments))
         return sync._selected_pack_keys(args, parser)
 
-    def test_all_selector_includes_all_four_and_lct(self):
+    def test_all_selector_includes_every_configured_pack(self):
         self.assertEqual(tuple(sync.PACKS), self._parse_selection("--all"))
 
-    def test_all_four_can_be_combined_with_lct_pack_one(self):
-        self.assertEqual(tuple(sync.PACKS), self._parse_selection("--all-four", "--lct-p1"))
+    def test_all_battlemaster_can_be_combined_with_lct_pack_one(self):
+        self.assertEqual(tuple(sync.PACKS), self._parse_selection("--all-battlemaster", "--lct-p1"))
+
+    def test_deprecated_all_four_alias_still_selects_current_battlemaster_packs(self):
+        self.assertEqual(sync.BATTLEMASTER_PACK_KEYS, self._parse_selection("--all-four"))
 
     def test_granular_selectors_can_be_combined(self):
-        self.assertEqual(("desert", "bttf"), self._parse_selection("--desert", "--bttf"))
+        self.assertEqual(("bttf", "armageddon-ruins"), self._parse_selection("--bttf", "--armageddon-ruins"))
+
+    def test_generic_pack_selector_tracks_pack_configuration(self):
+        self.assertEqual(
+            ("bttf-ruins", "armageddon-ruins"),
+            self._parse_selection("--pack", "armageddon-ruins", "--pack", "bttf-ruins"),
+        )
 
     def test_pack_configuration_matches_legacy_fallback(self):
-        new_standalone = [sync.PACKS[key] for key in sync.ALL_FOUR_KEYS]
+        new_standalone = [sync.PACKS[key] for key in sync.BATTLEMASTER_PACK_KEYS]
         self.assertEqual(
             [config["theme_id"] for config in legacy.KNOWN_BATTLEMASTER_THEMES],
             [pack.themes[0].theme_id for pack in new_standalone],
@@ -310,7 +320,7 @@ class BattlemasterSyncTest(unittest.TestCase):
 
     def test_all_rejects_redundant_selector(self):
         parser = sync.build_parser()
-        args = parser.parse_args(["--all", "--desert"])
+        args = parser.parse_args(["--all", "--bttf"])
         with contextlib.redirect_stderr(io.StringIO()):
             with self.assertRaises(SystemExit):
                 sync._selected_pack_keys(args, parser)
@@ -386,6 +396,42 @@ class BattlemasterSyncTest(unittest.TestCase):
         reconstructed = [{"GUID": "123456", "Name": "Custom_Model"}]
         self.assertIsNone(sync._reuse_equivalent_payload(old, reconstructed))
 
+    def test_temporary_validation_overlay_is_python_39_compatible(self):
+        payload = "objectJSONs = {\r\n}\r\n"
+        plan = sync.InstallPlan(
+            target={"ObjectStates": []},
+            manifest_rows=[],
+            payloads={"abcdef": payload},
+            obsolete_payload_guids=set(),
+            selected_pack_keys=("bttf",),
+            replaced_cards=0,
+            preserved_card_guids=0,
+            changed_cards=0,
+            changed_payloads=1,
+            reused_equivalent_payloads=0,
+            terrain_objects=0,
+            target_bytes=b"{}\n",
+            manifest_bytes=b"deck_guid,deck_name,card_guid,card_name,map_creator_tag,map_type_tag,creator_display,eligible\n",
+        )
+        observed = {}
+
+        def inspect_overlay(*_args, **_kwargs):
+            observed["payload"] = (validate_maps.MAP_PAYLOAD_DIR / "abcdef.lua").read_bytes()
+            return [], None
+
+        original_payload_dir = validate_maps.MAP_PAYLOAD_DIR
+        with tempfile.TemporaryDirectory() as temp_name:
+            empty_payload_dir = Path(temp_name) / "source-maps"
+            empty_payload_dir.mkdir()
+            with (
+                mock.patch.object(sync, "PAYLOAD_DIR", empty_payload_dir),
+                mock.patch.object(validate_maps, "validate", side_effect=inspect_overlay),
+            ):
+                self.assertEqual((0, 0), sync.validate_plan_with_project_validator(plan))
+
+        self.assertEqual(payload.encode("utf-8"), observed["payload"])
+        self.assertIs(original_payload_dir, validate_maps.MAP_PAYLOAD_DIR)
+
     def test_source_transaction_can_restore_replacements_and_deletions(self):
         with tempfile.TemporaryDirectory() as temp_name:
             root = Path(temp_name)
@@ -401,7 +447,7 @@ class BattlemasterSyncTest(unittest.TestCase):
                 manifest_rows=[],
                 payloads={"bbbbbb": "new-payload"},
                 obsolete_payload_guids={"aaaaaa"},
-                selected_pack_keys=("desert",),
+                selected_pack_keys=("bttf",),
                 replaced_cards=45,
                 preserved_card_guids=45,
                 changed_cards=1,

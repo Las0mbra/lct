@@ -110,19 +110,13 @@ class ValidateMapsTest(unittest.TestCase):
         self.assertEqual(
             "TnH vs Rec 1 - Tipping Point",
             validate_maps.map_logical_name(
-                "TnH vs Rec 1 - Tipping Point - Cra5hNatural"
-            ),
-        )
-        self.assertEqual(
-            "TnH vs Rec 1 - Tipping Point",
-            validate_maps.map_logical_name(
-                "TnH vs Rec 1 - Tipping Point - Zim"
-            ),
-        )
-        self.assertEqual(
-            "TnH vs Rec 1 - Tipping Point",
-            validate_maps.map_logical_name(
                 "TnH vs Rec 1 - Tipping Point - T5S2"
+            ),
+        )
+        self.assertEqual(
+            "TnH vs Rec 1 - Tipping Point",
+            validate_maps.map_logical_name(
+                "TnH vs Rec 1 - Tipping Point - BTTF"
             ),
         )
 
@@ -140,7 +134,7 @@ class ValidateMapsTest(unittest.TestCase):
             {
                 "lct1",
                 "battlemaster_armageddon_ruins",
-                "battlemaster_bttf_ruins",
+                "t5s2",
             },
             set(re.findall(r'"([^"]+)"', default_block)),
         )
@@ -279,11 +273,11 @@ class ValidateMapsTest(unittest.TestCase):
 
     def test_creator_suffix_must_match_creator_tag(self):
         states = copy.deepcopy(self.object_states)
-        card = find_guid(states, "b3537f")
-        card["Nickname"] = card["Nickname"].replace("Cra5hNatural", "Zim")
+        card = find_guid(states, "0c8d39")
+        card["Nickname"] = card["Nickname"].replace("T5S2", "BTTF")
 
         issues, _ = validate_maps.validate(states)
-        matching = [i for i in issues if "b3537f" in i.where and "nickname must end with" in i.message]
+        matching = [i for i in issues if "0c8d39" in i.where and "nickname must end with" in i.message]
         self.assertEqual(1, len(matching))
         self.assertEqual(validate_maps.ERROR, matching[0].level)
 
@@ -292,33 +286,33 @@ class ValidateMapsTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             manifest = Path(tmp) / "map_manifest.csv"
             manifest.write_text("\n".join(
-                line.replace("map_crt_cr5sh", "map_crt_wrong") if ",b3537f," in line else line
+                line.replace("map_crt_t5s2", "map_crt_wrong") if ",0c8d39," in line else line
                 for line in lines
             ) + "\n")
             issues, _ = validate_maps.validate(self.object_states, manifest_path=manifest)
 
-        matching = [i for i in issues if "b3537f" in i.where and "map_creator_tag" in i.message]
+        matching = [i for i in issues if "0c8d39" in i.where and "map_creator_tag" in i.message]
         self.assertEqual(1, len(matching))
         self.assertEqual(validate_maps.ERROR, matching[0].level)
 
     def test_map_type_tag_is_required_and_matches_manifest(self):
         states = copy.deepcopy(self.object_states)
-        card = find_guid(states, "b3537f")
+        card = find_guid(states, "0c8d39")
         card["Tags"].remove("map_type_comp")
 
         issues, _ = validate_maps.validate(states, require_map_tags=True)
-        matching = [i for i in issues if "b3537f" in i.where and "map_type" in i.message]
+        matching = [i for i in issues if "0c8d39" in i.where and "map_type" in i.message]
         self.assertTrue(matching)
         self.assertTrue(all(i.level == validate_maps.ERROR for i in matching))
 
     def test_objective_marker_tag_check_is_non_blocking(self):
         states = copy.deepcopy(self.object_states)
-        card = inline_card_terrain(find_guid(states, "b3537f"))
+        card = inline_card_terrain(find_guid(states, "0c8d39"))
         card["LuaScript"] = card["LuaScript"].replace("obj_home_red", "obj_missing_home")
 
         issues, _ = validate_maps.validate(states, require_map_tags=True)
         matching = [i for i in issues
-                    if "b3537f" in i.where and "obj_tags" in i.message]
+                    if "0c8d39" in i.where and "obj_tags" in i.message]
         self.assertEqual(1, len(matching))
         self.assertEqual(validate_maps.WARN, matching[0].level)
         self.assertIn("missing 1 obj_tags", matching[0].message)
@@ -364,26 +358,26 @@ class ValidateMapsTest(unittest.TestCase):
 
     def test_missing_creator_tag_reports_card_guid(self):
         states = copy.deepcopy(self.object_states)
-        card = find_guid(states, "b3537f")
+        card = find_guid(states, "0c8d39")
         card["Tags"] = ["map"]
 
         issues, _ = validate_maps.validate(states, require_map_tags=True)
-        matching = [i for i in issues if "b3537f" in i.where and "map_crt*" in i.message]
+        matching = [i for i in issues if "0c8d39" in i.where and "map_crt*" in i.message]
         self.assertEqual(1, len(matching))
         self.assertEqual(validate_maps.ERROR, matching[0].level)
         output = io.StringIO()
         with contextlib.redirect_stdout(output):
             validate_maps.report(matching, None)
-        self.assertIn("b3537f", output.getvalue())
+        self.assertIn("0c8d39", output.getvalue())
 
     def test_unlisted_map_card_is_manifest_error(self):
         lines = MANIFEST_PATH.read_text().splitlines()
         with tempfile.TemporaryDirectory() as tmp:
             manifest = Path(tmp) / "map_manifest.csv"
-            manifest.write_text("\n".join(line for line in lines if ",b3537f," not in line) + "\n")
+            manifest.write_text("\n".join(line for line in lines if ",0c8d39," not in line) + "\n")
             issues, _ = validate_maps.validate(self.object_states, manifest_path=manifest)
 
-        matching = [i for i in issues if "b3537f" in i.where and "missing from map_manifest.csv" in i.message]
+        matching = [i for i in issues if "0c8d39" in i.where and "missing from map_manifest.csv" in i.message]
         self.assertEqual(1, len(matching))
         self.assertEqual(validate_maps.ERROR, matching[0].level)
 
@@ -449,7 +443,7 @@ class ValidateMapsTest(unittest.TestCase):
                 "LuaScript": 'local generated = "objectJSONs = {"',
             }]
         }
-        payloads = extract_map_payloads.collect_payloads(save, {"b3537f"})
+        payloads = extract_map_payloads.collect_payloads(save, {"0c8d39"})
         self.assertEqual({}, payloads)
 
     def test_extractor_includes_combat_patrol_pool(self):
@@ -492,19 +486,19 @@ class ValidateMapsTest(unittest.TestCase):
 
     def test_self_excluded_loader_card_is_error(self):
         states = copy.deepcopy(self.object_states)
-        find_guid(states, "b3537f")["GMNotes"] = validate_maps.EXPECTED_GM_EXCLUDE
+        find_guid(states, "0c8d39")["GMNotes"] = validate_maps.EXPECTED_GM_EXCLUDE
         issues, _ = validate_maps.validate(states, require_map_tags=True)
-        matching = [i for i in issues if "b3537f" in i.where and "GMNotes" in i.message]
+        matching = [i for i in issues if "0c8d39" in i.where and "GMNotes" in i.message]
         self.assertEqual(1, len(matching))
         self.assertEqual(validate_maps.ERROR, matching[0].level)
 
     def test_foreign_machinery_head_is_error(self):
         states = copy.deepcopy(self.object_states)
-        card = inline_card_terrain(find_guid(states, "b3537f"))
+        card = inline_card_terrain(find_guid(states, "0c8d39"))
         blob = card["LuaScript"][card["LuaScript"].index("objectJSONs = {"):]
         card["LuaScript"] = "function loadMap() spawnBattlemasterObjectJSONs() end\n" + blob
         issues, _ = validate_maps.validate(states, require_map_tags=True)
-        matching = [i for i in issues if "b3537f" in i.where and "machinery differs" in i.message]
+        matching = [i for i in issues if "0c8d39" in i.where and "machinery differs" in i.message]
         self.assertEqual(1, len(matching))
         self.assertEqual(validate_maps.ERROR, matching[0].level)
 

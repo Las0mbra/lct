@@ -176,12 +176,9 @@ MAP_TYPE_TAG_PREFIX = "map_type"
 # layout, so the advisory objective-marker-tag check is skipped for them.
 MAP_TYPE_THEMATIC_TAG = "map_type_thematic"
 MAP_CREATOR_DISPLAY_NAMES = {
-    "map_crt_cr5sh": "Cra5hNatural",
     "map_crt_battlemaster_bttf": "BTTF",
     "map_crt_battlemaster_bttf_ruins": "Battlemaster - BTTF Ruins",
-    "map_crt_battlemaster_armageddon_desert": "Battlemaster - Desert",
     "map_crt_battlemaster_armageddon_ruins": "Battlemaster - Armageddon Ruins",
-    "map_crt_zim": "Zim",
     "map_crt_t5s2": "T5S2",
     "map_crt_lct1": "LCT - Pack 1",
 }

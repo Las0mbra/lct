@@ -7,8 +7,8 @@ prospective map inventory, and only then replaces the selected creator sets in
 TTSJSON/ftc_base.json, data/map_manifest.csv, and data/maps/*.lua.
 
 Examples:
-  python3 scripts/sync_battlemaster_maps.py --desert
-  python3 scripts/sync_battlemaster_maps.py --desert --bttf --write
+  python3 scripts/sync_battlemaster_maps.py --bttf
+  python3 scripts/sync_battlemaster_maps.py --bttf --armageddon-ruins --write
   python3 scripts/sync_battlemaster_maps.py --all --snapshot-out /tmp/bm.json
   python3 scripts/sync_battlemaster_maps.py --all --snapshot-in /tmp/bm.json --write
 """
@@ -76,6 +76,7 @@ class PackSpec:
     creator_display: str
     themes: tuple[ThemeSlice, ...]
     footprint_profile: str = reconstruction.FOOTPRINT_PROFILE_BATTLEMASTER
+    include_in_battlemaster_batch: bool = True
 
 
 ALL_SLOTS = (1, 2, 3)
@@ -85,12 +86,6 @@ PACKS: dict[str, PackSpec] = {
         "map_crt_battlemaster_bttf_ruins",
         "Battlemaster - BTTF Ruins",
         (ThemeSlice("tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5", ALL_SLOTS, "BTTF Ruins"),),
-    ),
-    "desert": PackSpec(
-        "desert",
-        "map_crt_battlemaster_armageddon_desert",
-        "Battlemaster - Desert",
-        (ThemeSlice("tts-theme-6c414c7a-9827-48cf-a89e-aa8ddff66491", ALL_SLOTS, "Armageddon Desert"),),
     ),
     "bttf": PackSpec(
         "bttf",
@@ -114,9 +109,12 @@ PACKS: dict[str, PackSpec] = {
             ThemeSlice("tts-theme-5933b001-4acd-453e-af37-acf01356429b", (3,), "LCT - Mars Base"),
         ),
         footprint_profile=reconstruction.FOOTPRINT_PROFILE_LCT,
+        include_in_battlemaster_batch=False,
     ),
 }
-ALL_FOUR_KEYS = ("bttf-ruins", "desert", "bttf", "armageddon-ruins")
+BATTLEMASTER_PACK_KEYS = tuple(
+    key for key, pack in PACKS.items() if pack.include_in_battlemaster_batch
+)
 
 
 @dataclass(frozen=True)
@@ -1089,7 +1087,8 @@ def validate_plan_with_project_validator(plan: InstallPlan) -> tuple[int, int]:
             destination = temp_payload_dir / f"{guid}.lua"
             if destination.exists() or destination.is_symlink():
                 destination.unlink()
-            destination.write_text(payload, encoding="utf-8", newline="")
+            with destination.open("w", encoding="utf-8", newline="") as handle:
+                handle.write(payload)
         for guid in plan.obsolete_payload_guids:
             destination = temp_payload_dir / f"{guid}.lua"
             if destination.exists() or destination.is_symlink():
@@ -1207,18 +1206,20 @@ def write_snapshot(path: Path, snapshot: dict[str, Any]) -> None:
 def _selected_pack_keys(args: argparse.Namespace, parser: argparse.ArgumentParser) -> tuple[str, ...]:
     individual = {
         "bttf-ruins": args.bttf_ruins,
-        "desert": args.desert,
         "bttf": args.bttf,
         "armageddon-ruins": args.armageddon_ruins,
         "lct-pack-1": args.lct_pack_1,
     }
-    if args.all and (args.all_four or any(individual.values())):
+    explicitly_named = set(args.pack or ())
+    if args.all and (args.all_battlemaster or explicitly_named or any(individual.values())):
         parser.error("--all cannot be combined with another pack selector")
-    selected = set(PACKS) if args.all else {key for key, enabled in individual.items() if enabled}
-    if args.all_four:
-        selected.update(ALL_FOUR_KEYS)
+    selected = set(PACKS) if args.all else {
+        key for key, enabled in individual.items() if enabled
+    } | explicitly_named
+    if args.all_battlemaster:
+        selected.update(BATTLEMASTER_PACK_KEYS)
     if not selected:
-        parser.error("select at least one pack (for example --desert, --all-four, or --all)")
+        parser.error("select at least one pack (for example --bttf, --all-battlemaster, --pack KEY, or --all)")
     return tuple(key for key in PACKS if key in selected)
 
 
@@ -1228,10 +1229,23 @@ def build_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     selectors = parser.add_argument_group("pack selectors")
-    selectors.add_argument("--all", action="store_true", help="All Four plus LCT Pack 1 (225 cards).")
-    selectors.add_argument("--all-four", action="store_true", help="The four Battlemaster debug-button packs (180 cards).")
+    selectors.add_argument(
+        "--all", action="store_true",
+        help=f"All configured packs ({len(PACKS) * EXPECTED_LAYOUTS_PER_PACK} cards).",
+    )
+    selectors.add_argument(
+        "--all-battlemaster", "--all-four", dest="all_battlemaster", action="store_true",
+        help=(
+            f"All configured Battlemaster packs "
+            f"({len(BATTLEMASTER_PACK_KEYS) * EXPECTED_LAYOUTS_PER_PACK} cards); "
+            "--all-four is a deprecated compatibility alias."
+        ),
+    )
+    selectors.add_argument(
+        "--pack", action="append", choices=tuple(PACKS), default=[], metavar="KEY",
+        help="Update a configured pack by key; repeat to select more than one.",
+    )
     selectors.add_argument("--bttf-ruins", action="store_true", help="Update Battlemaster BTTF Ruins (45 cards).")
-    selectors.add_argument("--desert", action="store_true", help="Update Battlemaster Armageddon Desert (45 cards).")
     selectors.add_argument("--bttf", action="store_true", help="Update Battlemaster Grimdark/BTTF (45 cards).")
     selectors.add_argument("--armageddon-ruins", action="store_true", help="Update Battlemaster Armageddon Ruins (45 cards).")
     selectors.add_argument(
