@@ -101,6 +101,17 @@ class ValidateMapsTest(unittest.TestCase):
         self.assertIn('obj.hasTag("map")', capture)
         self.assertNotIn('slot.role == "deployment"', capture)
 
+    def test_mod_load_announces_latest_gw_layout_compatibility(self):
+        global_lua = (ROOT / "TTSLUA" / "global.ttslua").read_text()
+        start_menu_lua = (ROOT / "TTSLUA" / "startMenu.ttslua").read_text()
+        start = global_lua.index("function announceVersion()")
+        end = global_lua.index("function updateSplashOverlay()", start)
+        announcement = global_lua[start:end]
+        message = "All Map options are fully compatible with the latest GW layout update!"
+        self.assertEqual(1, announcement.count(message))
+        self.assertIn('broadcastToAll("' + message + '"', announcement)
+        self.assertNotIn(message, start_menu_lua)
+
     def test_runtime_creator_suffix_parser_preserves_separator(self):
         lua = (ROOT / "TTSLUA" / "startMenu.ttslua").read_text()
         self.assertIn('local normalizedSuffix = suffix:lower()', lua)

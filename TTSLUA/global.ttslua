@@ -1193,6 +1193,7 @@ function announceVersion()
     else
         printToAll("LCT - Patch " .. patchNumber(), "Yellow")
     end
+    broadcastToAll("All Map options are fully compatible with the latest GW layout update!", {0.4, 0.8, 1.0})
 end
 
 -- Push the latest patch number + notes (injected from CHANGELOG.md) into the
