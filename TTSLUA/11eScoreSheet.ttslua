@@ -58,7 +58,9 @@ BTN_K_IX_SECONDARY = 3
 -- constants are swapped relative to the board's printed labels (see tooltips /
 -- scoreComponentName), so the column the players read as "Primary" is actually
 -- BTN_K_IX_SECONDARY. Route all End of Battle logic through this constant.
-EOB_COMPONENT_K = BTN_K_IX_SECONDARY
+BOARD_PRIMARY_K = BTN_K_IX_SECONDARY
+BOARD_SECONDARY_K = BTN_K_IX_PRIMARY
+EOB_COMPONENT_K = BOARD_PRIMARY_K
 
 -- Scoring caps
 ROUND_PRIMARY_CAP = 15    -- max primary points per battle round
@@ -77,7 +79,7 @@ BTN_L_IX_MINUS = 3
 tooltips = {{"Sum", "Secondary", "Primary"},{"Sum", "Secondary", "Primary"}}
 TURN_SUM_CENTER_SHIFT = 0.38
 
--- player, round, k-index (turn sum, primary, secondary)
+-- player, round, k-index (turn sum, printed Secondary, printed Primary)
 scores = {
 	{
 		{0, 0, 0},
@@ -95,13 +97,26 @@ scores = {
 	}
 }
 
--- End of Battle points per player (1 = Red, 2 = Blue). These are independent of
--- primary/secondary scoring and are added straight onto the player total. They
--- deliberately ignore the per-round and game scoring caps.
+-- End of Battle points per player (1 = Red, 2 = Blue). These top up the printed
+-- Primary column: they have no per-round cap, but share its 45-point game cap.
 endOfBattle = {0, 0}
 
 button = {}
 endOfBattleButton = {}
+local scoringOverlayRefreshQueued = false
+
+-- Physical-board button presses and scoreboard-overlay presses both end up in
+-- updateScore/updateEndOfBattle. Coalesce their notifications into one next-frame
+-- refresh so the XML scoreboard mirrors the board immediately without making the
+-- score sheet's load-time updateAll loop rescan the scene dozens of times.
+function queueScoringOverlayRefresh()
+	if scoringOverlayRefreshQueued then return end
+	scoringOverlayRefreshQueued = true
+	Wait.frames(function()
+		scoringOverlayRefreshQueued = false
+		pcall(function() Global.call("refreshScoringOverlay") end)
+	end, 1)
+end
 
 SCORE_NAME_X = -5.15
 SCORE_TOTAL_X = 6.85
@@ -446,7 +461,7 @@ function onload(save_data)
 			button[i][j] = {}
 			b_zpos = SCORE_SIDE_Z
 
-			-- k is index - turn sum, primary, secondary
+			-- k is index - turn sum, printed Secondary, printed Primary
 			for k=1,3 do
 				button[i][j][k] = {}
 
@@ -549,10 +564,10 @@ function onload(save_data)
 	end -- i-loop
 
 	-- End of Battle buttons (one per player). They sit in the total column
-	-- (SCORE_TOTAL_X), centred on the Z midpoint between that player's primary
-	-- and secondary rows, and feed straight into the player total while ignoring
-	-- the primary/secondary scoring caps. b_index continues from the score loop
-	-- so the editButton indices stay in sync with creation order.
+	-- (SCORE_TOTAL_X), centred on the Z midpoint between that player's Primary
+	-- and Secondary rows. Their value tops up Primary within its 45-point game
+	-- cap. b_index continues from the score loop so editButton indices stay in
+	-- sync with creation order.
 	for i=1,2 do
 		local primaryZ = button[i][1][BTN_K_IX_PRIMARY][BTN_L_IX_SCORE].position[3]
 		local secondaryZ = button[i][1][BTN_K_IX_SECONDARY][BTN_L_IX_SCORE].position[3]
@@ -669,6 +684,7 @@ function updateEndOfBattle(i)
 
 	playerTotal[i].label = tostring(playerSum(i))
 	self.editButton(playerTotal[i])
+	queueScoringOverlayRefresh()
 end
 
 function plusEndOfBattle(i, alt, playerColor)
@@ -712,14 +728,14 @@ function minus_eob2(_, _, alt)
 end
 
 function roundCapFor(k)
-	if k == BTN_K_IX_PRIMARY then return ROUND_PRIMARY_CAP end
-	if k == BTN_K_IX_SECONDARY then return ROUND_SECONDARY_CAP end
+	if k == BOARD_PRIMARY_K then return ROUND_PRIMARY_CAP end
+	if k == BOARD_SECONDARY_K then return ROUND_SECONDARY_CAP end
 	return nil
 end
 
 function gameCapFor(k)
-	if k == BTN_K_IX_PRIMARY then return GAME_PRIMARY_CAP end
-	if k == BTN_K_IX_SECONDARY then return GAME_SECONDARY_CAP end
+	if k == BOARD_PRIMARY_K then return GAME_PRIMARY_CAP end
+	if k == BOARD_SECONDARY_K then return GAME_SECONDARY_CAP end
 	return nil
 end
 
@@ -831,6 +847,7 @@ function updateScore(i, j, k)
 	-- Recalculate the player's score and update the corresponding button.
 	playerTotal[i].label = tostring( playerSum(i) )
 	self.editButton(playerTotal[i])
+	queueScoringOverlayRefresh()
 end
 
 function roundSum(pId, roundId)
@@ -840,24 +857,23 @@ function roundSum(pId, roundId)
 end
 
 function playerSum(pId)
-	local pri_sum = 0
-	local sec_sum = 0
+	local primarySum = 0
+	local secondarySum = 0
 
 	for j = 1,5 do
-		pri_sum = pri_sum + scores[pId][j][BTN_K_IX_PRIMARY]
-		sec_sum = sec_sum + scores[pId][j][BTN_K_IX_SECONDARY]
+		primarySum = primarySum + scores[pId][j][BOARD_PRIMARY_K]
+		secondarySum = secondarySum + scores[pId][j][BOARD_SECONDARY_K]
 	end
 
 	-- End of Battle points are extra Primary points scored at the end of the game.
 	-- They skip the per-round 15 cap but count toward the board Primary column's 45
-	-- game cap (and so are also bound by the 100 total cap). Because of the k-index
-	-- swap the board Primary column is BTN_K_IX_SECONDARY, i.e. sec_sum here.
-	sec_sum = sec_sum + safeScoreNumber(endOfBattle[pId])
-	if pri_sum > GAME_PRIMARY_CAP then pri_sum = GAME_PRIMARY_CAP end
-	if sec_sum > GAME_SECONDARY_CAP then sec_sum = GAME_SECONDARY_CAP end
+	-- game cap (and so are also bound by the 100 total cap).
+	primarySum = primarySum + safeScoreNumber(endOfBattle[pId])
+	if primarySum > GAME_PRIMARY_CAP then primarySum = GAME_PRIMARY_CAP end
+	if secondarySum > GAME_SECONDARY_CAP then secondarySum = GAME_SECONDARY_CAP end
 
 	-- painted army gives +GAME_BASE_POINTS
-	local score = pri_sum + sec_sum + GAME_BASE_POINTS
+	local score = primarySum + secondarySum + GAME_BASE_POINTS
 	if score > GAME_TOTAL_CAP then score = GAME_TOTAL_CAP end
 
 	-- Scoresheet player 1 = Red, player 2 = Blue, but the VP Scores HUD rows are
@@ -916,8 +932,8 @@ end
 function getRoundSummaryForPlayer(pId)
 	local roundSummary = {}
 	for j=1,5 do
-		local primary = safeScoreNumber(scores[pId][j][BTN_K_IX_PRIMARY])
-		local secondary = safeScoreNumber(scores[pId][j][BTN_K_IX_SECONDARY])
+		local primary = safeScoreNumber(scores[pId][j][BOARD_PRIMARY_K])
+		local secondary = safeScoreNumber(scores[pId][j][BOARD_SECONDARY_K])
 		table.insert(roundSummary, {
 			round = j,
 			primary = primary,
@@ -933,11 +949,11 @@ function getMatchSummary()
 	local redName = (params and params.P1) or (Player.Red and Player.Red.steam_name) or "Red"
 	local blueName = (params and params.P2) or (Player.Blue and Player.Blue.steam_name) or "Blue"
 
-	local redPrimary = sumScoreComponent(1, BTN_K_IX_PRIMARY, GAME_PRIMARY_CAP)
-	local redSecondary = eobComponentTotal(1)
+	local redPrimary = eobComponentTotal(1)
+	local redSecondary = sumScoreComponent(1, BOARD_SECONDARY_K, GAME_SECONDARY_CAP)
 
-	local bluePrimary = sumScoreComponent(2, BTN_K_IX_PRIMARY, GAME_PRIMARY_CAP)
-	local blueSecondary = eobComponentTotal(2)
+	local bluePrimary = eobComponentTotal(2)
+	local blueSecondary = sumScoreComponent(2, BOARD_SECONDARY_K, GAME_SECONDARY_CAP)
 
 	local redRounds = getRoundSummaryForPlayer(1)
 	local blueRounds = getRoundSummaryForPlayer(2)
@@ -968,6 +984,32 @@ function getMatchSummary()
 		},
 		roundsPlayed = roundsPlayed
 	}
+end
+
+-- Generic API used by the screen-space scoreboard. The physical score sheet's
+-- historical k-index names are reversed relative to its printed PRI/SEC labels,
+-- so resolve through BOARD_PRIMARY_K / BOARD_SECONDARY_K before reusing the same
+-- capped plus/minus paths as the physical buttons.
+function adjustRoundScoreFromOverlay(params)
+	if type(params) ~= "table" then return false end
+	local playerId = (params.color == "Red" and 1) or (params.color == "Blue" and 2) or nil
+	local roundId = tonumber(params.round)
+	if not playerId or not roundId or roundId < 1 or roundId > 5 then return false end
+
+	local component = string.lower(tostring(params.component or ""))
+	local kIndex = (component == "pri" or component == "primary") and BOARD_PRIMARY_K
+		or ((component == "sec" or component == "secondary") and BOARD_SECONDARY_K or nil)
+	if not kIndex then return false end
+
+	local delta = tonumber(params.delta) or 0
+	if delta > 0 then
+		plus(playerId, roundId, kIndex, false, params.playerColor)
+	elseif delta < 0 then
+		minus(playerId, roundId, kIndex, false)
+	else
+		return false
+	end
+	return true
 end
 
 function getParams()

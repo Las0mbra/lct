@@ -50,13 +50,13 @@ function setHudValue(params)
 end
 
 playerHudSettings = {
-    Red = {settingsOpen = false, scoringOverlayOpen = false, clockHidden = false, hudVisible = true, scale = "Medium"},
-    Blue = {settingsOpen = false, scoringOverlayOpen = false, clockHidden = false, hudVisible = true, scale = "Medium"},
-    Grey = {settingsOpen = false, scoringOverlayOpen = false, clockHidden = false, hudVisible = true, scale = "Medium"},
+    Red = {helpOverlayOpen = false, scoringOverlayOpen = false, clockHidden = false, hudVisible = true, scale = "Medium"},
+    Blue = {helpOverlayOpen = false, scoringOverlayOpen = false, clockHidden = false, hudVisible = true, scale = "Medium"},
+    Grey = {helpOverlayOpen = false, scoringOverlayOpen = false, clockHidden = false, hudVisible = true, scale = "Medium"},
 }
 
 function getDefaultHudSettings()
-    return {settingsOpen = false, scoringOverlayOpen = false, clockHidden = false, hudVisible = true, scale = "Medium"}
+    return {helpOverlayOpen = false, scoringOverlayOpen = false, clockHidden = false, hudVisible = true, scale = "Medium"}
 end
 
 function ensureHudSettings(color)
@@ -103,13 +103,13 @@ function setHudAttributeForColor(color, params)
     end)
 end
 
--- ===== HUD CP action row (PASS TURN / GAIN CP / USE CP) =====
+-- ===== HUD action row (SCOREBOARD / GAIN CP / USE CP) =====
 -- GAIN CP / USE CP mutate the player's own CP counter widget directly
 -- (e446f7 Red / deb9f2 Blue). The cpCounter poller then syncs the HUD CPWatch
 -- text and posts the same chat line as the overlay +/- buttons, so nothing else
 -- needs to be updated here. GAIN CP is capped at once per battle round per
--- player; USE CP is unlimited. PASS TURN is wired straight to the mission
--- manager's hudPassTurn (738804) in the XML, matching the ROUND badge.
+-- player; USE CP is unlimited. SCOREBOARD toggles the same detailed scoring
+-- overlay as the star shortcut.
 cpGainRoundUsed = cpGainRoundUsed or {}   -- player color -> battle round GAIN CP was last used
 
 function cpCounterForColor(color)
@@ -234,7 +234,7 @@ function applyMinimalistForColor(color)
         Global.UI.setAttribute(p .. "MainPanel", "preferredHeight", d.mainHeight)
         Global.UI.setAttribute(p .. "MainPanel", "minHeight",       d.mainHeight)
         Global.UI.setAttribute(color .. "HudControls", "preferredHeight", d.controlsH)
-        for _, b in ipairs({"SettingsBtn", "LockBtn", "ClockBtn", "MinusBtn"}) do
+        for _, b in ipairs({"HelpBtn", "LockBtn", "ClockBtn", "MinusBtn"}) do
             Global.UI.setAttribute(p .. b, "fontSize", d.btnFont)
         end
     end)
@@ -249,12 +249,12 @@ end
 
 function applyHudPreferencesForColor(color)
     local settings = ensureHudSettings(color)
-    local settingsActive = settings.settingsOpen and "true" or "false"
+    local helpOverlayActive = settings.helpOverlayOpen and "true" or "false"
     local overlayActive = settings.hudVisible and "true" or "false"
     local scoringOverlayActive = settings.scoringOverlayOpen and "true" or "false"
     local clockActive = not settings.clockHidden
 
-    setHudAttributeForColor(color, {id = "Settings", attr = "active", value = settingsActive})
+    setHudAttributeForColor(color, {id = "HelpOverlay", attr = "active", value = helpOverlayActive})
     setHudAttributeForColor(color, {id = "VPScores", attr = "active", value = overlayActive})
     setHudAttributeForColor(color, {id = "ScoringOverlay", attr = "active", value = scoringOverlayActive})
     setHudAttributeForColor(color, {id = "LockBtn", attr = "color", value = "#FFFFFF"})
@@ -271,22 +271,20 @@ function applyHudPreferences()
     applyHudPreferencesForColor("Grey")
 end
 
-function hudToggleSettings(player, value, id)
+function hudToggleHelp(player, value, id)
     local color = getHudColorFromCallback(player, id)
     local settings = ensureHudSettings(color)
-    settings.settingsOpen = false
-    applyHudPreferencesForColor(color)
-    if type(player) == "table" and player.color then
-        printToColor("Settings Panel is coming soon :)", player.color, {1, 1, 1})
-    else
-        broadcastToAll("Settings Panel is coming soon :)", {1, 1, 1})
+    settings.helpOverlayOpen = not settings.helpOverlayOpen
+    if settings.helpOverlayOpen then
+        settings.scoringOverlayOpen = false
     end
+    applyHudPreferencesForColor(color)
 end
 
-function hudCloseSettings(player, value, id)
+function hudCloseHelp(player, value, id)
     local color = getHudColorFromCallback(player, id)
     local settings = ensureHudSettings(color)
-    settings.settingsOpen = false
+    settings.helpOverlayOpen = false
     applyHudPreferencesForColor(color)
 end
 
@@ -295,6 +293,7 @@ function hudToggleLock(player, value, id)
     local settings = ensureHudSettings(color)
     settings.scoringOverlayOpen = not settings.scoringOverlayOpen
     if settings.scoringOverlayOpen then
+        settings.helpOverlayOpen = false
         -- The freshly-opened board renders from XML defaults, so drop the cache to
         -- force a full repaint (cached values would otherwise be skipped as "current").
         invalidateScoringCache()
@@ -410,29 +409,45 @@ function getRemainingDeckSecondaryNames(color)
     return names
 end
 
+-- Turn number (per that color's own turn counter) at the moment each secondary
+-- was discarded, keyed by card name. Populated by discardSecondarySlot; a card
+-- discarded some other way (e.g. dragged by hand) simply shows without a turn
+-- suffix below, since we never captured one for it.
+discardedCardTurns = discardedCardTurns or {Red = {}, Blue = {}}
+
+function recordDiscardTurn(color, cardName, turnNum)
+    if color ~= "Red" and color ~= "Blue" then return end
+    discardedCardTurns[color][cardName] = turnNum
+end
+
+-- The mission-brief "Tactical Objectives" card lives in the same discard pile
+-- as real secondaries but isn't one, so the scoreboard should never list it.
+DISCARD_NAME_IGNORE = {["Tactical Objectives"] = true}
+
 -- `objects` is an optional pre-fetched getAllObjects() list so a single scan can
 -- serve both colors (the scoring overlay refresh calls this for Red and Blue).
 function getDiscardedSecondaryNames(color, objects)
     local pos = getSecondaryDiscardPosition(color)
     if not pos then return {} end
+    local turns = discardedCardTurns[color] or {}
     local names = {}
+    local function addName(n)
+        if not n or n == "" or DISCARD_NAME_IGNORE[n] then return end
+        local turn = turns[n]
+        names[#names + 1] = turn and (n .. " - Turn " .. turn) or n
+    end
     for _, obj in ipairs(objects or getAllObjects()) do
         local tag = obj.tag
         if tag == "Card" or tag == "Deck" then
             local objPos = obj.getPosition()
             if math.abs(objPos.x - pos.x) < 2.5 and math.abs(objPos.z - pos.z) < 2.5 then
                 if tag == "Card" then
-                    local n = obj.getName()
-                    if n and n ~= "" then
-                        names[#names + 1] = n
-                    end
+                    addName(obj.getName())
                 else
                     local contents = obj.getObjects()
                     if contents then
                         for _, descriptor in ipairs(contents) do
-                            if descriptor.name and descriptor.name ~= "" then
-                                names[#names + 1] = descriptor.name
-                            end
+                            addName(descriptor.name)
                         end
                     end
                 end
@@ -586,26 +601,67 @@ function setScoringListColumns(colors, id, names, cap, numbered, emptyLabel)
     setScoringHudValue(colors, id .. "R", right)
 end
 
--- Disposition + mission on one line, middot separator. PLAIN text (the bold styling
--- comes from the Text element's fontStyle, not rich-text) — see formatSecondaryListColumns.
-function formatDispositionLine(disposition, mission)
+-- Player name and disposition share the scoreboard's header band. Keep this
+-- plain text: setScoringHudValue also mirrors it into an XML attribute.
+function formatScoringPlayerHeader(name, disposition)
+    name = name or ""
     disposition = disposition or ""
-    mission = mission or ""
-    if disposition ~= "" and mission ~= "" then
-        return disposition .. "  ·  " .. mission
+    if name ~= "" and disposition ~= "" then
+        return name .. " - " .. disposition
     end
-    return disposition .. mission
+    return name .. disposition
 end
 
--- Writes only the static context fields. The deploy zone now lives in the title
--- (see refreshScoringOverlay) and each disposition line carries that player's
--- primary mission, so this just writes the two combined disposition lines. Split
--- out of refreshScoringOverlay so setScoringContext can update them without paying
--- for the full secondary-card scan.
+function formatScoringPrimaryMission(mission)
+    mission = mission or ""
+    if mission == "" then return "" end
+    return "Primary: " .. mission
+end
+
+-- Writes the static primary-mission lines. Dispositions are rendered beside the
+-- player names in refreshScoringOverlay because that is where the live names come
+-- from; the shared deployment zone remains in the title.
 function applyScoringContextToOverlay(colors)
     colors = colors or scoringTargetColors()
-    setScoringHudValue(colors, "ScoringOverlay_RedDisposition", formatDispositionLine(scoringContext.redDisposition, scoringContext.redPrimary))
-    setScoringHudValue(colors, "ScoringOverlay_BlueDisposition", formatDispositionLine(scoringContext.blueDisposition, scoringContext.bluePrimary))
+    setScoringHudValue(colors, "ScoringOverlay_RedPrimaryMission", formatScoringPrimaryMission(scoringContext.redPrimary))
+    setScoringHudValue(colors, "ScoringOverlay_BluePrimaryMission", formatScoringPrimaryMission(scoringContext.bluePrimary))
+end
+
+-- All +/- controls use one callback. IDs encode target side, round, component,
+-- and direction, e.g. ScoringOverlay_RedR3PriPlus. A viewer may edit only their
+-- own column; spectators retain a read-only scoreboard.
+function hudAdjustRoundScore(player, value, id)
+    local targetColor, roundText, action = string.match(
+        id or "", "ScoringOverlay_(%a+)R(%d)(%a+)$")
+    local actionMap = {
+        PriMinus = {component = "Pri", delta = -1},
+        PriPlus = {component = "Pri", delta = 1},
+        SecMinus = {component = "Sec", delta = -1},
+        SecPlus = {component = "Sec", delta = 1},
+    }
+    local adjustment = actionMap[action]
+    local round = tonumber(roundText)
+    if (targetColor ~= "Red" and targetColor ~= "Blue")
+        or not round or round < 1 or round > 5
+        or not adjustment then
+        return
+    end
+
+    local viewerColor = getHudColorFromCallback(player, id)
+    if viewerColor ~= targetColor then
+        printToColor("You can only adjust your own scoreboard column.", viewerColor, {1, 0.65, 0.2})
+        return
+    end
+
+    local sheet = getObjectFromGUID(scoresheet_GUID)
+    if not sheet then return end
+    sheet.call("adjustRoundScoreFromOverlay", {
+        color = targetColor,
+        round = round,
+        component = adjustment.component,
+        delta = adjustment.delta,
+        playerColor = viewerColor,
+    })
 end
 
 function refreshScoringOverlay()
@@ -628,34 +684,34 @@ function refreshScoringOverlay()
         or ("⚔ Round " .. roundNum .. " ⚔")
     setScoringHudValue(colors, "ScoringOverlay_Title", titleText)
 
-    -- Player name (plain) + VP in a pill.
-    setScoringHudValue(colors, "ScoringOverlay_RedName", summary.red.name or "Red")
-    setScoringHudValue(colors, "ScoringOverlay_BlueName", summary.blue.name or "Blue")
+    -- Player name + disposition in the header, with VP in its existing pill.
+    setScoringHudValue(colors, "ScoringOverlay_RedName", formatScoringPlayerHeader(summary.red.name or "Red", scoringContext.redDisposition))
+    setScoringHudValue(colors, "ScoringOverlay_BlueName", formatScoringPlayerHeader(summary.blue.name or "Blue", scoringContext.blueDisposition))
     setScoringHudValue(colors, "ScoringOverlay_RedVP", (summary.red.total or 0) .. " VP")
     setScoringHudValue(colors, "ScoringOverlay_BlueVP", (summary.blue.total or 0) .. " VP")
 
-    -- Per-round table: fixed PRI/SEC/TOT columns with dimmed labels, the current
-    -- battle round highlighted (item 1). Colour tags are kept un-nested so Unity
-    -- rich text renders each segment correctly.
-    local function buildRounds(rounds)
-        local lines = {}
+    -- Populate the five round rows plus the game-total row beneath them. The
+    -- score-sheet summary exposes the board's printed PRI and SEC columns
+    -- (per round and game-capped), while every +/- click routes back through
+    -- that same score sheet so both interfaces stay authoritative.
+    local function applyRoundRows(side, playerSummary)
+        local rounds = playerSummary.rounds
         for j = 1, 5 do
             local rr = (rounds and rounds[j]) or {}
             local pri = rr.primary or 0
             local sec = rr.secondary or 0
             local tot = rr.total or (pri + sec)
-            -- Active round flagged with a leading arrow; inactive rows pad with
-            -- matching spaces so every line still centres alike. PLAIN text only
-            -- (no <color>/<b>) — see formatSecondaryListColumns for why.
-            local marker = (j == roundNum) and "▸ " or "   "
-            lines[#lines + 1] = string.format(
-                "%sRound %d   PRI %d | SEC %d | SUM %d",
-                marker, j, pri, sec, tot)
+            local rowId = "ScoringOverlay_" .. side .. "R" .. j
+            setScoringHudValue(colors, rowId .. "Label", "Round " .. j .. " [" .. tot .. "]")
+            setScoringHudValue(colors, rowId .. "Pri", "PRI: " .. pri .. "/15")
+            setScoringHudValue(colors, rowId .. "Sec", "SEC: " .. sec .. "/15")
         end
-        return table.concat(lines, "\n")
+        setScoringHudValue(colors, "ScoringOverlay_" .. side .. "RTotalLabel", "Overall [" .. (playerSummary.total or 0) .. "]")
+        setScoringHudValue(colors, "ScoringOverlay_" .. side .. "RTotalPri", "PRI: " .. (playerSummary.primary or 0) .. "/45")
+        setScoringHudValue(colors, "ScoringOverlay_" .. side .. "RTotalSec", "SEC: " .. (playerSummary.secondary or 0) .. "/45")
     end
-    setScoringHudValue(colors, "ScoringOverlay_RedRounds", buildRounds(summary.red.rounds))
-    setScoringHudValue(colors, "ScoringOverlay_BlueRounds", buildRounds(summary.blue.rounds))
+    applyRoundRows("Red", summary.red)
+    applyRoundRows("Blue", summary.blue)
 
     local redActive = getActiveSecondaryNames("Red")
     local blueActive = getActiveSecondaryNames("Blue")
@@ -735,7 +791,7 @@ function toggleHudOverlayForColor(params)
     local settings = ensureHudSettings(color)
     settings.hudVisible = not settings.hudVisible
     if not settings.hudVisible then
-        settings.settingsOpen = false
+        settings.helpOverlayOpen = false
     end
     applyHudPreferencesForColor(color)
 end
@@ -745,7 +801,7 @@ function hudHideOverlay(player, value, id)
     if color ~= "Red" and color ~= "Blue" and color ~= "Grey" then return end
     local settings = ensureHudSettings(color)
     settings.hudVisible = false
-    settings.settingsOpen = false
+    settings.helpOverlayOpen = false
     applyHudPreferencesForColor(color)
 end
 
@@ -2273,9 +2329,15 @@ function discardSecondarySlot(params)
     end
 
     local discardPosition = getSecondaryDiscardPosition(color)
+    local turnCounter = (color == "Red") and getObjectFromGUID(redTurnCounter_GUID) or getObjectFromGUID(blueTurnCounter_GUID)
+    local turnNum = counterValue(turnCounter)
     for _, object in ipairs(getCardsInSecondarySlotForColor(color, params.index, zone)) do
         object.locked = false
         object.setPositionSmooth(discardPosition)
+        local cardName = object.getName()
+        if cardName and cardName ~= "" then
+            recordDiscardTurn(color, cardName, turnNum)
+        end
     end
     clearSecondarySlotAssignment(color, params.index)
 
