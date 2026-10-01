@@ -46,7 +46,7 @@ import battlemaster_reconstruct as reconstruction
 import import_battlemaster_static_maps as legacy
 
 
-API_BASE = "https://battlemaster.onrender.com"
+API_BASE = "https://api.battlemaster.online"
 OWNER = "8a72d680-3166-44e1-aa3c-2f7264f92202"
 TARGET_PATH = ROOT / "TTSJSON" / "ftc_base.json"
 MANIFEST_PATH = ROOT / "data" / "map_manifest.csv"
@@ -98,6 +98,18 @@ PACKS: dict[str, PackSpec] = {
         "map_crt_battlemaster_armageddon_ruins",
         "Battlemaster - Armageddon Ruins",
         (ThemeSlice("tts-theme-7b9218bb-b614-4225-9789-570836525e6a", ALL_SLOTS, "Armageddon Ruins"),),
+    ),
+    "imperia-fancy": PackSpec(
+        "imperia-fancy",
+        "map_crt_battlemaster_imperia_fancy",
+        "Battlemaster - Imperia (Fancy)",
+        (ThemeSlice("tts-theme-cb268f52-7649-4bb9-8b09-86d7547e5b41", ALL_SLOTS, "BTTF Imperia (Fancy)"),),
+    ),
+    "gms": PackSpec(
+        "gms",
+        "map_crt_battlemaster_gms",
+        "Battlemaster - GMS",
+        (ThemeSlice("tts-theme-2fb37bb5-7648-4b3a-8f9b-bf70326ce8e6", ALL_SLOTS, "GMS TTS Layout"),),
     ),
     "lct-pack-1": PackSpec(
         "lct-pack-1",

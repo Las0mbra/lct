@@ -179,6 +179,8 @@ MAP_CREATOR_DISPLAY_NAMES = {
     "map_crt_battlemaster_bttf": "BTTF",
     "map_crt_battlemaster_bttf_ruins": "Battlemaster - BTTF Ruins",
     "map_crt_battlemaster_armageddon_ruins": "Battlemaster - Armageddon Ruins",
+    "map_crt_battlemaster_imperia_fancy": "Battlemaster - Imperia (Fancy)",
+    "map_crt_battlemaster_gms": "Battlemaster - GMS",
     "map_crt_t5s2": "T5S2",
     "map_crt_lct1": "LCT - Pack 1",
 }

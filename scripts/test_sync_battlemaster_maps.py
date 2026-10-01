@@ -294,9 +294,18 @@ class BattlemasterSyncTest(unittest.TestCase):
             ("bttf-ruins", "armageddon-ruins"),
             self._parse_selection("--pack", "armageddon-ruins", "--pack", "bttf-ruins"),
         )
+        self.assertEqual(
+            ("imperia-fancy", "gms"),
+            self._parse_selection("--pack", "gms", "--pack", "imperia-fancy"),
+        )
 
     def test_pack_configuration_matches_legacy_fallback(self):
-        new_standalone = [sync.PACKS[key] for key in sync.BATTLEMASTER_PACK_KEYS]
+        # Legacy caches support a subset of the externally synced packs.
+        legacy_tags = {config["creator_tag"] for config in legacy.KNOWN_BATTLEMASTER_THEMES}
+        new_standalone = [
+            sync.PACKS[key] for key in sync.BATTLEMASTER_PACK_KEYS
+            if sync.PACKS[key].creator_tag in legacy_tags
+        ]
         self.assertEqual(
             [config["theme_id"] for config in legacy.KNOWN_BATTLEMASTER_THEMES],
             [pack.themes[0].theme_id for pack in new_standalone],
@@ -311,7 +320,7 @@ class BattlemasterSyncTest(unittest.TestCase):
         )
         self.assertTrue(all(
             pack.footprint_profile == reconstruct.FOOTPRINT_PROFILE_BATTLEMASTER
-            for pack in new_standalone
+            for pack in (sync.PACKS[key] for key in sync.BATTLEMASTER_PACK_KEYS)
         ))
         self.assertEqual(
             reconstruct.FOOTPRINT_PROFILE_LCT,

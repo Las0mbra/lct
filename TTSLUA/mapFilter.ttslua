@@ -29,6 +29,7 @@ DEFAULT_ENABLED_CREATORS = {
     "lct1",
     "t5s2",
     "battlemaster_armageddon_ruins",
+    "battlemaster_imperia_fancy",
 }
 
 -- UI-only display names for creator buttons. The baked MAP_INDEX display remains

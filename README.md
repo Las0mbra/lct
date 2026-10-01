@@ -81,13 +81,16 @@ Run it from the repository root. Every command is preview-only unless `--write` 
 python3 scripts/sync_battlemaster_maps.py --bttf
 python3 scripts/sync_battlemaster_maps.py --bttf --armageddon-ruins --write
 
-# All three shipped Battlemaster packs (135 cards).
+# All five shipped Battlemaster packs (225 cards).
 python3 scripts/sync_battlemaster_maps.py --all-battlemaster
+
+# The additional Imperia (Fancy) and GMS themes (45 cards each).
+python3 scripts/sync_battlemaster_maps.py --pack imperia-fancy --pack gms
 
 # Atomic Ice layout 1 + Lava layout 2 + Mars layout 3 (45 cards).
 python3 scripts/sync_battlemaster_maps.py --lct-pack-1
 
-# All configured packs, including LCT Pack 1 (180 cards).
+# All configured packs, including LCT Pack 1 (270 cards; excludes T5S2).
 python3 scripts/sync_battlemaster_maps.py --all
 ```
 
@@ -96,9 +99,15 @@ The granular selectors are `--bttf-ruins`, `--bttf`, `--armageddon-ruins`, and
 selector generated from `PACKS`; the former `--all-four` spelling remains a
 deprecated alias for `--all-battlemaster`.
 
+The default API host is `https://api.battlemaster.online`. The shipped
+Battlemaster themes are BTTF Ruins, Grimdark/BTTF, Armageddon Ruins,
+Imperia (Fancy), and GMS. Each has its own map-filter entry. The legacy TTS
+cache/debug batch still covers only the original three Battlemaster themes;
+use the external updater for Imperia (Fancy) and GMS.
+
 Footprint states are selected by pack, with an explicit contract:
 
-- The three Battlemaster packs contain two states: rugged terrain is the
+- The five Battlemaster packs contain two states: rugged terrain is the
   top-level/default state and smooth terrain is state 2.
 - LCT Pack 1 contains three states: its theme-specific custom bordered floor is
   the top-level/default state, rugged terrain is state 2, and smooth terrain is

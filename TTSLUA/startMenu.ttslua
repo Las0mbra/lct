@@ -285,12 +285,15 @@ end
 -- ********************
 
 positionValue={0,-9.52,0}
+-- Mat scale = board inches / 36 (the surface mesh is 36" square). Keep these
+-- exact: the deployment/quarter/reserve overlays measure the board as
+-- getScale() * sizeMulti, so rounded scales (e.g. 1.66 -> 59.76") shift lines.
 sizeData={
     {id=1, name='King of the Colosseum - 36" x 36"', scale={1,1,1}, defaultObjectives=0},
-    {id=2, name='C o m b a t     P a t r o l - 44" x 30"', scale={1.22,1,0.83}, defaultObjectives=0},
-    {id=4, name='S t r i k e     F o r c e - 44" x 60"', scale={0.83*2,1,1.22}, defaultObjectives=0},
-    {id=5, name='O n s l a u g h t - 44" x 90"', scale={0.83*3,1,1.22}, defaultObjectives=0},
-    {id=6, name='B o a r d i n g     A c t i o n - 28" x 48"', scale={1.33,1,0.77}, defaultObjectives=0},
+    {id=2, name='C o m b a t     P a t r o l - 44" x 30"', scale={44/36,1,30/36}, defaultObjectives=0},
+    {id=4, name='S t r i k e     F o r c e - 44" x 60"', scale={60/36,1,44/36}, defaultObjectives=0},
+    {id=5, name='O n s l a u g h t - 44" x 90"', scale={90/36,1,44/36}, defaultObjectives=0},
+    {id=6, name='B o a r d i n g     A c t i o n - 28" x 48"', scale={48/36,1,28/36}, defaultObjectives=0},
 }
 
 menuSizeX = 0
@@ -2654,7 +2657,7 @@ function normalizeMissionName(s)
     return (s:lower():gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
-mapCreatorDisplaySuffixes = {"BTTF", "Battlemaster - BTTF Ruins", "Battlemaster - Armageddon Ruins", "T5S2", "LCT - Pack 1"}
+mapCreatorDisplaySuffixes = {"BTTF", "Battlemaster - BTTF Ruins", "Battlemaster - Armageddon Ruins", "Battlemaster - Imperia (Fancy)", "Battlemaster - GMS", "T5S2", "LCT - Pack 1"}
 
 -- Map cards carry creator credit at the end of their visible nickname. Strip
 -- only a recognized creator suffix when matching shared layout art or reading

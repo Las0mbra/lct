@@ -134,6 +134,7 @@ class ValidateMapsTest(unittest.TestCase):
             {
                 "lct1",
                 "battlemaster_armageddon_ruins",
+                "battlemaster_imperia_fancy",
                 "t5s2",
             },
             set(re.findall(r'"([^"]+)"', default_block)),

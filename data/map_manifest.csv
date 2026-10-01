@@ -224,3 +224,93 @@ a22c33,Purge the Foe vs Reconnaissance,33ce09,PtF vs Recon 3 - Crucible of Battl
 6e0d78,Take and Hold vs Take and Hold,e26240,TnH vs TnH 1 - Tipping Point - Battlemaster - Armageddon Ruins,map_crt_battlemaster_armageddon_ruins,map_type_comp,Battlemaster - Armageddon Ruins,true
 6e0d78,Take and Hold vs Take and Hold,c2fd55,TnH vs TnH 2 - Dawn of War - Battlemaster - Armageddon Ruins,map_crt_battlemaster_armageddon_ruins,map_type_comp,Battlemaster - Armageddon Ruins,true
 6e0d78,Take and Hold vs Take and Hold,606a88,TnH vs TnH 3 - Search and Destroy - Battlemaster - Armageddon Ruins,map_crt_battlemaster_armageddon_ruins,map_type_comp,Battlemaster - Armageddon Ruins,true
+4409ba,Disruption vs Disruption,5d56a2,Dis vs Dis 1 - Crucible of Battle - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+4409ba,Disruption vs Disruption,daeb94,Dis vs Dis 2 - Tipping Point - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+4409ba,Disruption vs Disruption,cfd960,Dis vs Dis 3 - Sweeping Engagement - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+f1e22b,Disruption vs Priority Assets,591797,Dis vs PA 1 - Sweeping Engagement - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+f1e22b,Disruption vs Priority Assets,74d200,Dis vs PA 2 - Tipping Point - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+f1e22b,Disruption vs Priority Assets,d6e926,Dis vs PA 3 - Search and Destroy - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+9ac38f,Purge the Foe vs Disruption,a17b1a,PtF vs Dis 1 - Search and Destroy - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+9ac38f,Purge the Foe vs Disruption,c7fbed,PtF vs Dis 2 - Tipping Point - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+9ac38f,Purge the Foe vs Disruption,9b9326,PtF vs Dis 3 - Sweeping Engagement - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+2c7cd1,Disruption vs Reconnaissance,1df237,Dis vs Rec 1 - Tipping Point - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+2c7cd1,Disruption vs Reconnaissance,ed282e,Dis vs Rec 2 - Dawn of War - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+2c7cd1,Disruption vs Reconnaissance,e016c1,Dis vs Rec 3 - Search and Destroy - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+cfeba5,Take and Hold vs Disruption,6886ab,TnH vs Dis 1 - Sweeping Engagement - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+cfeba5,Take and Hold vs Disruption,f8317e,TnH vs Dis 2 - Crucible of Battle - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+cfeba5,Take and Hold vs Disruption,cef90d,TnH vs Dis 3 - Hammer and Anvil - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+7b5ba7,Priority Assets vs Priority Assets,abfcd3,PA vs PA 1 - Sweeping Engagement - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+7b5ba7,Priority Assets vs Priority Assets,ac164a,PA vs PA 2 - Crucible of Battle - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+7b5ba7,Priority Assets vs Priority Assets,46552f,PA vs PA 3 - Tipping Point - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+dc8738,Purge the Foe vs Priority Assets,8bdeea,PtF vs PA 1 - Dawn of War - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+dc8738,Purge the Foe vs Priority Assets,10bd38,PtF vs PA 2 - Search and Destroy - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+dc8738,Purge the Foe vs Priority Assets,203d81,PtF vs PA 3 - Hammer and Anvil - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+32e34a,Priority Assets vs Reconnaissance,f37ac8,PA vs Rec 1 - Crucible of Battle - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+32e34a,Priority Assets vs Reconnaissance,ec8297,PA vs Rec 2 - Tipping Point - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+32e34a,Priority Assets vs Reconnaissance,856f52,PA vs Rec 3 - Sweeping Engagement - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+eae80b,Take and Hold vs Priority Assets,2b749c,TnH vs PA 1 - Crucible of Battle - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+eae80b,Take and Hold vs Priority Assets,df7324,TnH vs PA 2 - Hammer and Anvil - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+eae80b,Take and Hold vs Priority Assets,ce6278,TnH vs PA 3 - Dawn of War - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+3ebbd6,Purge the Foe vs Purge the Foe,f43fef,PtF vs PtF 1 - Search and Destroy - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+3ebbd6,Purge the Foe vs Purge the Foe,1bfa93,PtF vs PtF 2 - Tipping Point - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+3ebbd6,Purge the Foe vs Purge the Foe,07528d,PtF vs PtF 3 - Sweeping Engagement - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+a22c33,Purge the Foe vs Reconnaissance,e3173f,PtF vs Recon 1 - Hammer and Anvil - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+a22c33,Purge the Foe vs Reconnaissance,b7cd3b,PtF vs Recon 2 - Dawn of War - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+a22c33,Purge the Foe vs Reconnaissance,56af18,PtF vs Recon 3 - Crucible of Battle - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+1e6711,Take and Hold vs Purge the Foe,3ff996,TnH vs PtF 1 - Sweeping Engagement - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+1e6711,Take and Hold vs Purge the Foe,47f9a9,TnH vs PtF 2 - Search and Destroy - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+1e6711,Take and Hold vs Purge the Foe,e5fed9,TnH vs PtF 3 - Hammer and Anvil - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+793bc0,Reconnaissance vs Reconnaissance,db4631,Rec vs Rec 1 - Sweeping Engagement - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+793bc0,Reconnaissance vs Reconnaissance,c25b2b,Rec vs Rec 2 - Crucible of Battle - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+793bc0,Reconnaissance vs Reconnaissance,e09e26,Rec vs Rec 3 - Tipping Point - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+109a6b,Take and Hold vs Reconnaissance,3abb18,TnH vs Rec 1 - Tipping Point - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+109a6b,Take and Hold vs Reconnaissance,575fe6,TnH vs Rec 2 - Dawn of War - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+109a6b,Take and Hold vs Reconnaissance,75b336,TnH vs Rec 3 - Search and Destroy - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+6e0d78,Take and Hold vs Take and Hold,942079,TnH vs TnH 1 - Tipping Point - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+6e0d78,Take and Hold vs Take and Hold,9eb5a2,TnH vs TnH 2 - Dawn of War - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+6e0d78,Take and Hold vs Take and Hold,b9e48c,TnH vs TnH 3 - Search and Destroy - Battlemaster - Imperia (Fancy),map_crt_battlemaster_imperia_fancy,map_type_comp,Battlemaster - Imperia (Fancy),true
+4409ba,Disruption vs Disruption,1ad83f,Dis vs Dis 1 - Crucible of Battle - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+4409ba,Disruption vs Disruption,028b04,Dis vs Dis 2 - Tipping Point - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+4409ba,Disruption vs Disruption,7583c1,Dis vs Dis 3 - Sweeping Engagement - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+f1e22b,Disruption vs Priority Assets,675ec2,Dis vs PA 1 - Sweeping Engagement - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+f1e22b,Disruption vs Priority Assets,bfa1dd,Dis vs PA 2 - Tipping Point - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+f1e22b,Disruption vs Priority Assets,6c50b5,Dis vs PA 3 - Search and Destroy - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+9ac38f,Purge the Foe vs Disruption,8a38e4,PtF vs Dis 1 - Search and Destroy - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+9ac38f,Purge the Foe vs Disruption,1e8d3a,PtF vs Dis 2 - Tipping Point - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+9ac38f,Purge the Foe vs Disruption,4d98f9,PtF vs Dis 3 - Sweeping Engagement - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+2c7cd1,Disruption vs Reconnaissance,96a355,Dis vs Rec 1 - Tipping Point - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+2c7cd1,Disruption vs Reconnaissance,921dfc,Dis vs Rec 2 - Dawn of War - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+2c7cd1,Disruption vs Reconnaissance,1f8a2f,Dis vs Rec 3 - Search and Destroy - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+cfeba5,Take and Hold vs Disruption,c48cee,TnH vs Dis 1 - Sweeping Engagement - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+cfeba5,Take and Hold vs Disruption,e2c87a,TnH vs Dis 2 - Crucible of Battle - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+cfeba5,Take and Hold vs Disruption,b3ece5,TnH vs Dis 3 - Hammer and Anvil - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+7b5ba7,Priority Assets vs Priority Assets,931fc7,PA vs PA 1 - Sweeping Engagement - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+7b5ba7,Priority Assets vs Priority Assets,a0520d,PA vs PA 2 - Crucible of Battle - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+7b5ba7,Priority Assets vs Priority Assets,452ad4,PA vs PA 3 - Tipping Point - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+dc8738,Purge the Foe vs Priority Assets,eae507,PtF vs PA 1 - Dawn of War - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+dc8738,Purge the Foe vs Priority Assets,d04ce8,PtF vs PA 2 - Search and Destroy - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+dc8738,Purge the Foe vs Priority Assets,afed9d,PtF vs PA 3 - Hammer and Anvil - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+32e34a,Priority Assets vs Reconnaissance,543633,PA vs Rec 1 - Crucible of Battle - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+32e34a,Priority Assets vs Reconnaissance,44e1bf,PA vs Rec 2 - Tipping Point - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+32e34a,Priority Assets vs Reconnaissance,bb0cbb,PA vs Rec 3 - Sweeping Engagement - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+eae80b,Take and Hold vs Priority Assets,941f27,TnH vs PA 1 - Crucible of Battle - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+eae80b,Take and Hold vs Priority Assets,ca5dd0,TnH vs PA 2 - Hammer and Anvil - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+eae80b,Take and Hold vs Priority Assets,5ca73a,TnH vs PA 3 - Dawn of War - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+3ebbd6,Purge the Foe vs Purge the Foe,08082f,PtF vs PtF 1 - Search and Destroy - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+3ebbd6,Purge the Foe vs Purge the Foe,b97734,PtF vs PtF 2 - Tipping Point - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+3ebbd6,Purge the Foe vs Purge the Foe,fce111,PtF vs PtF 3 - Sweeping Engagement - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+a22c33,Purge the Foe vs Reconnaissance,6bed2d,PtF vs Recon 1 - Hammer and Anvil - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+a22c33,Purge the Foe vs Reconnaissance,f3e7e8,PtF vs Recon 2 - Dawn of War - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+a22c33,Purge the Foe vs Reconnaissance,c269d8,PtF vs Recon 3 - Crucible of Battle - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+1e6711,Take and Hold vs Purge the Foe,1b0024,TnH vs PtF 1 - Sweeping Engagement - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+1e6711,Take and Hold vs Purge the Foe,b7f7b1,TnH vs PtF 2 - Search and Destroy - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+1e6711,Take and Hold vs Purge the Foe,52901a,TnH vs PtF 3 - Hammer and Anvil - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+793bc0,Reconnaissance vs Reconnaissance,46c164,Rec vs Rec 1 - Sweeping Engagement - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+793bc0,Reconnaissance vs Reconnaissance,3aceae,Rec vs Rec 2 - Crucible of Battle - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+793bc0,Reconnaissance vs Reconnaissance,e42326,Rec vs Rec 3 - Tipping Point - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+109a6b,Take and Hold vs Reconnaissance,8fa5ac,TnH vs Rec 1 - Tipping Point - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+109a6b,Take and Hold vs Reconnaissance,b61b55,TnH vs Rec 2 - Dawn of War - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+109a6b,Take and Hold vs Reconnaissance,c81515,TnH vs Rec 3 - Search and Destroy - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+6e0d78,Take and Hold vs Take and Hold,f9855f,TnH vs TnH 1 - Tipping Point - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+6e0d78,Take and Hold vs Take and Hold,92dd42,TnH vs TnH 2 - Dawn of War - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true
+6e0d78,Take and Hold vs Take and Hold,00f695,TnH vs TnH 3 - Search and Destroy - Battlemaster - GMS,map_crt_battlemaster_gms,map_type_comp,Battlemaster - GMS,true

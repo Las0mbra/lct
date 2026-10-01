@@ -4,6 +4,36 @@
 
 ## Snapshot
 
+### Current map refresh (2026-10-01)
+
+The current inventory supersedes the older counts below: 315 competitive maps
+across 15 shared matchup bags, plus 3 Combat Patrol payloads. Imperia (Fancy)
+and GMS add 45 cards each. All 270 API-backed maps (the five Battlemaster packs
+plus LCT Pack 1) were regenerated from the October 1 API snapshot; the 45 T5S2
+cards are handled separately and were preserved. API deployment mappings still
+match the existing layout-art names. Terrain updates include Short Barrier and
+Tower placement adjustments; the original three Battlemaster packs also receive
+updated mat/card asset URLs. Existing card GUIDs are preserved.
+
+`sync_battlemaster_maps.py` now defaults to `https://api.battlemaster.online`.
+Use `--pack imperia-fancy` / `--pack gms`, `--all-battlemaster` for all five
+Battlemaster packs (225 cards), or `--all` for those plus LCT Pack 1 (270 cards).
+The new creator tags are `map_crt_battlemaster_imperia_fancy` and
+`map_crt_battlemaster_gms`. The map filter discovers them through `MAP_INDEX`;
+its initial selection is LCT Pack 1, T5S2, Armageddon Ruins, and Imperia (Fancy).
+Existing saves retain their persisted filter selection. The legacy
+TTS cache/debug workflow remains limited to its original three Battlemaster
+themes, so its configuration is only a subset of the external updater's packs.
+
+Verification: strict validation passes with the existing T5S2 `fd3d94` warning;
+all 58 tests pass; all 318 payloads are present with no orphans; the test build
+compiles and is copied to TTS Saves. A second sync against the same snapshot
+proposes zero changes. All 45 T5S2 card objects, manifest rows, and payload hashes
+are unchanged, and all pre-existing source object GUIDs are retained. In-game
+inspection of the new themes remains a manual check.
+
+### Historical snapshot
+
 - Reviewed: 2026-08-27
 - Branch/commit: `main` at `3abefab` (`removed announcement`), aligned with `origin/main` before the external Battlemaster-sync working-tree implementation described below.
 - History reviewed: all 361 commits reachable from local/remote refs, from `d81bafc` (2026-04-06) through `3abefab` (2026-08-26), plus focused diffs and per-file histories for the systems below.
