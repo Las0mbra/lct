@@ -355,7 +355,7 @@ checkCoherencyBtn={
 }
 
 engagementRangeBtn={
-    label='Engagement', tooltip='LEFT CLICK: Highlight every model within 2" of the selected model(s) for 15s\nRIGHT CLICK: Clear the highlights now', click_function='showEngagementRange', function_owner=self,
+    label='Engagement', tooltip='LEFT CLICK: Highlight every model within 2" of the selected model(s) for 60s\nRIGHT CLICK: Clear the highlights now', click_function='showEngagementRange', function_owner=self,
     position={-7.97, Yoffset ,-1.15}, rotation={0,0,0}, height=1000, width=3800, scale={0.1,0.1,0.1},
     font_size=700, color='White', font_color={0,0,0}
 }
@@ -2611,7 +2611,7 @@ local COHERENCY_MAX = 9   -- inches, base-to-base
 local COHERENCY_LIFT = 0.2 -- raise lines slightly so they sit above the bases
 local COHERENCY_LABEL_LIFT = 0.5 -- raise distance text a little above the lines
 local COHERENCY_REFRESH = 0.1 -- seconds between redraws WHILE models are moving
-local COHERENCY_TIMEOUT = 15 -- auto-stop if left on this many seconds
+local COHERENCY_TIMEOUT = 60 -- auto-stop if left on this many seconds
 -- Soft backstop on selection size. The monitor is now event-driven (idle costs
 -- nothing; a moving model only re-measures its own row, O(moving * n)), so this
 -- can safely be raised well beyond the old O(n^2)-per-tick limit if desired.
@@ -3204,7 +3204,7 @@ end
 -- table; the captured selection is excluded, and each neighbour counts once.
 -- ====================================================================
 local ENGAGEMENT_RANGE = 2          -- inches, base-to-base
-local ENGAGEMENT_HIGHLIGHT = 15     -- seconds the live highlight runs
+local ENGAGEMENT_HIGHLIGHT = 60     -- seconds the live highlight runs
 local ENGAGEMENT_REFRESH = 0.15      -- seconds between re-scans during the window
 local ENGAGEMENT_COLOR = {1, 0.15, 0.15} -- red glow on neighbours in range
 local ENGAGEMENT_MAX_SELECTED = 30  -- skip an accidental whole-army box-select

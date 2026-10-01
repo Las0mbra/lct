@@ -15,7 +15,8 @@ then run `python3 compile.py --release`.
 
 ## v1.11.4
 - Finally added more token bags thanks to MothmyTitania 
-- 2 New map packs by Battlemaster
+- 2 New map packs by Battlemaster 
+- Changed Coherency and Engangement effect durations from 15 to 60 sec.
 - Minor bug fixes 
 - Improved a tiny bit DZ and alignment grids
 
