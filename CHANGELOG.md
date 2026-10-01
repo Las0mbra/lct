@@ -13,6 +13,12 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.11.4
+- Finally added more token bags thanks to MothmyTitania 
+- 2 New map packs by Battlemaster
+- Minor bug fixes 
+- Improved a tiny bit DZ and alignment grids
+
 ## v1.11.3
 - UI Scoreboard change for better visibility and new button underneath scoring overlay.
 
