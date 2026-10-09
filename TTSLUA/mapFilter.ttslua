@@ -293,7 +293,7 @@ TABLE_THEMES = {
     {label = "Carbon",     color = "#262626", colorOn = "#707070"},
     {label = "Space",      color = "#1A1F3A", colorOn = "#4A5699"},
     {label = "Wood",       color = "#693B1F", colorOn = "#C2703A"},
-    {label = "Graffiti",   color = "#6A2A5A", colorOn = "#C24FA8"},
+    {label = "Space 2",    color = "#161C2A", colorOn = "#4C6482"},
     {label = "Green 2",    color = "#2A5A1A", colorOn = "#5AC23A"},
     {label = "Stripes",    color = "#4A4A52", colorOn = "#9A9AA8"},
     {label = "Yellow",     color = "#7A6810", colorOn = "#E0C32A"},

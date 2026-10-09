@@ -13,6 +13,12 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.11.5 
+- Added/changed multiple table themes, have a look!
+- Fixed floor bug for Battlemaster - Imperia Terrain 
+- Fixed minor objective bug on T5S2 TnH vs TnH - Layout B 
+- Fixed minor bugs with some objects going flying during mat changes
+
 ## v1.11.4
 - Finally added more token bags thanks to MothmyTitania 
 - 2 New map packs by Battlemaster 
