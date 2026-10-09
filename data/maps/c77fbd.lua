@@ -2162,9 +2162,6 @@ objectJSONs = {
     "g": 0.3450979,
     "b": 0.3450979
   },
-  "Tags": [
-    "obj_center"
-  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -3170,6 +3167,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 0.6784314
   },
+  "Tags": [
+    "obj_center"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -3704,6 +3704,9 @@ objectJSONs = {
     "g": 1.0,
     "b": 0.6784314
   },
+  "Tags": [
+    "obj_center"
+  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
@@ -3972,9 +3975,6 @@ objectJSONs = {
     "g": 0.3450979,
     "b": 0.3450979
   },
-  "Tags": [
-    "obj_center"
-  ],
   "LayoutGroupSortIndex": 0,
   "Value": 0,
   "Locked": true,
