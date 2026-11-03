@@ -97,7 +97,7 @@ PACKS: dict[str, PackSpec] = {
         "armageddon-ruins",
         "map_crt_battlemaster_armageddon_ruins",
         "Battlemaster - Armageddon Ruins",
-        (ThemeSlice("tts-theme-7b9218bb-b614-4225-9789-570836525e6a", ALL_SLOTS, "Armageddon Ruins"),),
+        (ThemeSlice("tts-theme-8c631fa7-4e26-404d-a00e-21a27e5801da", ALL_SLOTS, "Armageddon Ruins"),),
     ),
     "imperia-fancy": PackSpec(
         "imperia-fancy",
