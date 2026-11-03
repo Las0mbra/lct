@@ -77,10 +77,15 @@ def synthetic_catalogs():
     return template_catalog, theme_catalog, payload
 
 
+def with_retired_lct_pack(test):
+    """Register the unlisted LCT Pack 1 composite so its slot logic stays tested."""
+    return mock.patch.dict(sync.PACKS, {"lct-pack-1": sync.LCT_PACK_1})(test)
+
+
 def synthetic_lct_snapshot(pairs):
     themes = {}
     payloads = {}
-    for theme_slice in sync.PACKS["lct-pack-1"].themes:
+    for theme_slice in sync.LCT_PACK_1.themes:
         slot = theme_slice.slots[0]
         layouts = []
         for pair in sorted(pairs):
@@ -280,8 +285,11 @@ class BattlemasterSyncTest(unittest.TestCase):
     def test_all_selector_includes_every_configured_pack(self):
         self.assertEqual(tuple(sync.PACKS), self._parse_selection("--all"))
 
-    def test_all_battlemaster_can_be_combined_with_lct_pack_one(self):
-        self.assertEqual(tuple(sync.PACKS), self._parse_selection("--all-battlemaster", "--lct-p1"))
+    def test_all_battlemaster_can_be_combined_with_lct_packs(self):
+        self.assertEqual(
+            tuple(sync.PACKS),
+            self._parse_selection("--all-battlemaster", "--lct-ice-colony", "--lct-mars-base"),
+        )
 
     def test_deprecated_all_four_alias_still_selects_current_battlemaster_packs(self):
         self.assertEqual(sync.BATTLEMASTER_PACK_KEYS, self._parse_selection("--all-four"))
@@ -316,16 +324,16 @@ class BattlemasterSyncTest(unittest.TestCase):
         )
         self.assertEqual(
             [(config["theme_id"], config["slot"]) for config in legacy.LCT_PACK_1_SLOT_THEMES],
-            [(theme.theme_id, theme.slots[0]) for theme in sync.PACKS["lct-pack-1"].themes],
+            [(theme.theme_id, theme.slots[0]) for theme in sync.LCT_PACK_1.themes],
         )
         self.assertTrue(all(
             pack.footprint_profile == reconstruct.FOOTPRINT_PROFILE_BATTLEMASTER
             for pack in (sync.PACKS[key] for key in sync.BATTLEMASTER_PACK_KEYS)
         ))
-        self.assertEqual(
-            reconstruct.FOOTPRINT_PROFILE_LCT,
-            sync.PACKS["lct-pack-1"].footprint_profile,
-        )
+        self.assertTrue(all(
+            pack.footprint_profile == reconstruct.FOOTPRINT_PROFILE_LCT
+            for pack in (sync.LCT_PACK_1, sync.PACKS["lct-ice-colony"], sync.PACKS["lct-mars-base"])
+        ))
 
     def test_all_rejects_redundant_selector(self):
         parser = sync.build_parser()
@@ -334,6 +342,7 @@ class BattlemasterSyncTest(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 sync._selected_pack_keys(args, parser)
 
+    @with_retired_lct_pack
     def test_lct_snapshot_composes_exact_theme_by_slot(self):
         pairs = {f"force-{index}|force-{index}" for index in range(sync.EXPECTED_PAIR_COUNT)}
         snapshot = synthetic_lct_snapshot(pairs)
@@ -341,7 +350,7 @@ class BattlemasterSyncTest(unittest.TestCase):
         self.assertEqual(45, len(records))
         theme_by_slot = {
             theme.slots[0]: theme.theme_id
-            for theme in sync.PACKS["lct-pack-1"].themes
+            for theme in sync.LCT_PACK_1.themes
         }
         counts = {}
         for record in records:
@@ -349,14 +358,16 @@ class BattlemasterSyncTest(unittest.TestCase):
             self.assertEqual(theme_by_slot[record.slot], record.theme.theme_id)
         self.assertEqual({1: 15, 2: 15, 3: 15}, counts)
 
+    @with_retired_lct_pack
     def test_lct_snapshot_rejects_an_incomplete_theme_before_install(self):
         pairs = {f"force-{index}|force-{index}" for index in range(sync.EXPECTED_PAIR_COUNT)}
         snapshot = synthetic_lct_snapshot(pairs)
-        ice_id = sync.PACKS["lct-pack-1"].themes[0].theme_id
+        ice_id = sync.LCT_PACK_1.themes[0].theme_id
         snapshot["themes"][ice_id]["layouts"].pop()
         with self.assertRaisesRegex(sync.SyncError, "not a complete 15-pair set"):
             sync.records_from_snapshot(snapshot, ("lct-pack-1",), pairs)
 
+    @with_retired_lct_pack
     def test_snapshot_rejects_catalog_payload_version_mismatch(self):
         pairs = {f"force-{index}|force-{index}" for index in range(sync.EXPECTED_PAIR_COUNT)}
         snapshot = synthetic_lct_snapshot(pairs)
@@ -365,10 +376,11 @@ class BattlemasterSyncTest(unittest.TestCase):
         with self.assertRaisesRegex(sync.SyncError, "snapshot mismatch"):
             sync.records_from_snapshot(snapshot, ("lct-pack-1",), pairs)
 
+    @with_retired_lct_pack
     def test_snapshot_rejects_catalog_payload_id_mismatch(self):
         pairs = {f"force-{index}|force-{index}" for index in range(sync.EXPECTED_PAIR_COUNT)}
         snapshot = synthetic_lct_snapshot(pairs)
-        ice_id = sync.PACKS["lct-pack-1"].themes[0].theme_id
+        ice_id = sync.LCT_PACK_1.themes[0].theme_id
         layout = snapshot["themes"][ice_id]["layouts"][0]
         layout["id"] = "catalog-layout"
         key = sync._payload_key(layout["forcePairKey"], 1)

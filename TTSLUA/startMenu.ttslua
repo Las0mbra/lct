@@ -78,7 +78,7 @@ CITY_MAT_NAMES = {}   -- @@CITY_MAT_NAMES@@
 BM_MAT_RANDOMIZER_ENABLED = false   -- @@BM_MAT_RANDOMIZER_ENABLED@@
 BTTF_RUINS_MAT_URLS = {}   -- @@BTTF_RUINS_MAT_URLS@@
 BTTF_RUINS_MAT_NAMES = {}   -- @@BTTF_RUINS_MAT_NAMES@@
--- Legacy LCT city-mat pool. The composite LCT Pack 1 keeps each selected
+-- Legacy LCT city-mat pool. The LCT Ice Colony / Mars Base packs keep their
 -- Battlemaster theme's own baked mat, so automatic replacement stays disabled.
 LCT_MAT_RANDOMIZER_ENABLED = false   -- @@LCT_MAT_RANDOMIZER_ENABLED@@
 LCT_PACK_1_MAT_URLS = {}   -- @@LCT_PACK_1_MAT_URLS@@
@@ -2657,7 +2657,7 @@ function normalizeMissionName(s)
     return (s:lower():gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
-mapCreatorDisplaySuffixes = {"BTTF", "Battlemaster - BTTF Ruins", "Battlemaster - Armageddon Ruins", "Battlemaster - Imperia (Fancy)", "Battlemaster - GMS", "T5S2", "LCT - Pack 1"}
+mapCreatorDisplaySuffixes = {"BTTF", "Battlemaster - BTTF Ruins", "Battlemaster - Armageddon Ruins", "Battlemaster - Imperia (Fancy)", "Battlemaster - GMS", "T5S2", "LCT - Ice Colony", "LCT - Mars Base"}
 
 -- Map cards carry creator credit at the end of their visible nickname. Strip
 -- only a recognized creator suffix when matching shared layout art or reading
@@ -4895,7 +4895,8 @@ function onMapCardLoaded(params)
 
     -- Re-skin selected static maps from creator-specific mat pools.
     local loadedCreator = loadedMapCreator(params)
-    local lctMatRandomizerActive = loadedCreator == "lct1" and LCT_MAT_RANDOMIZER_ENABLED
+    local lctMatRandomizerActive = (loadedCreator == "lct_ice_colony" or loadedCreator == "lct_mars_base")
+        and LCT_MAT_RANDOMIZER_ENABLED
     if BM_MAT_RANDOMIZER_ENABLED or lctMatRandomizerActive then
         bmMatDebug("onMapCardLoaded guid=" .. tostring(params and params.guid)
             .. " provider=" .. tostring(params and params.provider)

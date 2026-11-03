@@ -26,7 +26,8 @@ activeCreators = {}     -- { [creatorId] = true }
 -- Creators toggled on the first time the panel spawns (no saved state yet).
 -- Keys are creator ids = the map_crt_* tag without the "map_crt_" prefix.
 DEFAULT_ENABLED_CREATORS = {
-    "lct1",
+    "lct_ice_colony",
+    "lct_mars_base",
     "t5s2",
     "battlemaster_armageddon_ruins",
     "battlemaster_imperia_fancy",
@@ -36,7 +37,6 @@ DEFAULT_ENABLED_CREATORS = {
 -- authoritative for card suffix validation and summaries.
 CREATOR_DISPLAY_OVERRIDES = {
     battlemaster_bttf = "Battlemaster - Grimdark",
-    lct1 = "LCT - Pack 1",
 }
 
 -- The filter only applies during mission setup, so the panel is dropped once the

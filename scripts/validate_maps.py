@@ -182,7 +182,8 @@ MAP_CREATOR_DISPLAY_NAMES = {
     "map_crt_battlemaster_imperia_fancy": "Battlemaster - Imperia (Fancy)",
     "map_crt_battlemaster_gms": "Battlemaster - GMS",
     "map_crt_t5s2": "T5S2",
-    "map_crt_lct1": "LCT - Pack 1",
+    "map_crt_lct_ice_colony": "LCT - Ice Colony",
+    "map_crt_lct_mars_base": "LCT - Mars Base",
 }
 LAYOUT_ART_DECK_GUID = "fb4b5d"
 # A matchup map source may be a Deck or a standard Bag. Bags are the preferred

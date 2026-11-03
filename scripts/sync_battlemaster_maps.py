@@ -111,19 +111,38 @@ PACKS: dict[str, PackSpec] = {
         "Battlemaster - GMS",
         (ThemeSlice("tts-theme-2fb37bb5-7648-4b3a-8f9b-bf70326ce8e6", ALL_SLOTS, "GMS TTS Layout"),),
     ),
-    "lct-pack-1": PackSpec(
-        "lct-pack-1",
-        "map_crt_lct1",
-        "LCT - Pack 1",
-        (
-            ThemeSlice("tts-theme-6bec677d-1eb3-43e5-bb55-bc2f5f4d2b8b", (1,), "LCT - Ice Colony"),
-            ThemeSlice("tts-theme-1d124ba8-f308-482e-9d7a-eae4e8e157c4", (2,), "LCT - Lava Temple"),
-            ThemeSlice("tts-theme-190bfe5c-c240-495d-bd21-59c55b67c2ec", (3,), "LCT - Mars Base"),
-        ),
+    "lct-ice-colony": PackSpec(
+        "lct-ice-colony",
+        "map_crt_lct_ice_colony",
+        "LCT - Ice Colony",
+        (ThemeSlice("tts-theme-6bec677d-1eb3-43e5-bb55-bc2f5f4d2b8b", ALL_SLOTS, "LCT - Ice Colony"),),
+        footprint_profile=reconstruction.FOOTPRINT_PROFILE_LCT,
+        include_in_battlemaster_batch=False,
+    ),
+    "lct-mars-base": PackSpec(
+        "lct-mars-base",
+        "map_crt_lct_mars_base",
+        "LCT - Mars Base",
+        (ThemeSlice("tts-theme-190bfe5c-c240-495d-bd21-59c55b67c2ec", ALL_SLOTS, "LCT - Mars Base"),),
         footprint_profile=reconstruction.FOOTPRINT_PROFILE_LCT,
         include_in_battlemaster_batch=False,
     ),
 }
+# Retired composite pack (Ice slot 1, Lava slot 2, Mars slot 3), kept unregistered
+# so the per-slot composite path stays available. Re-adding it to PACKS also
+# requires registering map_crt_lct1 in validate_maps.py and startMenu.ttslua.
+LCT_PACK_1 = PackSpec(
+    "lct-pack-1",
+    "map_crt_lct1",
+    "LCT - Pack 1",
+    (
+        ThemeSlice("tts-theme-6bec677d-1eb3-43e5-bb55-bc2f5f4d2b8b", (1,), "LCT - Ice Colony"),
+        ThemeSlice("tts-theme-1d124ba8-f308-482e-9d7a-eae4e8e157c4", (2,), "LCT - Lava Temple"),
+        ThemeSlice("tts-theme-190bfe5c-c240-495d-bd21-59c55b67c2ec", (3,), "LCT - Mars Base"),
+    ),
+    footprint_profile=reconstruction.FOOTPRINT_PROFILE_LCT,
+    include_in_battlemaster_batch=False,
+)
 BATTLEMASTER_PACK_KEYS = tuple(
     key for key, pack in PACKS.items() if pack.include_in_battlemaster_batch
 )
@@ -1220,7 +1239,8 @@ def _selected_pack_keys(args: argparse.Namespace, parser: argparse.ArgumentParse
         "bttf-ruins": args.bttf_ruins,
         "bttf": args.bttf,
         "armageddon-ruins": args.armageddon_ruins,
-        "lct-pack-1": args.lct_pack_1,
+        "lct-ice-colony": args.lct_ice_colony,
+        "lct-mars-base": args.lct_mars_base,
     }
     explicitly_named = set(args.pack or ())
     if args.all and (args.all_battlemaster or explicitly_named or any(individual.values())):
@@ -1260,10 +1280,8 @@ def build_parser() -> argparse.ArgumentParser:
     selectors.add_argument("--bttf-ruins", action="store_true", help="Update Battlemaster BTTF Ruins (45 cards).")
     selectors.add_argument("--bttf", action="store_true", help="Update Battlemaster Grimdark/BTTF (45 cards).")
     selectors.add_argument("--armageddon-ruins", action="store_true", help="Update Battlemaster Armageddon Ruins (45 cards).")
-    selectors.add_argument(
-        "--lct-pack-1", "--lct-p1", dest="lct_pack_1", action="store_true",
-        help="Update atomic Ice/Lava/Mars LCT Pack 1 (45 cards).",
-    )
+    selectors.add_argument("--lct-ice-colony", action="store_true", help="Update LCT - Ice Colony (45 cards).")
+    selectors.add_argument("--lct-mars-base", action="store_true", help="Update LCT - Mars Base (45 cards).")
     parser.add_argument("--write", action="store_true", help="Apply the validated plan. Without this flag, preview only.")
     parser.add_argument("--snapshot-in", type=Path, help="Read API data from a prior snapshot instead of using the network.")
     parser.add_argument("--snapshot-out", type=Path, help="Write normalized fetched API data for a reproducible later apply.")

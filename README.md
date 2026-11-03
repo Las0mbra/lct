@@ -87,15 +87,15 @@ python3 scripts/sync_battlemaster_maps.py --all-battlemaster
 # The additional Imperia (Fancy) and GMS themes (45 cards each).
 python3 scripts/sync_battlemaster_maps.py --pack imperia-fancy --pack gms
 
-# Atomic Ice layout 1 + Lava layout 2 + Mars layout 3 (45 cards).
-python3 scripts/sync_battlemaster_maps.py --lct-pack-1
+# LCT - Ice Colony and LCT - Mars Base (45 cards each, one theme for all slots).
+python3 scripts/sync_battlemaster_maps.py --lct-ice-colony --lct-mars-base
 
-# All configured packs, including LCT Pack 1 (270 cards; excludes T5S2).
+# All configured packs, including both LCT packs (315 cards; excludes T5S2).
 python3 scripts/sync_battlemaster_maps.py --all
 ```
 
-The granular selectors are `--bttf-ruins`, `--bttf`, `--armageddon-ruins`, and
-`--lct-pack-1` (`--lct-p1` is an alias). `--pack KEY` is a repeatable generic
+The granular selectors are `--bttf-ruins`, `--bttf`, `--armageddon-ruins`,
+`--lct-ice-colony`, and `--lct-mars-base`. `--pack KEY` is a repeatable generic
 selector generated from `PACKS`; the former `--all-four` spelling remains a
 deprecated alias for `--all-battlemaster`.
 
@@ -109,7 +109,7 @@ Footprint states are selected by pack, with an explicit contract:
 
 - The five Battlemaster packs contain two states: rugged terrain is the
   top-level/default state and smooth terrain is state 2.
-- LCT Pack 1 contains three states: its theme-specific custom bordered floor is
+- The LCT packs contain three states: its theme-specific custom bordered floor is
   the top-level/default state, rugged terrain is state 2, and smooth terrain is
   state 3.
 
@@ -147,11 +147,11 @@ with `--pack KEY`; add a convenience flag only if desired. Also register the new
 creator tag/display in the Python validator and Lua suffix table. Add it to the
 legacy theme list/debug batch only when offline TTS-cache recovery is required.
 
-`LCT - Pack 1` remains a composite pack with fixed slots:
-
-- Layout 1: `lct - ice colony`
-- Layout 2: `lct - lava temple`
-- Layout 3: `lct - mars base`
+The former composite `LCT - Pack 1` (Ice layout 1, Lava layout 2, Mars layout 3)
+has been retired; its maps are removed. Its `PackSpec` is kept, unregistered, as
+`LCT_PACK_1` in `sync_battlemaster_maps.py`, and per-slot `ThemeSlice` composites
+remain supported. To restore it, add it back to `PACKS` and re-register
+`map_crt_lct1` in the validator and Lua suffix table.
 
 The DEBUG-gated `All BM`/`LCT P1` cache buttons and
 `import_battlemaster_static_maps.py` remain only as a legacy/offline fallback

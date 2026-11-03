@@ -132,15 +132,17 @@ class ValidateMapsTest(unittest.TestCase):
         default_block = map_filter_lua[default_start:default_end]
         self.assertEqual(
             {
-                "lct1",
+                "lct_ice_colony",
+                "lct_mars_base",
                 "battlemaster_armageddon_ruins",
                 "battlemaster_imperia_fancy",
                 "t5s2",
             },
             set(re.findall(r'"([^"]+)"', default_block)),
         )
-        self.assertIn('lct1 = "LCT - Pack 1"', map_filter_lua)
-        self.assertEqual("LCT - Pack 1", validate_maps.MAP_CREATOR_DISPLAY_NAMES["map_crt_lct1"])
+        self.assertEqual("LCT - Ice Colony", validate_maps.MAP_CREATOR_DISPLAY_NAMES["map_crt_lct_ice_colony"])
+        self.assertEqual("LCT - Mars Base", validate_maps.MAP_CREATOR_DISPLAY_NAMES["map_crt_lct_mars_base"])
+        self.assertNotIn("map_crt_lct1", validate_maps.MAP_CREATOR_DISPLAY_NAMES)
         self.assertIn("LCT_MAT_RANDOMIZER_ENABLED = false", start_menu_lua)
         self.assertFalse(compile_script.LCT_MAT_RANDOMIZER_ENABLED)
 
