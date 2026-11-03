@@ -96,9 +96,9 @@
   <Button id="DebugToolsMinBtn" text="—" fontSize="24" textColor="#FFFFFF" color="#B52020" width="44" height="44" roundEdges="true" outline="#2a2a4aCC" outlineSize="3" rectAlignment="UpperRight" offsetXY="-26 -26" onClick="minimizeDebugTools" tooltip="Minimize"/>
 </Panel>
 
-<Panel id="RedHud_VPScores" visibility="Red" active="true" scale="0.40 0.40 0.40" width="1216" height="228" rectAlignment="UpperRight" offsetXY="-167 0" color="rgba(0,0,0,0)" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="RedHud_VPScores" visibility="Red" active="true" scale="0.40 0.40 0.40" width="1280" height="228" rectAlignment="UpperRight" offsetXY="-167 0" color="rgba(0,0,0,0)" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <HorizontalLayout spacing="6" padding="0" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="UpperLeft">
-  <Panel id="RedHud_MainPanel" flexibleWidth="0" preferredWidth="1160" minWidth="1160" preferredHeight="228" minHeight="228" flexibleHeight="0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3">
+  <Panel id="RedHud_MainPanel" flexibleWidth="0" preferredWidth="1224" minWidth="1224" preferredHeight="228" minHeight="228" flexibleHeight="0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3">
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleLeft">
     <VerticalLayout id="RedHudControls" flexibleWidth="0" preferredWidth="54" preferredHeight="172" flexibleHeight="0" spacing="4">
       <Button id="RedHud_HelpBtn" text="?" fontSize="28" fontStyle="Bold" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleHelp" tooltip="Help"/>
@@ -116,6 +116,10 @@
     <VerticalLayout flexibleWidth="1" spacing="6">
     <Panel id="RedHud_ChsStpPanel1" color="#1A5FC8E6" outline="#5B8FDECC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
+        <Panel id="RedHud_DispBadge1" color="#2A2A3AE6" outline="#FFFFFF40" outlineSize="2" roundEdges="true" minWidth="50" preferredWidth="50" flexibleWidth="0" minHeight="50" tooltip="Disposition">
+          <Text id="RedHud_DispGlyph1" text="?" fontSize="44" fontStyle="Bold" color="White" shadow="#000000AA" shadowDistance="1 -1" alignment="MiddleCenter"/>
+        </Panel>
+        <Panel id="RedHud_DispSpacer1" color="rgba(0,0,0,0)" minWidth="6" preferredWidth="6" flexibleWidth="0"/>
         <Panel id="RedHud_TVWatchPanel1" color="rgba(0,0,0,0)" minWidth="120" minHeight="50">
           <Button id="RedHud_TVWatchBtn1" width="120" height="50" color="rgba(0,0,0,0)" onClick="738804/hudTurnWatch1" />
           <Text id="RedHud_TVWatch1" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
@@ -145,6 +149,10 @@
     </Panel>
     <Panel id="RedHud_ChsStpPanel2" color="#B52020E6" outline="#D46060CC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
+        <Panel id="RedHud_DispBadge2" color="#2A2A3AE6" outline="#FFFFFF40" outlineSize="2" roundEdges="true" minWidth="50" preferredWidth="50" flexibleWidth="0" minHeight="50" tooltip="Disposition">
+          <Text id="RedHud_DispGlyph2" text="?" fontSize="44" fontStyle="Bold" color="White" shadow="#000000AA" shadowDistance="1 -1" alignment="MiddleCenter"/>
+        </Panel>
+        <Panel id="RedHud_DispSpacer2" color="rgba(0,0,0,0)" minWidth="6" preferredWidth="6" flexibleWidth="0"/>
         <Panel id="RedHud_TVWatchPanel2" color="rgba(0,0,0,0)" minWidth="120" minHeight="50">
           <Button id="RedHud_TVWatchBtn2" width="120" height="50" color="rgba(0,0,0,0)" onClick="738804/hudTurnWatch2" />
           <Text id="RedHud_TVWatch2" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
@@ -190,10 +198,10 @@
     </Panel>
 </Panel>
 
-<Panel id="BlueHud_VPScores" visibility="Blue" active="true" scale="0.40 0.40 0.40" width="1216" height="228"
+<Panel id="BlueHud_VPScores" visibility="Blue" active="true" scale="0.40 0.40 0.40" width="1280" height="228"
 rectAlignment="UpperRight" offsetXY="-167 0" color="rgba(0,0,0,0)" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <HorizontalLayout spacing="6" padding="0" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="UpperLeft">
-  <Panel id="BlueHud_MainPanel" flexibleWidth="0" preferredWidth="1160" minWidth="1160" preferredHeight="228" minHeight="228" flexibleHeight="0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3">
+  <Panel id="BlueHud_MainPanel" flexibleWidth="0" preferredWidth="1224" minWidth="1224" preferredHeight="228" minHeight="228" flexibleHeight="0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3">
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="MiddleLeft">
     <VerticalLayout id="BlueHudControls" flexibleWidth="0" preferredWidth="54" preferredHeight="172" flexibleHeight="0" spacing="4">
       <Button id="BlueHud_HelpBtn" text="?" fontSize="28" fontStyle="Bold" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleHelp" tooltip="Help"/>
@@ -211,6 +219,10 @@ rectAlignment="UpperRight" offsetXY="-167 0" color="rgba(0,0,0,0)" allowDragging
     <VerticalLayout flexibleWidth="1" spacing="6">
     <Panel id="BlueHud_ChsStpPanel1" color="#1A5FC8E6" outline="#5B8FDECC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
+        <Panel id="BlueHud_DispBadge1" color="#2A2A3AE6" outline="#FFFFFF40" outlineSize="2" roundEdges="true" minWidth="50" preferredWidth="50" flexibleWidth="0" minHeight="50" tooltip="Disposition">
+          <Text id="BlueHud_DispGlyph1" text="?" fontSize="44" fontStyle="Bold" color="White" shadow="#000000AA" shadowDistance="1 -1" alignment="MiddleCenter"/>
+        </Panel>
+        <Panel id="BlueHud_DispSpacer1" color="rgba(0,0,0,0)" minWidth="6" preferredWidth="6" flexibleWidth="0"/>
         <Panel id="BlueHud_TVWatchPanel1" color="rgba(0,0,0,0)" minWidth="120" minHeight="50">
           <Button id="BlueHud_TVWatchBtn1" width="120" height="50" color="rgba(0,0,0,0)" onClick="738804/hudTurnWatch1" />
           <Text id="BlueHud_TVWatch1" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
@@ -240,6 +252,10 @@ rectAlignment="UpperRight" offsetXY="-167 0" color="rgba(0,0,0,0)" allowDragging
     </Panel>
     <Panel id="BlueHud_ChsStpPanel2" color="#B52020E6" outline="#D46060CC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
+        <Panel id="BlueHud_DispBadge2" color="#2A2A3AE6" outline="#FFFFFF40" outlineSize="2" roundEdges="true" minWidth="50" preferredWidth="50" flexibleWidth="0" minHeight="50" tooltip="Disposition">
+          <Text id="BlueHud_DispGlyph2" text="?" fontSize="44" fontStyle="Bold" color="White" shadow="#000000AA" shadowDistance="1 -1" alignment="MiddleCenter"/>
+        </Panel>
+        <Panel id="BlueHud_DispSpacer2" color="rgba(0,0,0,0)" minWidth="6" preferredWidth="6" flexibleWidth="0"/>
         <Panel id="BlueHud_TVWatchPanel2" color="rgba(0,0,0,0)" minWidth="120" minHeight="50">
           <Button id="BlueHud_TVWatchBtn2" width="120" height="50" color="rgba(0,0,0,0)" onClick="738804/hudTurnWatch2" />
           <Text id="BlueHud_TVWatch2" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
@@ -285,9 +301,9 @@ rectAlignment="UpperRight" offsetXY="-167 0" color="rgba(0,0,0,0)" allowDragging
     </Panel>
 </Panel>
 
-<Panel id="GreyHud_VPScores" visibility="Grey" active="true" scale="0.40 0.40 0.40" width="1216" height="155" rectAlignment="UpperRight" offsetXY="-167 0" color="rgba(0,0,0,0)" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
+<Panel id="GreyHud_VPScores" visibility="Grey" active="true" scale="0.40 0.40 0.40" width="1280" height="155" rectAlignment="UpperRight" offsetXY="-167 0" color="rgba(0,0,0,0)" allowDragging="true" restrictDraggingToParentBounds="false" returnToOriginalPositionWhenReleased="false">
   <HorizontalLayout spacing="6" padding="0" childForceExpandWidth="false" childForceExpandHeight="false" childAlignment="UpperLeft">
-  <Panel id="GreyHud_MainPanel" flexibleWidth="0" preferredWidth="1160" minWidth="1160" preferredHeight="155" minHeight="155" flexibleHeight="0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3">
+  <Panel id="GreyHud_MainPanel" flexibleWidth="0" preferredWidth="1224" minWidth="1224" preferredHeight="155" minHeight="155" flexibleHeight="0" color="#0D0D1AE6" outline="#2a2a4a" outlineSize="3">
   <HorizontalLayout spacing="6" padding="6" childForceExpandWidth="false">
     <VerticalLayout id="GreyHudControls" flexibleWidth="0" preferredWidth="54" spacing="4">
       <Button id="GreyHud_HelpBtn" text="?" fontSize="28" fontStyle="Bold" textColor="#000000" color="#FFFFFF" width="50" height="48" roundEdges="true" outline="#2a2a4aCC" outlineSize="2" onClick="hudToggleHelp" tooltip="Help"/>
@@ -302,6 +318,10 @@ rectAlignment="UpperRight" offsetXY="-167 0" color="rgba(0,0,0,0)" allowDragging
     <VerticalLayout flexibleWidth="1" spacing="6">
     <Panel id="GreyHud_ChsStpPanel1" color="#1A5FC8E6" outline="#5B8FDECC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
+        <Panel id="GreyHud_DispBadge1" color="#2A2A3AE6" outline="#FFFFFF40" outlineSize="2" roundEdges="true" minWidth="50" preferredWidth="50" flexibleWidth="0" minHeight="50" tooltip="Disposition">
+          <Text id="GreyHud_DispGlyph1" text="?" fontSize="44" fontStyle="Bold" color="White" shadow="#000000AA" shadowDistance="1 -1" alignment="MiddleCenter"/>
+        </Panel>
+        <Panel id="GreyHud_DispSpacer1" color="rgba(0,0,0,0)" minWidth="6" preferredWidth="6" flexibleWidth="0"/>
         <Panel id="GreyHud_TVWatchPanel1" color="rgba(0,0,0,0)" minWidth="120" minHeight="50">
           <Button id="GreyHud_TVWatchBtn1" width="120" height="50" color="rgba(0,0,0,0)" onClick="" />
           <Text id="GreyHud_TVWatch1" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>
@@ -331,6 +351,10 @@ rectAlignment="UpperRight" offsetXY="-167 0" color="rgba(0,0,0,0)" allowDragging
     </Panel>
     <Panel id="GreyHud_ChsStpPanel2" color="#B52020E6" outline="#D46060CC" outlineSize="2">
       <HorizontalLayout spacing="4" padding="4">
+        <Panel id="GreyHud_DispBadge2" color="#2A2A3AE6" outline="#FFFFFF40" outlineSize="2" roundEdges="true" minWidth="50" preferredWidth="50" flexibleWidth="0" minHeight="50" tooltip="Disposition">
+          <Text id="GreyHud_DispGlyph2" text="?" fontSize="44" fontStyle="Bold" color="White" shadow="#000000AA" shadowDistance="1 -1" alignment="MiddleCenter"/>
+        </Panel>
+        <Panel id="GreyHud_DispSpacer2" color="rgba(0,0,0,0)" minWidth="6" preferredWidth="6" flexibleWidth="0"/>
         <Panel id="GreyHud_TVWatchPanel2" color="rgba(0,0,0,0)" minWidth="120" minHeight="50">
           <Button id="GreyHud_TVWatchBtn2" width="120" height="50" color="rgba(0,0,0,0)" onClick="" />
           <Text id="GreyHud_TVWatch2" text="Turn 0" fontSize="40" color="White" shadow="#000000AA" shadowDistance="1 -1"/>

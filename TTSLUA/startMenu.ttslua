@@ -242,6 +242,10 @@ function onLoad(saved_data)
         if inGame then
             updateGameStateHUD()
             Wait.time(updateGameStateHUD, 1)
+        else
+            -- The disposition badges reflect the live picker during setup too.
+            updateDispositionHUD()
+            Wait.time(updateDispositionHUD, 1)
         end
     end)
 end
@@ -1751,6 +1755,7 @@ function applyRestoredSelectionState()
     restorePointMissionCardGuids = nil
 
     writeMenus()
+    updateDispositionHUD()
     broadcastToAll("Back to map selection.", {0.3, 1.0, 0.3})
 end
 
@@ -1761,6 +1766,7 @@ function updateDispositionSelection(color, add)
         redDispositionSelected = normalizeDispositionIndex(redDispositionSelected + add)
     end
     writeMenus()
+    updateDispositionHUD()
 end
 
 function blueDispositionUp()
@@ -5686,6 +5692,29 @@ function updatePhaseHUD()
     end
 end
 
+-- Disposition badge left of each HUD row's Turn readout. Row 1 is Blue and row 2
+-- is Red, matching TVWatch/CPWatch. Glyphs stay in the BMP so the TTS UI font
+-- renders them like the phase icons.
+local _dispositionBadges = {
+    ["Reconnaissance"]  = {glyph = "◉", color = "#138A8AF0", text = "White"},
+    ["Priority Assets"] = {glyph = "✚", color = "#C8A21EF0", text = "#1A1A1A"},
+    ["Purge the Foe"]   = {glyph = "⚔", color = "#7A0F0FF0", text = "White"},
+    ["Disruption"]      = {glyph = "✖", color = "#0F2E7AF0", text = "White"},
+    ["Take and Hold"]   = {glyph = "♜", color = "#2E7D32F0", text = "White"},
+}
+local _dispositionBadgeUnknown = {glyph = "?", color = "#2A2A3AE6", text = "White"}
+
+function updateDispositionHUD()
+    for row, index in pairs({["1"] = blueDispositionSelected, ["2"] = redDispositionSelected}) do
+        local name = dispositionValues[index] or ""
+        local badge = _dispositionBadges[name] or _dispositionBadgeUnknown
+        Global.call("setHudAttribute", {id = "DispBadge"..row, attr = "color", value = badge.color})
+        Global.call("setHudAttribute", {id = "DispBadge"..row, attr = "tooltip", value = name ~= "" and name or "Disposition"})
+        Global.call("setHudAttribute", {id = "DispGlyph"..row, attr = "color", value = badge.text})
+        Global.call("setHudValue", {id = "DispGlyph"..row, value = badge.glyph})
+    end
+end
+
 local function hudJumpToPhaseForTurn(player, targetTurn, idx)
     if not hudCanControlTurn(player, targetTurn) then return end
     jumpToPhase(idx)
@@ -5716,6 +5745,7 @@ function updateGameStateHUD()
     local round = counterValue(roundObj)
     Global.call("setHudValue", {id = "RoundWatch", value = tostring(round)})
     updatePhaseHUD()
+    updateDispositionHUD()
     if inGame then
         local blueActive = currentTurn ~= "Red"
         Global.call("setHudAttribute", {id = "ChsStpPanel1", attr = "color", value = blueActive and "#2E86FFF8" or "#0B255C28"})
