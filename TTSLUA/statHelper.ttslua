@@ -3,7 +3,7 @@
 version = "1.0-11th Edition"
 useCustomTrayDice = false
 rangeMeleeToggle = 0
-modelWeaponToggle = true
+modelWeaponToggle = false
 lightTheme = false
 currentSelection = {}
 spawnedDiceCount = 0
@@ -29,7 +29,7 @@ function onLoad(data)
 	spawnPosition = self.positionToWorld({0, 1, 6})
   end
   rangeMeleeToggle = 0
-  modelWeaponToggle = true
+  modelWeaponToggle = false
   lightTheme = false
   applyTheme()
 end
@@ -180,7 +180,7 @@ end
 function onCleanClicked(player)
 	rangeMeleeToggle = 0
 	spawnedDiceCount = 0
-	modelWeaponToggle = true
+	modelWeaponToggle = false
 	drawWeaponData({})
 	updateRangeMeleeUI()
 	updateCustomDiceUI()
