@@ -1293,6 +1293,12 @@ function announceVersion()
     end
 end
 
+-- One-shot reminder printed when the mod itself loads (see onLoad's Wait.time
+-- below), not on every map load.
+function announceThemeVote()
+    broadcastToAll("Remember to join the Discord and vote for the default LCT table theme! Voting runs until 10 January.", {1, 0.84, 0})
+end
+
 -- Push the latest patch number + notes (injected from CHANGELOG.md) into the
 -- splash intro overlay. Runs on every load so the menu always reflects the
 -- build's CHANGELOG, regardless of test/release.
@@ -1417,6 +1423,7 @@ function onLoad(saved_data)
     -- version banner in chat.
     Wait.frames(updateSplashOverlay, 1)
     Wait.time(announceVersion, 3)
+    Wait.time(announceThemeVote, 3.5)
     if allowMenu then
         if allowAutoSeat and redPlayerID ~= "" and bluePlayerID ~= "" then --  if the game is not started dont autoseat
                 autoSeatAll()
@@ -1494,7 +1501,7 @@ end
 BATTLEMASTER_SPAWNER_GUID = "b4d10a"
 BATTLEMASTER_BTTF_THEME_ID = "tts-theme-grimdark-calibrated-v1"
 BATTLEMASTER_BTTF_RUINS_THEME_ID = "tts-theme-0c82349e-6c8d-4ef6-95ba-4ee3c2d6a5a5"
-BATTLEMASTER_ARMAGEDDON_RUINS_THEME_ID = "tts-theme-8c631fa7-4e26-404d-a00e-21a27e5801da"
+BATTLEMASTER_ARMAGEDDON_RUINS_THEME_ID = "tts-theme-7b9218bb-b614-4225-9789-570836525e6a"
 LCT_PACK_1_ICE_THEME_ID = "tts-theme-6bec677d-1eb3-43e5-bb55-bc2f5f4d2b8b"
 LCT_PACK_1_LAVA_THEME_ID = "tts-theme-1d124ba8-f308-482e-9d7a-eae4e8e157c4"
 LCT_PACK_1_MARS_THEME_ID = "tts-theme-190bfe5c-c240-495d-bd21-59c55b67c2ec"

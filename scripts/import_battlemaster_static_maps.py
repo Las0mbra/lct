@@ -108,7 +108,7 @@ KNOWN_BATTLEMASTER_THEMES = [
         "footprint_profile": FOOTPRINT_PROFILE_BATTLEMASTER,
     },
     {
-        "theme_id": "tts-theme-8c631fa7-4e26-404d-a00e-21a27e5801da",
+        "theme_id": "tts-theme-7b9218bb-b614-4225-9789-570836525e6a",
         "creator_tag": "map_crt_battlemaster_armageddon_ruins",
         "creator_display": "Battlemaster - Armageddon Ruins",
         "footprint_profile": FOOTPRINT_PROFILE_BATTLEMASTER,

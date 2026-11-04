@@ -13,6 +13,15 @@ How this file is used by the compiler (`compile.py --release`):
 To cut a release: add a new `## vX.Y.Z` section at the top with its bullets,
 then run `python3 compile.py --release`.
 
+## v1.12.1
+- Remember to vote for the default LCT table theme!
+- Added properly scanned Armageddon ruins thanks to Seaborne and Battlemaster.
+- Split LCT Pack 1 to LCT Ice Colony and Mars Base packss
+- Added dispotition tracker icon to the scoring overlay 
+- We went back to having a single bag for Mothmy Titanias token pack. 
+- Stats helper now starts in Weapon Mode by default.
+
+
 ## v1.11.5 
 - Added/changed multiple table themes, have a look!
 - Fixed floor bug for Battlemaster - Imperia Terrain 
